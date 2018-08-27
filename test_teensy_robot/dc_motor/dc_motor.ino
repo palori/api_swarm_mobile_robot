@@ -12,9 +12,12 @@ void setup()
 { 
   pinMode(right_pwm_pin, OUTPUT);
   pinMode(right_dir_pin, OUTPUT);
+  pinMode(left_pwm_pin, OUTPUT);
+  pinMode(left_dir_pin, OUTPUT);
   pinMode(PowerRobot, OUTPUT);
   
   digitalWrite(right_dir_pin,LOW);
+  digitalWrite(left_dir_pin,LOW);
   digitalWrite(PowerRobot,HIGH);
   
   Serial.begin(9600);
