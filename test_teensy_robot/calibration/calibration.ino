@@ -1,5 +1,6 @@
 #include <utils.h>
 #include <calibrate.h>
+#include <ir.h>
 
 
 void setup() {
@@ -19,21 +20,27 @@ void loop() {
   }
   else if(menu_step==1){
     printSectionHeader(menu[1]);
-    sub_step = 0;
-    
-    if(sub_step==0){
-      Serial.println("Calibrate IR at 10cm");
-      int curr_sub_step = sub_step;
-      while(curr_sub_step<=sub_step){
-        delay(1000);
-        if(getInput()==1){
-          sub_step++;
-          break;
-        }
+    pringCurrentCalib();
+    while(true){
+      if(sub_step==0){
+        calibrateDistance(10);
       }
-    }
-    else if(sub_step==1){
-      
+      else if(sub_step==1){
+        calibrateDistance(20);
+      }
+      else if(sub_step==2){
+        calibrateDistance(40);
+      }
+      else if(sub_step==3){
+        calibrateDistance(80);
+      }
+      else{
+        //save data into IR objects
+        saveIrCalib();
+        pringCurrentCalib();
+        sub_step = 0;
+        break;
+      }
     }
     printSectionEnding(menu[1]);
     //menu_step = 0;
@@ -52,8 +59,8 @@ void loop() {
     printSectionEnding(menu[3]);
     //menu_step = 0;
   }
-  else{
+  /*else{
     printEnding();
     while(true); // end of calibration
-  }
+  }*/
 }

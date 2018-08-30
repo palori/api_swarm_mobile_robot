@@ -8,9 +8,6 @@
 #include <utils.h>
 
 
-IR ir1(PIN_IR_RAW_1);
-IR ir2(PIN_IR_RAW_2);
-
 void setup() {
   // put your setup code here, to run once:
   setUpPowerPins();
@@ -25,12 +22,12 @@ void loop() {
   checkBattery();
 
   // Test
-  float dist1=ir1.getDistance();
-  float dist2=ir2.getDistance();
+  float data1=ir1.getData();
+  float data2=ir2.getData();
   
   Serial.print("Distance 1: ");
-  Serial.println(String(dist1));
+  Serial.println(String(data1));
   Serial.print("Distance 2: ");
-  Serial.println(String(dist2));
+  Serial.println(String(data2));
   delay(1000);
 }
