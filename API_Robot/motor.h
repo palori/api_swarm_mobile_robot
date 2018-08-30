@@ -6,9 +6,8 @@
 class Motor
 {
 public:
-	Motor();
-	void setVelocity(float velocity);
-	void setDirection(float direction);
+	Motor(int motor);
+	void setVelocity(int velocity);
 	//setVoltage();
 	//void enableMotors();
 
@@ -16,6 +15,7 @@ private:
 	int _motor;
 	int _dir_pin;
 	int _pwm_pin;
+	int _velocity;
 };
 
 #endif

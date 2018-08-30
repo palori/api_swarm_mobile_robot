@@ -20,7 +20,7 @@ void loop()
 { 
   if (Serial.available())
   {
-    speed = Serial.parseInt();
+    int speed = Serial.parseInt();
     
     if (speed >= 500 && speed <= 3500)
     {

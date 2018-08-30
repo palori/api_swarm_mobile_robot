@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "motor.h"
+#include "pins.h"
 
 Motor::Motor(int motor){
 	_motor=motor;
@@ -16,11 +17,12 @@ Motor::Motor(int motor){
   	pinMode(_pwm_pin, OUTPUT);
 
   	analogWriteFrequency(_pwm_pin,20000);
+  	analogWriteResolution(12);
   	
 
 }
 
-void Motor::setVelocity(float velocity){
+void Motor::setVelocity(int velocity){
 	_velocity=velocity;
 
 	if (_velocity<0){
