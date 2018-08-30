@@ -7,6 +7,11 @@
 
 // Pin Definitions for Regbot v4.1 2018
 
+//Motor names
+
+#define MOTOR1 1
+#define MOTOR2 2
+
 // Main pins
 #define PIN_LED_STATUS          11
 #define PIN_LED_DEBUG           13
