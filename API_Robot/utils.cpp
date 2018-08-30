@@ -5,6 +5,7 @@ void setUpPowerPins(){
 	pinMode(PIN_BATTERY_VOLTAGE,INPUT);
   	pinMode(PIN_POWER_ROBOT,OUTPUT);
   	pinMode(PIN_POWER_IR,OUTPUT);
+  	pinMode(M12DIS,OUTPUT);
   	
   	digitalWrite(PIN_POWER_ROBOT, HIGH);
   	digitalWrite(PIN_POWER_IR, HIGH);
@@ -20,10 +21,22 @@ void checkBattery(){
 	if (batt < 10){
 		Serial.println("Low battery!");
 		digitalWrite(PIN_POWER_ROBOT, LOW);
-		digitalWrite(PIN_POWER_IR, LOW);
-	}
-	else if(batt > 12){ // Maybe just else, but be careful!!!!
+	} else if(batt > 12){ // Maybe just else, but be careful!!!!
 		digitalWrite(PIN_POWER_ROBOT, HIGH);
-		digitalWrite(PIN_POWER_IR, HIGH);
 	}
+}
+
+void enableMotors(){
+	digitalWrite(M12DIS,HIGH);
+}
+
+void disableMotors(){
+	digitalWrite(M12DIS,LOW);
+}
+
+void enableIR(){
+	digitalWrite(PIN_POWER_IR, HIGH);
+}
+void disableIR(){
+	digitalWrite(PIN_POWER_IR, LOW);
 }

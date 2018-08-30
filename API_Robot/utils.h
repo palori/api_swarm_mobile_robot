@@ -7,4 +7,12 @@
 void setUpPowerPins();
 void checkBattery();
 
+
+void enableMotors();
+void disableMotors();
+
+void enableIR();
+void disableIR();
+
+
 #endif

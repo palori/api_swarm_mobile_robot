@@ -7,7 +7,15 @@ class Motor
 {
 public:
 	Motor();
-	void setVelocity(float vel);//setVoltage();
+	void setVelocity(float velocity);
+	void setDirection(float direction);
+	//setVoltage();
+	//void enableMotors();
+
+private:
+	int _motor;
+	int _dir_pin;
+	int _pwm_pin;
 };
 
 #endif

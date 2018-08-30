@@ -9,8 +9,8 @@
 
 //Motor names
 
-#define MOTOR1 1
-#define MOTOR2 2
+#define LEFT_MOTOR 1
+#define RIGHT_MOTOR 2
 
 // Main pins
 #define PIN_LED_STATUS          11
