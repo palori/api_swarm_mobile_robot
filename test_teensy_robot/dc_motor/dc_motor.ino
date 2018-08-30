@@ -5,9 +5,12 @@
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
 
+int speed=4096;
+
 void setup() 
 { 
   setUpPowerPins();
+  
 
   Serial.begin(9600);
   
@@ -20,15 +23,17 @@ void loop()
 { 
   if (Serial.available())
   {
-    int speed = Serial.parseInt();
+    speed = Serial.parseInt();
     
-    if (speed >= 500 && speed <= 3500)
+    if (speed >= 2048 && speed <= 4096)
     {
+      enableMotors();
       Serial.print(String(speed));
       motor1.setVelocity(speed);
-      motor2.setVelocity(4096-speed);
+      motor2.setVelocity(speed);
     } else {
-      //digitalWrite(right_pwm_pin, LOW);  
+      //digitalWrite(right_pwm_pin, LOW); 
+      disableMotors(); 
     }
   }
 }
