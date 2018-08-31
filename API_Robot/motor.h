@@ -22,6 +22,5 @@ private:
 };
 
 int vel2pwm(float velocity);
-int _pwm_result;
 
 #endif
