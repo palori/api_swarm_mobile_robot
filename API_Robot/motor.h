@@ -3,11 +3,13 @@
 
 #include "Arduino.h"
 
+#define MAX_VELOCITY 10.0
+
 class Motor
 {
 public:
 	Motor(int motor);
-	void setVelocity(int velocity);
+	void setVelocity(float velocity);
 	//setVoltage();
 	//void enableMotors();
 
@@ -15,7 +17,11 @@ private:
 	int _motor;
 	int _dir_pin;
 	int _pwm_pin;
-	int _velocity;
+	float _velocity;
+	int _pwm;
 };
+
+int vel2pwm(float velocity);
+int _pwm_result;
 
 #endif

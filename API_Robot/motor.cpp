@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "motor.h"
 #include "pins.h"
+#include <cmath>
 
 Motor::Motor(int motor){
 	_motor=motor;
@@ -22,17 +23,23 @@ Motor::Motor(int motor){
 
 }
 
-void Motor::setVelocity(int velocity){
+void Motor::setVelocity(float velocity){
 	_velocity=velocity;
+  _pwm=vel2pwm(abs(_velocity);
 
 	if (_velocity<0){
 		digitalWrite(_dir_pin,LOW);
-		analogWrite(_pwm_pin,_velocity);		
+		analogWrite(_pwm_pin,_pwm);		
 	}else if (_velocity >0){
 		digitalWrite(_dir_pin,HIGH);
-		analogWrite(_pwm_pin,_velocity);
+		analogWrite(_pwm_pin,_pwm);
 	}
 		
+}
+
+int vel2pwm(float velocity){
+  _pwm_result=4096(1-_velocity/MAX_VELOCITY);
+  return _pwm_result;
 }
 
 
