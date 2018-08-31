@@ -11,7 +11,6 @@ Motor motor2(RIGHT_MOTOR);
 Encoder encoder1(PIN_LEFT_ENCODER_A,PIN_LEFT_ENCODER_B);
 Encoder encoder2(PIN_RIGHT_ENCODER_A,PIN_RIGHT_ENCODER_B);
 
-int speed=4096;
 float revolutions1;
 float revolutions2;
 
@@ -20,7 +19,7 @@ void setup()
   setUpPowerPins(); 
   Serial.begin(9600);  
   while (! Serial);
-  Serial.println("Speed 0 to 4096");
+  Serial.println("Speed 0 to 10.0");
 } 
  
  
@@ -28,9 +27,10 @@ void loop()
 { 
   if (Serial.available())
   {
-    speed = Serial.parseInt();
+    float speed = Serial.parseFloat();
     
-    if (speed >= 2048 && speed <= 4096)
+    
+    if (speed > -1 && speed <= 10)
     {
       enableMotors();
       Serial.print("Speed: ");
@@ -43,8 +43,8 @@ void loop()
       disableMotors(); 
     }
     
-    revolutions1=encoder1.read()/48/9.68;
-    revolutions2=encoder2.read()/48/9.68;
+    revolutions1=-encoder1.read()/48/9.68;
+    revolutions2=-encoder2.read()/48/9.68;
     Serial.print(revolutions1);
     Serial.print("    ");
     Serial.println(revolutions2);

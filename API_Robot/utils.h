@@ -8,7 +8,7 @@
 using namespace std;
 
 void setUpPowerPins();
-void checkBattery();
+bool checkBattery();
 
 
 void enableMotors();
