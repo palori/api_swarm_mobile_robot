@@ -20,7 +20,7 @@ void loop() {
   }
   else if(menu_step==1){
     printSectionHeader(menu[1]);
-    pringCurrentCalib();
+    printCurrentCalib();
     while(true){
       if(sub_step==0){
         calibrateDistance(10);
@@ -37,7 +37,7 @@ void loop() {
       else{
         //save data into IR objects
         saveIrCalib();
-        pringCurrentCalib();
+        printCurrentCalib();
         sub_step = 0;
         break;
       }

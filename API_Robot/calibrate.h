@@ -61,6 +61,6 @@ irData getIrData();
 void calibrateDistance(int cm);
 void acknowledge();
 void saveIrCalib();
-void pringCurrentCalib();
+void printCurrentCalib();
 
 #endif

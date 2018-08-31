@@ -142,7 +142,7 @@ void saveIrCalib(){
   // save in a txt file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
-void pringCurrentCalib(){
+void printCurrentCalib(){
   Serial.println("\nIR 1:");
   Serial.println("    10cm: "+String(IR_1_10));
   Serial.println("    20cm: "+String(IR_1_20));
