@@ -5,7 +5,7 @@
 #include "pins.h"
 
 void setUpPowerPins();
-void checkBattery();
+bool checkBattery();
 
 
 void enableMotors();
