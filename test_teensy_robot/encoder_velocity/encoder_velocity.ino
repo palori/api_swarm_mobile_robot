@@ -20,7 +20,7 @@ float gear_ratio=9.68;
 float getVelocity (int enc){
   int newpulse;
   int pulse;
-  float time_interval=50.0;
+  float time_interval=100.0;
   
   if (enc==1){
     pulse=encoder1.read();  
