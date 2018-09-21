@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "Encoder.h"
 #include "motor.h"
+using namespace std;
 
 class Velocity_controller
 {
