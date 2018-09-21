@@ -1,13 +1,13 @@
 #include <velocity_controller.h>
-#include <pins.h>
-#include <utils.h>
+//#include <pins.h>
+//#include <utils.h>
 
-Velocity_controller motor1(LEFT_MOTOR);
-Velocity_controller motor2(RIGHT_MOTOR);
+Velocity_controller motor1(1);
+Velocity_controller motor2(2);
 
 void setup() {
   // put your setup code here, to run once:
-  setUpPowerPins(); 
+  //setUpPowerPins(); 
   Serial.begin(9600);  
   while (! Serial);
   Serial.println("Speed 0 to 10.0");
@@ -28,7 +28,7 @@ void loop() {
     
     if (speed > -1 && speed <= 10)
     {
-      enableMotors();
+      //enableMotors();
       Serial.print("Speed: ");
       Serial.println(String(speed));
       motor1.setVelocity(speed);
@@ -36,7 +36,7 @@ void loop() {
         
     } else {
       //digitalWrite(right_pwm_pin, LOW); 
-      disableMotors(); 
+      //disableMotors(); 
     }
     
       

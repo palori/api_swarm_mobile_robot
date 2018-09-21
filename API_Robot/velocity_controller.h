@@ -5,6 +5,8 @@
 #include "Encoder.h"
 #include "motor.h"
 
+using namespace std;
+
 class Velocity_controller
 {
 	int _motor_id;
