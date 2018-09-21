@@ -4,6 +4,7 @@
 
 Velocity_controller motor1(LEFT_MOTOR);
 Velocity_controller motor2(RIGHT_MOTOR);
+double speed = -1;
 
 void setup() {
   // put your setup code here, to run once:
@@ -15,7 +16,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(1000);
+  delay(100);//1000
+
+  // Old test, no contol!  
   float velocity1=motor1.getVelocity();
   float velocity2=motor2.getVelocity();
   Serial.print(velocity1);
@@ -23,9 +26,8 @@ void loop() {
   Serial.println(velocity2);
   
   if (Serial.available()){
-    float speed = Serial.parseFloat();
-    
-    
+    speed = (double)Serial.parseFloat();
+
     if (speed > -1 && speed <= 10)
     {
       enableMotors();
@@ -37,9 +39,26 @@ void loop() {
     } else {
       //digitalWrite(right_pwm_pin, LOW); 
       disableMotors(); 
-    }
-    
-      
+    } 
   }
+  
+
+  /*
+  // New code with control!
+  if (Serial.available()){
+    speed = (double)Serial.parseFloat();
+    motor1.setSP(speed);
+    motor2.setSP(speed);
+  }
+  
+  if (speed > -1 && speed <= 10)
+  {
+    enableMotors();
+    motor1.run();
+    motor2.run();
+  } else {
+    disableMotors(); 
+  } 
+  */
   
 }

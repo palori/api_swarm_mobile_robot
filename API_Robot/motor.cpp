@@ -23,7 +23,7 @@ Motor::Motor(int motor){
 
 }
 
-void Motor::setVelocity(float velocity){
+void Motor::setVelocity(double velocity){
 	_velocity=velocity;
 
   _pwm=vel2pwm(_velocity);
@@ -38,12 +38,12 @@ void Motor::setVelocity(float velocity){
 		
 }
 
-int vel2pwm(float vel){
+int vel2pwm(double vel){
   
   if (vel<0){
     vel=-vel;
   }
-  float result=4096*(1-(float)(vel/MAX_VELOCITY));
+  double result=4096*(1-(double)(vel/MAX_VELOCITY));
   int pwm_result=(int)result;
 
   return pwm_result;
