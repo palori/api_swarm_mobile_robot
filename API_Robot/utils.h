@@ -4,7 +4,6 @@
 #include "Arduino.h"
 #include "pins.h"
 
-#include <vector>
 using namespace std;
 
 void setUpPowerPins();
