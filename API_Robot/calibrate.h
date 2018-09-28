@@ -24,25 +24,25 @@
 using namespace std;
 
 typedef struct{
-  float array[2];
+  uint16_t array[2];
 }irData;
 
 typedef struct{
-  float calib1[4];
-  float calib2[4];
+  uint16_t calib1[4];
+  uint16_t calib2[4];
 }irCalibData;
 
 // Calibrate IR 1
-extern float IR_1_10;
-extern float IR_1_20;
-extern float IR_1_40;
-extern float IR_1_80;
+extern uint16_t IR_1_10;
+extern uint16_t IR_1_20;
+extern uint16_t IR_1_40;
+extern uint16_t IR_1_80;
 
 // Calibrate IR 2
-extern float IR_2_10;
-extern float IR_2_20;
-extern float IR_2_40;
-extern float IR_2_80;
+extern uint16_t IR_2_10;
+extern uint16_t IR_2_20;
+extern uint16_t IR_2_40;
+extern uint16_t IR_2_80;
 
 extern int menu_step;
 extern int sub_step;

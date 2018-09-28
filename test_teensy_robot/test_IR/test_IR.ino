@@ -1,18 +1,17 @@
-//#include <servo.h> //use the one already done by Arduino
-//#include <velocity_controller.h>
 #include <ir.h>
-//#include <encoder.h>
-//#include <motor.h>
-//#include <mpu9150.h>
 #include <pins.h>
 #include <utils.h>
 
+IR ir_1(PIN_IR_RAW_1);
+IR ir_2(PIN_IR_RAW_2);
 
 void setup() {
   // put your setup code here, to run once:
   setUpPowerPins();
- 
   Serial.begin(9600);
+  delay(1000);
+  ir_1.setCalibration();
+  ir_2.setCalibration();
 }
 
 
@@ -22,12 +21,15 @@ void loop() {
   checkBattery();
 
   // Test
-  float data1=ir1.getData();
-  float data2=ir2.getData();
+
+  uint16_t data1 = ir_1.getData();
+  uint16_t data2 = ir_2.getData();
   
-  Serial.print("Distance 1: ");
-  Serial.println(String(data1));
-  Serial.print("Distance 2: ");
-  Serial.println(String(data2));
-  delay(1000);
+  float dist1 = ir_1.getDistance();
+  float dist2 = ir_2.getDistance();
+  
+  Serial.println("Data1: "+String(data1)+"      Distance 1: "+String(dist1));
+  Serial.println("Data2: "+String(data2)+"      Distance 2: "+String(dist2));
+  
+  delay(100);
 }
