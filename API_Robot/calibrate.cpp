@@ -6,16 +6,16 @@ using namespace std;
 
 
 // Calibrate IR 1
-float IR_1_10 = 300;
-float IR_1_20 = 250;
-float IR_1_40 = 100;
-float IR_1_80 = 50;
+uint16_t IR_1_10 = 300;
+uint16_t IR_1_20 = 250;
+uint16_t IR_1_40 = 100;
+uint16_t IR_1_80 = 50;
 
 // Calibrate IR 2
-float IR_2_10 = 300;
-float IR_2_20 = 250;
-float IR_2_40 = 100;
-float IR_2_80 = 50;
+uint16_t IR_2_10 = 300;
+uint16_t IR_2_20 = 250;
+uint16_t IR_2_40 = 100;
+uint16_t IR_2_80 = 50;
 int menu_step = 0;
 int sub_step = 0;
 IR ir1(PIN_IR_RAW_1);

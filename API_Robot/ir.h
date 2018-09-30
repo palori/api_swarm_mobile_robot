@@ -7,18 +7,22 @@ class IR
 {
 public:
 	IR(int pin);
-	float getData();
+	uint16_t getData();
 	float getDistance();
+	void setCalibration();
+	String getCalibration();
 	//void sendStatus();
 
 private:
 	int _dist_pin;
-	float _data;
+	//uint16_t irCal10cm;
+	uint16_t irCal20cm;
+	//uint16_t irCal40cm;
+	uint16_t irCal80cm;
+	uint16_t _irRaw;
+	float irA;
+	float irB;
 	float _dist;
-	float _data_10;
-	float _data_20;
-	float _data_40;
-	float _data_80;
 };
 
 #endif
