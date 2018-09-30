@@ -4,7 +4,6 @@
 #include "Arduino.h"
 #include "pins.h"
 
-using namespace std;
 
 void setUpPowerPins();
 bool checkBattery();
