@@ -10,14 +10,11 @@ using namespace std;
 
 class Velocity_controller
 {
-	int _motor_id;
-	int _encoder_pinA;
-	int _encoder_pinB;
-	Motor motor;
-	Encoder encoder;
-
 
 public:
+
+	//Velocity_controller() {}
+	
 	Velocity_controller(int motor);
 	void stop();
 	void setVelocity(float vel);
@@ -38,6 +35,13 @@ private:
 	float velocity;
 	//Motor motor;//(int _motor_id);
 	//Encoder encoder;//(int _encoder_pinA, int _encoder_pinB);
+
+		int _motor_id;
+	int _encoder_pinA;
+	int _encoder_pinB;
+	Motor motor;
+	Encoder encoder = Encoder(0,0);
+
 
 };
 

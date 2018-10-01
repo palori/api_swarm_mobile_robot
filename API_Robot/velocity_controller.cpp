@@ -8,10 +8,11 @@
 using namespace std;
 
 
-Velocity_controller::Velocity_controller(int motor_id):motor(LEFT_MOTOR),encoder(PIN_LEFT_ENCODER_A,PIN_LEFT_ENCODER_B){
+Velocity_controller::Velocity_controller(int motor_id)//:motor(LEFT_MOTOR),encoder(PIN_LEFT_ENCODER_A,PIN_LEFT_ENCODER_B)
+{
 	//Serial.println("Motor ID: "+String(motor_id));
 	_motor_id=motor_id;
-	//motor = Motor(_motor_id);
+	motor = Motor(_motor_id);
 
 	if (_motor_id==LEFT_MOTOR){
   		_encoder_pinA=PIN_LEFT_ENCODER_A;
@@ -21,9 +22,10 @@ Velocity_controller::Velocity_controller(int motor_id):motor(LEFT_MOTOR),encoder
   		_encoder_pinB=PIN_RIGHT_ENCODER_B;
   	}
 
-	//encoder = Encoder(_encoder_pinA,_encoder_pinB);
+	encoder = Encoder(_encoder_pinA,_encoder_pinB);
 
 }
+
 
 float Velocity_controller::getVelocity(){
 

@@ -8,6 +8,7 @@
 class Motor
 {
 public:
+	Motor();
 	Motor(int motor);
 	void setVelocity(float velocity);
 	//setVoltage();

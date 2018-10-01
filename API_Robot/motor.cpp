@@ -3,6 +3,8 @@
 #include "pins.h"
 #include <cmath>
 
+Motor::Motor(){}
+
 Motor::Motor(int motor){
 	_motor=motor;
 
