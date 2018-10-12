@@ -20,7 +20,7 @@ int newpulse[2]={1,1};
 float velocity=0;
 
 //unsigned long newtime1,newtime2;
-unsigned long calltime=0;
+//unsigned long calltime=0;
 unsigned long oldtime1=0;
 unsigned long oldtime2=0;
 
@@ -72,9 +72,9 @@ void loop()
 { 
   
     delay(1000);
-    calltime=millis();
-    float velocity1=getSpeed(LEFT_MOTOR,calltime);
-    float velocity2=getSpeed(RIGHT_MOTOR,calltime);
+    //calltime=millis();
+    float velocity1=getSpeed(LEFT_MOTOR,millis());
+    float velocity2=getSpeed(RIGHT_MOTOR,millis());
     Serial.print(velocity1);
     Serial.print("    ");
     Serial.println(velocity2);

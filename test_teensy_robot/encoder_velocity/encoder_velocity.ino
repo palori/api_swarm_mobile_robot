@@ -68,8 +68,8 @@ void loop()
         enableMotors();
         Serial.print("Speed: ");
         Serial.println(String(speed));
-        motor1.setVelocity(speed);
-        motor2.setVelocity(speed);
+        motor1.setVelocity((double)speed);
+        motor2.setVelocity((double)speed);
           
       } else {
         //digitalWrite(right_pwm_pin, LOW); 
