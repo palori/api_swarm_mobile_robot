@@ -15,6 +15,7 @@ Encoder encoder2(PIN_RIGHT_ENCODER_A,PIN_RIGHT_ENCODER_B);
 
 float pulses_per_rotation=48.0;
 float gear_ratio=9.68;
+float R_WEEL = 4.5; // [m]
 
 float speed = -1.0;
 int pulse[2]={0,0};
@@ -41,7 +42,7 @@ float getSpeed(int id, unsigned long newtime){
     if (newtime==oldtime1 || oldtime1==0){
       velocity=0;  
     } else {
-      velocity=-(newpulse[id-1]-pulse[id-1])*2*M_PI/pulses_per_rotation/gear_ratio/((newtime-oldtime1)/1000.0);
+      velocity=-(newpulse[id-1]-pulse[id-1])*2*M_PI/pulses_per_rotation/gear_ratio/((newtime-oldtime1)/1000.0); // [rad/s]
     } 
     oldtime1=newtime;
 
@@ -51,7 +52,7 @@ float getSpeed(int id, unsigned long newtime){
     if (newtime==oldtime2 || oldtime2==0){
       velocity=0;  
     } else {
-      velocity=-(newpulse[id-1]-pulse[id-1])*2*M_PI/pulses_per_rotation/gear_ratio/((newtime-oldtime2)/1000.0);
+      velocity=-(newpulse[id-1]-pulse[id-1])*2*M_PI/pulses_per_rotation/gear_ratio/((newtime-oldtime2)/1000.0); // [rad/s]
     } 
     oldtime2=newtime;
     //Serial.println(oldtime2);
@@ -60,7 +61,7 @@ float getSpeed(int id, unsigned long newtime){
   pulse[id-1]=newpulse[id-1];
   
 
-  return velocity;
+  return velocity*R_WEEL; // [m/s]
 }
 
 
@@ -76,7 +77,7 @@ void setup()
   Serial.begin(9600);  
   while (! Serial);
   //Serial.println("Speed 0 to 10.0");
-  Serial.println("Time, Vel1, Vel2, SP1, SP2, Out1, Out2");// Uncomment to save in .csv format
+  Serial.println("Time,Vel1,Vel2,SP1,SP2,Out1,Out2");// Uncomment to save in .csv format
 } 
  
  
@@ -119,9 +120,16 @@ void loop()
    // Uncomment to save in .csv format
    if (speed>-1){
       String s = String(calltime/1000.0);
-      s += ", "+String(Velocity[0])+", "+String(Velocity[1]);
-      s += ", "+String(Setpoint[0])+", "+String(Setpoint[1]);
-      s += ", "+String(Output[0])+", "+String(Output[1]);
+      s += ","+String(Velocity[0])+","+String(Velocity[1]);
+      s += ","+String(Setpoint[0])+","+String(Setpoint[1]);
+      s += ","+String(Output[0])+","+String(Output[1]);
       Serial.println(s);
    }
+   /* // Save in a 'csv' from a python script
+   else if (speed == -10){
+      delay(5000);
+      Serial.println("123456"); //end string to save in the 'csv'
+      speed = -1;
+      Serial.println("Speed = -1");
+   }*/
 }
