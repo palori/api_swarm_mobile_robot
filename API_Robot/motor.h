@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define MAX_VELOCITY 10.0
+#define MAX_VELOCITY 6.5
 
 class Motor
 {

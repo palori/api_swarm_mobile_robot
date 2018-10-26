@@ -33,7 +33,7 @@ void Motor::setVelocity(float velocity){
 	if (_velocity<0){
 		digitalWrite(_dir_pin,LOW);
 		analogWrite(_pwm_pin,_pwm);		   
-	}else if (_velocity >0){
+	}else if (_velocity >= 0){
 		digitalWrite(_dir_pin,HIGH);
 		analogWrite(_pwm_pin,_pwm);   
 	}
