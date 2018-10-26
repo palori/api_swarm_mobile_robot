@@ -10,6 +10,7 @@ HELP:
 void test_write(){
 	if (Serial.available()){
     	float speed = Serial.parseFloat();
+    	/*
 	    if (speed < 0){
 		    //Serial.println("vel = 0");
 		    Serial.write("0");
@@ -22,6 +23,8 @@ void test_write(){
 			//Serial.println("vel > 10");
 			Serial.write("A");
 	    }
+	    */
+	    //Serial.write(String(speed));
  	}
 }
 /*
