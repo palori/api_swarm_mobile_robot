@@ -14,7 +14,7 @@ Encoder encoder2(PIN_RIGHT_ENCODER_A,PIN_RIGHT_ENCODER_B);
 
 float pulses_per_rotation=48.0;
 float gear_ratio=9.68;
-
+float R_WHEEL = 0.045;
 int pulse[2]={0,0};
 int newpulse[2]={1,1};
 float velocity=0;
@@ -24,7 +24,7 @@ float error=0.0;
 float iError=0.0;
 float out_vel=0.0;
 
-float Kp=1.2;
+float Kp=0.1;
 float Ki=1;
 
 
@@ -59,7 +59,7 @@ float getSpeed(int id, unsigned long newtime){
   
   pulse[id-1]=newpulse[id-1];
   
-
+  velocity = velocity*R_WHEEL;
   return velocity;
 }
 
@@ -73,7 +73,7 @@ void setup()
   setUpPowerPins(); 
   Serial.begin(9600);  
   while (! Serial);
-  Serial.println("Speed 0 to 10.0");
+  Serial.println("Speed -5 to 5");
 } 
  
  
@@ -84,37 +84,46 @@ void loop()
     float velocity1=getSpeed(LEFT_MOTOR,millis());
     float velocity2=getSpeed(RIGHT_MOTOR,millis());
 
-    error=vel-velocity1/11.5;
-
+    error=vel-velocity1;
     iError+=error*0.01;
 
     out_vel=Kp*error+Ki*iError;
 
-    Serial.print("Velocity1: ");
-    Serial.println(velocity1);
-    Serial.print("Out_vel: ");
-    Serial.println(out_vel);
+    //if (out_vel<0.05){ out_vel=0;}
+
+    motor1.setVelocity(out_vel);
+    motor2.setVelocity(out_vel);
+
+    Serial.println("Velocity1: "+String(velocity1));
+    Serial.println("Velocity2: "+String(velocity2));
+
+    Serial.println("Out_vel1: "+String(out_vel));
 
        
    if (Serial.available()){
-      float vel = Serial.parseFloat();
-      if (vel > -1 && vel <= 5)
+      float vel_temp = Serial.parseFloat();
+      if (vel_temp >= -5 && vel_temp <= 5)
       {
+        vel = vel_temp;
+        Serial.println("\n\nSetpoint: "+String(vel)+"\n\n");
         enableMotors();
-        Serial.print("Setpoint: ");
-        Serial.println(String(vel));
-        Serial.print("Speed: ");
-        Serial.println(String(out_vel));
-        
+        //Serial.print("Setpoint: ");
+        //Serial.println(String(vel));
+        //Serial.print("Speed: ");
+        //Serial.println(String(out_vel));
           
       } else {
-        //digitalWrite(right_pwm_pin, LOW); 
+        //digitalWrite(right_pwm_pin, LOW);
+        vel = 0;
         disableMotors(); 
       }  
     }
 
-    motor1.setVelocity(out_vel);
-    //motor2.setVelocity(out_vel);
+    
+        
+
+
+
 
     
   

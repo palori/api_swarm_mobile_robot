@@ -51,7 +51,7 @@ float getSpeed(int id, unsigned long newtime){
   pulse[id-1]=newpulse[id-1];
   
 
-  return velocity;
+  return velocity*0.045;
 }
 
 
