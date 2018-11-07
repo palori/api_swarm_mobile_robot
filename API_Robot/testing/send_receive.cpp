@@ -32,20 +32,58 @@ void serial_write(int fd, char c[]){
     }
 }*/
 
+void read_char_by_char(int fd){
+    //char *c = new char[1];
+    char c[1]={'1'};
+    bool keep_reading=true, store=false;
+    string msg="";
+
+    try{
+        while(keep_reading){
+            int cs = read(fd,&c,sizeof(c));
+            if(cs>0){
+                cout << c[0];
+
+                if(c[0]=='@'){
+                    store=true;
+                }else if(c[0]=='$' && store){
+                    keep_reading=false;
+                    cout << endl;
+                }
+                if(store){
+                    msg+=c[0];
+                }
+            }
+        }
+    }
+    catch (exception& e)
+    {
+        cout << e.what() << '\n';
+        cout << "msg: " << msg << endl;
+    }
+    cout << "msg: " << msg << endl;
+}
+
+void read_char_array(int fd){
+    int len = 64;
+    char c[len];
+
+    while(c[0]!='$'){
+        int cs = read(fd,&c,len);
+        if(cs>0){
+            cout << "read: " << c << endl;
+        }
+    }
+}
+
 
 int main(){
     int fd = serial_open();
 
-    //char *c = new char[1];
-    char c[1]={'1'};
-
-    while(c[0]!='0'){
-        int cs = read(fd,&c,sizeof(c));
-        if(cs>0){
-            cout << "read: " << c[0] << endl;
-        }
-    }
-    write(fd, "22\r", 3);
+    read_char_by_char(fd);
+    //read_char_array(fd);
+    
+    //write(fd, "22\r", 3);
 
     close(fd);
     printf("\n  ttyUSB0 Closed Successfully\n");
