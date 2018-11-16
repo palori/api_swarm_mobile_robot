@@ -28,7 +28,7 @@ float out_vel2=0.0;
 float velocity1=0.0;
 float velocity2=0.0;
 
-float Kp=0.1;
+float Kp=1;
 float Ki=1;
 
 //unsigned long newtime1,newtime2;
