@@ -2,6 +2,7 @@
 #include <pins.h>
 #include <utils.h>
 #include <Encoder.h>
+#include <math.h>
 
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
@@ -19,7 +20,8 @@ int pulse[2]={0,0};
 int newpulse[2]={1,1};
 float velocity=0;
 
-float vel=0.0;
+float vel1=0.0;
+float vel2=0.0;
 float error=0.0;
 float iError1=0.0;
 float iError2=0.0;
@@ -28,7 +30,7 @@ float out_vel2=0.0;
 float velocity1=0.0;
 float velocity2=0.0;
 
-float Kp=1;
+float Kp=0.1;
 float Ki=1;
 
 //unsigned long newtime1,newtime2;
@@ -37,14 +39,18 @@ unsigned long oldtime1=0;
 unsigned long oldtime2=0;
 
 //odometry variables
-double wheel_radius=5.0;    // change into actual number
+double wheel_radius=0.05;    // change into actual number
 #define PI 3.1415926535897932384626433832795
-double wheels_distance=10.0;  // change into actual number
+double wheels_distance=0.1;  // change into actual number
 double odoTh=0.0;
 double odoX=0.0;
 double odoY=0.0;
 double left_wheel_pos_old=0.0;
 double right_wheel_pos_old=0.0;
+
+//forward function
+
+int starting_position=1;
 
 
 
@@ -104,24 +110,79 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
 
 void updatePID(){
   
-  error=vel-velocity1;
+  error=vel1-velocity1;
   iError1+=error*0.01;
   out_vel1=Kp*error+Ki*iError1;
     
-  error=-vel-velocity2;    // added minus for opposite direction
+  error=-vel2-velocity2;    // added minus for opposite direction
   iError2+=error*0.01;
   out_vel2=Kp*error+Ki*iError2;  
+  
+}
+
+void forward(double dist_ref){
+
+   
+    double x0=odoX;
+    double y0=odoY;
+
+    double dist_curr=sqrt(pow(odoX-x0,2.0)+pow(odoY-y0,2.0)); 
+    double dist_error=dist_ref-dist_curr;
+    enableMotors();
+    while (dist_error>0.05){
+      delay(10);
+      velocity1=getSpeed(LEFT_MOTOR,millis());
+      velocity2=getSpeed(RIGHT_MOTOR,millis());
+      updatePosition((double)encoder1.read(),(double)encoder2.read());   //check overflow
+
+      vel1=dist_error*4;
+      vel2=dist_error*4;
+      if (vel1>1.0) vel1=1.0;
+      if (vel2>1.0) vel2=1.0;
+      updatePID();
+      
+      
+      motor1.setVelocity(out_vel1);
+      motor2.setVelocity(out_vel2);
+      dist_curr=sqrt(pow(odoX-x0,2.0)+pow(odoY-y0,2.0));
+      dist_error=dist_ref-dist_curr;
+    }
+    disableMotors();
+ 
+}
+
+void turn(double angle_ref){
+    
+    double Th0=odoTh;
+    double angle_error=angle_ref+Th0-odoTh;
+    enableMotors();
+    while (angle_error>0.05){
+      delay(10);
+      velocity1=getSpeed(LEFT_MOTOR,millis());
+      velocity2=getSpeed(RIGHT_MOTOR,millis());
+      updatePosition((double)encoder1.read(),(double)encoder2.read());   //check overflow
+
+      vel1=-angle_error*4;
+      vel2=angle_error*4;
+      if (vel1>1.0) vel1=1.0;
+      if (vel2>1.0) vel2=1.0;
+      updatePID();
+      
+      motor1.setVelocity(out_vel1);
+      motor2.setVelocity(out_vel2);
+      angle_error=angle_ref+Th0-odoTh;
+    }
+    disableMotors();
+    
   
 }
 
 
 
 
+
 void setup() 
 { 
-
-  
-
   setUpPowerPins(); 
   Serial.begin(9600);  
   while (! Serial);
@@ -131,58 +192,8 @@ void setup()
  
 void loop() 
 { 
-    delay(10);
-   
-    velocity1=getSpeed(LEFT_MOTOR,millis());
-    velocity2=getSpeed(RIGHT_MOTOR,millis());
-
- 
-    updatePosition((double)encoder1.read(),(double)encoder2.read()); 
-    Serial.println("odoX: "+String(odoX));
-    Serial.println("odoY: "+String(odoY));
-    Serial.println("odoTh: "+String(odoTh));  
-
      
-    updatePID();
-
-    
-
-    //if (out_vel<0.05){ out_vel=0;}
-
-    motor1.setVelocity(out_vel1);
-    motor2.setVelocity(out_vel2);
-
-    Serial.println("Velocity1: "+String(velocity1));
-    Serial.println("Velocity2: "+String(velocity2));
-
-    //Serial.println("Out_vel1: "+String(out_vel));
-
-       
-   if (Serial.available()){
-     float vel_temp = Serial.parseFloat();
-      if (vel_temp > -5 && vel_temp < 5 && vel_temp != 0)
-      {
-        vel = vel_temp;
-        Serial.println("\n\nSetpoint: "+String(vel)+"\n\n");
-        enableMotors();
-        //Serial.print("Setpoint: ");
-        //Serial.println(String(vel));
-        //Serial.print("Speed: ");
-        //Serial.println(String(out_vel));
-          
-      } else if (vel_temp == 10.0){
-        //digitalWrite(right_pwm_pin, LOW);
-        //vel = 0;
-        disableMotors(); 
-      }  
-    }
-
-    
-        
-
-
-
-
-    
+    forward(1.0);
+    delay(10000); 
   
 }
