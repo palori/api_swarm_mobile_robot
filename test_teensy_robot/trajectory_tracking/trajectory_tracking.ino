@@ -2,6 +2,8 @@
 #include <pins.h>
 #include <utils.h>
 #include <Encoder.h>
+#include <math.h>
+
 
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
@@ -30,6 +32,7 @@ float velocity2=0.0;
 
 float Kp=1;
 float Ki=1;
+int t=0;
 
 //unsigned long newtime1,newtime2;
 unsigned long calltime=0;
@@ -45,6 +48,12 @@ double odoX=0.0;
 double odoY=0.0;
 double left_wheel_pos_old=0.0;
 double right_wheel_pos_old=0.0;
+
+//trajectory tracking
+
+float kp=3;
+float ka=8;
+float kb=-1.5; 
 
 
 
@@ -102,13 +111,13 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   
 }
 
-void updatePID(){
+void updatePID(float vel1, float vel2){
   
-  error=vel-velocity1;
+  error=vel1-velocity1;
   iError1+=error*0.01;
   out_vel1=Kp*error+Ki*iError1;
     
-  error=-vel-velocity2;    // added minus for opposite direction
+  error=-vel2-velocity2;    // added minus for opposite direction
   iError2+=error*0.01;
   out_vel2=Kp*error+Ki*iError2;  
   
@@ -119,9 +128,6 @@ void updatePID(){
 
 void setup() 
 { 
-
-  
-
   setUpPowerPins(); 
   Serial.begin(9600);  
   while (! Serial);
@@ -131,58 +137,47 @@ void setup()
  
 void loop() 
 { 
-    delay(10);
-   
+    delay(1);
+    t++;
+    
+    if (t==20){
+
     velocity1=getSpeed(LEFT_MOTOR,millis());
     velocity2=getSpeed(RIGHT_MOTOR,millis());
 
- 
-    updatePosition((double)encoder1.read(),(double)encoder2.read()); 
-    Serial.println("odoX: "+String(odoX));
-    Serial.println("odoY: "+String(odoY));
-    Serial.println("odoTh: "+String(odoTh));  
-
-     
-    updatePID();
-
+    updatePosition((double)encoder1.read(),(double)encoder2.read());
     
+    t=0;  
+    }
 
-    //if (out_vel<0.05){ out_vel=0;}
 
+
+ 
+     
+    //Serial.println("odoX: "+String(odoX));
+    //Serial.println("odoY: "+String(odoY));
+    //Serial.println("odoTh: "+String(odoTh));  
+
+    float P=sqrt(pow(dX,2)+pow(dY,2));
+    float A=Th+atan2(dY,dX);
+    float B=-Th-A;
+    
+    float v=kp*P;
+    float w=ka*A+kb*B;
+
+    float v1=v+(w*wheels_distance)/2;
+    float v2=v-(w*wheels_distance)/2;
+    updatePID(v1,v2);
+
+    enableMotors();
     motor1.setVelocity(out_vel1);
     motor2.setVelocity(out_vel2);
 
-    Serial.println("Velocity1: "+String(velocity1));
-    Serial.println("Velocity2: "+String(velocity2));
+    //Serial.println("Velocity1: "+String(velocity1));
+    //Serial.println("Velocity2: "+String(velocity2));
 
     //Serial.println("Out_vel1: "+String(out_vel));
 
        
-   if (Serial.available()){
-     float vel_temp = Serial.parseFloat();
-      if (vel_temp > -5 && vel_temp < 5 && vel_temp != 0)
-      {
-        vel = vel_temp;
-        Serial.println("\n\nSetpoint: "+String(vel)+"\n\n");
-        enableMotors();
-        //Serial.print("Setpoint: ");
-        //Serial.println(String(vel));
-        //Serial.print("Speed: ");
-        //Serial.println(String(out_vel));
-          
-      } else if (vel_temp == 10.0){
-        //digitalWrite(right_pwm_pin, LOW);
-        //vel = 0;
-        disableMotors(); 
-      }  
-    }
-
-    
-        
-
-
-
-
-    
   
 }
