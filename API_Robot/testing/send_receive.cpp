@@ -14,7 +14,13 @@ http://xanthium.in/Serial-Port-Programming-on-Linux
 #include <errno.h>  /* ERROR Number Definitions          */
 #include <iostream>
 //#include <string>
+//#include <vector>
+#include <time.h>
+#include <unistd.h> // time sleep microseconds
+#include <chrono> // the best one to count time in [s, ms, ns...]
+#include <Arduino.h>
 using namespace std;
+using namespace std::chrono;
 
 int serial_open(){
     int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
@@ -42,15 +48,16 @@ void read_char_by_char(int fd){
         while(keep_reading){
             int cs = read(fd,&c,sizeof(c));
             if(cs>0){
-                cout << c[0];
-
-                if(c[0]=='@'){
+                //cout << c[0];
+                if(c[0]=='@' && !store){
                     store=true;
-                }else if(c[0]=='$' && store){
-                    keep_reading=false;
-                    cout << endl;
                 }
-                if(store){
+                else if(c[0]=='$' && store){
+                    keep_reading=false;
+                    store = false;
+                    //cout << endl;
+                }
+                else if(c[0]!='$' && store) {
                     msg+=c[0];
                 }
             }
@@ -59,34 +66,119 @@ void read_char_by_char(int fd){
     catch (exception& e)
     {
         cout << e.what() << '\n';
-        cout << "msg: " << msg << endl;
+        //cout << "msg: " << msg << endl;
     }
     cout << "msg: " << msg << endl;
 }
 
+//// more complicated and there is a bug (and may take more time?)
 void read_char_array(int fd){
-    int len = 64;
-    char c[len];
-
-    while(c[0]!='$'){
-        int cs = read(fd,&c,len);
-        if(cs>0){
-            cout << "read: " << c << endl;
+    int l = 100;
+    char c[l];
+    for (int i=0; i<l; i++){
+        c[i] = '0';
+    }
+    bool keep_reading=true, store=false;
+    string msg="";
+    try{
+        while(keep_reading){
+            int cs = read(fd,&c,l);
+            if(cs>0){
+                cout << "read: " << c << endl;
+                for (int i=0; i<l; i++){
+                    if(c[i]=='@' && !store){
+                        store=true;
+                    }
+                    else if(c[i]=='$' && store){
+                        keep_reading=false;
+                        store = false;
+                        break; // leave for loop
+                        //cout << endl;
+                    }
+                    else if(c[i]!='$' && store) {
+                        msg+=c[i];
+                    }
+                }
+            }
         }
     }
+    catch (exception& e)
+    {
+        cout << e.what() << '\n';
+    }
+    cout << "msg: " << msg << endl;
+}
+
+void test_read_serial(){
+    int fd = serial_open();
+
+    time_t timer0, timer1, timer2;
+    double s1, s2;
+
+    time(&timer0);
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    read_char_by_char(fd); //good, 0s (resolution 1s)
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    time(&timer1);
+    read_char_array(fd); //buggs and not so fast
+    time(&timer2);
+
+    s1 = difftime(timer1,timer0);
+    s2 = difftime(timer2,timer0);
+    printf ("\n'read_char_by_char': %.f seconds.", s1);
+    printf ("\n'read_char_array'  : %.f seconds.", s2);
+
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "\n\n'read_char_by_char': " << time_span.count()*1000.0 << " milliseconds.\n";
+
+}
+
+
+
+
+void test_strings_and_floats(float x){
+    string xs = to_string(x);
+    float xf = stof(xs);
+    cout << "x:  " << x << endl;
+    cout << "xs: " << xs << endl;
+    cout << "xf: " << xf << endl;
+}
+
+void test_substrings(){
+    string s = "hola, com estas?";
+    printf("%s\n", s.substr(0,1));
 }
 
 
 int main(){
+    //test_substrings(); //working
+    //test_strings_and_floats(0.28); //working
+    test_read_serial(); //working
+    /*
     int fd = serial_open();
+    while(true){
+        try{
+            //cout << "**** read **********************\n";
+            //read_char_by_char(fd); //good, 0s (resolution 1s) -> need more precision
 
-    read_char_by_char(fd);
-    //read_char_array(fd);
-    
-    //write(fd, "22\r", 3);
+            cout << "**** write **********************\n";
+            char ms[] = "\ts=500, x=0.22, y=0.53, th=0.08\n";
+            cout << ms << endl << "\twith size of " << sizeof(ms) << endl;
+            fd = serial_open();
+            write(fd, ms, sizeof(ms));
+            //write(fd, "22\r", 3);
+            close(fd);
+            usleep(2000000); //microseconds
 
+        }
+        catch (int e){
+            printf("Exception %i occurred", e);
+            break;
+        }
+    }
     close(fd);
     printf("\n  ttyUSB0 Closed Successfully\n");
+    */
     return 0;
 }
 
