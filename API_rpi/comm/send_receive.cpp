@@ -14,11 +14,11 @@ http://xanthium.in/Serial-Port-Programming-on-Linux
 #include <errno.h>  /* ERROR Number Definitions          */
 #include <iostream>
 //#include <string>
-//#include <vector>
+#include <vector>
 #include <time.h>
 #include <unistd.h> // time sleep microseconds
 #include <chrono> // the best one to count time in [s, ms, ns...]
-#include <Arduino.h>
+//#include <Arduino.h>
 using namespace std;
 using namespace std::chrono;
 
@@ -31,14 +31,22 @@ int serial_open(){
     return fd;
 }
 
-/*
-void serial_write(int fd, char c[]){
-    for(int i=0; i < sizeof(c); i++){
-        write(fd, c[i], 1);
-    }
-}*/
 
-void read_char_by_char(int fd){
+void serial_write(int fd, string msg, bool print_msg){
+
+    vector<char> c_msg(msg.c_str(), msg.c_str() + msg.size() + 1); //str2vector_char
+
+
+    for(int i=0; i < c_msg.size(); i++){
+        write(fd, c_msg[i], 1);
+    }
+
+    if(print){
+        cout << "message sent: " << msg << endl;
+    }
+}
+
+string read_char_by_char(int fd, bool print_msg){
     //char *c = new char[1];
     char c[1]={'1'};
     bool keep_reading=true, store=false;
@@ -68,10 +76,13 @@ void read_char_by_char(int fd){
         cout << e.what() << '\n';
         //cout << "msg: " << msg << endl;
     }
-    cout << "msg: " << msg << endl;
+    if (print_msg) cout << "msg: " << msg << endl;
+
+    return msg;
 }
 
 //// more complicated and there is a bug (and may take more time?)
+/*
 void read_char_array(int fd){
     int l = 100;
     char c[l];
@@ -108,6 +119,7 @@ void read_char_array(int fd){
     }
     cout << "msg: " << msg << endl;
 }
+*/
 
 void test_read_serial(){
     int fd = serial_open();
@@ -117,10 +129,10 @@ void test_read_serial(){
 
     time(&timer0);
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    read_char_by_char(fd); //good, 0s (resolution 1s)
+    read_char_by_char(fd, true); //good, 0s (resolution 1s)
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     time(&timer1);
-    read_char_array(fd); //buggs and not so fast
+    //read_char_array(fd); //buggs and not so fast
     time(&timer2);
 
     s1 = difftime(timer1,timer0);
@@ -131,35 +143,120 @@ void test_read_serial(){
     duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
     cout << "\n\n'read_char_by_char': " << time_span.count()*1000.0 << " milliseconds.\n";
 
+    close(fd);
+    printf("\n  ttyUSB0 Closed Successfully\n");
+}
+
+void test_write_serial(){
+    string msg = "@s=500,x=0.22,y=0.53,th=0.08$"
+
+    int fd = serial_open();
+    serial_write(int fd, msg, true);
+}
+
+struct target{
+    float x;
+    float y;
+    float th;
+    float servo; // maybe not here?
+}
+
+float str2float(str s){
+    try{
+        return stof(s); 
+    }
+    catch(int e){
+        cout << "Exception error nº " << e << endl;
+        return 191919.1919;
+    }
+}
+
+target msg2target(string msg){
+
+    // split the message
+    char * pch;
+    vector<string> words;
+    bool keep_reading=true, store=false;
+    pch = strtok (str," ,="); //" ,.-"
+    while (pch != NULL && keep_reading)
+    {
+        //usleep(1000000); //microseconds
+        
+        //cout << c[0];
+        if(*pch=='@' && !store){
+            store=true;
+            printf("store=true\n");
+        }
+        else if(*pch=='$' && store){
+            keep_reading=false;
+            store = false;
+        }
+        else if(*pch!='$' && store) {
+            words.push_back(pch);
+            printf ("%s\n",pch);
+        }
+        pch = strtok (NULL, " ,="); //" ,.-"
+    }
+
+    // save it as new target pose
+    target new_pose;
+    for (int i=0; i<words.size(); i++){
+        if(words[i] == "s"){
+            float val = str2float(words[i]);
+            if (val != 191919.1919) {
+                new_pose.servo = val;
+                i++;
+            }
+        }
+        else if(words[i] == "x"){
+            float val = str2float(words[i]);
+            if (val != 191919.1919) {
+                new_pose.x = val;
+                i++;
+            }
+        }
+        else if(words[i] == "y"){
+            float val = str2float(words[i]);
+            if (val != 191919.1919) {
+                new_pose.y = val;
+                i++;
+            }
+        }
+        else if(words[i] == "th"){
+            float val = str2float(words[i]);
+            if (val != 191919.1919) {
+                new_pose.th = val;
+                i++;
+            }
+        }
+    }
+
+
+    // show that results are saved
+    cout << "\n\nNew target:\n    Servo = " << new_pose.servo;
+    cout << "\n    x = " << new_pose.x;
+    cout << "\n    y = " << new_pose.y;
+    cout << "\n    th = " << new_pose.th << endl;
+
+    return new_pose;
 }
 
 
+void other_tests(){
 
-
-void test_strings_and_floats(float x){
-    string xs = to_string(x);
-    float xf = stof(xs);
-    cout << "x:  " << x << endl;
-    cout << "xs: " << xs << endl;
-    cout << "xf: " << xf << endl;
-}
-
-void test_substrings(){
-    string s = "hola, com estas?";
-    printf("%s\n", s.substr(0,1));
 }
 
 
 int main(){
-    //test_substrings(); //working
-    //test_strings_and_floats(0.28); //working
-    test_read_serial(); //working
+    string msg = "00000000000,@,s=500,x=0.22,y=0.53,th=0.08,$,0000";
+    target new_pose = msg2target(msg);
+    //test_read_serial(); //working
     /*
     int fd = serial_open();
     while(true){
         try{
             //cout << "**** read **********************\n";
-            //read_char_by_char(fd); //good, 0s (resolution 1s) -> need more precision
+            //read_char_by_char(fd, true); //good, 0s (resolution 1s) -> need more precision
 
             cout << "**** write **********************\n";
             char ms[] = "\ts=500, x=0.22, y=0.53, th=0.08\n";
