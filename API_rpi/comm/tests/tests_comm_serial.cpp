@@ -6,22 +6,10 @@ https://stackoverflow.com/questions/18108932/linux-c-serial-port-reading-writing
 http://xanthium.in/Serial-Port-Programming-on-Linux
 */
 
-#include <stdio.h>
-#include <fcntl.h>  /* File Control Definitions          */
-#include <termios.h>/* POSIX Terminal Control Definitions*/
-#include <unistd.h> /* UNIX Standard Definitions         */
-#include <errno.h>  /* ERROR Number Definitions          */
-#include <iostream>
-#include <string.h>
-#include <vector>
-#include <unistd.h> // time sleep microseconds
-#include <chrono> // the best one to count time in [s, ms, ns...]
-//#include <Arduino.h>
+#include "../comm_serial.h"
 
-#include "comm_serial.h"
-
-using namespace std;
-using namespace std::chrono;
+//using namespace std;
+//using namespace std::chrono;
 
 
 void test_read_serial(){

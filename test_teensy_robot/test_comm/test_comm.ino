@@ -1,5 +1,6 @@
 
-#include "comm_ard.h"
+#include <comm_.h>
+
 #include <ArduinoJson.h>
 //#include <vector>
 //#include <string>
@@ -153,7 +154,7 @@ void loop() {
   // To test
   //read_msg_array_readBytesUntil();
   //read_msg_array_readString(); //working fine!!
-  read_msg_array_readStringUntil();
-  test_read_serial_arduino(); // testing...
+  //read_msg_array_readStringUntil();
+  //test_read_serial_arduino(); // testing...
   
 }

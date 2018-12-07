@@ -46,10 +46,10 @@ string read_char_by_char(int fd, bool print_msg){
                 }
                 else if(c[0]=='$' && store){
                     keep_reading=false;
-                    store = false;
+                    //store = false;
                     //cout << endl;
                 }
-                else if(c[0]!='$' && store) {
+                if(store) {
                     msg+=c[0];
                 }
             }
