@@ -5,15 +5,14 @@
 #include <unistd.h> /* UNIX Standard Definitions         */
 #include <errno.h>  /* ERROR Number Definitions          */
 #include <iostream>
-#include <stdio.h>
 #include <string.h>
 #include <vector>
 #include <unistd.h> // time sleep microseconds
-
+#include <chrono> // the best one to count time in [s, ms, ns...]
 //#include <Arduino.h>
 using namespace std;
-
-
+using namespace std::chrono;
+#include "comm_serial.h"
 
 void test_strtok ()
 {
@@ -73,8 +72,8 @@ void test_str2char(){
 }
 
 int main(){
-	//test_substrings();					//working
+	//test_substrings();					        //working
     //test_strings_and_floats(0.28);		//working
-    //test_str2char();						//working
-    //test_strtok();						//working
+    //test_str2char();						      //working
+    //test_strtok();						        //working
 }
