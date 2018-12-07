@@ -16,7 +16,6 @@ Encoder encoder2(PIN_RIGHT_ENCODER_A,PIN_RIGHT_ENCODER_B);
 
 float pulses_per_rotation=48.0;
 float gear_ratio=9.68;
-float R_WHEEL = 0.045;
 int pulse[2]={0,0};
 int newpulse[2]={1,1};
 float velocity=0;
@@ -40,9 +39,9 @@ unsigned long oldtime1=0;
 unsigned long oldtime2=0;
 
 //odometry variables
-double wheel_radius=5.0;    // change into actual number
+double wheel_radius=0.045;    // change into actual number
 #define PI 3.1415926535897932384626433832795
-double wheels_distance=10.0;  // change into actual number
+double wheels_distance=0.127;  // change into actual number
 double odoTh=0.0;
 double odoX=0.0;
 double odoY=0.0;
@@ -51,9 +50,19 @@ double right_wheel_pos_old=0.0;
 
 //trajectory tracking
 
-float kp=3;
-float ka=8;
-float kb=-1.5; 
+float kp=0.3;
+float ka=0.8;
+float kb=-0.15; 
+
+int sign(double in){
+  if (in<0) return -1;
+  if (in>=0) return 1;  
+}
+
+double WrapToPI (double angle){
+  if (fabs(angle)>PI) angle=angle-2*sign(angle)*PI;
+  return angle;
+}
 
 
 
@@ -82,7 +91,7 @@ float getSpeed(int id, unsigned long newtime){
   
   pulse[id-1]=newpulse[id-1];
   
-  velocity = velocity*R_WHEEL;
+  velocity = velocity*wheel_radius;
   return velocity;
 }
 
@@ -111,6 +120,21 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   
 }
 
+double transformX (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double XT=cos(ThTw)*(Xw-XTw)+sin(ThTw)*(Yw-YTw);
+    return XT;
+} 
+
+double transformY (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double YT=-sin(ThTw)*(Xw-XTw)+cos(ThTw)*(Yw-YTw);
+    return YT;  
+} 
+
+double transformTh (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double ThT=Thw-ThTw; 
+    return ThT; 
+} 
+
 void updatePID(float vel1, float vel2){
   
   error=vel1-velocity1;
@@ -121,6 +145,68 @@ void updatePID(float vel1, float vel2){
   iError2+=error*0.01;
   out_vel2=Kp*error+Ki*iError2;  
   
+}
+
+void drive(double Xr, double Yr, double Thr) {
+  
+    double ThTw=odoTh+Thr;
+    double XTw=cos(odoTh)*Xr-sin(odoTh)*Yr+odoX;
+    double YTw=sin(odoTh)*Xr+cos(odoTh)*Yr+odoY;
+    
+    double XT=transformX(odoX,odoY,odoTh,XTw,YTw,ThTw);
+    double YT=transformY(odoX,odoY,odoTh,XTw,YTw,ThTw);
+    double ThT=transformTh(odoX,odoY,odoTh,XTw,YTw,ThTw);
+
+    double dX=-XT;
+    double dY=-YT;
+    double dTh=ThT;
+    
+    while ((fabs(dX)>0.05) && (fabs(dY)>0.05)){
+      
+      double P=sqrt(pow(dX,2)+pow(dY,2));
+      double A=-dTh+atan2(dY,dX);
+      double B=-dTh-A;
+
+      Serial.println("P: "+String(P));
+      Serial.println("A: "+String(A));
+      Serial.println("B: "+String(B));
+      
+      double v=kp*P;
+      double w=ka*A+kb*B;
+  
+      double v1=v+(w*wheels_distance)/2;
+      double v2=v-(w*wheels_distance)/2;
+
+      Serial.println("v1: "+String(v1));
+      Serial.println("v2: "+String(v2));
+      
+      if (fabs(v1)>1) v1=1*sign(v1);
+      if (fabs(v2)>1) v2=1*sign(v2);
+     
+      updatePID(v1,v2);
+     
+      enableMotors();
+      motor1.setVelocity(out_vel1);
+      motor2.setVelocity(out_vel2);  
+
+      delay(20);
+  
+      velocity1=getSpeed(LEFT_MOTOR,millis());
+      velocity2=getSpeed(RIGHT_MOTOR,millis());
+  
+      updatePosition((double)encoder1.read(),(double)encoder2.read());
+      Serial.println("odoX: "+String(odoX));
+      Serial.println("odoY: "+String(odoY));
+      Serial.println("odoTh: "+String(odoTh));
+
+      XT=transformX(odoX,odoY,odoTh,XTw,YTw,ThTw);
+      YT=transformY(odoX,odoY,odoTh,XTw,YTw,ThTw);
+      ThT=transformTh(odoX,odoY,odoTh,XTw,YTw,ThTw);
+
+      dX=-XT;
+      dY=-YT;
+      dTh=ThT;
+   }   
 }
 
 
@@ -137,47 +223,8 @@ void setup()
  
 void loop() 
 { 
-    delay(1);
-    t++;
+    delay(5000);
+    drive(1.0,1.0,0.0);
+    delay(5000);
     
-    if (t==20){
-
-    velocity1=getSpeed(LEFT_MOTOR,millis());
-    velocity2=getSpeed(RIGHT_MOTOR,millis());
-
-    updatePosition((double)encoder1.read(),(double)encoder2.read());
-    
-    t=0;  
-    }
-
-
-
- 
-     
-    //Serial.println("odoX: "+String(odoX));
-    //Serial.println("odoY: "+String(odoY));
-    //Serial.println("odoTh: "+String(odoTh));  
-
-    float P=sqrt(pow(dX,2)+pow(dY,2));
-    float A=Th+atan2(dY,dX);
-    float B=-Th-A;
-    
-    float v=kp*P;
-    float w=ka*A+kb*B;
-
-    float v1=v+(w*wheels_distance)/2;
-    float v2=v-(w*wheels_distance)/2;
-    updatePID(v1,v2);
-
-    enableMotors();
-    motor1.setVelocity(out_vel1);
-    motor2.setVelocity(out_vel2);
-
-    //Serial.println("Velocity1: "+String(velocity1));
-    //Serial.println("Velocity2: "+String(velocity2));
-
-    //Serial.println("Out_vel1: "+String(out_vel));
-
-       
-  
 }
