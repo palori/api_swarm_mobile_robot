@@ -17,15 +17,13 @@
 using namespace std;
 using namespace std::chrono;
 
-int serial_open();
+int serial_open(bool print_msg);
+void serial_close(int fd, bool print_msg);
 
 
 void serial_write(int fd, string msg, bool print_msg);
 
-string read_char_by_char(int fd, bool print_msg);
-
-//// can be deleted
-//void read_char_array(int fd);
+string serial_read(int fd, bool print_msg);
 
 
 #endif

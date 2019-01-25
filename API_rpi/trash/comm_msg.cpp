@@ -66,7 +66,7 @@ float str2float(string s){
 	{
 	    cout << "Exception: " << e.what() << '\n';
 	}
-	return NULL;
+	return BIG_NUM;
 }
 
 // decode the received message into target
@@ -103,31 +103,31 @@ void msg2target(target & new_pose, string msg, bool print_msg){
     }
 
     // save it as new target pose
-    for (int i=0; i<words.size(); i++){
+    for (uint i=0; i<words.size(); i++){
         if(words.at(i) == "s"){
             float val = str2float(words.at(i+1));
-            if (val != NULL) {
+            if (val != BIG_NUM) {
                 new_pose.servo = val;
                 i++;
             }
         }
         else if(words.at(i) == "x"){
             float val = str2float(words.at(i+1));
-            if (val != NULL) {
+            if (val != BIG_NUM) {
                 new_pose.x = val;
                 i++;
             }
         }
         else if(words.at(i) == "y"){
             float val = str2float(words.at(i+1));
-            if (val != NULL) {
+            if (val != BIG_NUM) {
                 new_pose.y = val;
                 i++;
             }
         }
         else if(words.at(i) == "th"){
             float val = str2float(words.at(i+1));
-            if (val != NULL) {
+            if (val != BIG_NUM) {
                 new_pose.th = val;
                 i++;
             }

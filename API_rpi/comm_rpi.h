@@ -1,10 +1,10 @@
 
-#ifndef COMM_MSG_H
-#define COMM_MSG_H
+#ifndef COMM_RPI_H
+#define COMM_RPI_H
 
 #include <stdio.h>
 #include <fcntl.h>  /* File Control Definitions          */
-//#include <termios.h>/* POSIX Terminal Control Definitions*/
+#include <termios.h>/* POSIX Terminal Control Definitions*/
 #include <unistd.h> /* UNIX Standard Definitions         */
 #include <errno.h>  /* ERROR Number Definitions          */
 #include <iostream>
@@ -17,11 +17,22 @@
 using namespace std;
 using namespace std::chrono;
 
+const float BIG_NUM = 191919.191919;
 
+// Serial communication functions
+int serial_open(bool print_msg);
+void serial_close(int fd, bool print_msg);
+
+void serial_write(int fd, string msg, bool print_msg);
+string serial_read(int fd, bool print_msg);
+
+
+// Message stiles
 // might go in an other place
 // @@@@ NEED TO DESIGN IT -> TO SEND STATUS MESSAGES BETWEEN 2 BOARDS @@@@
 struct flags{ // info RPi send to Teensy
 	// some possible examples...
+	int robot_id;
     bool running;
     bool stop;
     // ...
@@ -50,6 +61,8 @@ void print_target(target new_pose);
 // might go in an other place
 // @@@@ talk with Andrija if we need it or not
 struct sensors{ // info coming from Teensy to RPi
+
+	/* Sensing the environment */
     // IR sensors
     float ir1;
     float ir2;
@@ -57,6 +70,12 @@ struct sensors{ // info coming from Teensy to RPi
     // IMU
     // ...
 
+
+    /* Current robot position */
+    // robot position in robot coord. syst.
+    float x;
+    float y;
+    float th;
     // robot position in world coord. syst.
     float xw;
     float yw;
@@ -80,10 +99,6 @@ void target2msg(target new_pose, string & msg, bool print_msg, bool send_only_if
 
 /**** TO DO ****
 
-* Some of them are for both RPi and Teensy
-	-> figure out how to share the code in both folders
-	   (maybe some sh commands so copy folders???)
-
 msg2sensors();
 sensors2msg();
 
@@ -91,5 +106,6 @@ msg2flags();
 flags2msg();
 
 ****************/
+
 
 #endif

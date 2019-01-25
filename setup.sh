@@ -15,3 +15,14 @@ echo "\n\n*********\n* Setup *\n*********\n"
 # Done, don't need to run 'pauPc_copyLib2ardLib.sh' any more.
 
 echo "\n\n***************\n* Setup done! *\n***************\n"
+
+
+
+
+
+
+
+# The serial port of Ubuntu might be different than Raspbian, change this line:
+# int fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
+# in function 'serial_open()'
+# of file /API_rpi/comm/comm_serial.cpp
