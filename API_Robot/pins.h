@@ -1,6 +1,8 @@
 #ifndef PINS_H
 #define PINS_H
 
+
+#define USING_ARDUINO // flag to see if need to include Arduino library or not
 // Simplier version than the original from JCA.
 // Teensy 3.5
 //////////////////////////////////////////////////////////////////////////////////
