@@ -25,27 +25,29 @@ Motor::Motor(int motor){
 
 }
 
-void Motor::setVelocity(float velocity){
+void Motor::setVelocity(double velocity){
 	_velocity=velocity;
 
   _pwm=vel2pwm(_velocity);
     
-	if (_velocity<0){
+
+	if ((_velocity<0 && _motor==RIGHT_MOTOR) || (_velocity>=0 && _motor==LEFT_MOTOR)){
 		digitalWrite(_dir_pin,LOW);
-		analogWrite(_pwm_pin,_pwm);		   
-	}else if (_velocity >= 0){
+	}else if ((_velocity >= 0 && _motor==RIGHT_MOTOR) || (_velocity<0 && _motor==LEFT_MOTOR)){
 		digitalWrite(_dir_pin,HIGH);
-		analogWrite(_pwm_pin,_pwm);   
 	}
 		
+
+	analogWrite(_pwm_pin,_pwm);
+
 }
 
-int vel2pwm(float vel){
+int vel2pwm(double vel){
   
   if (vel<0){
     vel=-vel;
   }
-  float result=4096*(1-(float)(vel/MAX_VELOCITY));
+  double result=4096*(1-(double)(vel/MAX_VELOCITY));
   int pwm_result=(int)result;
 
   return pwm_result;

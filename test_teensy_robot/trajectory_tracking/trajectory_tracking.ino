@@ -137,11 +137,11 @@ double transformTh (double Xw, double Yw, double Thw, double XTw, double YTw, do
 
 void updatePID(float vel1, float vel2){
   
-  error=vel1-velocity1;
+  error=- vel1-velocity1;
   iError1+=error*0.01;
   out_vel1=Kp*error+Ki*iError1;
     
-  error=-vel2-velocity2;    // added minus for opposite direction
+  error= vel2-velocity2;    // added minus for opposite direction
   iError2+=error*0.01;
   out_vel2=Kp*error+Ki*iError2;  
   
@@ -161,7 +161,7 @@ void drive(double Xr, double Yr, double Thr) {
     double dY=-YT;
     double dTh=ThT;
     
-    while ((fabs(dX)>0.05) && (fabs(dY)>0.05)){
+    while ((fabs(dX)>0.05) || (fabs(dY)>0.05)){
       
       double P=sqrt(pow(dX,2)+pow(dY,2));
       double A=-dTh+atan2(dY,dX);
@@ -174,7 +174,7 @@ void drive(double Xr, double Yr, double Thr) {
       double v=kp*P;
       double w=ka*A+kb*B;
   
-      double v1=v+(w*wheels_distance)/2;
+      double v1=v+(w*wheels_distance)/2;  //check if minus and plus are fine, seems 
       double v2=v-(w*wheels_distance)/2;
 
       Serial.println("v1: "+String(v1));
@@ -218,13 +218,16 @@ void setup()
   Serial.begin(9600);  
   while (! Serial);
   Serial.println("Speed -5 to 5");
+
+  drive(1.0,1.0,0.0);
+  
 } 
  
  
 void loop() 
 { 
     delay(5000);
-    drive(1.0,1.0,0.0);
+    
     delay(5000);
     
 }
