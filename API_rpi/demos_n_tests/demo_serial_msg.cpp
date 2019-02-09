@@ -5,7 +5,7 @@
 //#include "../comm/comm_msg.h"
 //#include "../comm/comm_serial.h"
 #include <thread>
-#include "../comm/comm_rpi.h"
+#include "../comm_rpi.h"
 
 
 /****************
@@ -128,12 +128,39 @@ void demo_real_example()
 
 	// initialization
 	string msg = "";
-	target pose;
+	target pose, target_pose;
 	pose.servo = 0.0;
     pose.x = 0.0;
     pose.y = 0.0;
     pose.th = 0.0;
+    //old_pose = pose;
+    target_pose = pose;
+    target_pose.x = 0.5;
     int fd = 0, freq = 0;
+    bool start = true;
+    bool connected2teensy = false;
+
+
+    while(!connected2teensy){
+        fd = serial_open(false);
+        if (fd > 1){
+
+            msg = "@,rpi_conn,$";
+            serial_write(fd, msg, true);
+
+            msg = serial_read(fd, true); // 1
+            //serial_close(fd, false);
+            msg2connect(msg);
+            if (msg=="tsy_conn")
+            {
+                connected2teensy = true;
+                printf("Connected\n");
+            }
+            usleep(1000000);
+        }
+    }
+    serial_close(fd, false);
+
 
 	while(true){
 
@@ -141,28 +168,34 @@ void demo_real_example()
         fd = serial_open(false);
         if (fd > 1){
             msg = serial_read(fd, true); // 1
-            serial_close(fd, false);
+            //serial_close(fd, false);
         	msg2target(pose, msg, false); // 2    
-            usleep(10000);
+            usleep(1000);
         }
 
         freq += 1;
-        if (freq>=100)
+        if (freq>=50 || start)
         {
             freq = 0;
-            printf("\nSend new target\n");
-            // send new target
-            pose.x += 0.5; // 3
-            if (pose.x > 100.0) pose.x = 0.0;
-            target2msg(pose, msg, false, false); // 4
+            printf("\nCicle\n");
+            if(target_pose.x - pose.x < 0.2 || start){
+                if (start) start = false;
 
-            // write data to serial
-            fd = serial_open(false);
-            if(fd > 1){
-                serial_write(fd, msg, true); // 5
-                usleep(100000);
-                serial_close(fd, false);
-            }
+                printf("\nSend new target\n");
+                // compute and send new target
+                target_pose.x = pose.x + 0.5; // 3
+            }    
+                if (target_pose.x > 100.0) pose.x = 0.0;
+                target2msg(target_pose, msg, false, false); // 4
+
+                // write data to serial
+                fd = serial_open(false);
+                if(fd > 1){
+                    serial_write(fd, msg, true); // 5
+                    usleep(1000);
+                    serial_close(fd, false);
+                }
+            //}
         }
 
         

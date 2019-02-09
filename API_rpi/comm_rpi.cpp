@@ -31,16 +31,19 @@ void serial_close(int fd, bool print_msg){
 
 
 void serial_write(int fd, string msg, bool print_msg){
-
+    /*
     vector<char> c_msg(msg.c_str(), msg.c_str() + msg.size() + 1); //str2vector_char
     char ccc[c_msg.size()];
     for(uint i=0; i < c_msg.size(); i++){
         ccc[i] = c_msg[i];
     }
-    write(fd, ccc, c_msg.size());           // @@@@ improvement, it returns some value that could be used to know if wrote or not
+
+    write(fd, ccc, c_msg.size()); */          // @@@@ improvement, it returns some value that could be used to know if wrote or not
     /*for(int i=0; i < c_msg.size(); i++){
         write(fd, c_msg[i], 1);
     }*/
+
+    write(fd, msg.c_str(), msg.size());
 
     if(print_msg){
         cout << "message sent: " << msg << endl;
@@ -51,9 +54,26 @@ string serial_read(int fd, bool print_msg){ //read_char_by_char
     //char *c = new char[1];
     char c[1]={'1'};
     bool keep_reading=true, store=false;
-    string msg="";
+    
 
-    const int MAX_CHAR2READ = 100;
+    bool use_string = true;
+
+
+        // with strings -> recommended not to use them
+        string msg="";
+   
+        // with c_strings
+        const int MAX_CHAR2READ = 100;
+        //char * msg = new char[MAX_CHAR2READ]; @@@@ can be done with static strings
+        //char msg[MAX_CHAR2READ]; // uncomment to use c_string
+        int msg_count = 0;
+        //end with, msg[msg_count] = '\0' or 0;
+    
+    
+
+    
+
+    
     int char_read = 0;
     try{
         while(keep_reading){
@@ -71,10 +91,20 @@ string serial_read(int fd, bool print_msg){ //read_char_by_char
                     //cout << endl;
                 }
                 if(store) {
-                    msg+=c[0];
+                    if (use_string){
+                        msg+=c[0];
+                    }
+                    else{
+                        msg[msg_count]+=c[0];
+                        msg_count++;
+                    }
+                    
                 }
             }
-            char_read+=1;
+            else{
+                break; // read nothing
+            }
+            char_read+=1; // @@@@ sleep the thread (1-2-10 ms)
             //cout << char_read;
             if (char_read>=MAX_CHAR2READ){
                 break;
@@ -87,6 +117,11 @@ string serial_read(int fd, bool print_msg){ //read_char_by_char
         cout << e.what() << '\n';
         //cout << "msg: " << msg << endl;
     }
+
+    if (!use_string){
+        msg[msg_count]+='\0';
+    }
+
     if (print_msg) cout << "msg: " << msg << endl;
 
     return msg;
@@ -156,7 +191,12 @@ float str2float(string s){
 
 
 /*
-// decode the received message into target
+ * msg2target
+ *
+ * decode the received message into target
+ * USING POINTERS AND NEW -> NOT SURE IF WORKING
+ */
+/*
 void msg2target(target & new_pose, string msg, bool print_msg){
 
     // split the message
@@ -245,7 +285,18 @@ void msg2target(target & new_pose, string msg, bool print_msg){
     delete[] words;
 }*/
 
-// decode the received message into target
+
+
+
+
+/*
+ * msg2target
+ *
+ * decode the received message into target
+ * USING VECTOR -> WORKING!
+ */
+
+// 
 void msg2target(target & new_pose, string msg, bool print_msg){
 
     // split the message
@@ -317,7 +368,15 @@ void msg2target(target & new_pose, string msg, bool print_msg){
 
 
 
-// encode the target to send the message
+
+
+
+/*
+ * target2msg
+ * 
+ * encode the target to send the message
+ * USING string -> WORKING IN RPi
+ */
 void target2msg(target new_pose, string & msg, bool print_msg, bool send_only_if_updaded){
 
     // @@@@ 'send_only_if_updaded' this might mean that we need to keep track of the previous pose
@@ -335,3 +394,47 @@ void target2msg(target new_pose, string & msg, bool print_msg, bool send_only_if
 
     if (print_msg) cout << "Message: " << msg << endl;
 }   
+
+
+
+
+
+
+
+
+
+
+
+
+void msg2connect(string & msg){
+
+    // split the message
+    char str[msg.length()];
+    for(unsigned int i=0; i< msg.length(); i++){
+        str[i] = msg[i];
+    }
+    char * pch;
+    vector<string> words;
+    bool keep_reading=true, store=false;
+    pch = strtok (str," ,="); //" ,.-"
+    while (pch != NULL && keep_reading)
+    {
+        //usleep(1000000); //microseconds
+        
+        //cout << c[0];
+        if(*pch=='@' && !store){
+            store=true;
+        }
+        else if(*pch=='$' && store){
+            keep_reading=false;
+            store = false;
+        }
+        else if(*pch!='$' && store) {
+            words.push_back(pch);
+        }
+        pch = strtok (NULL, " ,="); //" ,.-"
+    }
+
+    msg = words.at(0);
+
+}

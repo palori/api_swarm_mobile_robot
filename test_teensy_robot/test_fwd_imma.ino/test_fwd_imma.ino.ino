@@ -59,7 +59,7 @@ float getSpeed(int id, unsigned long newtime){
     } 
     oldtime1=newtime;
 
-    Serial.println(oldtime1);
+    ////Serial.println(oldtime1);
   } else if (id==RIGHT_MOTOR) {
     newpulse[id-1]=encoder2.read();
     if (newtime==oldtime2 || oldtime2==0){
@@ -68,7 +68,7 @@ float getSpeed(int id, unsigned long newtime){
       velocity=-(newpulse[id-1]-pulse[id-1])*2*M_PI/pulses_per_rotation/gear_ratio/((newtime-oldtime2)/1000.0);
     } 
     oldtime2=newtime;
-    Serial.println(oldtime2);
+    ////Serial.println(oldtime2);
   } 
   
   pulse[id-1]=newpulse[id-1];
@@ -82,8 +82,8 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   double dLeft=(left_wheel_pos - left_wheel_pos_old)  * 2 * PI * wheel_radius / pulses_per_rotation / gear_ratio;
   double dRight=-(right_wheel_pos - right_wheel_pos_old)  * 2 * PI * wheel_radius / pulses_per_rotation / gear_ratio;
 
-  Serial.println("dleft: "+String(dLeft));
-  Serial.println("dright: "+String(dRight));
+  ////Serial.println("dleft: "+String(dLeft));
+  ////Serial.println("dright: "+String(dRight));
 
   double dCenter=(dLeft+dRight) / 2.0;
 
@@ -123,12 +123,13 @@ void setup()
   
 
   setUpPowerPins(); 
-  Serial.begin(9600);  
+  //Serial.begin(9600);  
   //while (! Serial);
-  Serial.println("Speed -5 to 5");
+  //Serial.println("Speed -5 to 5");
 } 
-
-
+ 
+int count_temp = 0;
+bool first_sp=true;
 void loop() 
 { 
     delay(10);
@@ -138,9 +139,9 @@ void loop()
 
  
     updatePosition((double)encoder1.read(),(double)encoder2.read()); 
-    Serial.println("odoX: "+String(odoX));
-    Serial.println("odoY: "+String(odoY));
-    Serial.println("odoTh: "+String(odoTh));  
+    //Serial.println("odoX: "+String(odoX));
+    //Serial.println("odoY: "+String(odoY));
+    //Serial.println("odoTh: "+String(odoTh));  
 
      
     updatePID();
@@ -152,24 +153,30 @@ void loop()
     motor1.setVelocity(out_vel1);
     motor2.setVelocity(out_vel2);
 
-    Serial.println("Velocity1: "+String(velocity1));
-    Serial.println("Velocity2: "+String(velocity2));
+    //Serial.println("Velocity1: "+String(velocity1));
+    //Serial.println("Velocity2: "+String(velocity2));
 
-    //Serial.println("Out_vel1: "+String(out_vel));
+    ////Serial.println("Out_vel1: "+String(out_vel));
 
+     count_temp = count_temp+1;
+   //if (//Serial.available()){
+     //float vel_temp = //Serial.parseFloat();
+     float vel_temp= 0.5;
      
-   if (Serial.available()){
-     float vel_temp = Serial.parseFloat();
-     
+     if (!first_sp){
+       if (count_temp<500) vel_temp = 0.0;
+       else vel_temp=10.0;
+     }
+     else first_sp=false;
       if (vel_temp > -5 && vel_temp < 5 && vel_temp != 0)
       {
         vel = vel_temp;
-        Serial.println("\n\nSetpoint: "+String(vel)+"\n\n");
+        //Serial.println("\n\nSetpoint: "+String(vel)+"\n\n");
         enableMotors();
-        //Serial.print("Setpoint: ");
-        //Serial.println(String(vel));
-        //Serial.print("Speed: ");
-        //Serial.println(String(out_vel));
+        ////Serial.print("Setpoint: ");
+        ////Serial.println(String(vel));
+        ////Serial.print("Speed: ");
+        ////Serial.println(String(out_vel));
           
       } else if (vel_temp == 10.0){
         //digitalWrite(right_pwm_pin, LOW);

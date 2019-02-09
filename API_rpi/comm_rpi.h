@@ -96,6 +96,7 @@ void msg2target(target & new_pose, string msg, bool print_msg);
 // encode the target to send the message
 void target2msg(target new_pose, string & msg, bool print_msg, bool send_only_if_updaded);
 
+void msg2connect(string & msg);
 
 /**** TO DO ****
 

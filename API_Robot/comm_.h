@@ -49,4 +49,7 @@ void msg2target(target & new_pose, String msg, bool print_msg);
 void target2msg(target new_pose, String & msg, bool print_msg, bool send_only_if_updaded);
 
 
+
+void msg2target(String & msg);
+
 #endif

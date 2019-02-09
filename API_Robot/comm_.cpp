@@ -183,3 +183,57 @@ void target2msg(target new_pose, String & msg, bool print_msg, bool send_only_if
     }
 }	
 
+
+
+
+
+
+
+
+
+
+
+
+void msg2target(String & msg){
+
+    // split the message
+    int len = msg.length();
+    char * str = new char[len];
+    for(int i=0; i< len; i++){
+        str[i] = msg[i];
+    }
+    char * pch;
+    //vector<String> words;
+    int count=0;
+
+    /*if (CPU_IS_RASPBERRY){
+        string * words = new string[len];
+    }
+    else{*/
+        String * words = new String[len];
+    //}
+    bool keep_reading=true, store=false;
+    pch = strtok (str," ,="); //" ,.-"
+    while (pch != NULL && keep_reading)
+    {
+        //Serial.println("pch="+String(pch)); // for debugging
+        if(*pch=='@' && !store){
+            store=true;
+        }
+        else if(*pch=='$' && store){
+            keep_reading=false;
+            store = false;
+        }
+        else if(*pch!='$' && store) {
+            words[count] = pch;
+            count++;
+            //words.push_back(pch);
+        }
+        pch = strtok (NULL, " ,="); //" ,.-"
+    }
+
+    msg = words[0];
+
+    delete[] str; // deallocate dynamic memory
+    delete[] words;
+}
