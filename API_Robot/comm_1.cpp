@@ -150,10 +150,64 @@ void COMM::msg2params(target & new_pose, String msg, bool print_msg){
 
                         case MOTORS_ON: set_motors_on(i_val); break;
 
-                        default: if(get_debug()){Serial.println("incorect action");} break;
+                        case DEBUG: set_debug(i_val); break;
+
+                        default: if(get_debug()){Serial.println("Incorect action.");} break;
                             
                     }
                 
+                }
+                break;
+
+
+            // The following commands can be sent at any time
+            case "fwd":
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {set_fwd_dist(val);} break;
+
+            case "trn":
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {set_trn_deg(val);} break;
+
+            case "trnr":
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {set_trn_r(val);} break;
+
+            case "v":
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {set_vel(val);} break;
+
+            case "s":
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {set_servo(val);} break;
+
+            case "od": // obstacle distance -> IR will force to stop if distance is <=od and avoid_obst==true
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {set_obst_dist(val);} break;
+
+
+            // The following commands need to follow the action of setting a PID
+            case "kp":
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {
+                    switch (get_action()){
+                        case SET_PID_M1: set_m1_kp(v); break;
+                        case SET_PID_M2: set_m2_kp(v); break;
+                        case SET_PID_TH: set_th_kp(v); break;
+                        default: if(get_debug()){Serial.println("Set PID not enabled.");}
+                    }
+                }
+                break;
+
+            case "ki":
+                val = words[i+1].toFloat();
+                if (val != BIG_NUM) {
+                    switch (get_action()){
+                        case SET_PID_M1: set_m1_ki(v); break;
+                        case SET_PID_M2: set_m2_ki(v); break;
+                        case SET_PID_TH: set_th_ki(v); break;
+                        default: if(get_debug()){Serial.println("Set PID not enabled.");}
+                    }
                 }
                 break;
 
@@ -169,7 +223,9 @@ void COMM::msg2params(target & new_pose, String msg, bool print_msg){
                 //
                 break;
 
+
             default:
+                if(get_debug()){Serial.println("Incorect parameter.");}
                 case_found = false;
         }
         if (case_found) i++;

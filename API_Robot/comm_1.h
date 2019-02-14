@@ -58,6 +58,7 @@ public:
 	float get_fwd_dist() {return fwd_dist;}
 	float get_trn_deg() {return trn_deg;}
 	float get_trn_r() {return trn_r;}
+	float get_servo() {return servo;}
 
 	bool get_debug() {return debug;}
 
@@ -90,13 +91,14 @@ public:
 	void set_fwd_dist(float f) {fwd_dist = f;}
 	void set_trn_deg(float f) {trn_deg = f;}
 	void set_trn_r(float f) {trn_r = f;}
+	void set_servo(float f) {servo = f;}
 
 	void set_debug(bool b) {debug = b;}
 
 
 
 private:
-	enum Command {
+	enum Actions {
 		CONNECT,			// To know when the connection started and ended to send (or not) messages
 		RESET_ENC,
 		STOP,				// Immediatelly stops the driving when turned on (security)
@@ -111,12 +113,14 @@ private:
 		IMU_COMP_SEND,		// Enable/Disable sending IMU compass data
 
 		MOTORS_ON,			// Enable/Disable motors
+		DEBUG,
+
+		// this are params, not actions
 		VEL,				// Set maximum speed
 		SET_PID_M1,			// All 'SET_PID_...' need to be sent together with, at least one
 		SET_PID_M2,			// of the following: 'kp', 'ki'
 		SET_PID_TH,
 		//...
-
 
 		FWD,				// Drive forward a certain distance
 		TRN, 				// Turn arround the center of the wheels certain degrees
@@ -154,6 +158,7 @@ private:
 		float fwd_dist = 0.0;			// [mm]
 		float trn_deg = 0.0;			// [ª]
 		float trn_r = 0.0;				// [mm] turning radius
+		float servo = 0.0;
 	//};
 
 	//void init_output_buffer();
