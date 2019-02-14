@@ -177,7 +177,7 @@ void forward(double dist_ref){
 
     initializePID(VEL1,Kp,Ki,0.01);
     initializePID(VEL2,Kp,Ki,0.01);
-    initializePID(DIST,Kp_d,Ki_d,0.01);
+    //initializePID(DIST,Kp_d,Ki_d,0.01);
     initializePID(THETA,Kp_Th,Ki_Th,0.01);
     
 }
@@ -192,7 +192,7 @@ void turn(double angle_ref){
     
     if (disableM==0) enableMotors();
     
-    initializePID(TURN,Kp_Th,Ki_Th,0.01);
+    //initializePID(TURN,Kp_Th,Ki_Th,0.01);
     initializePID(VEL1,Kp,Ki,0.01);
     initializePID(VEL2,Kp,Ki,0.01);
     

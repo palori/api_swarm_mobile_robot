@@ -110,14 +110,17 @@ void setup() {
   //init_output_buffer();
 }
 
+enum Command {TRN, FWD};
 
 void loop() {
   //func4("hi!!!");
   /*if (target_pose.x == 77.77) led_blink(LED_PIN, BLINK_FREQ);
   else delay(5);*/
 
+  Serial.print("turn: "+String(TRN)); delay(2000);
+  Serial.println(FWD); delay(2000);
   read_sensors(); //read IR and IMU values and save
   drive(); // drive to target using encoders and motors
-  comm(); // read if new target_pose and/or special events, send last sensor values
+  //comm(); // read if new target_pose and/or special events, send last sensor values
   
 }
