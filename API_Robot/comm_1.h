@@ -27,6 +27,8 @@ using namespace std;
 class COMM
 {
 public:
+	COMM();
+	~COMM();
 	void write_serial(String msg); // migth have diferent input params
 	void read_serial();
 
@@ -95,9 +97,10 @@ public:
 
 	void set_debug(bool b) {debug = b;}
 
+	String to_string();
+	void debug_params();
 
-
-private:
+//private:
 	enum Actions {
 		CONNECT,			// To know when the connection started and ended to send (or not) messages
 		RESET_ENC,
@@ -113,25 +116,21 @@ private:
 		IMU_COMP_SEND,		// Enable/Disable sending IMU compass data
 
 		MOTORS_ON,			// Enable/Disable motors
-		DEBUG,
+		DEBUG,				// Enable/Disable debugging messages
 
 		// this are params, not actions
-		VEL,				// Set maximum speed
+		
 		SET_PID_M1,			// All 'SET_PID_...' need to be sent together with, at least one
 		SET_PID_M2,			// of the following: 'kp', 'ki'
 		SET_PID_TH,
-		//...
-
-		FWD,				// Drive forward a certain distance
-		TRN, 				// Turn arround the center of the wheels certain degrees
-		TRNR
+		//...	
 	};
 
 	//struct params{					// maybe NO need to be struct
 		int action = -1;				// all actions >0; default=-1;
 		bool connect = false;
-		bool reset_enc = true;
-		bool stop = true;
+		bool reset_enc = false;
+		bool stop = false;
 		bool avoid_obst = false;
 		float obst_dist = 0.0;			// [mm]
 
@@ -161,11 +160,23 @@ private:
 		float servo = 0.0;
 	//};
 
-	//void init_output_buffer();
+		bool debug = true;
+		const float BIG_FLOAT = 191919.191919;
+		const int BIG_INT = 2828;
 
-	bool degug = true;
-	const float BIG_FLOAT = 191919.191919;
-	const int BIG_INT = 2828;
+	struct Command {
+		String A = 'a';				// Action
+		String B = 'b';				// Value of the action
+		String FWD = "fwd";			// Drive forward a certain distance [mm]
+		String TRN = "trn";			// Turn certain degrees [º]
+		String TRNR = "trnr";			// Turning radius [mm]
+		String V = "v";				// Maximum speed [mm/s]
+		String S = "s";				// Servo position [?]
+		String OD = "od";				// Distance to detect obstacles [mm]
+		String KP = "kp";				// P gain
+		String KI = "ki";				// I gain
+	};
+	//void init_output_buffer();
 
 
 	/*/ might go in an other place
@@ -181,10 +192,10 @@ private:
 
 
 	// decode the received message into target
-	void msg2params(target & new_pose, String msg, bool print_msg);
+	void msg2params(String msg);
 
 	// encode the target to send the message
-	void sensors2msg(target new_pose, String & msg, bool print_msg, bool send_only_if_updaded);
+	void sensors2msg(String & msg); // might need to get last data from sensors as input
 
 	// have to go with struct target
 	//void print_target(target new_pose);

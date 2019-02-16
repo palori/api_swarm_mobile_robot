@@ -7,7 +7,12 @@ COMM::COMM(){
 }
 
 COMM::~COMM(){
-
+    /* Do I need to do it here or in the function, I guess
+     * in the function because they are local variables
+     * (not attributes)
+    delete[] str; // deallocate dynamic memory
+    delete[] words;
+     */
 }
 
 
@@ -20,7 +25,14 @@ COMM::~COMM(){
         c_msg[i] = '0';
     }
 }*/
-void COMM::write_serial(String msg){ //params might change
+void COMM::write_serial(String msg){ //params might change, maybe add last sensors data
+    // modify to add this
+    //sensors2msg(msg);
+
+
+
+
+
 
 	// String 2 char[]
     int len = msg.length();
@@ -42,8 +54,58 @@ void COMM::write_serial(String msg){ //params might change
 
 
 void COMM::read_serial(){
-	return Serial.readString();
+
+    set_action(-1); // reset ??????????????????????????????
+	String msg = Serial.readString();
+    Serial.println("MSG: "+ msg);
+    msg2params(msg);
 }
+
+
+
+String COMM::to_string(){
+    
+    String deb = "  Action: " + String(get_action());
+    deb += "\n  Connect: " + String(get_connect());
+    deb += "\n  Reset encoders: " + String(get_reset_enc());
+    deb += "\n  Stop: " + String(get_stop());
+    deb += "\n  Avoid obstacles: " + String(get_avoid_obst());
+    deb += "\n  Obstacle distance to detect: " + String(get_obst_dist());
+    deb += "\n";
+    deb += "\n  IR on: " + String(get_ir_on());
+    deb += "\n  IR send: " + String(get_ir_send());
+    deb += "\n  IMU on: " + String(get_imu_on());
+    deb += "\n  IMU gyro send: " + String(get_imu_gyro_send());
+    deb += "\n  IMU acc send: " + String(get_imu_acc_send());
+    deb += "\n  IMU comp send: " + String(get_imu_comp_send());
+    deb += "\n";
+    deb += "\n  Motors on: " + String(get_motors_on());
+    deb += "\n  Max speed: " + String(get_vel());
+    deb += "\n";
+    deb += "\n  M1 Kp: " + String(get_m1_kp());
+    deb += "\n  M1 Ki: " + String(get_m1_ki());
+    deb += "\n  M2 Kp: " + String(get_m2_kp());
+    deb += "\n  M2 Ki: " + String(get_m2_ki());
+    deb += "\n  Th Kp: " + String(get_th_kp());
+    deb += "\n  Th Ki: " + String(get_th_ki());
+    deb += "\n";
+    deb += "\n  Forward distance: " + String(get_fwd_dist());
+    deb += "\n  Turn angle: " + String(get_trn_deg());
+    deb += "\n  Turn radius: " + String(get_trn_r());
+    deb += "\n  Servo position: " + String(get_servo());
+
+    return deb;
+}
+
+void COMM::debug_params(){
+    String deb = "\n\n*********\n* Debug *\n*********\n";
+    deb += to_string() + "\n*********\n\n";
+
+    if (get_debug()){
+        Serial.print(deb);
+    }
+}
+
 
 
 /*
@@ -76,7 +138,7 @@ void COMM::read_serial(){
 
 
 // decode the received message into target
-void COMM::msg2params(target & new_pose, String msg, bool print_msg){
+void COMM::msg2params(String msg){
 
     // split the message
     int len = msg.length();
@@ -85,20 +147,16 @@ void COMM::msg2params(target & new_pose, String msg, bool print_msg){
     	str[i] = msg[i];
     }
     char * pch;
-    //vector<String> words;
-    int count=0;
+    int count=0; // number of items in the array 'words'
+    String * words = new String[len]; // will store the read parametes and their values
 
-    /*if (CPU_IS_RASPBERRY){
-        string * words = new string[len];
-    }
-    else{*/
-        String * words = new String[len];
-    //}
     bool keep_reading=true, store=false;
-    pch = strtok (str," ,="); //" ,.-"
+    pch = strtok (str," ,=");
+
     while (pch != NULL && keep_reading)
     {
-        //Serial.println("pch="+String(pch)); // for debugging
+        if (get_debug()) Serial.println("pch="+String(pch));
+
         if(*pch=='@' && !store){
             store=true;
         }
@@ -109,175 +167,140 @@ void COMM::msg2params(target & new_pose, String msg, bool print_msg){
         else if(*pch!='$' && store) {
         	words[count] = pch;
         	count++;
-            //words.push_back(pch);
-            if (print_msg){
-            	printf ("%s\n",pch);
-            }
         }
-        pch = strtok (NULL, " ,="); //" ,.-"
+        pch = strtok (NULL, " ,=");
     }
 
-    // save it as new target pose
+    // save the read params
     bool case_found;
+    Command command;
+
+    if (get_debug()){
+        Serial.println("  msg2params: "+String(count/2)+" params");
+        Serial.println("count = *"+String(count)+"*");
+    }
+
     for (int i=0; i<count; i++){ // no need to go through all array, just the words saved
     	float val = BIG_FLOAT;
         int i_val = BIG_INT;
-
         case_found = true;
-        switch(words[i]){
-            case "a": // action
-                i_val = words[i+1].toInt();
-                if (i_val != BIG_INT) {
-                    set_action(i_val);
-                }
-                break;
 
-            case "b": // value of the boolean actions
-                i_val = words[i+1].toInt();
-                if (i_val>-1 && i_val<2) { // should only be 0 or 1
-                    switch(get_action()){
-                        case CONNECT: set_connect(i_val); break;
-                        case RESET_ENC: set_reset_enc(i_val); break;
-                        case STOP: set_stop(i_val); break;
-                        case AVOID_OBSTACLES: set_avoid_obst(i_val); break;
+        if (get_debug()) Serial.println("    words["+String(i)+"]="+words[i]);
 
-                        case IR_ON: set_ir_on(i_val); break;
-                        case IR_SEND: set_ir_send(i_val); break;
-                        case IMU_ON: set_imu_on(i_val); break;
-                        case IMU_GYRO_SEND: set_imu_gyro_send(i_val); break;
-                        case IMU_ACC_SEND: set_imu_acc_send(i_val); break;
-                        case IMU_COMP_SEND: set_imu_comp_send(i_val); break;
-
-                        case MOTORS_ON: set_motors_on(i_val); break;
-
-                        case DEBUG: set_debug(i_val); break;
-
-                        default: if(get_debug()){Serial.println("Incorect action.");} break;
-                            
-                    }
-                
-                }
-                break;
-
-
-            // The following commands can be sent at any time
-            case "fwd":
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {set_fwd_dist(val);} break;
-
-            case "trn":
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {set_trn_deg(val);} break;
-
-            case "trnr":
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {set_trn_r(val);} break;
-
-            case "v":
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {set_vel(val);} break;
-
-            case "s":
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {set_servo(val);} break;
-
-            case "od": // obstacle distance -> IR will force to stop if distance is <=od and avoid_obst==true
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {set_obst_dist(val);} break;
-
-
-            // The following commands need to follow the action of setting a PID
-            case "kp":
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {
-                    switch (get_action()){
-                        case SET_PID_M1: set_m1_kp(v); break;
-                        case SET_PID_M2: set_m2_kp(v); break;
-                        case SET_PID_TH: set_th_kp(v); break;
-                        default: if(get_debug()){Serial.println("Set PID not enabled.");}
-                    }
-                }
-                break;
-
-            case "ki":
-                val = words[i+1].toFloat();
-                if (val != BIG_NUM) {
-                    switch (get_action()){
-                        case SET_PID_M1: set_m1_ki(v); break;
-                        case SET_PID_M2: set_m2_ki(v); break;
-                        case SET_PID_TH: set_th_ki(v); break;
-                        default: if(get_debug()){Serial.println("Set PID not enabled.");}
-                    }
-                }
-                break;
-
-            case "":
-                //
-                break;
-
-            case "":
-                //
-                break;
-
-            case "":
-                //
-                break;
-
-
-            default:
-                if(get_debug()){Serial.println("Incorect parameter.");}
-                case_found = false;
-        }
-        if (case_found) i++;
-
-
-
-
-        if(words[i] == "s"){
-            //val = words.at(i+1).toFloat();
-            val = words[i+1].toFloat();
-            if (val != BIG_NUM) {
-                new_pose.servo = val;
-                i++;
+        if (words[i] == command.A){
+        //case command.A: // action
+            if (get_debug()) Serial.println("  a");
+            i_val = words[i+1].toInt();
+            if (i_val != BIG_INT) {
+                set_action(i_val);
             }
         }
-        else if(words[i] == "x"){
-            //val = words.at(i+1).toFloat();
-            val = words[i+1].toFloat();
-            if (val != BIG_NUM) {
-                new_pose.x = val;
-                i++;
+        else if (words[i] == command.B){// value of the boolean actions
+            i_val = words[i+1].toInt();
+            if (get_debug()){
+                Serial.println("  b=");
+                Serial.println("    words["+String(i+1)+"]="+words[i+1]);
+                Serial.println("    i_val="+String(i_val));
             }
-        }
-        else if(words[i] == "y"){
-            //val = words.at(i+1).toFloat();
-            val = words[i+1].toFloat();
-            if (val != BIG_NUM) {
-                new_pose.y = val;
-                i++;
-            }
-        }
-        else if(words[i] == "th"){
-            //val = words.at(i+1).toFloat();
-            val = words[i+1].toFloat();
-            if (val != BIG_NUM) {
-                new_pose.th = val;
-                i++;
-            }
-        }
-    }
+            if (i_val>-1 && i_val<2) { // should only be 0 or 1
+                switch(get_action()){
+                    case CONNECT: set_connect(i_val); break;
+                    case RESET_ENC: set_reset_enc(i_val); break;
+                    case STOP: set_stop(i_val); Serial.println("    Stop = :"+String(i_val));break;
+                    case AVOID_OBSTACLES: set_avoid_obst(i_val); break;
 
-    if (print_msg){ // show that results are saved
-    	print_target(new_pose);
-    }
+                    case IR_ON: set_ir_on(i_val); break;
+                    case IR_SEND: set_ir_send(i_val); break;
+                    case IMU_ON: set_imu_on(i_val); break;
+                    case IMU_GYRO_SEND: set_imu_gyro_send(i_val); break;
+                    case IMU_ACC_SEND: set_imu_acc_send(i_val); break;
+                    case IMU_COMP_SEND: set_imu_comp_send(i_val); break;
+
+                    case MOTORS_ON: set_motors_on(i_val); break;
+
+                    case DEBUG: set_debug(i_val); break;
+
+                    default: if(get_debug()){Serial.println("Incorect action.");} break;
+                        
+                }
+            
+            }
+        } 
+
+
+        // The following commands can be sent at any time
+        else if (words[i] == command.FWD){
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {set_fwd_dist(val);}
+
+        }
+        else if (words[i] == command.TRN){
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {set_trn_deg(val);}
+
+        }
+        else if (words[i] == command.TRNR){
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {set_trn_r(val);}
+
+        }
+        else if (words[i] == command.V){
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {set_vel(val);}
+        }
+        else if (words[i] == command.S){
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {set_servo(val);}
+
+        }
+        else if (words[i] == command.OD){
+            // obstacle distance -> IR will force to stop if distance
+            // is <=od and avoid_obst==true
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {set_obst_dist(val);}
+        }
+
+
+
+        // The following commands need to follow the action of setting a PID
+        else if (words[i] == command.KP){
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {
+                switch (get_action()){
+                    case SET_PID_M1: set_m1_kp(val); break;
+                    case SET_PID_M2: set_m2_kp(val); break;
+                    case SET_PID_TH: set_th_kp(val); break;
+                    default: if(get_debug()){Serial.println("Set PID not enabled.");}
+                }
+            }
+        }
+        else if (words[i] == command.KI){
+            val = words[i+1].toFloat();
+            if (val != BIG_INT) {
+                switch (get_action()){
+                    case SET_PID_M1: set_m1_ki(val); break;
+                    case SET_PID_M2: set_m2_ki(val); break;
+                    case SET_PID_TH: set_th_ki(val); break;
+                    default: if(get_debug()){Serial.println("Set PID not enabled.");}
+                }
+            }
+        }
+        else {
+            if(get_debug()){Serial.println("Incorect parameter.");}
+            case_found = false;
+        }
+
+        if (case_found) i++; // jump the already used value and inspect the next param
+
+    } // for loop
 
     delete[] str; // deallocate dynamic memory
     delete[] words;
 }
 
 
-// encode the target to send the message
-void sensors2msg(target new_pose, String & msg, bool print_msg, bool send_only_if_updaded){
+// encode the mesage --> old version, need to be updated
+void COMM::sensors2msg(String & msg){
 
 	// @@@@ 'send_only_if_updaded' this might mean that we need to keep track of the previous pose
 	// NOT implemented for the moment
@@ -290,16 +313,16 @@ void sensors2msg(target new_pose, String & msg, bool print_msg, bool send_only_i
         new_msg += ",th=" + to_string(new_pose.th);
     }
     else{*/
-    	new_msg += ",s=" + String(new_pose.servo);
-    	new_msg += ",x=" + String(new_pose.x);
-    	new_msg += ",y=" + String(new_pose.y);
-    	new_msg += ",th=" + String(new_pose.th);
+    	new_msg += ",s=" ;//+ String(new_pose.servo);
+    	new_msg += ",x=" ;//+ String(new_pose.x);
+    	new_msg += ",y=" ;//+ String(new_pose.y);
+    	new_msg += ",th=" ;//+ String(new_pose.th);
     //}
     new_msg += ",$";
 	// update message
 	msg = new_msg;
 
-	if (print_msg){
+	if (get_debug()){
         //if (CPU_IS_RASPBERRY) printf("Message: " + msg);
         //else 
             Serial.println("Message: " + msg);

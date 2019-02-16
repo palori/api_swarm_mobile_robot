@@ -204,6 +204,31 @@ void demo_real_example()
 }
 
 
+void test_enum(){
+    enum com {TRN='tr',FWD='fwd', TRNR='trnr'};
+    printf("Turn %d\n", TRN);
+    printf("Forward %d\n", FWD);
+    printf("Turn_r %d\n", TRNR);
+    printf("\np ascii %d\n", int('AA'));
+}
+
+
+void test_read_comm1(){
+    string msg = "";
+    int fd = 0;
+    fd = serial_open(false);
+    if (fd > 1){
+
+        msg = "@,a=0,b=1,$";
+        msg = "@,a=2,b=0,$";
+        serial_write(fd, msg, true);
+        usleep(1000000);
+        serial_close(fd, false);
+    }
+    
+
+}
+
 
 
 /***********************************************
@@ -222,7 +247,9 @@ int main(){
     //test_target2msg();              //working
 
     /* FULL EXAMPLE */
-    demo_real_example();              //working -> good one ready to use
+    //demo_real_example();              //working -> good one ready to use
+    //test_enum();                      test validated!
 
+    test_read_comm1();
     return 0;
 }
