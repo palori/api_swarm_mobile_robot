@@ -126,43 +126,43 @@ public:
 		//...	
 	};
 
-	//struct params{					// maybe NO need to be struct
-		int action = -1;				// all actions >0; default=-1;
-		bool connect = false;
-		bool reset_enc = false;
-		bool stop = false;
-		bool avoid_obst = false;
-		float obst_dist = 0.0;			// [mm]
 
-		bool ir_on = false;
-		bool ir_send = false;
+	// Attributes:
+	int action = -1;				// all actions >0; default=-1;
+	bool connect = false;
+	bool reset_enc = false;
+	bool stop = false;
+	bool avoid_obst = false;
+	float obst_dist = 0.0;			// [mm]
 
-		bool imu_on = false;
-		bool imu_gyro_send = false;
-		bool imu_acc_send = false;
-		bool imu_comp_send = false;
+	bool ir_on = false;
+	bool ir_send = false;
 
-		bool motors_on = false;
-		float vel = false;
+	bool imu_on = false;
+	bool imu_gyro_send = false;
+	bool imu_acc_send = false;
+	bool imu_comp_send = false;
 
-		float m1_kp = 1.0;
-		float m1_ki = 1.0;
+	bool motors_on = false;
+	float vel = false;
 
-		float m2_kp = 1.0;
-		float m2_ki = 1.0;
+	float m1_kp = 1.0;
+	float m1_ki = 1.0;
 
-		float th_kp = 1.0;
-		float th_ki = 1.0;
+	float m2_kp = 1.0;
+	float m2_ki = 1.0;
 
-		float fwd_dist = 0.0;			// [mm]
-		float trn_deg = 0.0;			// [ª]
-		float trn_r = 0.0;				// [mm] turning radius
-		float servo = 0.0;
-	//};
+	float th_kp = 1.0;
+	float th_ki = 1.0;
 
-		bool debug = true;
-		const float BIG_FLOAT = 191919.191919;
-		const int BIG_INT = 2828;
+	float fwd_dist = 0.0;			// [mm]
+	float trn_deg = 0.0;			// [ª]
+	float trn_r = 0.0;				// [mm] turning radius
+	float servo = 0.0;
+
+	bool debug = true;
+	const float BIG_FLOAT = 191919.191919;
+	const int BIG_INT = 2828;
 
 	struct Command {
 		String A = 'a';				// Action

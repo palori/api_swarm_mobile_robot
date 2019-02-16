@@ -84,7 +84,7 @@ void comm(){
 
 void test_comm1_msg2params(){ //need to make all 'comm_1.h' methods public to be able to test it
   
-  COMM c;
+  COMM c; //create again (reset all params)
   
   int t_delay = 10;
   //-1
@@ -134,14 +134,17 @@ void test_comm1_msg2params(){ //need to make all 'comm_1.h' methods public to be
   c.debug_params();delay(t_delay);
   //14
   c.msg2params("@,a=14,ki=4,kp=14,ki=0$");          //setting 2 times the same param (ki)
-  c.debug_params();delay(5000);
+  c.debug_params();delay(t_delay);
   
-  delay(5000);
+  delay(15000);
 }
 
+COMM c; // global variable
 void test_comm1_read(){
-  COMM c;
   c.read_serial();
+  c.debug_params();
+  delay(50);
+  if(c.get_connect()) led_blink(LED_PIN, BLINK_FREQ);
 }
 
 

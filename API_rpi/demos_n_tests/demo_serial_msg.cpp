@@ -212,21 +212,21 @@ void test_enum(){
     printf("\np ascii %d\n", int('AA'));
 }
 
-
-void test_read_comm1(){
-    string msg = "";
+void send_msg(string msg){
     int fd = 0;
     fd = serial_open(false);
     if (fd > 1){
-
-        msg = "@,a=0,b=1,$";
-        msg = "@,a=2,b=0,$";
         serial_write(fd, msg, true);
         usleep(1000000);
         serial_close(fd, false);
     }
-    
+}
 
+void test_read_comm1(){
+
+    send_msg("@,a=0,b=1,fwd=10,$");
+    usleep(10000000);
+    send_msg("@,a=2,b=1,v=0.4$");
 }
 
 
