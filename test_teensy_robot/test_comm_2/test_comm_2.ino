@@ -1,5 +1,6 @@
 
 #include <comm_.h>
+#include <comm_1.h>
 //#include "header_conditionals.h" //test, it can be deleted :)
 //#include <stdio.h>
 //using namespace std;
@@ -7,10 +8,10 @@
 
 int LED_PIN = 13;                         //pin in Teensy 3.0
 int BLINK_FREQ = 1000;                    //time [ms]
-target new_pose = {0.0,                   //new_pose.x
+target new_pose;/* = {0.0,                   //new_pose.x
                    0.0,                   //new_pose.y
                    0.0,                   //new_pose.th
-                   0.0};                  //new_pose.servo
+                   0.0};                  //new_pose.servo*/
 /*new_pose.servo = 0.0;
 new_pose.x = 0.0;
 new_pose.y = 0.0;
@@ -81,6 +82,71 @@ void comm(){
   }
 }
 
+void test_comm1_msg2params(){ //need to make all 'comm_1.h' methods public to be able to test it
+  
+  COMM_TSY c; //create again (reset all params)
+  
+  int t_delay = 10;
+  //-1
+  c.msg2params("@,a=-1,b=60,$");
+  c.debug_params();delay(t_delay);
+  //0
+  c.msg2params("@,a=0,b=1,fwd=1,$");
+  c.debug_params();delay(t_delay);
+  //1
+  c.msg2params("@,a=1,b=1,trn=90,$");
+  c.debug_params();delay(t_delay);
+  //2
+  c.msg2params("@,a=2,b=1,trnr=20,$");
+  c.debug_params();delay(t_delay);
+  //3
+  c.msg2params("@,a=3,b=1,od=25,$");
+  c.debug_params();delay(t_delay);
+  //4
+  c.msg2params("@,a=4,b=1,v=0.3,$");
+  c.debug_params();delay(t_delay);
+  //5
+  c.msg2params("@,a=5,b=1,fwd=2,$");
+  c.debug_params();delay(t_delay);
+  //6
+  c.msg2params("@,a=6,b=1,s=500$");
+  c.debug_params();delay(t_delay);
+  //7
+  c.msg2params("@,a=7,b=1$");
+  c.debug_params();delay(t_delay);
+  //8
+  c.msg2params("@,a=8,b=1$");
+  c.debug_params();delay(t_delay);
+  //9
+  c.msg2params("@,a=9,b=1$");
+  c.debug_params();delay(t_delay);
+  //10
+  c.msg2params("@,a=10,b=1$");
+  c.debug_params();delay(t_delay);
+  //11.1
+  c.msg2params("@,a=11,b=0$");                      //set_debug(false)
+  c.debug_params();delay(t_delay);
+  //12
+  c.msg2params("@,a=11,b=1,a=12,kp=12,ki=2$");      //set_debug(true) + PI M1 (2 actions in 1 msg)
+  c.debug_params();delay(t_delay);
+  //13
+  c.msg2params("@,a=13,kp=13,ki=3$");
+  c.debug_params();delay(t_delay);
+  //14
+  c.msg2params("@,a=14,ki=4,kp=14,ki=0$");          //setting 2 times the same param (ki)
+  c.debug_params();delay(t_delay);
+  
+  delay(15000);
+}
+
+COMM_TSY c; // global variable
+void test_comm1_read(){
+  c.read_serial();
+  c.debug_params();
+  if(c.get_connect()) led_blink(LED_PIN, BLINK_FREQ);
+  delay(500);
+}
+
 
 /*********
  * DRIVE *
@@ -111,16 +177,23 @@ void setup() {
 }
 
 enum Command {TRN, FWD};
+void test_enum(){
+  Serial.print("turn: "+String(TRN)); //delay(2000);
+  Serial.println(FWD); //delay(2000);
+}
 
 void loop() {
   //func4("hi!!!");
   /*if (target_pose.x == 77.77) led_blink(LED_PIN, BLINK_FREQ);
   else delay(5);*/
+  //test_enum();  //working
 
-  Serial.print("turn: "+String(TRN)); delay(2000);
-  Serial.println(FWD); delay(2000);
+  
   read_sensors(); //read IR and IMU values and save
   drive(); // drive to target using encoders and motors
-  //comm(); // read if new target_pose and/or special events, send last sensor values
+
   
+  //comm(); // read if new target_pose and/or special events, send last sensor values
+  //test_comm1_msg2params(); // working!!! //need to make all 'comm_1.h' methods public to be able to test it
+  test_comm1_read();
 }

@@ -6,6 +6,7 @@
 //#include "../comm/comm_serial.h"
 #include <thread>
 #include "../comm_rpi.h"
+#include "../comm_rpi_1.h"
 
 
 /****************
@@ -204,6 +205,31 @@ void demo_real_example()
 }
 
 
+void test_enum(){
+    enum com {TRN='tr',FWD='fwd', TRNR='trnr'};
+    printf("Turn %d\n", TRN);
+    printf("Forward %d\n", FWD);
+    printf("Turn_r %d\n", TRNR);
+    printf("\np ascii %d\n", int('AA'));
+}
+
+void send_msg(string msg){
+    int fd = 0;
+    fd = serial_open(false);
+    if (fd > 1){
+        serial_write(fd, msg, true);
+        usleep(1000000);
+        serial_close(fd, false);
+    }
+}
+
+void test_read_comm1(){
+
+    send_msg("@,a=0,b=1,fwd=10,$");
+    usleep(10000000);
+    send_msg("@,a=2,b=1,v=0.4$");
+}
+
 
 
 /***********************************************
@@ -222,7 +248,9 @@ int main(){
     //test_target2msg();              //working
 
     /* FULL EXAMPLE */
-    demo_real_example();              //working -> good one ready to use
+    //demo_real_example();              //working -> good one ready to use
+    //test_enum();                      test validated!
 
+    test_read_comm1();
     return 0;
 }

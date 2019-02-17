@@ -1,32 +1,29 @@
 #ifndef comm_1_h
 #define comm_1_h
 
-/*
-    CPU_IS_RASPBERRY
-      true if RPi is the cpu running
-      false if the cpu is f.i. an Arduino or Teensy board
-*/
-#define CPU_IS_RASPBERRY false 
-
 
 #include "Arduino.h"
 //#include "pins.h"
-#include <string.h>
-#include <vector>
-#include <errno.h>  /* ERROR Number Definitions          */
+#include <string.h> // I think we only use String lib from Arduino
+#include <errno.h>  /* ERROR Number Definitions */ //Might not be used any more
 
 using namespace std;
 
 /*
- * IF YOU MAKE ANY CHANGE IN THIS FILE, YOU HAVE TO MODIFY ACCORDINGLY THE FOLLOWING FILES:
+ * IF YOU MAKE ANY CHANGE IN THIS FILE, YOU HAVE TO MODIFY ACCORDINGLY
+ * THE FOLLOWING FILES:
  * 
- * 
- * 
+ *   - comm_1.h
+ *   - comm_1.cpp
+ *   - ../API_rpi/comm_rpi_1.h
+ *   - ../API_rpi/comm_rpi_1.cpp
  */
 
-class COMM
+class COMM_TSY
 {
 public:
+	COMM_TSY();
+	~COMM_TSY();
 	void write_serial(String msg); // migth have diferent input params
 	void read_serial();
 
@@ -58,6 +55,7 @@ public:
 	float get_fwd_dist() {return fwd_dist;}
 	float get_trn_deg() {return trn_deg;}
 	float get_trn_r() {return trn_r;}
+	float get_servo() {return servo;}
 
 	bool get_debug() {return debug;}
 
@@ -90,13 +88,55 @@ public:
 	void set_fwd_dist(float f) {fwd_dist = f;}
 	void set_trn_deg(float f) {trn_deg = f;}
 	void set_trn_r(float f) {trn_r = f;}
+	void set_servo(float f) {servo = f;}
 
 	void set_debug(bool b) {debug = b;}
 
 
+	// other methods
+	String to_string();
+	void debug_params();
 
-private:
-	enum Command {
+//private:
+	// Attributes:
+	int action = -1;				// all actions >0; default=-1;
+	bool connect = false;
+	bool reset_enc = false;
+	bool stop = false;
+	bool avoid_obst = false;
+	float obst_dist = 0.0;			// [mm]
+
+	bool ir_on = false;
+	bool ir_send = false;
+
+	bool imu_on = false;
+	bool imu_gyro_send = false;
+	bool imu_acc_send = false;
+	bool imu_comp_send = false;
+
+	bool motors_on = false;
+	float vel = false;
+
+	float m1_kp = 1.0;
+	float m1_ki = 1.0;
+
+	float m2_kp = 1.0;
+	float m2_ki = 1.0;
+
+	float th_kp = 1.0;
+	float th_ki = 1.0;
+
+	float fwd_dist = 0.0;			// [mm]
+	float trn_deg = 0.0;			// [ª]
+	float trn_r = 0.0;				// [mm] turning radius
+	float servo = 0.0;
+
+	bool debug = true;				// useful now to debug on the TSY, but need to send essential info (params...) to the RPI to debug from there
+	const float BIG_FLOAT = 191919.191919;
+	const int BIG_INT = 2828;
+
+
+	enum Actions {
 		CONNECT,			// To know when the connection started and ended to send (or not) messages
 		RESET_ENC,
 		STOP,				// Immediatelly stops the driving when turned on (security)
@@ -111,56 +151,54 @@ private:
 		IMU_COMP_SEND,		// Enable/Disable sending IMU compass data
 
 		MOTORS_ON,			// Enable/Disable motors
-		VEL,				// Set maximum speed
+		DEBUG,				// Enable/Disable debugging messages
+
+		// this are params, not actions
+		
 		SET_PID_M1,			// All 'SET_PID_...' need to be sent together with, at least one
 		SET_PID_M2,			// of the following: 'kp', 'ki'
 		SET_PID_TH,
-		//...
-
-
-		FWD,				// Drive forward a certain distance
-		TRN, 				// Turn arround the center of the wheels certain degrees
-		TRNR
+		//...	
 	};
 
-	//struct params{					// maybe NO need to be struct
-		int action = -1;				// all actions >0; default=-1;
-		bool connect = false;
-		bool reset_enc = true;
-		bool stop = true;
-		bool avoid_obst = false;
-		float obst_dist = 0.0;			// [mm]
 
-		bool ir_on = false;
-		bool ir_send = false;
+	struct Command {
+		String A = 'a';					// Action
+		String B = 'b';					// Value of the action
+		String FWD = "fwd";				// Drive forward a certain distance [mm]
+		String TRN = "trn";				// Turn certain degrees [º]
+		String TRNR = "trnr";			// Turning radius [mm]
+		String V = "v";					// Maximum speed [mm/s]
+		String S = "s";					// Servo position [?]
+		String OD = "od";				// Distance to detect obstacles [mm]
+		String KP = "kp";				// P gain
+		String KI = "ki";				// I gain
+	};
 
-		bool imu_on = false;
-		bool imu_gyro_send = false;
-		bool imu_acc_send = false;
-		bool imu_comp_send = false;
 
-		bool motors_on = false;
-		float vel = false;
+	// decode the received message into target
+	void msg2params(String msg);
 
-		float m1_kp = 1.0;
-		float m1_ki = 1.0;
+	// encode the target to send the message
+	void sensorData2msg(String & msg); // might need to get last data from sensors as input
 
-		float m2_kp = 1.0;
-		float m2_ki = 1.0;
 
-		float th_kp = 1.0;
-		float th_ki = 1.0;
 
-		float fwd_dist = 0.0;			// [mm]
-		float trn_deg = 0.0;			// [ª]
-		float trn_r = 0.0;				// [mm] turning radius
-	//};
+
+
+
+
+
+
+
+
+	// OLD functions
+
+	// have to go with struct target
+	//void print_target(target new_pose);
+
 
 	//void init_output_buffer();
-
-	bool degug = true;
-	const float BIG_FLOAT = 191919.191919;
-	const int BIG_INT = 2828;
 
 
 	/*/ might go in an other place
@@ -173,16 +211,6 @@ private:
 	    // servo setpoint
 	    float servo; // maybe not here?
 	};*/
-
-
-	// decode the received message into target
-	void msg2params(target & new_pose, String msg, bool print_msg);
-
-	// encode the target to send the message
-	void sensors2msg(target new_pose, String & msg, bool print_msg, bool send_only_if_updaded);
-
-	// have to go with struct target
-	//void print_target(target new_pose);
 
 
 };
