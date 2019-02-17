@@ -6,6 +6,7 @@
 //#include "../comm/comm_serial.h"
 #include <thread>
 #include "../comm_rpi.h"
+#include "../comm_rpi_1.h"
 
 
 /****************

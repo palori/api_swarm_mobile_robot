@@ -2,11 +2,11 @@
 #include "comm_1.h"
 
 
-COMM::COMM(){
+COMM_TSY::COMM_TSY(){
 
 }
 
-COMM::~COMM(){
+COMM_TSY::~COMM_TSY(){
     /* Do I need to do it here or in the function, I guess
      * in the function because they are local variables
      * (not attributes)
@@ -17,7 +17,7 @@ COMM::~COMM(){
 
 
 
-//uint OUT_BUFFER_SIZE = 32;
+//uint OUT_BUFFER_SIZE = 32; // JCA suggestion
 //char c_msg[OUT_BUFFER_SIZE];
 
 /*void init_output_buffer(){
@@ -25,9 +25,9 @@ COMM::~COMM(){
         c_msg[i] = '0';
     }
 }*/
-void COMM::write_serial(String msg){ //params might change, maybe add last sensors data
+void COMM_TSY::write_serial(String msg){ //params might change, maybe add last sensors data
     // modify to add this
-    //sensors2msg(msg);
+    //sensorData2msg(msg);
 
 
 
@@ -53,7 +53,7 @@ void COMM::write_serial(String msg){ //params might change, maybe add last senso
 }
 
 
-void COMM::read_serial(){
+void COMM_TSY::read_serial(){
 
     set_action(-1); // reset ??????????????????????????????
 	String msg = Serial.readString();
@@ -63,7 +63,7 @@ void COMM::read_serial(){
 
 
 
-String COMM::to_string(){
+String COMM_TSY::to_string(){
     
     String deb = "  Action: " + String(get_action());
     deb += "\n  Connect: " + String(get_connect());
@@ -97,7 +97,7 @@ String COMM::to_string(){
     return deb;
 }
 
-void COMM::debug_params(){
+void COMM_TSY::debug_params(){
     String deb = "\n\n*********\n* Debug *\n*********\n";
     deb += to_string() + "\n*********\n\n";
 
@@ -114,7 +114,7 @@ void COMM::debug_params(){
 
 
 // have to go with struct target
-//void COMM::print_target(target new_pose){
+//void COMM_TSY::print_target(target new_pose){
 
     /*if (CPU_IS_RASPBERRY){
         printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nTarget:");
@@ -138,7 +138,7 @@ void COMM::debug_params(){
 
 
 // decode the received message into target
-void COMM::msg2params(String msg){
+void COMM_TSY::msg2params(String msg){
 
     // split the message
     int len = msg.length();
@@ -300,7 +300,7 @@ void COMM::msg2params(String msg){
 
 
 // encode the mesage --> old version, need to be updated
-void COMM::sensors2msg(String & msg){
+void COMM_TSY_TSY::sensorData2msg(String & msg){
 
 	// @@@@ 'send_only_if_updaded' this might mean that we need to keep track of the previous pose
 	// NOT implemented for the moment
@@ -322,11 +322,7 @@ void COMM::sensors2msg(String & msg){
 	// update message
 	msg = new_msg;
 
-	if (get_debug()){
-        //if (CPU_IS_RASPBERRY) printf("Message: " + msg);
-        //else 
-            Serial.println("Message: " + msg);
-    }
+	if (get_debug()) Serial.println("Message: " + msg);
 }	
 
 
