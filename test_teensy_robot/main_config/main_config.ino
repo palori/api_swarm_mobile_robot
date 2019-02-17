@@ -3,12 +3,17 @@
 #include <utils.h>
 #include <Encoder.h>
 #include <math.h>
+#include "imu.h"
+#include <ir.h>
 
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
 
 Encoder encoder1(PIN_LEFT_ENCODER_A,PIN_LEFT_ENCODER_B);
 Encoder encoder2(PIN_RIGHT_ENCODER_A,PIN_RIGHT_ENCODER_B);
+
+IR ir_1(PIN_IR_RAW_1);
+IR ir_2(PIN_IR_RAW_2);
 
 //motor and encoder constants
 double pulses_per_rotation = 48.0; //encoder give 48 pulses per revolution
@@ -81,6 +86,8 @@ double dist_curr = 0.0;
 double angle_ref_abs = 0.0;
 double angle_error = 0.0;
 enum Command {TRN, FWD, TRNR};
+
+
 
 double sign(double in){
   if (in < 0) return -1.0;
@@ -158,12 +165,70 @@ void initializePID(int index, double K_P, double K_I, double time_period){
 
 double PID(double referent_value, double current_value, int index){
 
-  e[index] = referent_value - current_value;
-  e_i[index] += e[index]*T[index];
-  return KP[index] * e[index] + KI[index] * e_i[index];
+    e[index] = referent_value - current_value;
+    e_i[index] += e[index]*T[index];
+    return KP[index] * e[index] + KI[index] * e_i[index];
   
 }
 
+void setUpIMU(){
+  
+    // Initialize the 'Wire' class for the I2C-bus.
+    Wire_setup();
+
+    // Clear the 'sleep' bit to start the sensor.
+    MPU9150_writeSensor(MPU9150_PWR_MGMT_1, 0);
+
+    MPU9150_setupCompass();
+  
+}
+
+int IMU_cmps(char coordinate){
+  int sensorValue = 0;
+  switch(coordinate){
+    case 'X':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H);
+      break;
+    case 'Y':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_YOUT_L,MPU9150_CMPS_YOUT_H);
+      break;
+    case 'Z':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_ZOUT_L,MPU9150_CMPS_ZOUT_H);
+      break;
+    }
+  return sensorValue;
+}
+
+int IMU_gyro(char coordinate){
+  int sensorValue = 0;
+  switch(coordinate){
+    case 'X':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_XOUT_L,MPU9150_GYRO_XOUT_H);
+      break;
+    case 'Y':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_YOUT_L,MPU9150_GYRO_YOUT_H);
+      break;
+    case 'Z':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H);
+      break;
+    }
+  return sensorValue;
+}
+int IMU_accel(char coordinate){
+  int sensorValue = 0;
+    switch(coordinate){
+      case 'X':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_XOUT_L,MPU9150_ACCEL_XOUT_H);
+        break;
+      case 'Y':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_YOUT_L,MPU9150_ACCEL_YOUT_H);
+        break;
+      case 'Z':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_ZOUT_L,MPU9150_ACCEL_ZOUT_H);
+        break;
+      }
+    return sensorValue;
+}
 void forward(double dist_ref){
   
     x_0 = odoX;
@@ -244,13 +309,13 @@ void update_velocity(Command RPI_command, double RPI_value){
           
           break;
 
-        case TRNR:   //turnr function: v2/v1=(R+b/2)/R
+        case TRNR:   //turnr function: v2/v1=(R+b/2)/(R-b/2)
             if (fabs(angle_error)>0.01){
       
                 //vel2 = PID(angle_ref_abs,odoTh,TURN);
                 //vel1 = -PID(angle_ref_abs,odoTh,TURN);
                 double turning_radius = 0.3;
-                double vel_ratio = (turning_radius + wheels_distance / 2.0) / turning_radius;
+                double vel_ratio = (turning_radius + wheels_distance / 2.0) / (turning_radius - wheels_distance / 2.0);
                 
                 vel1 = sign(angle_error) * 0.3;
                 vel2 = vel1 * vel_ratio;
@@ -287,7 +352,7 @@ void update_velocity(Command RPI_command, double RPI_value){
                 
                 vel1=0.3 - PID(Th_0,odoTh,THETA);
                 vel2=0.3 + PID(Th_0,odoTh,THETA);
-                v_max=sign(RPI_value) * sqrt(0.5 * fabs(dist_error));
+                v_max=sign(RPI_value) * sqrt(0.4 * fabs(dist_error));
                 
                 vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
                 vel2 = Saturate(vel2 , v_max);
@@ -312,20 +377,25 @@ double input=0.1;
  
 void setup() 
 { 
+  Serial.begin(9600);
   setUpPowerPins(); 
-  Serial.begin(9600);  
+  setUpIMU();
+    
 
   enableMotors();
     
   motor1.setVelocity(input);   //sets motor to small speed where they dont move
   motor2.setVelocity(input);
 
- 
+  ir_1.setCalibration();
+  ir_2.setCalibration();
+
+  
       
 } 
 
-Command RPI_command = FWD;
-double RPI_value = 1.0;
+Command RPI_command = TRNR;
+double RPI_value = PI;
 bool newCommand = true;
 
 
@@ -362,7 +432,8 @@ void loop()
     Serial.println("odoX: "+String(odoX));
     Serial.println("odoY: "+String(odoY));
     Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
-    Serial.println("v_max: "+String(v_max));
+    Serial.println("dist1: "+String(ir_1.getDistance()));
+    Serial.println("dist2: "+String(ir_2.getDistance()));    //calibrate each ir sensor, put a value which indicates values out of range
     
   
 }

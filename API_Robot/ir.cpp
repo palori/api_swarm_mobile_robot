@@ -21,7 +21,7 @@ uint16_t IR::getData(){
 
 float IR::getDistance(){
 	_irRaw = getData();
-	if (_irRaw > 0) _dist = irA + irB/_irRaw;
+	if (_irRaw > 0) _dist = irA / (_irRaw - irB);//_dist = irA + irB/_irRaw;
 
 	// conditions to set max value and others...
 	/*
@@ -35,14 +35,17 @@ float IR::getDistance(){
 
 void IR::setCalibration(){
 	// Default values, tried manually
-	irCal20cm = 150;//200.0;
-	irCal80cm = 50;//711.0;
+	irCal20cm = 135;//200.0;
+	irCal80cm = 35;//711.0;
 	// get from RPi new values of:
 	// ...
 
 	// Compute just once the params to convert the raw data to distance [m]
 	irA = 0.2 * (irCal20cm - 4 * irCal80cm) / (irCal20cm - irCal80cm);
     irB = 0.6 * irCal20cm * irCal80cm / (irCal20cm - irCal80cm);
+
+    irA = 23.5;
+    irB = 13.0; //values from MATLAB script calibIRParams
     String msg = "************************\n* IR calibration "+String(_dist_pin)+"*\n* irA = "+String(irA)+"*\n* irB = "+String(irB)+"*\n************************";
     Serial.println(msg);
 }
