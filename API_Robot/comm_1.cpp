@@ -220,6 +220,10 @@ void COMM_TSY::msg2params(String msg){
 
                     case DEBUG: set_debug(i_val); break;
 
+                    case FWD: set_fwd(i_val); break;
+                    case TRN: set_trn(i_val); break;
+                    case TRNR: set_trnr(i_val); break;
+
                     default: if(get_debug()){Serial.println("Incorect action.");} break;
                         
                 }
@@ -300,7 +304,7 @@ void COMM_TSY::msg2params(String msg){
 
 
 // encode the mesage --> old version, need to be updated
-void COMM_TSY_TSY::sensorData2msg(String & msg){
+void COMM_TSY::sensorData2msg(String & msg){
 
 	// @@@@ 'send_only_if_updaded' this might mean that we need to keep track of the previous pose
 	// NOT implemented for the moment

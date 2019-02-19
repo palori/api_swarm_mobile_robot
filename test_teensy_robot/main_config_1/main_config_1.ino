@@ -3,12 +3,20 @@
 #include <utils.h>
 #include <Encoder.h>
 #include <math.h>
+#include "imu.h"
+#include <ir.h>
+#include "comm_1.h"
 
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
 
 Encoder encoder1(PIN_LEFT_ENCODER_A,PIN_LEFT_ENCODER_B);
 Encoder encoder2(PIN_RIGHT_ENCODER_A,PIN_RIGHT_ENCODER_B);
+
+IR ir_1(PIN_IR_RAW_1);
+IR ir_2(PIN_IR_RAW_2);
+
+COMM_TSY comm_tsy;
 
 //motor and encoder constants
 double pulses_per_rotation = 48.0; //encoder give 48 pulses per revolution
@@ -75,16 +83,18 @@ double v_max;
 
 //forward and turn functions
 int starting_position = 1;
-int disableM = 0;
 double dist_error = 0.0;
 double dist_curr = 0.0;
 double angle_ref_abs = 0.0;
 double angle_error = 0.0;
 enum Command {TRN, FWD, TRNR};
+bool newCommand = true;
+
+
 
 double sign(double in){
   if (in < 0) return -1.0;
-  if (in >= 0) return 1.0;  
+  else return 1.0;  
 }
 
 double WrapTo2PI(double ang){ 
@@ -156,14 +166,72 @@ void initializePID(int index, double K_P, double K_I, double time_period){
     e_i[index] = 0.0;
 }
 
-double PID(double referent_value, double current_value, int index){
+double update_PID(double referent_value, double current_value, int index){
 
-  e[index] = referent_value - current_value;
-  e_i[index] += e[index]*T[index];
-  return KP[index] * e[index] + KI[index] * e_i[index];
+    e[index] = referent_value - current_value;
+    e_i[index] += e[index]*T[index];
+    return KP[index] * e[index] + KI[index] * e_i[index];
   
 }
 
+void setUpIMU(){
+  
+    // Initialize the 'Wire' class for the I2C-bus.
+    Wire_setup();
+
+    // Clear the 'sleep' bit to start the sensor.
+    MPU9150_writeSensor(MPU9150_PWR_MGMT_1, 0);
+
+    MPU9150_setupCompass();
+  
+}
+
+int IMU_cmps(char coordinate){
+  int sensorValue = 0;
+  switch(coordinate){
+    case 'X':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H);
+      break;
+    case 'Y':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_YOUT_L,MPU9150_CMPS_YOUT_H);
+      break;
+    case 'Z':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_ZOUT_L,MPU9150_CMPS_ZOUT_H);
+      break;
+    }
+  return sensorValue;
+}
+
+int IMU_gyro(char coordinate){
+  int sensorValue = 0;
+  switch(coordinate){
+    case 'X':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_XOUT_L,MPU9150_GYRO_XOUT_H);
+      break;
+    case 'Y':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_YOUT_L,MPU9150_GYRO_YOUT_H);
+      break;
+    case 'Z':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H);
+      break;
+    }
+  return sensorValue;
+}
+int IMU_accel(char coordinate){
+  int sensorValue = 0;
+    switch(coordinate){
+      case 'X':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_XOUT_L,MPU9150_ACCEL_XOUT_H);
+        break;
+      case 'Y':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_YOUT_L,MPU9150_ACCEL_YOUT_H);
+        break;
+      case 'Z':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_ZOUT_L,MPU9150_ACCEL_ZOUT_H);
+        break;
+      }
+    return sensorValue;
+}
 void forward(double dist_ref){
   
     x_0 = odoX;
@@ -173,7 +241,7 @@ void forward(double dist_ref){
     dist_curr = sign(dist_ref) * sqrt(pow(odoX - x_0 , 2.0) + pow(odoY - y_0 , 2.0)); 
     dist_error = dist_ref - dist_curr;
     
-    if (disableM == 0) enableMotors();
+    enableMotors();
 
     initializePID(VEL1,Kp,Ki,0.01);
     initializePID(VEL2,Kp,Ki,0.01);
@@ -190,7 +258,7 @@ void turn(double angle_ref){
     angle_ref_abs = angle_ref + Th_0;
     angle_error = angle_ref_abs - odoTh;
     
-    if (disableM==0) enableMotors();
+    enableMotors();
     
     //initializePID(TURN,Kp_Th,Ki_Th,0.01);
     initializePID(VEL1,Kp,Ki,0.01);
@@ -206,7 +274,7 @@ void turnr(double angle_ref){
     angle_ref_abs = angle_ref + Th_0;
     angle_error = angle_ref_abs - odoTh;
     
-    if (disableM==0) enableMotors();
+    enableMotors();
     
     //initializePID(TURN,Kp_Th,Ki_Th,0.01);
     initializePID(VEL1,Kp,Ki,0.01);
@@ -214,16 +282,17 @@ void turnr(double angle_ref){
     
 }
 
-void update_velocity(Command RPI_command, double RPI_value){
+void update_velocity(int drive_command){
+
   
   // forward:
 
-  switch (RPI_command) {
-        case TRN:
+  switch (drive_command) {
+        case comm_tsy.TRN:
             if (fabs(angle_error)>0.01){
       
-                //vel2 = PID(angle_ref_abs,odoTh,TURN);
-                //vel1 = -PID(angle_ref_abs,odoTh,TURN);
+                //vel2 = update_PID(angle_ref_abs,odoTh,TURN);
+                //vel1 = -update_PID(angle_ref_abs,odoTh,TURN);
           
                 vel1 = - sign(angle_error) * 0.4;
                 vel2 = sign(angle_error) * 0.4;
@@ -231,6 +300,9 @@ void update_velocity(Command RPI_command, double RPI_value){
                 v_max = sign(angle_error) * fabs(sqrt(angle_error * wheels_distance / 2.0)); 
                 vel1 = Saturate(vel1 , v_max);   
                 vel2 = Saturate(vel2 , v_max);
+
+                vel1 = Saturate(vel1 , 0.5);   
+                vel2 = Saturate(vel2 , 0.5);
                 
                 
                 angle_error = angle_ref_abs - odoTh;
@@ -239,18 +311,20 @@ void update_velocity(Command RPI_command, double RPI_value){
             } else {
                 vel1 = 0.1;
                 vel2 = 0.1;
-                disableMotors();         
+                disableMotors();  
+                newCommand = true;
+                comm_tsy.set_trn(false);       
             }
           
           break;
 
-        case TRNR:   //turnr function: v2/v1=(R+b/2)/R
+        case comm_tsy.TRNR:   //turnr function: v2/v1=(R+b/2)/(R-b/2)
             if (fabs(angle_error)>0.01){
       
-                //vel2 = PID(angle_ref_abs,odoTh,TURN);
-                //vel1 = -PID(angle_ref_abs,odoTh,TURN);
+                //vel2 = update_PID(angle_ref_abs,odoTh,TURN);
+                //vel1 = -update_PID(angle_ref_abs,odoTh,TURN);
                 double turning_radius = 0.3;
-                double vel_ratio = (turning_radius + wheels_distance / 2.0) / turning_radius;
+                double vel_ratio = (turning_radius + wheels_distance / 2.0) / (turning_radius - wheels_distance / 2.0);
                 
                 vel1 = sign(angle_error) * 0.3;
                 vel2 = vel1 * vel_ratio;
@@ -273,35 +347,43 @@ void update_velocity(Command RPI_command, double RPI_value){
             } else {
                 vel1 = 0.1;
                 vel2 = 0.1;
-                disableMotors();         
+                disableMotors();
+                newCommand = true;  
+                comm_tsy.set_trnr(false);       
             }
           
           break;
           
-        case FWD:
+        case comm_tsy.FWD:
         
-            if (fabs(dist_error) > 0.01){
-      
-                //vel1 = PID(dist_ref,dist_curr,DIST) - PID(Th0,odoTh,THETA);
-                //vel2 = PID(dist_ref,dist_curr,DIST) + PID(Th0,odoTh,THETA);
+            if (fabs(dist_error) > 0.02){
+
+                Serial.println("dist_error: "+String(dist_error));
+                //vel1 = update_PID(dist_ref,dist_curr,DIST) - update_PID(Th0,odoTh,THETA);
+                //vel2 = update_PID(dist_ref,dist_curr,DIST) + update_PID(Th0,odoTh,THETA);
                 
-                vel1=0.3 - PID(Th_0,odoTh,THETA);
-                vel2=0.3 + PID(Th_0,odoTh,THETA);
-                v_max=sign(RPI_value) * sqrt(0.5 * fabs(dist_error));
+                vel1=comm_tsy.get_vel() - update_PID(Th_0,odoTh,THETA);
+                vel2=comm_tsy.get_vel() + update_PID(Th_0,odoTh,THETA);
+                v_max=sign(comm_tsy.get_fwd_dist()) * sqrt(0.4 * fabs(dist_error));
                 
                 vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
                 vel2 = Saturate(vel2 , v_max);
           
+                vel1 = Saturate(vel1 , 0.5);   
+                vel2 = Saturate(vel2 , 0.5);
+                
                 Serial.println("vel1: "+String(vel1));
                 Serial.println("vel2: "+String(vel2));
                   
-                dist_curr=sign(RPI_value) * sqrt(pow(odoX - x_0 , 2.0)+pow(odoY - y_0 , 2.0));
-                dist_error = RPI_value - dist_curr;
+                dist_curr=sign(comm_tsy.get_fwd_dist()) * sqrt(pow(odoX - x_0 , 2.0)+pow(odoY - y_0 , 2.0));
+                dist_error = comm_tsy.get_fwd_dist() - dist_curr;
             
             } else {
                 vel1 = 0.1;
                 vel2 = 0.1;
-                disableMotors();       
+                disableMotors();  
+                newCommand = true;    
+                comm_tsy.set_fwd(false); 
             }
           break;
   }
@@ -312,46 +394,67 @@ double input=0.1;
  
 void setup() 
 { 
+  Serial.begin(9600);
   setUpPowerPins(); 
-  Serial.begin(9600);  
+  setUpIMU();
+    
 
   enableMotors();
     
   motor1.setVelocity(input);   //sets motor to small speed where they dont move
   motor2.setVelocity(input);
 
- 
+  ir_1.setCalibration();
+  ir_2.setCalibration();
+
+  
       
 } 
 
-Command RPI_command = FWD;
-double RPI_value = 1.0;
-bool newCommand = true;
+Command RPI_command = TRNR;
+double RPI_value = PI;
+
+int drive_command=-1;
 
 
-
-void loop() 
+void loop() // @,a=15,b=1,fwd=2,$
 { 
 
+    comm_tsy.read_serial();
+    
+    
+    if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
+    else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
+    else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR;
+    else {
+      drive_command=-1;
+      newCommand=true;
+    }
+
+    Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));
     if (newCommand == true){
-      switch (RPI_command) {
-        case TRN:
-          turn(RPI_value);
+      switch (drive_command) {
+        case comm_tsy.TRN:
+          turn(double(comm_tsy.get_trn_deg()));
+          newCommand = false;
           break;
-        case FWD:
-          forward(RPI_value);
+        case comm_tsy.FWD:
+          Serial.println("*****FWD*********************************************");
+          forward(double(comm_tsy.get_fwd_dist()));
+          newCommand = false;
           break;
-        case TRNR:
-          turnr(RPI_value);
+        case comm_tsy.TRNR:
+          turnr(double(comm_tsy.get_trn_deg()));
+          newCommand = false;
           break;
       }
-      newCommand = false;
+      //newCommand = false;
     }
     
-    update_velocity(RPI_command,RPI_value);
+    update_velocity(drive_command);
 
-    motor1.setVelocity(PID(vel1,velocity1,VEL1));   
-    motor2.setVelocity(PID(vel2,velocity2,VEL2));
+    motor1.setVelocity(update_PID(vel1,velocity1,VEL1));   
+    motor2.setVelocity(update_PID(vel2,velocity2,VEL2));
       
     delay(10);
 
@@ -362,7 +465,8 @@ void loop()
     Serial.println("odoX: "+String(odoX));
     Serial.println("odoY: "+String(odoY));
     Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
-    Serial.println("v_max: "+String(v_max));
+    Serial.println("dist1: "+String(ir_1.getDistance()));
+    Serial.println("dist2: "+String(ir_2.getDistance()));    //calibrate each ir sensor, put a value which indicates values out of range
     
   
 }

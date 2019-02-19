@@ -59,6 +59,10 @@ public:
 
 	bool get_debug() {return debug;}
 
+	bool get_fwd() {return fwd;}
+	bool get_trn() {return trn;}
+	bool get_trnr() {return trnr;}
+
 
 	// setters if params is not a struct
 	void set_action(int i) {action = i;}
@@ -92,6 +96,9 @@ public:
 
 	void set_debug(bool b) {debug = b;}
 
+	void set_fwd(bool b) {fwd = b;}
+	void set_trn(bool b) {trn = b;}
+	void set_trnr(bool b) {trnr = b;}
 
 	// other methods
 	String to_string();
@@ -132,6 +139,11 @@ public:
 	float servo = 0.0;
 
 	bool debug = true;				// useful now to debug on the TSY, but need to send essential info (params...) to the RPI to debug from there
+	
+	bool fwd = false;
+	bool trn = false;
+	bool trnr = false;
+
 	const float BIG_FLOAT = 191919.191919;
 	const int BIG_INT = 2828;
 
@@ -159,6 +171,10 @@ public:
 		SET_PID_M2,			// of the following: 'kp', 'ki'
 		SET_PID_TH,
 		//...	
+
+		FWD,
+		TRN,
+		TRNR
 	};
 
 

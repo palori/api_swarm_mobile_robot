@@ -394,8 +394,8 @@ void setup()
       
 } 
 
-Command RPI_command = TRNR;
-double RPI_value = PI;
+Command RPI_command = FWD;
+double RPI_value = 1.0;
 bool newCommand = true;
 
 
