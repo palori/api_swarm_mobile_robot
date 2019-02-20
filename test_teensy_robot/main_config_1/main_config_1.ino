@@ -7,6 +7,8 @@
 #include <ir.h>
 #include "comm_1.h"
 
+IntervalTimer myTimer;
+
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
 
@@ -294,15 +296,15 @@ void update_velocity(int drive_command){
                 //vel2 = update_PID(angle_ref_abs,odoTh,TURN);
                 //vel1 = -update_PID(angle_ref_abs,odoTh,TURN);
           
-                vel1 = - sign(angle_error) * 0.4;
-                vel2 = sign(angle_error) * 0.4;
+                vel1 = - sign(angle_error) * comm_tsy.get_vel();
+                vel2 = sign(angle_error) * comm_tsy.get_vel();
                 
                 v_max = sign(angle_error) * fabs(sqrt(angle_error * wheels_distance / 2.0)); 
                 vel1 = Saturate(vel1 , v_max);   
                 vel2 = Saturate(vel2 , v_max);
 
-                vel1 = Saturate(vel1 , 0.5);   
-                vel2 = Saturate(vel2 , 0.5);
+                //vel1 = Saturate(vel1 , 0.5);   
+                //vel2 = Saturate(vel2 , 0.5);
                 
                 
                 angle_error = angle_ref_abs - odoTh;
@@ -326,7 +328,7 @@ void update_velocity(int drive_command){
                 double turning_radius = 0.3;
                 double vel_ratio = (turning_radius + wheels_distance / 2.0) / (turning_radius - wheels_distance / 2.0);
                 
-                vel1 = sign(angle_error) * 0.3;
+                vel1 = sign(angle_error) * comm_tsy.get_vel();
                 vel2 = vel1 * vel_ratio;
                 
                 double v_max1 = sign(angle_error) * fabs(sqrt(angle_error * (turning_radius - sign(angle_error) * wheels_distance / 2.0))); 
@@ -369,8 +371,8 @@ void update_velocity(int drive_command){
                 vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
                 vel2 = Saturate(vel2 , v_max);
           
-                vel1 = Saturate(vel1 , 0.5);   
-                vel2 = Saturate(vel2 , 0.5);
+                //vel1 = Saturate(vel1 , 0.5);   
+                //vel2 = Saturate(vel2 , 0.5);
                 
                 Serial.println("vel1: "+String(vel1));
                 Serial.println("vel2: "+String(vel2));
@@ -407,7 +409,7 @@ void setup()
   ir_1.setCalibration();
   ir_2.setCalibration();
 
-  
+  myTimer.begin(update10ms,10000);
       
 } 
 
@@ -419,11 +421,26 @@ int drive_command=-1;
 
 void loop() // @,a=15,b=1,fwd=2,$
 { 
+   Serial.println("1111111111111111111111111");
+   comm_tsy.read_serial();  
+   Serial.println("2222222222222222222222222"); 
+}
 
-    comm_tsy.read_serial();
+void update10ms(){
+
+    Serial.println("time:                    "+String(millis()));
     
+    velocity1 = getVelocity(LEFT_MOTOR , millis());
+    velocity2 = getVelocity(RIGHT_MOTOR , millis());
+    updatePosition((double)encoder1.read() , (double)encoder2.read());   //check overflow, it should overflow when int/double overflows
     
-    if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
+    Serial.println("odoX: "+String(odoX));
+    Serial.println("odoY: "+String(odoY));
+    Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
+    Serial.println("dist1: "+String(ir_1.getDistance()));
+    Serial.println("dist2: "+String(ir_2.getDistance()));    //calibrate each ir sensor, put a value which indicates values out of range
+  
+  if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
     else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
     else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR;
     else {
@@ -456,17 +473,10 @@ void loop() // @,a=15,b=1,fwd=2,$
     motor1.setVelocity(update_PID(vel1,velocity1,VEL1));   
     motor2.setVelocity(update_PID(vel2,velocity2,VEL2));
       
-    delay(10);
+    //delay(10);
 
-    velocity1 = getVelocity(LEFT_MOTOR , millis());
-    velocity2 = getVelocity(RIGHT_MOTOR , millis());
-    updatePosition((double)encoder1.read() , (double)encoder2.read());   //check overflow, it should overflow when int/double overflows
+   
     
-    Serial.println("odoX: "+String(odoX));
-    Serial.println("odoY: "+String(odoY));
-    Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
-    Serial.println("dist1: "+String(ir_1.getDistance()));
-    Serial.println("dist2: "+String(ir_2.getDistance()));    //calibrate each ir sensor, put a value which indicates values out of range
     
   
 }
