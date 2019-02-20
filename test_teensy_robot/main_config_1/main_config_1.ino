@@ -426,6 +426,37 @@ void loop() // @,a=15,b=1,fwd=2,$
    Serial.println("2222222222222222222222222"); 
 }
 
+void emergency_stop();
+
+void read_sensors(){
+
+  double _odo[3] = {odoX, odoY, odoTh};
+  float _ir[2] = {0.0,0.0};
+  int _imu_cmps[3] = {0,0,0};
+  int _imu_gyro[3] = {0,0,0};
+  int _imu_accel[3] = {0,0,0};
+  bool _obstacle_found = false; // closer than a certain especified distance
+  
+
+  if (comm_tsy.get_ir_on()){
+    float _ir[2] = {ir_1.getDistance(), ir_2.getDistance()};
+    
+    if (comm_tsy.get_avoid_obst() && (_ir[0]<comm_tsy.get_obst_dist() || _ir[1]<comm_tsy.get_obst_dist())){
+      // obstacle closer than a certain distance
+      emergency_stop();                               // work on that
+      _obstacle_found = true;
+    }
+  }
+
+  if (comm_tsy.get_imu_on()){
+    int _imu_cmps[3] = {IMU_cmps('X'), IMU_cmps('Y'), IMU_cmps('Z')};
+    int _imu_gyro[3] = {IMU_gyro('X'), IMU_gyro('Y'), IMU_gyro('Z')};
+    int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
+  } 
+ 
+  comm_tsy.write_serial(_odo,_ir,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+}
+
 void update10ms(){
 
     Serial.println("time:                    "+String(millis()));
@@ -437,15 +468,13 @@ void update10ms(){
     Serial.println("odoX: "+String(odoX));
     Serial.println("odoY: "+String(odoY));
     Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
-    Serial.println("dist1: "+String(ir_1.getDistance()));
-    Serial.println("dist2: "+String(ir_2.getDistance()));    //calibrate each ir sensor, put a value which indicates values out of range
-  
-  if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
-    else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
-    else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR;
-    else {
-      drive_command=-1;
-      newCommand=true;
+    
+    if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
+      else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
+      else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR;
+      else {
+        drive_command=-1;
+        newCommand=true;
     }
 
     Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));

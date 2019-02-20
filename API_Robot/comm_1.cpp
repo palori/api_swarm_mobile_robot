@@ -25,13 +25,9 @@ COMM_TSY::~COMM_TSY(){
         c_msg[i] = '0';
     }
 }*/
-void COMM_TSY::write_serial(String msg){ //params might change, maybe add last sensors data
+void COMM_TSY::write_serial(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){ //params might change, maybe add last sensors data
     // modify to add this
-    //sensorData2msg(msg);
-
-
-
-
+    String msg = sensorData2msg(_odo, _ir, _imu_cmps, _imu_gyro, _imu_accel, _obstacle_found);
 
 
 	// String 2 char[]
@@ -209,9 +205,19 @@ void COMM_TSY::msg2params(String msg){
                     case STOP: set_stop(i_val); Serial.println("    Stop = :"+String(i_val));break;
                     case AVOID_OBSTACLES: set_avoid_obst(i_val); break;
 
-                    case IR_ON: set_ir_on(i_val); break;
+                    case IR_ON:
+                        set_ir_on(i_val);
+                        if (i_val==0 && get_ir_send()) set_ir_send(0); // if stop then also stop sending
+                        break;
                     case IR_SEND: set_ir_send(i_val); break;
-                    case IMU_ON: set_imu_on(i_val); break;
+                    case IMU_ON:
+                        set_imu_on(i_val);
+                        if (i_val==0){ // if stop then also stop sending
+                            if (get_imu_gyro_send()) set_imu_gyro_send(0);
+                            if (get_imu_acc_send()) set_imu_acc_send(0);
+                            if (get_imu_comp_send()) set_imu_comp_send(0);
+                        }
+                        break;
                     case IMU_GYRO_SEND: set_imu_gyro_send(i_val); break;
                     case IMU_ACC_SEND: set_imu_acc_send(i_val); break;
                     case IMU_COMP_SEND: set_imu_comp_send(i_val); break;
@@ -304,30 +310,47 @@ void COMM_TSY::msg2params(String msg){
 
 
 // encode the mesage --> old version, need to be updated
-void COMM_TSY::sensorData2msg(String & msg){
-
-	// @@@@ 'send_only_if_updaded' this might mean that we need to keep track of the previous pose
-	// NOT implemented for the moment
+String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){
+    Command command;
 
 	String new_msg = "@";
-    /*if (CPU_IS_RASPBERRY){
-        new_msg += ",s=" + to_string(new_pose.servo);
-        new_msg += ",x=" + to_string(new_pose.x);
-        new_msg += ",y=" + to_string(new_pose.y);
-        new_msg += ",th=" + to_string(new_pose.th);
+
+	new_msg += ","+command.X_w+"=" + String(_odo[0]);
+	new_msg += ","+command.Y_w+"=" + String(_odo[1]);
+	new_msg += ","+command.TH_w+"=" + String(_odo[2]);
+
+    if (get_ir_send()){
+        new_msg += ","+command.IR1+"=" + String(_ir[0]);
+        new_msg += ","+command.IR2+"=" + String(_ir[1]);
     }
-    else{*/
-    	new_msg += ",s=" ;//+ String(new_pose.servo);
-    	new_msg += ",x=" ;//+ String(new_pose.x);
-    	new_msg += ",y=" ;//+ String(new_pose.y);
-    	new_msg += ",th=" ;//+ String(new_pose.th);
-    //}
+
+    if (get_imu_gyro_send()){
+        new_msg += ","+command.GYRO1+"=" + String(_imu_gyro[0]);
+        new_msg += ","+command.GYRO2+"=" + String(_imu_gyro[1]);
+        new_msg += ","+command.GYRO3+"=" + String(_imu_gyro[2]);
+    }
+
+    if (get_imu_acc_send()){
+        new_msg += ","+command.ACC1+"=" + String(_imu_accel[0]);
+        new_msg += ","+command.ACC2+"=" + String(_imu_accel[1]);
+        new_msg += ","+command.ACC3+"=" + String(_imu_accel[2]);
+    }
+
+    if (get_imu_comp_send()){
+        new_msg += ","+command.COMP1+"=" + String(_imu_cmps[0]);
+        new_msg += ","+command.COMP2+"=" + String(_imu_cmps[1]);
+        new_msg += ","+command.COMP3+"=" + String(_imu_cmps[2]);
+    }
+
+    if (get_avoid_obst()){
+        new_msg += ","+command.OD+"=" + String(get_obst_dist());
+        new_msg += ","+command.OF+"=" + String(_obstacle_found);
+    }
+
     new_msg += ",$";
-	// update message
-	msg = new_msg;
 
-	if (get_debug()) Serial.println("Message: " + msg);
+	if (get_debug()) Serial.println("Message: " + new_msg);
+    return new_msg;
 }	
-
 
 

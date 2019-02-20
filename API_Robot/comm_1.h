@@ -24,13 +24,13 @@ class COMM_TSY
 public:
 	COMM_TSY();
 	~COMM_TSY();
-	void write_serial(String msg); // migth have diferent input params
+	void write_serial(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
 	void read_serial();
 
 	// getters if params is not a struct
 	int get_action() {return action;}
 	bool get_connect() {return connect;}
-	bool get_reset_enc() {return reset_enc;}
+	bool get_reset_enc() {return reset_enc;} //not yet
 	bool get_stop() {return stop;}
 	bool get_avoid_obst() {return avoid_obst;}
 	float get_obst_dist() {return obst_dist;}
@@ -140,9 +140,14 @@ public:
 
 	bool debug = true;				// useful now to debug on the TSY, but need to send essential info (params...) to the RPI to debug from there
 	
-	bool fwd = false;
-	bool trn = false;
-	bool trnr = false;
+	bool fwd = false;				// forward mode				// all might be grouped in one integer value (0=idle, 1=fwd, 2=trn, 3=trnr, 4=drive)
+	bool trn = false;				// turn mode
+	bool trnr = false;				// turn with radius mode
+	bool drive = false;				// drive to target mode
+
+	float x_t = 0.0;				// target position
+	float y_t = 0.0;
+	float th_t = 0.0;
 
 	const float BIG_FLOAT = 191919.191919;
 	const int BIG_INT = 2828;
@@ -174,7 +179,8 @@ public:
 
 		FWD,
 		TRN,
-		TRNR
+		TRNR,
+		DRIVE
 	};
 
 
@@ -189,6 +195,26 @@ public:
 		String OD = "od";				// Distance to detect obstacles [mm]
 		String KP = "kp";				// P gain
 		String KI = "ki";				// I gain
+		String X_t = "xt";				// X  coord. of target pose (in robot coord. syst.)
+		String Y_t = "yt";				// Y  coord. of target pose (in robot coord. syst.)
+		String TH_t = "tht";			// Th coord. of target pose (in robot coord. syst.)
+
+		String X_w = "xw";				// X  coord. of robot pose (in world coord. syst.)
+		String Y_w = "yw";				// Y  coord. of robot pose (in world coord. syst.)
+		String TH_w = "thw";			// Th coord. of robot pose (in world coord. syst.)
+		String IR1 = "ir1";				// ir 1, sensor value
+		String IR2 = "ir2";				// ir 2, sensor value
+		String GYRO1 = "g1";			// gyroscope 1, sensor value
+		String GYRO2 = "g2";			// gyroscope 2, sensor value
+		String GYRO3 = "g3";			// gyroscope 3, sensor value
+		String ACC1 = "a1";				// accelerometer 1, sensor value
+		String ACC2 = "a2";				// accelerometer 2, sensor value
+		String ACC3 = "a3";				// accelerometer 3, sensor value
+		String COMP1 = "c1";			// compass 1, sensor value
+		String COMP2 = "c2";			// compass 2, sensor value
+		String COMP3 = "c3";			// compass 3, sensor value
+		String OF = "of";				// obstacle found
+
 	};
 
 
@@ -196,7 +222,7 @@ public:
 	void msg2params(String msg);
 
 	// encode the target to send the message
-	void sensorData2msg(String & msg); // might need to get last data from sensors as input
+	String sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
 
 
 
