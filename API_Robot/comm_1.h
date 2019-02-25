@@ -62,6 +62,11 @@ public:
 	bool get_fwd() {return fwd;}
 	bool get_trn() {return trn;}
 	bool get_trnr() {return trnr;}
+	bool get_drive() {return drive;}	// drive to target position
+
+	float get_x_t() {return x_t;}		// target position in Robot coord. syst.
+	float get_y_t() {return y_t;}
+	float get_th_t() {return th_t;}
 
 
 	// setters if params is not a struct
@@ -99,6 +104,11 @@ public:
 	void set_fwd(bool b) {fwd = b;}
 	void set_trn(bool b) {trn = b;}
 	void set_trnr(bool b) {trnr = b;}
+	void set_drive(bool b) {drive = b;}
+
+	void set_x_t(float f) {x_t = f;}
+	void set_y_t(float f) {y_t = f;}
+	void set_th_t(float f) {th_t = f;}
 
 	// other methods
 	String to_string();
@@ -145,7 +155,7 @@ public:
 	bool trnr = false;				// turn with radius mode
 	bool drive = false;				// drive to target mode
 
-	float x_t = 0.0;				// target position
+	float x_t = 0.0;				// target position in Robot coord. syst.
 	float y_t = 0.0;
 	float th_t = 0.0;
 

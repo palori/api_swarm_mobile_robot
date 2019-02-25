@@ -229,6 +229,7 @@ void COMM_TSY::msg2params(String msg){
                     case FWD: set_fwd(i_val); break;
                     case TRN: set_trn(i_val); break;
                     case TRNR: set_trnr(i_val); break;
+                    case DRIVE: set_drive(i_val); break;
 
                     default: if(get_debug()){Serial.println("Incorect action.");} break;
                         
@@ -241,41 +242,53 @@ void COMM_TSY::msg2params(String msg){
         // The following commands can be sent at any time
         else if (words[i] == command.FWD){
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {set_fwd_dist(val);}
+            if (val != BIG_FLOAT) {set_fwd_dist(val);}
 
         }
         else if (words[i] == command.TRN){
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {set_trn_deg(val);}
+            if (val != BIG_FLOAT) {set_trn_deg(val);}
 
         }
         else if (words[i] == command.TRNR){
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {set_trn_r(val);}
+            if (val != BIG_FLOAT) {set_trn_r(val);}
 
         }
         else if (words[i] == command.V){
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {set_vel(val);}
+            if (val != BIG_FLOAT) {set_vel(val);}
         }
         else if (words[i] == command.S){
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {set_servo(val);}
+            if (val != BIG_FLOAT) {set_servo(val);}
 
         }
         else if (words[i] == command.OD){
             // obstacle distance -> IR will force to stop if distance
             // is <=od and avoid_obst==true
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {set_obst_dist(val);}
+            if (val != BIG_FLOAT) {set_obst_dist(val);}
         }
 
+        else if (words[i] == command.X_t){
+            val = words[i+1].toFloat();
+            if (val != BIG_FLOAT) {set_x_t(val);}
+        }
+        else if (words[i] == command.Y_t){
+            val = words[i+1].toFloat();
+            if (val != BIG_FLOAT) {set_y_t(val);}
+        }
+        else if (words[i] == command.TH_t){
+            val = words[i+1].toFloat();
+            if (val != BIG_FLOAT) {set_th_t(val);}
+        }
 
 
         // The following commands need to follow the action of setting a PID
         else if (words[i] == command.KP){
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {
+            if (val != BIG_FLOAT) {
                 switch (get_action()){
                     case SET_PID_M1: set_m1_kp(val); break;
                     case SET_PID_M2: set_m2_kp(val); break;
@@ -286,7 +299,7 @@ void COMM_TSY::msg2params(String msg){
         }
         else if (words[i] == command.KI){
             val = words[i+1].toFloat();
-            if (val != BIG_INT) {
+            if (val != BIG_FLOAT) {
                 switch (get_action()){
                     case SET_PID_M1: set_m1_ki(val); break;
                     case SET_PID_M2: set_m2_ki(val); break;
@@ -313,6 +326,13 @@ void COMM_TSY::msg2params(String msg){
 String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){
     Command command;
 
+    /*
+        if most of them want to be send, might want to split them
+        into two messages (or more)
+    */
+
+
+
 	String new_msg = "@";
 
 	new_msg += ","+command.X_w+"=" + String(_odo[0]);
@@ -322,6 +342,11 @@ String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], 
     if (get_ir_send()){
         new_msg += ","+command.IR1+"=" + String(_ir[0]);
         new_msg += ","+command.IR2+"=" + String(_ir[1]);
+    }
+
+    if (get_avoid_obst()){
+        new_msg += ","+command.OD+"=" + String(get_obst_dist());
+        new_msg += ","+command.OF+"=" + String(_obstacle_found);
     }
 
     if (get_imu_gyro_send()){
@@ -340,11 +365,6 @@ String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], 
         new_msg += ","+command.COMP1+"=" + String(_imu_cmps[0]);
         new_msg += ","+command.COMP2+"=" + String(_imu_cmps[1]);
         new_msg += ","+command.COMP3+"=" + String(_imu_cmps[2]);
-    }
-
-    if (get_avoid_obst()){
-        new_msg += ","+command.OD+"=" + String(get_obst_dist());
-        new_msg += ","+command.OF+"=" + String(_obstacle_found);
     }
 
     new_msg += ",$";
