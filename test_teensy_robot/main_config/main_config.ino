@@ -85,13 +85,26 @@ double dist_error = 0.0;
 double dist_curr = 0.0;
 double angle_ref_abs = 0.0;
 double angle_error = 0.0;
-enum Command {TRN, FWD, TRNR};
+enum Command {TRN, FWD, TRNR, DRIVE};
+
+//drive function
+double ThTw=0.0;
+double XTw=0.0;
+double YTw=0.0;
+
+double dX=0.0;
+double dY=0.0;
+double dTh=0.0;
+
+double kp=0.3;
+double ka=0.8;
+double kb=-0.15; 
 
 
 
 double sign(double in){
   if (in < 0) return -1.0;
-  if (in >= 0) return 1.0;  
+  else return 1.0;  
 }
 
 double WrapTo2PI(double ang){ 
@@ -170,6 +183,22 @@ double PID(double referent_value, double current_value, int index){
     return KP[index] * e[index] + KI[index] * e_i[index];
   
 }
+
+double transformX (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double XT=cos(ThTw)*(Xw-XTw)+sin(ThTw)*(Yw-YTw);
+    return XT;
+} 
+
+double transformY (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double YT=-sin(ThTw)*(Xw-XTw)+cos(ThTw)*(Yw-YTw);
+    return YT;  
+} 
+
+double transformTh (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double ThT=Thw-ThTw; 
+    return ThT; 
+} 
+
 
 void setUpIMU(){
   
@@ -279,6 +308,23 @@ void turnr(double angle_ref){
     
 }
 
+void drive(double Xr, double Yr, double Thr) {
+
+  
+    ThTw=odoTh+Thr;
+    XTw=cos(odoTh)*Xr-sin(odoTh)*Yr+odoX;
+    YTw=sin(odoTh)*Xr+cos(odoTh)*Yr+odoY;
+    
+    dX=-transformX(odoX,odoY,odoTh,XTw,YTw,ThTw);
+    dY=-transformY(odoX,odoY,odoTh,XTw,YTw,ThTw);
+    dTh=transformTh(odoX,odoY,odoTh,XTw,YTw,ThTw);
+
+    enableMotors();
+    initializePID(VEL1,2*Kp,Ki,0.01);
+    initializePID(VEL2,2*Kp,Ki,0.01);
+}
+
+
 void update_velocity(Command RPI_command, double RPI_value){
   
   // forward:
@@ -369,6 +415,45 @@ void update_velocity(Command RPI_command, double RPI_value){
                 disableMotors();       
             }
           break;
+
+       case DRIVE:
+
+            if ((fabs(dX)>0.02) || (fabs(dY)>0.02)){
+      
+              double P=sqrt(pow(dX,2)+pow(dY,2));
+              double A=-dTh+atan2(dY,dX);
+              double B=-dTh-A;
+        
+              Serial.println("P: "+String(P));
+              Serial.println("A: "+String(A));
+              Serial.println("B: "+String(B));
+              
+              double v=kp*P;
+              double w=ka*A+kb*B;
+          
+              vel1=v-(w*wheels_distance)/2;  //check if minus and plus are fine, seems 
+              vel2=v+(w*wheels_distance)/2;
+        
+              Serial.println("dX: "+String(dX));
+              Serial.println("dY: "+String(dY));
+              
+              vel1 = Saturate(vel1 , 0.5);   
+              vel2 = Saturate(vel2 , 0.5);
+               
+        
+              dX=-transformX(odoX,odoY,odoTh,XTw,YTw,ThTw);
+              dY=-transformY(odoX,odoY,odoTh,XTw,YTw,ThTw);
+              dTh=transformTh(odoX,odoY,odoTh,XTw,YTw,ThTw);
+              
+           }  else {
+            
+              vel1 = 0.1;
+              vel2 = 0.1;
+              disableMotors(); 
+           }
+
+        break;
+        
   }
 
 }
@@ -395,7 +480,7 @@ void setup()
 } 
 
 Command RPI_command = FWD;
-double RPI_value = 1.0;
+double RPI_value = 0.1;
 bool newCommand = true;
 
 
@@ -407,15 +492,22 @@ void loop()
       switch (RPI_command) {
         case TRN:
           turn(RPI_value);
+          newCommand = false;
           break;
         case FWD:
           forward(RPI_value);
+          newCommand = false;
           break;
         case TRNR:
           turnr(RPI_value);
+          newCommand = false;
+          break;
+        case DRIVE:
+          drive(0.5,0.0,-0.78);
+          newCommand = false;
           break;
       }
-      newCommand = false;
+      
     }
     
     update_velocity(RPI_command,RPI_value);

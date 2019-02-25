@@ -6,8 +6,11 @@
 #include "imu.h"
 #include <ir.h>
 #include "comm_1.h"
+#include <Servo.h>
 
 IntervalTimer myTimer;
+
+Servo myServo;
 
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
@@ -91,6 +94,19 @@ double angle_ref_abs = 0.0;
 double angle_error = 0.0;
 enum Command {TRN, FWD, TRNR};
 bool newCommand = true;
+
+//drive function
+double ThTw=0.0;
+double XTw=0.0;
+double YTw=0.0;
+
+double dX=0.0;
+double dY=0.0;
+double dTh=0.0;
+
+double kp=0.3;
+double ka=0.8;
+double kb=-0.15; 
 
 
 
@@ -176,6 +192,22 @@ double update_PID(double referent_value, double current_value, int index){
   
 }
 
+double transformX (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double XT=cos(ThTw)*(Xw-XTw)+sin(ThTw)*(Yw-YTw);
+    return XT;
+} 
+
+double transformY (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double YT=-sin(ThTw)*(Xw-XTw)+cos(ThTw)*(Yw-YTw);
+    return YT;  
+} 
+
+double transformTh (double Xw, double Yw, double Thw, double XTw, double YTw, double ThTw){
+    double ThT=Thw-ThTw; 
+    return ThT; 
+} 
+
+
 void setUpIMU(){
   
     // Initialize the 'Wire' class for the I2C-bus.
@@ -254,6 +286,8 @@ void forward(double dist_ref){
 
 void turn(double angle_ref){
 
+    //angle_ref=WrapTo2PI(angle_ref);
+    
     if (fabs(angle_ref) > PI) angle_ref = 2 * PI - sign(angle_ref) * angle_ref; //makes sure to turn in the right direction
     
     Th_0 = odoTh;
@@ -263,8 +297,8 @@ void turn(double angle_ref){
     enableMotors();
     
     //initializePID(TURN,Kp_Th,Ki_Th,0.01);
-    initializePID(VEL1,Kp,Ki,0.01);
-    initializePID(VEL2,Kp,Ki,0.01);
+    initializePID(VEL1,3*Kp,Ki,0.01);
+    initializePID(VEL2,3*Kp,Ki,0.01);
     
 }
 
@@ -284,6 +318,22 @@ void turnr(double angle_ref){
     
 }
 
+void drive(double Xr, double Yr, double Thr) {
+
+  
+    ThTw=odoTh+Thr;
+    XTw=cos(odoTh)*Xr-sin(odoTh)*Yr+odoX;
+    YTw=sin(odoTh)*Xr+cos(odoTh)*Yr+odoY;
+    
+    dX=-transformX(odoX,odoY,odoTh,XTw,YTw,ThTw);
+    dY=-transformY(odoX,odoY,odoTh,XTw,YTw,ThTw);
+    dTh=transformTh(odoX,odoY,odoTh,XTw,YTw,ThTw);
+
+    enableMotors();
+    initializePID(VEL1,2*Kp,Ki,0.01);
+    initializePID(VEL2,2*Kp,Ki,0.01);
+}
+
 void update_velocity(int drive_command){
 
   
@@ -299,16 +349,15 @@ void update_velocity(int drive_command){
                 vel1 = - sign(angle_error) * comm_tsy.get_vel();
                 vel2 = sign(angle_error) * comm_tsy.get_vel();
                 
-                v_max = sign(angle_error) * fabs(sqrt(angle_error * wheels_distance / 2.0)); 
+                v_max = sqrt(fabs(angle_error) * wheels_distance / 2.0); 
                 vel1 = Saturate(vel1 , v_max);   
                 vel2 = Saturate(vel2 , v_max);
 
                 //vel1 = Saturate(vel1 , 0.5);   
                 //vel2 = Saturate(vel2 , 0.5);
                 
-                
                 angle_error = angle_ref_abs - odoTh;
-                Serial.println("angle error:"+String(angle_error));
+                //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
                 vel1 = 0.1;
@@ -331,8 +380,8 @@ void update_velocity(int drive_command){
                 vel1 = sign(angle_error) * comm_tsy.get_vel();
                 vel2 = vel1 * vel_ratio;
                 
-                double v_max1 = sign(angle_error) * fabs(sqrt(angle_error * (turning_radius - sign(angle_error) * wheels_distance / 2.0))); 
-                double v_max2 = sign(angle_error) * fabs(sqrt(angle_error * (turning_radius + sign(angle_error) * wheels_distance / 2.0)));
+                double v_max1 = sign(angle_error) * sqrt(fabs(angle_error * (turning_radius - sign(angle_error) * wheels_distance / 2.0))); 
+                double v_max2 = sign(angle_error) * sqrt(fabs(angle_error * (turning_radius + sign(angle_error) * wheels_distance / 2.0)));
                 
                 if (angle_error > 0.0) {
                   vel2 = Saturate(vel2 , v_max2);
@@ -400,7 +449,6 @@ void setup()
   setUpPowerPins(); 
   setUpIMU();
     
-
   enableMotors();
     
   motor1.setVelocity(input);   //sets motor to small speed where they dont move
@@ -410,7 +458,8 @@ void setup()
   ir_2.setCalibration();
 
   myTimer.begin(update10ms,10000);
-      
+  myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
+   
 } 
 
 Command RPI_command = TRNR;
@@ -429,13 +478,14 @@ void loop() // @,a=15,b=1,fwd=2,$
 void update10ms(){
 
     Serial.println("time:                    "+String(millis()));
-    
+    Serial.println("angle ref abs:                                "+String(angle_ref_abs));
     velocity1 = getVelocity(LEFT_MOTOR , millis());
     velocity2 = getVelocity(RIGHT_MOTOR , millis());
     updatePosition((double)encoder1.read() , (double)encoder2.read());   //check overflow, it should overflow when int/double overflows
     
     Serial.println("odoX: "+String(odoX));
     Serial.println("odoY: "+String(odoY));
+    //Serial.println("odoTh: "+String(odoTh));
     Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
     Serial.println("dist1: "+String(ir_1.getDistance()));
     Serial.println("dist2: "+String(ir_2.getDistance()));    //calibrate each ir sensor, put a value which indicates values out of range

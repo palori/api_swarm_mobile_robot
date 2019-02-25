@@ -4,7 +4,6 @@
 #include <Encoder.h>
 #include <math.h>
 
-
 Motor motor1(LEFT_MOTOR);
 Motor motor2(RIGHT_MOTOR);
 
@@ -157,6 +156,7 @@ void drive(double Xr, double Yr, double Thr) {
     double YT=transformY(odoX,odoY,odoTh,XTw,YTw,ThTw);
     double ThT=transformTh(odoX,odoY,odoTh,XTw,YTw,ThTw);
 
+
     double dX=-XT;
     double dY=-YT;
     double dTh=ThT;
@@ -174,8 +174,8 @@ void drive(double Xr, double Yr, double Thr) {
       double v=kp*P;
       double w=ka*A+kb*B;
   
-      double v1=v+(w*wheels_distance)/2;  //check if minus and plus are fine, seems 
-      double v2=v-(w*wheels_distance)/2;
+      double v1=v-(w*wheels_distance)/2;  //check if minus and plus are fine, seems 
+      double v2=v+(w*wheels_distance)/2;
 
       Serial.println("v1: "+String(v1));
       Serial.println("v2: "+String(v2));
@@ -206,7 +206,7 @@ void drive(double Xr, double Yr, double Thr) {
       dX=-XT;
       dY=-YT;
       dTh=ThT;
-   }   
+   }  
 }
 
 

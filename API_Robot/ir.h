@@ -2,6 +2,7 @@
 #define ir_h
 
 #include "Arduino.h"
+#include "pins.h"
 
 class IR
 {
@@ -20,8 +21,10 @@ private:
 	//uint16_t irCal40cm;
 	uint16_t irCal80cm;
 	uint16_t _irRaw;
-	float irA;
-	float irB;
+	float irA_left;
+	float irB_left;
+	float irA_right;
+	float irB_right;
 	float _dist;
 };
 
