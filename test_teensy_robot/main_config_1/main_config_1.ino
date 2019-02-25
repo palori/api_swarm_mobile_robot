@@ -334,12 +334,31 @@ void drive(double Xr, double Yr, double Thr) {
     initializePID(VEL2,2*Kp,Ki,0.01);
 }
 
+void emergency_stop(){   //shouldnt wait until new command = true
+
+    
+    initializePID(VEL1,Kp,Ki,0.01);
+    initializePID(VEL2,Kp,Ki,0.01);
+  
+};
+
+
 void update_velocity(int drive_command){
 
   
   // forward:
 
   switch (drive_command) {
+
+        case comm_tsy.STOP:
+            if (fabs(velocity1)<0.05 && fabs(velocity2)<0.05) {
+              disableMotors(); 
+              newCommand = true;
+              comm_tsy.set_stop(false);     
+            } else {
+              vel1=0;
+              vel2=0; 
+            }
         case comm_tsy.TRN:
             if (fabs(angle_error)>0.01){
       
@@ -437,11 +456,49 @@ void update_velocity(int drive_command){
                 comm_tsy.set_fwd(false); 
             }
           break;
+
+       case comm_tsy.DRIVE:
+
+            if ((fabs(dX)>0.02) || (fabs(dY)>0.02)){
+      
+              double P = sqrt(pow(dX,2) + pow(dY,2));
+              double A = - dTh + atan2(dY,dX);
+              double B = - dTh - A;
+        
+              Serial.println("P: "+String(P));
+              Serial.println("A: "+String(A));
+              Serial.println("B: "+String(B));
+              
+              double v = kp * P;
+              double w = ka * A + kb * B;
+          
+              vel1 = v - (w * wheels_distance) / 2;  //check if minus and plus are fine, seems 
+              vel2 = v + (w * wheels_distance) / 2;
+        
+              Serial.println("dX: "+String(dX));
+              Serial.println("dY: "+String(dY));
+              
+              vel1 = Saturate(vel1 , 0.5);   
+              vel2 = Saturate(vel2 , 0.5);
+               
+        
+              dX = -transformX(odoX,odoY,odoTh,XTw,YTw,ThTw);
+              dY = -transformY(odoX,odoY,odoTh,XTw,YTw,ThTw);
+              dTh = transformTh(odoX,odoY,odoTh,XTw,YTw,ThTw);
+              
+           }  else {
+            
+              vel1 = 0.1;
+              vel2 = 0.1;
+              disableMotors(); 
+           }
+
+        break;
   }
 
 }
 
-double input=0.1;
+double input=0.05;
  
 void setup() 
 { 
@@ -475,7 +532,6 @@ void loop() // @,a=15,b=1,fwd=2,$
    Serial.println("2222222222222222222222222"); 
 }
 
-void emergency_stop();
 
 void read_sensors(){
 
@@ -519,17 +575,23 @@ void update10ms(){
     //Serial.println("odoTh: "+String(odoTh));
     Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
     
-    if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
+    if (comm_tsy.get_stop()) drive_command = comm_tsy.STOP;
+      else if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
       else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
       else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR;
+      else if (comm_tsy.get_drive()) drive_command = comm_tsy.DRIVE;
       else {
         drive_command=-1;
         newCommand=true;
     }
 
     Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));
-    if (newCommand == true){
+    if (newCommand == true || comm_tsy.get_stop()){
       switch (drive_command) {
+        case comm_tsy.STOP:
+          emergency_stop();
+          newCommand = false;
+          break;
         case comm_tsy.TRN:
           turn(double(comm_tsy.get_trn_deg()));
           newCommand = false;
@@ -542,6 +604,10 @@ void update10ms(){
         case comm_tsy.TRNR:
           turnr(double(comm_tsy.get_trn_deg()));
           newCommand = false;
+          break;
+        case comm_tsy.DRIVE:
+          drive(double(comm_tsy.get_x_t()),double(comm_tsy.get_y_t()),double(comm_tsy.get_th_t()));
+          newCommand=false;
           break;
       }
       //newCommand = false;
