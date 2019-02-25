@@ -225,9 +225,9 @@ void send_msg(string msg){
 
 void test_read_comm1(){
 
-    send_msg("@,a=0,b=1,fwd=10,$");
-    usleep(10000000);
-    send_msg("@,a=2,b=1,v=0.4$");
+    send_msg("@,a=0,b=1,fwd=3,$");
+    //usleep(10000000);
+    //send_msg("@,a=2,b=1,v=0.4$");
 }
 
 

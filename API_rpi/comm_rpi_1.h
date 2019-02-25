@@ -74,7 +74,7 @@ public:
 
 
 	// other methods
-	String to_string();
+	string to_string();
 	void debug_params();
 
 private:
@@ -108,16 +108,16 @@ private:
 	};
 
 	struct Command {
-		String A = 'a';					// Action
-		String B = 'b';					// Value of the action
-		String FWD = "fwd";				// Drive forward a certain distance [mm]
-		String TRN = "trn";				// Turn certain degrees [º]
-		String TRNR = "trnr";			// Turning radius [mm]
-		String V = "v";					// Maximum speed [mm/s]
-		String S = "s";					// Servo position [?]
-		String OD = "od";				// Distance to detect obstacles [mm]
-		String KP = "kp";				// P gain
-		String KI = "ki";				// I gain
+		string A = 'a';					// Action
+		string B = 'b';					// Value of the action
+		string FWD = "fwd";				// Drive forward a certain distance [mm]
+		string TRN = "trn";				// Turn certain degrees [º]
+		string TRNR = "trnr";			// Turning radius [mm]
+		string V = "v";					// Maximum speed [mm/s]
+		string S = "s";					// Servo position [?]
+		string OD = "od";				// Distance to detect obstacles [mm]
+		string KP = "kp";				// P gain
+		string KI = "ki";				// I gain
 	};
 
 
