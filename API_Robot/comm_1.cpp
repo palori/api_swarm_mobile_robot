@@ -209,7 +209,10 @@ void COMM_TSY::msg2params(String msg){
                         set_ir_on(i_val);
                         if (i_val==0 && get_ir_send()) set_ir_send(0); // if stop then also stop sending
                         break;
-                    case IR_SEND: set_ir_send(i_val); break;
+                    case IR_SEND:
+                        if (i_val==1) set_ir_on(i_val);
+                        set_ir_send(i_val);
+                        break;
                     case IMU_ON:
                         set_imu_on(i_val);
                         if (i_val==0){ // if stop then also stop sending
@@ -218,9 +221,18 @@ void COMM_TSY::msg2params(String msg){
                             if (get_imu_comp_send()) set_imu_comp_send(0);
                         }
                         break;
-                    case IMU_GYRO_SEND: set_imu_gyro_send(i_val); break;
-                    case IMU_ACC_SEND: set_imu_acc_send(i_val); break;
-                    case IMU_COMP_SEND: set_imu_comp_send(i_val); break;
+                    case IMU_GYRO_SEND:
+                        if (i_val==1) set_imu_on(i_val);
+                        set_imu_gyro_send(i_val);
+                        break;
+                    case IMU_ACC_SEND:
+                        if (i_val==1) set_imu_on(i_val);
+                        set_imu_acc_send(i_val);
+                        break;
+                    case IMU_COMP_SEND:
+                        if (i_val==1) set_imu_on(i_val);
+                        set_imu_comp_send(i_val);
+                        break;
 
                     case MOTORS_ON: set_motors_on(i_val); break;
 
@@ -231,7 +243,7 @@ void COMM_TSY::msg2params(String msg){
                     case TRNR: set_trnr(i_val); break;
                     case DRIVE: set_drive(i_val); break;
 
-                    default: if(get_debug()){Serial.println("Incorect action.");} break;
+                    default: if(get_debug()){Serial.println("Incorrect action.");} break;
                         
                 }
             
@@ -309,7 +321,7 @@ void COMM_TSY::msg2params(String msg){
             }
         }
         else {
-            if(get_debug()){Serial.println("Incorect parameter.");}
+            if(get_debug()){Serial.println("Incorrect parameter.");}
             case_found = false;
         }
 
