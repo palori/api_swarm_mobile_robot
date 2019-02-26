@@ -94,6 +94,7 @@ double angle_ref_abs = 0.0;
 double angle_error = 0.0;
 enum Command {TRN, FWD, TRNR};
 bool newCommand = true;
+bool new_drive = false;
 
 //drive function
 double ThTw=0.0;
@@ -335,7 +336,12 @@ void drive(double Xr, double Yr, double Thr) {
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
-
+  
+    comm_tsy.set_fwd(false);
+    comm_tsy.set_trn(false);
+    comm_tsy.set_trnr(false);
+    comm_tsy.set_drive(false); 
+    
     
     initializePID(VEL1,Kp,Ki,0.01);
     initializePID(VEL2,Kp,Ki,0.01);
@@ -459,7 +465,7 @@ void update_velocity(int drive_command){
 
        case comm_tsy.DRIVE:
 
-            if ((fabs(dX)>0.02) || (fabs(dY)>0.02)){
+            if ((fabs(dX)>0.05) || (fabs(dY)>0.05)){
       
               double P = sqrt(pow(dX,2) + pow(dY,2));
               double A = - dTh + atan2(dY,dX);
@@ -491,6 +497,8 @@ void update_velocity(int drive_command){
               vel1 = 0.1;
               vel2 = 0.1;
               disableMotors(); 
+              newCommand = true;    
+              comm_tsy.set_drive(false); 
            }
 
         break;
@@ -523,13 +531,17 @@ Command RPI_command = TRNR;
 double RPI_value = PI;
 
 int drive_command=-1;
-
+int pos=0;
 
 void loop() // @,a=15,b=1,fwd=2,$
 { 
+   
    Serial.println("1111111111111111111111111");
    comm_tsy.read_serial();  
    Serial.println("2222222222222222222222222"); 
+   read_sensors();
+   Serial.println("3333333333333333333333333");
+
 }
 
 
@@ -544,11 +556,13 @@ void read_sensors(){
   
 
   if (comm_tsy.get_ir_on()){
-    float _ir[2] = {ir_1.getDistance(), ir_2.getDistance()};
+     _ir[0] = ir_1.getDistance();
+     _ir[1] = ir_2.getDistance();
     
     if (comm_tsy.get_avoid_obst() && (_ir[0]<comm_tsy.get_obst_dist() || _ir[1]<comm_tsy.get_obst_dist())){
       // obstacle closer than a certain distance
-      emergency_stop();                               // work on that
+      //emergency_stop();                               // work on that
+      comm_tsy.set_stop(true);
       _obstacle_found = true;
     }
   }
@@ -574,19 +588,24 @@ void update10ms(){
     Serial.println("odoY: "+String(odoY));
     //Serial.println("odoTh: "+String(odoTh));
     Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
+    Serial.println("ir1: "+String(ir_1.getDistance()));
+    Serial.println("ir1: "+String(ir_2.getDistance()));
+    
     
     if (comm_tsy.get_stop()) drive_command = comm_tsy.STOP;
+      else if (comm_tsy.get_drive()) drive_command = comm_tsy.DRIVE;
       else if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
       else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
-      else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR;
-      else if (comm_tsy.get_drive()) drive_command = comm_tsy.DRIVE;
+      else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR; 
       else {
         drive_command=-1;
         newCommand=true;
     }
 
+    
+
     Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));
-    if (newCommand == true || comm_tsy.get_stop()){
+    if (newCommand == true || comm_tsy.get_stop() || new_drive){
       switch (drive_command) {
         case comm_tsy.STOP:
           emergency_stop();
@@ -597,7 +616,6 @@ void update10ms(){
           newCommand = false;
           break;
         case comm_tsy.FWD:
-          Serial.println("*****FWD*********************************************");
           forward(double(comm_tsy.get_fwd_dist()));
           newCommand = false;
           break;
@@ -611,7 +629,8 @@ void update10ms(){
           break;
       }
       //newCommand = false;
-    }
+    } 
+    
     
     update_velocity(drive_command);
 
