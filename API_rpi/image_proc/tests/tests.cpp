@@ -177,6 +177,8 @@ int main( )
     string image_name = "image_20180302_161046.359_005.png";
     //string image_name = "image_20180302_161159.774_015.png";
     string image_path = path + image_name;
+
+    image_path = "detect_line/image_example.png";
     Mat img, ch1, ch2, ch3;
     img = imread(image_path, CV_LOAD_IMAGE_COLOR);  
     display_image(img, "img4");
@@ -257,18 +259,32 @@ int main( )
 
     // Wait for a key stroke; the same function arranges events processing
     waitKey(0);
+    bool save_pictures = false;
+    if(save_pictures){
+        try {
+            imwrite("images/img.png", img);
+            imwrite("images/img_gray.png", img_gray);
+            imwrite("images/img_blur.png", img_blur);
+            imwrite("images/img_bin.png", bin);
+        }
+        catch (runtime_error& ex) {
+            fprintf(stderr, "Exception converting image to PNG format: %s\n", ex.what());
+            return 1;
+        }
 
-    try {
-        imwrite("images/img.png", img);
-        imwrite("images/img_gray.png", img_gray);
-        imwrite("images/img_blur.png", img_blur);
-        imwrite("images/img_bin.png", bin);
-    }
-    catch (runtime_error& ex) {
-        fprintf(stderr, "Exception converting image to PNG format: %s\n", ex.what());
-        return 1;
+        fprintf(stdout, "Saved PNG file with alpha data.\n");                                       
     }
 
-    fprintf(stdout, "Saved PNG file with alpha data.\n");                                       
+
+    //Printing white pixels
+    cout << "\n\nBinary values:";
+    for(int i = 0; i < 960; i+=2){
+        cout << endl << "[" << i << "] ";
+        for(int j = 0; j < 1280; j+=2){
+            if(0!= bin.at<uchar>(i,j)) cout << bin.at<uchar>(i,j);
+            else cout << " ";
+        }
+    }
+
     return 0;
 }
