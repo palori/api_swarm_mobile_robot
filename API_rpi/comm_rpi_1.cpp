@@ -1,6 +1,9 @@
 
 #include "comm_rpi_1.h"
 
+COMM_RPI::COMM_RPI(){}
+COMM_RPI::~COMM_RPI(){}
+
 void COMM_RPI::serial_open(){
 
     // Just in case some possible port was open, let's close them
@@ -15,15 +18,14 @@ void COMM_RPI::serial_open(){
 
     int fd = open(USB_SERIAL_PORT, O_RDWR | O_NOCTTY);
     set_fd(fd);
-    if (print_msg){
-        if(get_fd()==1){
-            printf("\n  Serial port: error opening\n");
-            set_port_open(false);
-        }
-        else{
-            printf("\n  Serial port: opened\n");
-            set_port_open(true);
-        }
+
+    if(get_fd()==1) set_port_open(false);
+    else set_port_open(true);
+
+
+    if (get_debug()){
+        if(get_fd()==1) printf("\n  Serial port: error opening\n");
+        else printf("\n  Serial port: opened\n");
     }
 }
 
@@ -129,7 +131,7 @@ string COMM_RPI::serial_read(){ //read_char_by_char
             msg[msg_count]+='\0';
         }
 
-        if (print_msg) cout << "msg: " << msg << endl;
+        if (get_debug()) cout << "msg: " << msg << endl;
 
         return msg;
     }
@@ -171,7 +173,7 @@ void COMM_RPI::msg2sensorData(string msg){          // STILL TO WORK ON IT!
         }
         else if(*pch!='$' && store) {
             words.push_back(pch);
-            if (print_msg){
+            if (get_debug()){
                 printf ("%s\n",pch);
             }
         }
@@ -182,36 +184,37 @@ void COMM_RPI::msg2sensorData(string msg){          // STILL TO WORK ON IT!
     for (uint i=0; i<words.size(); i++){
         if(words.at(i) == "s"){
             float val = str2float(words.at(i+1));
-            if (val != BIG_NUM) {
-                new_pose.servo = val;
+            if (val != BIG_FLOAT) {
+                //new_pose.servo = val;
                 i++;
             }
         }
         else if(words.at(i) == "x"){
             float val = str2float(words.at(i+1));
-            if (val != BIG_NUM) {
-                new_pose.x = val;
+            if (val != BIG_FLOAT) {
+                //new_pose.x = val;
                 i++;
             }
         }
         else if(words.at(i) == "y"){
             float val = str2float(words.at(i+1));
-            if (val != BIG_NUM) {
-                new_pose.y = val;
+            if (val != BIG_FLOAT) {
+                //new_pose.y = val;
                 i++;
             }
         }
         else if(words.at(i) == "th"){
             float val = str2float(words.at(i+1));
-            if (val != BIG_NUM) {
-                new_pose.th = val;
+            if (val != BIG_FLOAT) {
+                //new_pose.th = val;
                 i++;
             }
         }
     }
 
-    if (print_msg){ // show that results are saved
-        print_target(new_pose);
+    if (get_debug()){ // show that results are saved
+        //print_target(new_pose);
+        cout << "target: " << endl;
     }
 }
 
@@ -230,16 +233,16 @@ void COMM_RPI::params2msg(string & msg){        // STILL TO WORK ON IT!
     // NOT implemented for the moment
 
     string new_msg = "@";
-    new_msg += ",s=" + to_string(new_pose.servo);
-    new_msg += ",x=" + to_string(new_pose.x);
-    new_msg += ",y=" + to_string(new_pose.y);
-    new_msg += ",th=" + to_string(new_pose.th);
+    new_msg += ",s=" + to_string(0.0);
+    new_msg += ",x=" + to_string(0.0);
+    new_msg += ",y=" + to_string(0.0);
+    new_msg += ",th=" + to_string(0.0);
     new_msg += ",$";
 
     // update message
     msg = new_msg;
 
-    if (print_msg) cout << "Message: " << msg << endl;
+    if (get_debug()) cout << "Message: " << msg << endl;
 }   
 
 

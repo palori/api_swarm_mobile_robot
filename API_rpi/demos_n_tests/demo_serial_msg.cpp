@@ -5,14 +5,14 @@
 //#include "../comm/comm_msg.h"
 //#include "../comm/comm_serial.h"
 #include <thread>
-#include "../comm_rpi.h"
+//#include "../comm_rpi.h"
 #include "../comm_rpi_1.h"
 
 
 /****************
  * SERIAL TESTS *
  ****************/
-
+/*
 string test_read_serial(){
     string msg = "";
     int fd = serial_open(false);
@@ -40,7 +40,8 @@ string test_read_serial(){
     }
     return msg;
 }
-
+*/
+/*
 void test_write_serial(string msg){
     //string msg = "@,s=500,x=0.22,y=0.53,th=0.08,$";
 
@@ -63,7 +64,7 @@ void test_loop_read_write(){
     }
 }
 
-
+*/
 
 
 
@@ -72,7 +73,7 @@ void test_loop_read_write(){
 /*************
  * MSG TESTS *
  *************/
-
+/*
 void test_msg2target(){
     string msg = "00000000000,@,s,x=0.22,y=0.53,th=0.08,$,0000";
     target new_pose;
@@ -108,14 +109,14 @@ void test_target2msg(){
     cout << "2. message= " << msg << endl;
 }
 
-
+*/
 
 
 
 /****************
  * FULL EXAMPLE *
  ****************/
-
+/*
 void demo_real_example()
 {	
 
@@ -125,7 +126,7 @@ void demo_real_example()
     3. compute new target
     4. encode target
     5. send to serial
-    */
+    *//*
 
 	// initialization
 	string msg = "";
@@ -203,7 +204,7 @@ void demo_real_example()
             
     }
 }
-
+*/
 
 void test_enum(){
     enum com {TRN='tr',FWD='fwd', TRNR='trnr'};
@@ -214,18 +215,17 @@ void test_enum(){
 }
 
 void send_msg(string msg){
-    int fd = 0;
-    fd = serial_open(false);
-    if (fd > 1){
-        serial_write(fd, msg, true);
-        usleep(1000000);
-        serial_close(fd, false);
-    }
+
+    COMM_RPI cr;
+    cr.serial_open();
+    cr.serial_write(msg);
+    usleep(10000);
+    cr.serial_close();
 }
 
 void test_read_comm1(){
 
-    send_msg("@,a=0,b=1,fwd=3,$");
+    send_msg("@,a=15,b=1,fwd=1,v=0.3,$");
     //usleep(10000000);
     //send_msg("@,a=2,b=1,v=0.4$");
 }
