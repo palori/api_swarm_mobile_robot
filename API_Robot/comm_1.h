@@ -63,6 +63,7 @@ public:
 	bool get_trn() {return trn;}
 	bool get_trnr() {return trnr;}
 	bool get_drive() {return drive;}	// drive to target position
+	bool get_followline() {return followline;}
 
 	float get_x_t() {return x_t;}		// target position in Robot coord. syst.
 	float get_y_t() {return y_t;}
@@ -105,6 +106,7 @@ public:
 	void set_trn(bool b) {trn = b;}
 	void set_trnr(bool b) {trnr = b;}
 	void set_drive(bool b) {drive = b;}
+	void set_followline(bool b) {followline = b;}
 
 	void set_x_t(float f) {x_t = f;}
 	void set_y_t(float f) {y_t = f;}
@@ -154,6 +156,7 @@ public:
 	bool trn = false;				// turn mode
 	bool trnr = false;				// turn with radius mode
 	bool drive = false;				// drive to target mode
+	bool followline = false; 		// followline mode
 
 	float x_t = 0.0;				// target position in Robot coord. syst.
 	float y_t = 0.0;
@@ -190,7 +193,8 @@ public:
 		FWD,
 		TRN,
 		TRNR,
-		DRIVE
+		DRIVE,
+		FOLLOW
 	};
 
 

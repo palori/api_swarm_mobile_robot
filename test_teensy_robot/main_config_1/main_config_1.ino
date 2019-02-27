@@ -9,6 +9,8 @@
 #include <Servo.h>
 
 IntervalTimer myTimer;
+IntervalTimer reading;
+IntervalTimer writing;
 
 Servo myServo;
 
@@ -77,6 +79,7 @@ double odoX = 0.0;
 double odoY = 0.0;
 double left_wheel_pos_old = 0.0;
 double right_wheel_pos_old = 0.0;
+double dTravel = 0.0;
 double c_r = 2 * PI * wheel_radius / pulses_per_rotation / gear_ratio;   //wheel_radius is the same for both wheels for now
 double c_l = 2 * PI * wheel_radius / pulses_per_rotation / gear_ratio;
 
@@ -108,6 +111,9 @@ double dTh=0.0;
 double kp=0.6;
 double ka=0.8;
 double kb=-0.15; 
+
+//follow line function
+double final_dist = 0.0;
 
 
 
@@ -167,6 +173,7 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   //Serial.println("dright: "+String(dRight));
 
   double dCenter = (dLeft + dRight) / 2.0;
+  dTravel += dCenter; 
   double phi = (dRight - dLeft) / wheels_distance;
 
   odoTh += phi;
@@ -341,12 +348,25 @@ void drive(double Xr, double Yr, double Thr) {
     comm_tsy.set_th_t(0.0);
 }
 
+void followline (double dist) {
+
+    Th_0 = odoTh;
+    final_dist = dTravel + dist;
+    
+    enableMotors();
+
+    initializePID(VEL1,Kp,Ki,0.01);
+    initializePID(VEL2,Kp,Ki,0.01);
+    initializePID(THETA,Kp_Th,Ki_Th,0.01);
+}
+
 void emergency_stop(){   //shouldnt wait until new command = true
   
     comm_tsy.set_fwd(false);
     comm_tsy.set_trn(false);
     comm_tsy.set_trnr(false);
     comm_tsy.set_drive(false); 
+    comm_tsy.set_followline(false);
     
     
     initializePID(VEL1,Kp,Ki,0.01);
@@ -423,8 +443,8 @@ void update_velocity(int drive_command){
                 }
                 
                 angle_error = angle_ref_abs - odoTh;
-                Serial.println("vel1:"+String(vel1));
-                Serial.println("vel2:"+String(vel2));
+                //Serial.println("vel1:"+String(vel1));
+                //Serial.println("vel2:"+String(vel2));
                 
             } else {
                 vel1 = 0.1;
@@ -440,7 +460,7 @@ void update_velocity(int drive_command){
         
             if (fabs(dist_error) > 0.02){
 
-                Serial.println("dist_error: "+String(dist_error));
+                //Serial.println("dist_error: "+String(dist_error));
                 //vel1 = update_PID(dist_ref,dist_curr,DIST) - update_PID(Th0,odoTh,THETA);
                 //vel2 = update_PID(dist_ref,dist_curr,DIST) + update_PID(Th0,odoTh,THETA);
                 
@@ -453,9 +473,8 @@ void update_velocity(int drive_command){
           
                 //vel1 = Saturate(vel1 , 0.5);   
                 //vel2 = Saturate(vel2 , 0.5);
-                
-                Serial.println("vel1: "+String(vel1));
-                Serial.println("vel2: "+String(vel2));
+                //Serial.println("vel1: "+String(vel1));
+                //Serial.println("vel2: "+String(vel2));
                   
                 dist_curr=sign(comm_tsy.get_fwd_dist()) * sqrt(pow(odoX - x_0 , 2.0)+pow(odoY - y_0 , 2.0));
                 dist_error = comm_tsy.get_fwd_dist() - dist_curr;
@@ -477,22 +496,22 @@ void update_velocity(int drive_command){
               double A = - dTh + atan2(dY,dX);
               double B = - dTh - A;
         
-              Serial.println("P: "+String(P));
-              Serial.println("A: "+String(A));
-              Serial.println("B: "+String(B));
+              //Serial.println("P: "+String(P));
+              //Serial.println("A: "+String(A));
+              //Serial.println("B: "+String(B));
               
-              //double v = kp * P;
-              double v = 0.3;
-              double v_m = sqrt(fabs(P));
-                
-              v = Saturate(v , v_m);
+              double v = kp * P;
+              //double v = 0.3;
+              //double v_m = sqrt(fabs(P));
+              //v = Saturate(v , v_m);
+              
               double w = ka * A + kb * B;
           
               vel1 = v - (w * wheels_distance) / 2;  //check if minus and plus are fine, seems 
               vel2 = v + (w * wheels_distance) / 2;
         
-              Serial.println("dX: "+String(dX));
-              Serial.println("dY: "+String(dY));
+              //Serial.println("dX: "+String(dX));
+              //Serial.println("dY: "+String(dY));
               
               vel1 = Saturate(vel1 , 0.5);   
               vel2 = Saturate(vel2 , 0.5);
@@ -512,6 +531,33 @@ void update_velocity(int drive_command){
            }
 
         break;
+
+        case comm_tsy.FOLLOW:
+        
+            if (fabs(final_dist - dTravel) > 0.02){
+                
+                vel1=comm_tsy.get_vel() - update_PID(Th_0,odoTh,THETA);
+                vel2=comm_tsy.get_vel() + update_PID(Th_0,odoTh,THETA);
+                
+                v_max = sqrt(0.5 * fabs(final_dist - dTravel));
+                
+                vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
+                vel2 = Saturate(vel2 , v_max);
+          
+                //vel1 = Saturate(vel1 , 0.5);   
+                //vel2 = Saturate(vel2 , 0.5);
+                
+                //Serial.println("remaining distance: "+String(final_dist - dTravel));
+              
+                  
+            } else {
+                vel1 = 0.1;
+                vel2 = 0.1;
+                disableMotors();  
+                newCommand = true;    
+                comm_tsy.set_followline(false); 
+            }
+          break;
   }
 
 }
@@ -533,6 +579,11 @@ void setup()
   ir_2.setCalibration();
 
   myTimer.begin(update10ms,10000);
+  myTimer.priority(0);
+  reading.begin(reading100ms,100000);
+  reading.priority(1);
+  //writing.begin(read_sensors,1000000);
+  //writing.priority(2);
   myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
    
 } 
@@ -546,11 +597,7 @@ int pos=0;
 void loop() // @,a=15,b=1,fwd=2,$
 { 
    
-   Serial.println("1111111111111111111111111");
-   comm_tsy.read_serial();  
-   Serial.println("2222222222222222222222222"); 
-   read_sensors();
-   Serial.println("3333333333333333333333333");
+   // feels lonely
 
 }
 
@@ -588,21 +635,22 @@ void read_sensors(){
 
 void update10ms(){
 
-    Serial.println("time:                    "+String(millis()));
-    Serial.println("angle ref abs:                                "+String(angle_ref_abs));
+    //Serial.println("time:                    "+String(millis()));
+    //Serial.println("angle ref abs:                                "+String(angle_ref_abs));
     velocity1 = getVelocity(LEFT_MOTOR , millis());
     velocity2 = getVelocity(RIGHT_MOTOR , millis());
     updatePosition((double)encoder1.read() , (double)encoder2.read());   //check overflow, it should overflow when int/double overflows
     
-    Serial.println("odoX: "+String(odoX));
-    Serial.println("odoY: "+String(odoY));
+    //Serial.println("odoX: "+String(odoX));
+    //Serial.println("odoY: "+String(odoY));
     //Serial.println("odoTh: "+String(odoTh));
-    Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
-    Serial.println("ir1: "+String(ir_1.getDistance()));
-    Serial.println("ir1: "+String(ir_2.getDistance()));
+    //Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
+    //Serial.println("ir1: "+String(ir_1.getDistance()));
+    //Serial.println("ir1: "+String(ir_2.getDistance()));
     
     
     if (comm_tsy.get_stop()) drive_command = comm_tsy.STOP;
+      else if (comm_tsy.get_followline()) drive_command = comm_tsy.FOLLOW;
       else if (comm_tsy.get_drive()) drive_command = comm_tsy.DRIVE;
       else if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
       else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
@@ -616,11 +664,15 @@ void update10ms(){
     
     
 
-    Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));
+    //Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));
     if (newCommand == true || comm_tsy.get_stop() || new_drive){   //new_drive = 1 if x,y,th != 0
       switch (drive_command) {
         case comm_tsy.STOP:
           emergency_stop();
+          newCommand = false;
+          break;
+        case comm_tsy.FOLLOW:
+          followline(double(comm_tsy.get_fwd_dist()));
           newCommand = false;
           break;
         case comm_tsy.TRN:
@@ -656,4 +708,9 @@ void update10ms(){
     
     
   
+}
+
+void reading100ms (){
+  
+   comm_tsy.read_serial();   
 }
