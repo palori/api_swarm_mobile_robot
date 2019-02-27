@@ -105,7 +105,7 @@ double dX=0.0;
 double dY=0.0;
 double dTh=0.0;
 
-double kp=0.3;
+double kp=0.6;
 double ka=0.8;
 double kb=-0.15; 
 
@@ -333,6 +333,12 @@ void drive(double Xr, double Yr, double Thr) {
     enableMotors();
     initializePID(VEL1,2*Kp,Ki,0.01);
     initializePID(VEL2,2*Kp,Ki,0.01);
+
+    // set x,y,th to 0 
+
+    comm_tsy.set_x_t(0.0);
+    comm_tsy.set_y_t(0.0);
+    comm_tsy.set_th_t(0.0);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -465,7 +471,7 @@ void update_velocity(int drive_command){
 
        case comm_tsy.DRIVE:
 
-            if ((fabs(dX)>0.05) || (fabs(dY)>0.05)){
+            if ((fabs(dX)>0.03) || (fabs(dY)>0.03)){
       
               double P = sqrt(pow(dX,2) + pow(dY,2));
               double A = - dTh + atan2(dY,dX);
@@ -475,7 +481,11 @@ void update_velocity(int drive_command){
               Serial.println("A: "+String(A));
               Serial.println("B: "+String(B));
               
-              double v = kp * P;
+              //double v = kp * P;
+              double v = 0.3;
+              double v_m = sqrt(fabs(P));
+                
+              v = Saturate(v , v_m);
               double w = ka * A + kb * B;
           
               vel1 = v - (w * wheels_distance) / 2;  //check if minus and plus are fine, seems 
@@ -602,10 +612,12 @@ void update10ms(){
         newCommand=true;
     }
 
+    if (comm_tsy.get_x_t()!=0.0 || comm_tsy.get_y_t()!=0.0 || comm_tsy.get_th_t()!=0.0) new_drive = true;
+    
     
 
     Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));
-    if (newCommand == true || comm_tsy.get_stop() || new_drive){
+    if (newCommand == true || comm_tsy.get_stop() || new_drive){   //new_drive = 1 if x,y,th != 0
       switch (drive_command) {
         case comm_tsy.STOP:
           emergency_stop();
@@ -626,6 +638,7 @@ void update10ms(){
         case comm_tsy.DRIVE:
           drive(double(comm_tsy.get_x_t()),double(comm_tsy.get_y_t()),double(comm_tsy.get_th_t()));
           newCommand=false;
+          new_drive = 0;
           break;
       }
       //newCommand = false;
