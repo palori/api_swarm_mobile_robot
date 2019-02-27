@@ -195,8 +195,8 @@ public:
 
 
 	struct Command {
-		String A = 'a';					// Action
-		String B = 'b';					// Value of the action
+		String A = "a";					// Action
+		String B = "b";					// Value of the action
 		String FWD = "fwd";				// Drive forward a certain distance [mm]
 		String TRN = "trn";				// Turn certain degrees [º]
 		String TRNR = "trnr";			// Turning radius [mm]

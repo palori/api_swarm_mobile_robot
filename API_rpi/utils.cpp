@@ -1,7 +1,7 @@
 
 #include "utils.h"
 
-
+using namespace std;
 
 float str2float(string s){
     try{
@@ -11,5 +11,5 @@ float str2float(string s){
     {
         cout << "Exception: " << e.what() << '\n';
     }
-    return BIG_NUM;
+    return BIG_FLOAT;
 }

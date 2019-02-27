@@ -2,7 +2,7 @@
 
 # compile
 #g++ -O -W -Wall -pedantic -o demo_serial_msg -p ../comm/comm_serial.cpp ../comm/comm_msg.cpp demo_serial_msg.cpp
-g++ -O -W -Wall -pedantic -o demo_serial_msg -p ../comm_rpi.cpp demo_serial_msg.cpp
+g++ -O -W -Wall -pedantic -o demo_serial_msg -p ../utils.cpp ../comm_rpi_1.cpp demo_serial_msg.cpp
 
 # move to executables folder and run
 mv `pwd`/demo_serial_msg `pwd`/executables/demo_serial_msg
