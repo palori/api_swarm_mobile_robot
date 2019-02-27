@@ -219,7 +219,14 @@ void send_msg(string msg){
     COMM_RPI cr;
     cr.serial_open();
     cr.serial_write(msg);
-    usleep(10000);
+    
+    int count = 0;
+    while(count<20){
+        usleep(1000000);
+        cr.serial_read();
+        printf("read count %d\n",count);
+        count++;
+    }
     cr.serial_close();
 }
 
