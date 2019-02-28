@@ -51,7 +51,7 @@ void COMM_TSY::write_serial(double _odo[3], float _ir[2], int _imu_cmps[3], int 
 
 void COMM_TSY::read_serial(){
 
-	Serial.println("connect: "+String(get_connect()));
+	if (get_debug()) Serial.println("connect: "+String(get_connect()));
 	set_action(-1); // reset ??????????????????????????????
 
 	/* OLD WAY
@@ -89,11 +89,8 @@ void COMM_TSY::read_serial(){
 			}
 		}
 	}
-	Serial.println("buf: "+String(buf)+", new: "+String(new_msg));
-	//return {'\0'};//"";
-
-
-	//msg2params();
+	if (get_debug()) Serial.println("buf: "+String(buf)+", new: "+String(new_msg));
+	
 }
 
 

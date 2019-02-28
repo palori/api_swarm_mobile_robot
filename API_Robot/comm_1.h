@@ -150,7 +150,7 @@ public:
 	float trn_r = 0.0;				// [mm] turning radius
 	float servo = 0.0;
 
-	bool debug = true;				// useful now to debug on the TSY, but need to send essential info (params...) to the RPI to debug from there
+	bool debug = false;				// useful now to debug on the TSY, but need to send essential info (params...) to the RPI to debug from there
 	
 	bool fwd = false;				// forward mode				// all might be grouped in one integer value (0=idle, 1=fwd, 2=trn, 3=trnr, 4=drive)
 	bool trn = false;				// turn mode
