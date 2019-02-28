@@ -580,8 +580,8 @@ void setup()
 
   myTimer.begin(update10ms,10000);
   myTimer.priority(0);
-  reading.begin(reading100ms,100000);
-  reading.priority(1);
+  //reading.begin(reading100ms,100000);
+  //reading.priority(1);
   //writing.begin(read_sensors,1000000);
   //writing.priority(2);
   myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]

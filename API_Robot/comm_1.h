@@ -162,6 +162,12 @@ public:
 	float y_t = 0.0;
 	float th_t = 0.0;
 
+	constexpr static int BUF_LEN = 100;
+	char buf[BUF_LEN];
+	int buf_length = 0;
+	int buf_count = 0;
+	bool new_msg = false;
+
 	const float BIG_FLOAT = 191919.191919;
 	const int BIG_INT = 2828;
 
@@ -233,7 +239,7 @@ public:
 
 
 	// decode the received message into target
-	void msg2params(String msg);
+	void msg2params(); // OLD WAY: (String msg);
 
 	// encode the target to send the message
 	String sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
