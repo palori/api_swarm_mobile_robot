@@ -16,7 +16,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 150;
+int threshold_value = 20;//150;
 int threshold_type = 3;
 int const max_value = 255;
 int const max_type = 4;
@@ -66,25 +66,25 @@ int main( ){
     cout << "Image size: " <<  img.size() << endl;
     cout << "Image channels: " <<  img.channels() << endl;
 
-    Mat img_gray, img_blur, bin, edges;
+    Mat img_gray, img_blur, img_th, img_canny;
  
     cvtColor(img, img_gray, COLOR_RGB2GRAY);
-	blur(img_gray, img_blur, Size(3,3));
-	Canny(img_blur, edges, lowThreshold, lowThreshold * ratio, kernel_size);
-	threshold(img_blur, bin, threshold_value, max_BINARY_value,threshold_type);
+	blur(img_gray, img_blur, Size(5,5));
+    threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+	Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
     
 
     display_image(img, "img");
 	display_image(img_gray, "img_gray");
 	display_image(img_blur, "img_blur");
-    display_image(bin, "bin");
-    display_image(edges,"edges");
+    display_image(img_th, "img_th");
+    display_image(edges,"img_canny");
 
     imwrite("pic_gray.jpg",img_gray);
     imwrite("pic_blur.jpg",img_blur);
-    imwrite("pic_bin.jpg",bin);
-    imwrite("pic_canny.jpg",img_edges);
-
+    imwrite("pic_th.jpg",img_th);
+    imwrite("pic_canny.jpg",img_canny);
+cd
 	//Printing white pixels
 	/*cout << "\n\nBinary values:";
 	for(int i = 0; i < 960; i++){
