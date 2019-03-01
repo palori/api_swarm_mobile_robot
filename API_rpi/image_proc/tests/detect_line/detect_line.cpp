@@ -1,5 +1,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <raspicam/raspicam_cv.h>
+#include <ctime>
 #include <iostream>
 //#include <stdlib.h>
 #include <stdio.h>
@@ -37,12 +39,12 @@ int main( ){
 	Mat img;
     int nCount=100;
     //set camera params
-    Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
+    Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
     //Open camera
     cout<<"Opening Camera..."<<endl;
     if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
     //Start capture
-    cout<<"Capturing "<<nCount<<" frames ...."<<endl;
+    cout<<"Capturing..."<<endl;
     time ( &timer_begin );
     Camera.grab();
     Camera.retrieve (img);
@@ -54,7 +56,7 @@ int main( ){
     double secondsElapsed = difftime ( timer_end,timer_begin );
     cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
     //save image 
-    cv::imwrite("pic.jpg",img);
+    imwrite("pic.jpg",img);
     cout<<"Image saved at 'pic.jpg'"<<endl;
 	
 
@@ -77,6 +79,11 @@ int main( ){
 	display_image(img_blur, "img_blur");
     display_image(bin, "bin");
     display_image(edges,"edges");
+
+    imwrite("pic_gray.jpg",img_gray);
+    imwrite("pic_blur.jpg",img_blur);
+    imwrite("pic_bin.jpg",bin);
+    imwrite("pic_canny.jpg",img_edges);
 
 	//Printing white pixels
 	/*cout << "\n\nBinary values:";
