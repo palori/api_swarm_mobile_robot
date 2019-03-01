@@ -32,6 +32,7 @@ void display_image(Mat img, string title)
 }
 
 
+
 int main( ){
 	// Take pic example
 	time_t timer_begin,timer_end;
@@ -71,7 +72,7 @@ int main( ){
     cvtColor(img, img_gray, COLOR_RGB2GRAY);
 	blur(img_gray, img_blur, Size(5,5));
     //threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
-	adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5);
+	adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
     Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
     
 
@@ -95,4 +96,59 @@ int main( ){
 	        cout << bin.at<uchar>(i,j) << " ";
 	    }
 	}*/
+
+
+
+    // @@@@ NEED TO BE TESTED FROM HERE!
+
+    // line with edges, find 2 points in the middle of the image.
+
+    // ! check if img.size()[0] indexes are correct or need to be reversed!
+    int MAX_COLS = 10;
+    int cols[MAX_COLS];
+    int col_count = 0;
+    for (int i = 0; i < MAX_COLS; i++) cols[i] = 0; // initialization
+
+    int row = img.size()[0]/2; // row to search for
+    for (int i = 0; i < img.size()[1]; i++){
+        if(255 == bin.at<uchar>(i,j)){
+            cols[col_count] = i;
+        }
+    }
+    cout<<"Edges: found "<< col_count << " edges..." <<endl;
+
+    // considering that there are no crossings
+    int col = 0; // col to search for
+    bool col_found = false;
+    if (col_count==2){
+        // perfect case (data might be wrong, need good image processing)
+        col = (cols[0] + cols[1])/2; // mean value
+        col_found
+    }
+    else if (col_count==1){
+        // migth find just one but we could use it as the middle point
+        col = cols[0];
+    }
+    //else if (col_count<1 || col_count>2) // might want to discard and take a new picture or check another row
+
+    if (col_found) cout<<"Target point (image coord. syst):\n  x = "<<row<"\n  y = "<<col<<endl;
+    else cout<<"No clear target, try again..."<<endl;
+
+
+
+    // Once target is found in image coord. syst. need to transform to
+    // camera and robot coord. syst.
+    int focal_length_px = 100; // [px] // random choice now, need to be computed (maybe with callibration)
+    int image_center_px[2]; // [px]
+    for (int i = 0; i < 2; i++) image_center_px[i] = img.size()[i]/2;
+    // camera position in the robot coord. syst. -> got from the mechanical design
+    // @@@@ might want to be readed from a configuration file, so it can be easily changed
+    float camera_pose_translation[3] = {31.53, 0, 74.80}; // [mm]
+    float camera_pose_rotation[3]; //still to figure out how to input in here (need to rotate X(90º) and Z(180º))
+
+    float x_c = (row-image_center_px[0])/focal_length_px;
+    float y_c = (col-image_center_px[1])/focal_length_px;
+    float z_c; // how to compute profoundity???
+
+
 }
