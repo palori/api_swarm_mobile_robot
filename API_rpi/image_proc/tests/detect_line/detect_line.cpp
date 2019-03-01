@@ -19,6 +19,9 @@ int threshold_type = 3;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
+int lowThreshold = 0;
+const int ratio = 3;
+const int kernel_size = 3;
 
 void display_image(Mat img, string title)
 {
@@ -101,24 +104,27 @@ int main( ){
     cout << "Image size: " <<  img.size() << endl;
     cout << "Image channels: " <<  img.channels() << endl;
 
-    Mat img_gray, img_blur, bin;
+    Mat img_gray, img_blur, bin, edges;
  
     cvtColor(img, img_gray, COLOR_RGB2GRAY);
 	blur(img_gray, img_blur, Size(3,3));
+	Canny(img_blur, edges, lowThreshold, lowThreshold * ratio, kernel_size);
 	threshold(img_blur, bin, threshold_value, max_BINARY_value,threshold_type);
     
+
     display_image(img, "img");
 	display_image(img_gray, "img_gray");
 	display_image(img_blur, "img_blur");
     display_image(bin, "bin");
+    display_image(edges,"edges");
 
 	//Printing white pixels
-	cout << "\n\nBinary values:";
-	for(int i = 0; i < 640; i++){
+	/*cout << "\n\nBinary values:";
+	for(int i = 0; i < 960; i++){
 		cout << endl << "[" << i << "] ";
-	    for(int j = 0; j < 480; j++){
+	    for(int j = 0; j < 1280; j++){
 	        //if(255 == bin.at<uchar>(i,j))
 	        cout << bin.at<uchar>(i,j) << " ";
 	    }
-	}
+	}*/
 }
