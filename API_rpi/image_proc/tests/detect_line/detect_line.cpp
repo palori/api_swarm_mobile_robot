@@ -98,7 +98,7 @@ int main( ){
 	}*/
 
 
-
+/*
     // @@@@ NEED TO BE TESTED FROM HERE!
 
     // line with edges, find 2 points in the middle of the image.
@@ -149,6 +149,6 @@ int main( ){
     float x_c = (row-image_center_px[0])/focal_length_px;
     float y_c = (col-image_center_px[1])/focal_length_px;
     float z_c; // how to compute profoundity???
-
+*/
 
 }

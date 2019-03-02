@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/detect_line.cpp
+opencv2/highgui/highgui.hpp
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/highgui/highgui.hpp
+opencv2/imgproc/imgproc.hpp
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/imgproc/imgproc.hpp
+raspicam/raspicam_cv.h
+-
+ctime
+-
+iostream
+-
+stdio.h
+-
+string.h
+-
+vector
+-
+
+/usr/local/include/raspicam/raspicam_cv.h
+opencv2/core/core.hpp
+-
+opencv2/highgui/highgui.hpp
+-
+
