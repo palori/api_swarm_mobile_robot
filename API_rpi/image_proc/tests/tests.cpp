@@ -33,7 +33,8 @@ static void onTrackbar(int, void*)
 {
     //blur(gray, blurImage, Size(3,3));
     // Run the edge detector on grayscale
-    Canny(img_blur, edge1, edgeThresh, edgeThresh*3, 3);
+    threshold(img_blur, edge1, threshold_value, max_BINARY_value,threshold_type);
+    //Canny(img_blur, edge1, edgeThresh, edgeThresh*3, 3);
     cedge = Scalar::all(0);
     if (is_color_edge)
     {
@@ -179,6 +180,7 @@ int main( )
     string image_path = path + image_name;
 
     image_path = "detect_line/image_example.png";
+    //image_path = "detect_line/pc/pic.jpg";
     Mat img, ch1, ch2, ch3;
     img = imread(image_path, CV_LOAD_IMAGE_COLOR);  
     display_image(img, "img4");
@@ -189,11 +191,11 @@ int main( )
 
     Mat img_gray, img_ycc, img_hsv;
     cvtColor(img, img_gray, COLOR_RGB2GRAY);
-    vector<Mat> bw = split_channels(img_gray, "Gray", true);
+    //vector<Mat> bw = split_channels(img_gray, "Gray", true);
     cvtColor(img, img_ycc, COLOR_RGB2YCrCb);
-    vector<Mat> ycc = split_channels(img_ycc, "YCrCb", true);
+    //vector<Mat> ycc = split_channels(img_ycc, "YCrCb", true);
     cvtColor(img, img_hsv, COLOR_RGB2HSV);
-    vector<Mat> hsv = split_channels(img_hsv, "HSV", true);
+    //vector<Mat> hsv = split_channels(img_hsv, "HSV", true);
     
     // detect line -> start using either img_gray or bw[0]
     Mat bin;
@@ -205,33 +207,34 @@ int main( )
     namedWindow(window_name1, 1);
 
     // create a toolbar
-    createTrackbar("Canny threshold default", window_name1, &edgeThresh, 255, onTrackbar);
+    //createTrackbar("Canny threshold default", window_name1, &edgeThresh, 255, onTrackbar); // for canny
+    createTrackbar("Threshold default", window_name1, &threshold_value, 255, onTrackbar); // for binary threshold
     // Show the image
     onTrackbar(0, 0);
     
     /// Create Trackbars for Thresholds
     char thresh_label[50];
     sprintf( thresh_label, "Thres: %d + input", min_threshold );
-    namedWindow( probabilistic_name, WINDOW_AUTOSIZE );
+    /*namedWindow( probabilistic_name, WINDOW_AUTOSIZE );
     createTrackbar( thresh_label, probabilistic_name, &p_trackbar, max_trackbar, Probabilistic_Hough);
     Probabilistic_Hough(0, 0);
-
+    */
 
     // Blur images
-    vector<Mat> imgs {hsv[1], ycc[1], ycc[2]};
-    vector<string> title {"blur_hsv1", "blur_ycbcr1", "blur_ycbcr2"};
-    vector<Mat> imgs_blur = blur_imgs(imgs, title);
+    //vector<Mat> imgs {hsv[1], ycc[1], ycc[2]};
+    //vector<string> title {"blur_hsv1", "blur_ycbcr1", "blur_ycbcr2"};
+    //vector<Mat> imgs_blur = blur_imgs(imgs, title);
     // Inversion
-    imgs_blur[1] =  Scalar::all(255) - imgs_blur[1];
-    display_image(imgs_blur[1],"blur_ycbcr1_inv");
-	imwrite("images/img_blur_ycbcr1_inv.png", imgs_blur[1]);
+    //imgs_blur[1] =  Scalar::all(255) - imgs_blur[1];
+    //display_image(imgs_blur[1],"blur_ycbcr1_inv");
+	//imwrite("images/img_blur_ycbcr1_inv.png", imgs_blur[1]);
 	// Binarize images
-    title = {"bin_hsv1", "bin_ycbcr1", "bin_ycbcr2"};
-    vector<int> threshold_value {150, 140, 145};
-    vector<Mat> imgs_bin = binarize_imgs(imgs_blur, title, threshold_value);
+    //title = {"bin_hsv1", "bin_ycbcr1", "bin_ycbcr2"};
+    //vector<int> threshold_value {150, 140, 145};
+    //vector<Mat> imgs_bin = binarize_imgs(imgs_blur, title, threshold_value);
 
     // Images histograms
-    title = {"hist_hsv1", "hist_ycbcr1", "hist_ycbcr2"};
+    //title = {"hist_hsv1", "hist_ycbcr1", "hist_ycbcr2"};
     ////hist_imgs(imgs_blur, title); //// NOT WORKING!!!
 
     /*
@@ -275,7 +278,7 @@ int main( )
         fprintf(stdout, "Saved PNG file with alpha data.\n");                                       
     }
 
-
+    /*
     //Printing white pixels
     cout << "\n\nBinary values:";
     for(int i = 0; i < 960; i+=2){
@@ -285,6 +288,6 @@ int main( )
             else cout << " ";
         }
     }
-
+    */
     return 0;
 }
