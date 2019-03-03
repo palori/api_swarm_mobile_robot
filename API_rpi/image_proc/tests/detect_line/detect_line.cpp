@@ -17,13 +17,15 @@ using namespace std;
 
 // Thresholding == binarize
 int threshold_value = 80;//150;
-int threshold_type = 3;
+int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
 int lowThreshold = 0;
 const int ratio = 3;
 const int kernel_size = 3;
+const int CAM_W = 640;
+const int CAM_H = 480;
 
 void display_image(Mat img, string title)
 {
@@ -41,8 +43,8 @@ int main( ){
     int nCount=100;
     //set camera params
     Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
-    Camera.setWidth(640);
-    Camera.setHeight(480);
+    Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
+    Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
     //Open camera
     cout<<"Opening Camera..."<<endl;
     if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
@@ -69,11 +71,13 @@ int main( ){
     cout << "Image size: " <<  img.size() << endl;
     cout << "Image channels: " <<  img.channels() << endl;
 
-    Mat img_gray, img_blur, img_th, img_canny;
+    Mat img_gray, img_canny;
  
     //cvtColor(img, img_gray, COLOR_RGB2GRAY);
     img_gray = img;
-	blur(img_gray, img_blur, Size(5,5));
+    Mat img_blur (img_gray.size(), img_gray.type());
+    blur(img_gray, img_blur, Size(5,5));
+    Mat img_th (img_blur.size(), img_blur.type());
     threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
     //Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
@@ -99,7 +103,18 @@ int main( ){
 	        cout << bin.at<uchar>(i,j) << " ";
 	    }
 	}*/
-
+    int sum_y = 0;
+    int count_y = 0;
+    for(int i = CAM_H*3/4; i<CAM_H; i++){
+	for(int j = 0; j<CAM_W; j++){
+	    if (img_th.at<uchar>(i,j) > threshold_value){
+	    	sum_y += j;
+		count_y++;
+	    }
+	}
+    }
+    int cm_y = sum_y/count_y - CAM_W/2;
+    cout<<"CM_y: "<<cm_y<<endl;
 
 /*
     // @@@@ NEED TO BE TESTED FROM HERE!
