@@ -171,7 +171,9 @@ int take_pic_get_cm(){
 
 }
 
+
+/*
 int main(){
 	take_pic_get_cm();
 	return 0;
-}
+}*/

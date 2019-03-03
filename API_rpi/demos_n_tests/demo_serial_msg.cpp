@@ -7,8 +7,9 @@
 #include <thread>
 //#include "../comm_rpi.h"
 #include "../comm_rpi_1.h"
-//#include "../image_proc/tests/detect_line/detect_line.h"
-
+#include "../image_proc/tests/detect_line/detect_line.h"
+#include <iostream>
+#include <string>
 
 /****************
  * SERIAL TESTS *
@@ -220,31 +221,38 @@ void send_msg(string msg){
     COMM_RPI cr;
     cr.serial_open();
     cr.serial_write(msg);
-    
+    usleep(100000);
     int count = 0;
-    while(count<20){
-        usleep(1000000);
+   /* while(count<20){
+        usleep(100000);
         cr.serial_read();
         printf("read count %d\n",count);
         count++;
-    }
+    }*/
     cr.serial_close();
 }
 
 void test_read_comm1(){
 
-    send_msg("@a=15,b=1,fwd=1,v=0.3$");
-    //usleep(10000000);
+    send_msg("@a=15,b=1,fwd=2,v=0.4$");
+    usleep(10000000);
     //send_msg("@,a=2,b=1,v=0.4$");
+    send_msg("@a=16,b=1,trn=90,v=0.2");
 }
 
-/*
+
 void pic_cm_comm1(){
-    int y = -1*take_pic_get_cm();
-    printf("Y: %d\n",y);
-    string msg = "@a=19,b=1,v=0.3,tht="+y.to_string()+"$";
-    send_msg(msg);
-}*/
+    int i=0;
+    send_msg("@a=19,b=1,v=0.3,fwd=0.5$");
+    while (i<1000){
+       int y = take_pic_get_cm();
+       printf("Y: %d\n",y);
+       string msg = "@tht="+to_string(y)+"$";
+       send_msg(msg);
+       i++;
+    }
+}
+
 
 
 
@@ -268,7 +276,7 @@ int main(){
     //demo_real_example();              //working -> good one ready to use
     //test_enum();                      test validated!
 
-    test_read_comm1();
-    //pic_cm_comm1();
+    //test_read_comm1();
+    pic_cm_comm1();
     return 0;
 }

@@ -15,4 +15,4 @@ using namespace std;
 
 void display_image(Mat img, string title);
 int take_pic_get_cm();
-int main();
+//int main();
