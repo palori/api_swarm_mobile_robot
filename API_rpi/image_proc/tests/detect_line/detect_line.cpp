@@ -29,144 +29,149 @@ const int CAM_H = 480;
 
 void display_image(Mat img, string title)
 {
-    namedWindow( title, WINDOW_AUTOSIZE );  
-    imshow( title, img );
+	namedWindow( title, WINDOW_AUTOSIZE );  
+	imshow( title, img );
 }
 
 
 
-int main( ){
+int take_pic_get_cm(){
 	// Take pic example
 	time_t timer_begin,timer_end;
 	raspicam::RaspiCam_Cv Camera;
 	Mat img;
-    int nCount=100;
-    //set camera params
-    Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
-    Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
-    Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
-    //Open camera
-    cout<<"Opening Camera..."<<endl;
-    if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
-    //Start capture
-    cout<<"Capturing..."<<endl;
-    time ( &timer_begin );
-    Camera.grab();
-    Camera.retrieve (img);
-    cout<<"Stop camera..."<<endl;
-    Camera.release();
+	int nCount=100;
+	//set camera params
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
+	Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
+	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
+	//Open camera
+	cout<<"Opening Camera..."<<endl;
+	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
+	//Start capture
+	cout<<"Capturing..."<<endl;
+	time ( &timer_begin );
+	Camera.grab();
+	Camera.retrieve (img);
+	cout<<"Stop camera..."<<endl;
+	Camera.release();
 
-    //show time statistics
-    time ( &timer_end ); /* get current time; same as: timer = time(NULL)  */
-    double secondsElapsed = difftime ( timer_end,timer_begin );
-    cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
-    //save image 
-    imwrite("pic.jpg",img);
-    cout<<"Image saved at 'pic.jpg'"<<endl;
+	//show time statistics
+	time ( &timer_end ); /* get current time; same as: timer = time(NULL)  */
+	double secondsElapsed = difftime ( timer_end,timer_begin );
+	cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
+	//save image 
+	imwrite("pic.jpg",img);
+	cout<<"Image saved at 'pic.jpg'"<<endl;
 	
 
 
-    
-    //img = imread(image_path, CV_LOAD_IMAGE_COLOR);  
-    cout << "Image size: " <<  img.size() << endl;
-    cout << "Image channels: " <<  img.channels() << endl;
+	
+	//img = imread(image_path, CV_LOAD_IMAGE_COLOR);  
+	cout << "Image size: " <<  img.size() << endl;
+	cout << "Image channels: " <<  img.channels() << endl;
 
-    Mat img_gray, img_canny;
+	Mat img_gray, img_canny;
  
-    //cvtColor(img, img_gray, COLOR_RGB2GRAY);
-    img_gray = img;
-    Mat img_blur (img_gray.size(), img_gray.type());
-    blur(img_gray, img_blur, Size(5,5));
-    Mat img_th (img_blur.size(), img_blur.type());
-    threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
+	img_gray = img;
+	Mat img_blur (img_gray.size(), img_gray.type());
+	blur(img_gray, img_blur, Size(5,5));
+	Mat img_th (img_blur.size(), img_blur.type());
+	threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
-    //Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
-    
+	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
+	
 
-    display_image(img, "img");
+	display_image(img, "img");
 	display_image(img_gray, "img_gray");
 	display_image(img_blur, "img_blur");
-    display_image(img_th, "img_th");
-    //display_image(img_canny,"img_canny");
+	display_image(img_th, "img_th");
+	//display_image(img_canny,"img_canny");
 
-    imwrite("pic_gray.jpg",img_gray);
-    imwrite("pic_blur.jpg",img_blur);
-    imwrite("pic_th.jpg",img_th);
-    //imwrite("pic_canny.jpg",img_canny);
+	imwrite("pic_gray.jpg",img_gray);
+	imwrite("pic_blur.jpg",img_blur);
+	imwrite("pic_th.jpg",img_th);
+	//imwrite("pic_canny.jpg",img_canny);
 
 	//Printing white pixels
 	/*cout << "\n\nBinary values:";
 	for(int i = 0; i < 960; i++){
 		cout << endl << "[" << i << "] ";
-	    for(int j = 0; j < 1280; j++){
-	        //if(255 == bin.at<uchar>(i,j))
-	        cout << bin.at<uchar>(i,j) << " ";
-	    }
+		for(int j = 0; j < 1280; j++){
+			//if(255 == bin.at<uchar>(i,j))
+			cout << bin.at<uchar>(i,j) << " ";
+		}
 	}*/
-    int sum_y = 0;
-    int count_y = 0;
-    for(int i = CAM_H*3/4; i<CAM_H; i++){
-	for(int j = 0; j<CAM_W; j++){
-	    if (img_th.at<uchar>(i,j) > threshold_value){
-	    	sum_y += j;
-		count_y++;
-	    }
+	int sum_y = 0;
+	int count_y = 0;
+	for(int i = CAM_H*3/4; i<CAM_H; i++){
+		for(int j = 0; j<CAM_W; j++){
+			if (img_th.at<uchar>(i,j) > threshold_value){
+				sum_y += j;
+				count_y++;
+			}
+		}
 	}
-    }
-    int cm_y = sum_y/count_y - CAM_W/2;
-    cout<<"CM_y: "<<cm_y<<endl;
+	int cm_y = sum_y/count_y - CAM_W/2;
+	cout<<"CM_y: "<<cm_y<<endl;
 
 /*
-    // @@@@ NEED TO BE TESTED FROM HERE!
+	// @@@@ NEED TO BE TESTED FROM HERE!
 
-    // line with edges, find 2 points in the middle of the image.
+	// line with edges, find 2 points in the middle of the image.
 
-    // ! check if img.size()[0] indexes are correct or need to be reversed!
-    int MAX_COLS = 10;
-    int cols[MAX_COLS];
-    int col_count = 0;
-    for (int i = 0; i < MAX_COLS; i++) cols[i] = 0; // initialization
+	// ! check if img.size()[0] indexes are correct or need to be reversed!
+	int MAX_COLS = 10;
+	int cols[MAX_COLS];
+	int col_count = 0;
+	for (int i = 0; i < MAX_COLS; i++) cols[i] = 0; // initialization
 
-    int row = img.size()[0]/2; // row to search for
-    for (int i = 0; i < img.size()[1]; i++){
-        if(255 == bin.at<uchar>(i,j)){
-            cols[col_count] = i;
-        }
-    }
-    cout<<"Edges: found "<< col_count << " edges..." <<endl;
+	int row = img.size()[0]/2; // row to search for
+	for (int i = 0; i < img.size()[1]; i++){
+		if(255 == bin.at<uchar>(i,j)){
+			cols[col_count] = i;
+		}
+	}
+	cout<<"Edges: found "<< col_count << " edges..." <<endl;
 
-    // considering that there are no crossings
-    int col = 0; // col to search for
-    bool col_found = false;
-    if (col_count==2){
-        // perfect case (data might be wrong, need good image processing)
-        col = (cols[0] + cols[1])/2; // mean value
-        col_found
-    }
-    else if (col_count==1){
-        // migth find just one but we could use it as the middle point
-        col = cols[0];
-    }
-    //else if (col_count<1 || col_count>2) // might want to discard and take a new picture or check another row
+	// considering that there are no crossings
+	int col = 0; // col to search for
+	bool col_found = false;
+	if (col_count==2){
+		// perfect case (data might be wrong, need good image processing)
+		col = (cols[0] + cols[1])/2; // mean value
+		col_found
+	}
+	else if (col_count==1){
+		// migth find just one but we could use it as the middle point
+		col = cols[0];
+	}
+	//else if (col_count<1 || col_count>2) // might want to discard and take a new picture or check another row
 
-    if (col_found) cout<<"Target point (image coord. syst):\n  x = "<<row<"\n  y = "<<col<<endl;
-    else cout<<"No clear target, try again..."<<endl;
+	if (col_found) cout<<"Target point (image coord. syst):\n  x = "<<row<"\n  y = "<<col<<endl;
+	else cout<<"No clear target, try again..."<<endl;
 
 
 
-    // Once target is found in image coord. syst. need to transform to
-    // camera and robot coord. syst.
-    int focal_length_px = 100; // [px] // random choice now, need to be computed (maybe with callibration)
-    int image_center_px[2]; // [px]
-    for (int i = 0; i < 2; i++) image_center_px[i] = img.size()[i]/2;
-    // camera position in the robot coord. syst. -> got from the mechanical design
-    // @@@@ might want to be readed from a configuration file, so it can be easily changed
-    float camera_pose_translation[3] = {31.53, 0, 74.80}; // [mm]
-    float camera_pose_rotation[3]; //still to figure out how to input in here (need to rotate X(90º) and Z(180º))
+	// Once target is found in image coord. syst. need to transform to
+	// camera and robot coord. syst.
+	int focal_length_px = 100; // [px] // random choice now, need to be computed (maybe with callibration)
+	int image_center_px[2]; // [px]
+	for (int i = 0; i < 2; i++) image_center_px[i] = img.size()[i]/2;
+	// camera position in the robot coord. syst. -> got from the mechanical design
+	// @@@@ might want to be readed from a configuration file, so it can be easily changed
+	float camera_pose_translation[3] = {31.53, 0, 74.80}; // [mm]
+	float camera_pose_rotation[3]; //still to figure out how to input in here (need to rotate X(90º) and Z(180º))
 
-    float x_c = (row-image_center_px[0])/focal_length_px;
-    float y_c = (col-image_center_px[1])/focal_length_px;
-    float z_c; // how to compute profoundity???
+	float x_c = (row-image_center_px[0])/focal_length_px;
+	float y_c = (col-image_center_px[1])/focal_length_px;
+	float z_c; // how to compute profoundity???
 */
 
+}
+
+int main(){
+	take_pic_get_cm();
+	return 0;
 }

@@ -7,6 +7,7 @@
 #include <thread>
 //#include "../comm_rpi.h"
 #include "../comm_rpi_1.h"
+//#include "../image_proc/tests/detect_line/detect_line.h"
 
 
 /****************
@@ -232,10 +233,19 @@ void send_msg(string msg){
 
 void test_read_comm1(){
 
-    send_msg("@,a=15,b=1,fwd=1,v=0.3,$");
+    send_msg("@a=15,b=1,fwd=1,v=0.3$");
     //usleep(10000000);
     //send_msg("@,a=2,b=1,v=0.4$");
 }
+
+/*
+void pic_cm_comm1(){
+    int y = -1*take_pic_get_cm();
+    printf("Y: %d\n",y);
+    string msg = "@a=19,b=1,v=0.3,tht="+y.to_string()+"$";
+    send_msg(msg);
+}*/
+
 
 
 
@@ -259,5 +269,6 @@ int main(){
     //test_enum();                      test validated!
 
     test_read_comm1();
+    //pic_cm_comm1();
     return 0;
 }
