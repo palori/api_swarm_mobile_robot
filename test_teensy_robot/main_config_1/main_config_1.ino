@@ -56,7 +56,7 @@ double e_i[5]={0,0,0,0,0};
 //indexes of PID controller
 int VEL1=0;
 int VEL2=1;
-int DIST=2;
+int FOLLOW=2;
 int THETA=3;
 int TURN=4;
 
@@ -287,7 +287,6 @@ void forward(double dist_ref){
 
     initializePID(VEL1,Kp,Ki,0.01);
     initializePID(VEL2,Kp,Ki,0.01);
-    //initializePID(DIST,Kp_d,Ki_d,0.01);
     initializePID(THETA,Kp_Th,Ki_Th,0.01);
     
 }
@@ -357,7 +356,7 @@ void followline (double dist) {
 
     initializePID(VEL1,Kp,Ki,0.01);
     initializePID(VEL2,Kp,Ki,0.01);
-    initializePID(THETA,Kp_Th,Ki_Th,0.01);
+    initializePID(FOLLOW,0.002,0,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -461,8 +460,6 @@ void update_velocity(int drive_command){
             if (fabs(dist_error) > 0.02){
 
                 //Serial.println("dist_error: "+String(dist_error));
-                //vel1 = update_PID(dist_ref,dist_curr,DIST) - update_PID(Th0,odoTh,THETA);
-                //vel2 = update_PID(dist_ref,dist_curr,DIST) + update_PID(Th0,odoTh,THETA);
                 
                 vel1=comm_tsy.get_vel() - update_PID(Th_0,odoTh,THETA);
                 vel2=comm_tsy.get_vel() + update_PID(Th_0,odoTh,THETA);
@@ -536,8 +533,8 @@ void update_velocity(int drive_command){
         
             if (fabs(final_dist - dTravel) > 0.02){
                 
-                vel1=comm_tsy.get_vel() - update_PID(Th_0,odoTh,THETA);
-                vel2=comm_tsy.get_vel() + update_PID(Th_0,odoTh,THETA);
+                vel1=comm_tsy.get_vel() - update_PID(0,comm_tsy.get_th_t(),FOLLOW);
+                vel2=comm_tsy.get_vel() + update_PID(0,comm_tsy.get_th_t(),FOLLOW);
                 
                 v_max = sqrt(0.5 * fabs(final_dist - dTravel));
                 
@@ -580,10 +577,10 @@ void setup()
 
   myTimer.begin(update10ms,10000);
   myTimer.priority(0);
-  reading.begin(reading100ms,100000);
-  reading.priority(1);
-  writing.begin(read_sensors,1000000);
-  writing.priority(2);
+  //reading.begin(reading100ms,100000);
+  //reading.priority(1);
+  //writing.begin(read_sensors,1000000);
+  //writing.priority(2);
   myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
    
 } 
@@ -598,7 +595,7 @@ void loop() // @,a=15,b=1,fwd=2,$
 { 
    
    // feels lonely
-   
+   reading100ms();
 
 }
 
