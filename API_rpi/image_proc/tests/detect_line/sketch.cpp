@@ -32,3 +32,5 @@ for (int i = 0; i<960; i++){
 	else line_detected[i] = false;
 }
 
+
+

@@ -14,7 +14,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 150;
+int threshold_value = 80;
 int threshold_type = 3;
 int const max_value = 255;
 int const max_type = 4;
@@ -25,7 +25,7 @@ int const max_BINARY_value = 255;
 bool is_color_edge = false;
 int edgeThresh = 110;                   // variable
 //int edgeThreshScharr=1;
-Mat image, img_blur, edge1, edge2, cedge;
+Mat image, img_blur, edge1, edge2, cedge, bin;
 const char* window_name1 = "Edge map : Canny default (Sobel gradient)";
 //const char* window_name2 = "Edge map : Canny with custom gradient (Scharr)";
 // define a trackbar callback
@@ -33,8 +33,8 @@ static void onTrackbar(int, void*)
 {
     //blur(gray, blurImage, Size(3,3));
     // Run the edge detector on grayscale
-    threshold(img_blur, edge1, threshold_value, max_BINARY_value,threshold_type);
-    //Canny(img_blur, edge1, edgeThresh, edgeThresh*3, 3);
+    //threshold(img_blur, edge1, threshold_value, max_BINARY_value,threshold_type);
+    Canny(bin, edge1, edgeThresh, edgeThresh*3, 3);
     cedge = Scalar::all(0);
     if (is_color_edge)
     {
@@ -180,7 +180,7 @@ int main( )
     string image_path = path + image_name;
 
     image_path = "detect_line/image_example.png";
-    //image_path = "detect_line/pc/pic.jpg";
+    image_path = "detect_line/pc/pic_1.jpg";
     Mat img, ch1, ch2, ch3;
     img = imread(image_path, CV_LOAD_IMAGE_COLOR);  
     display_image(img, "img4");
@@ -198,17 +198,17 @@ int main( )
     //vector<Mat> hsv = split_channels(img_hsv, "HSV", true);
     
     // detect line -> start using either img_gray or bw[0]
-    Mat bin;
-    threshold( img_gray, bin, threshold_value, max_BINARY_value,threshold_type );
+    blur(img_gray, img_blur, Size(5,5));
+    threshold( img_blur, bin, threshold_value, max_BINARY_value,threshold_type );
     display_image(bin, "bin");
     image = img;
-    blur(img_gray, img_blur, Size(3,3));
+    
     // Create a window
     namedWindow(window_name1, 1);
 
     // create a toolbar
-    //createTrackbar("Canny threshold default", window_name1, &edgeThresh, 255, onTrackbar); // for canny
-    createTrackbar("Threshold default", window_name1, &threshold_value, 255, onTrackbar); // for binary threshold
+    createTrackbar("Canny threshold default", window_name1, &edgeThresh, 255, onTrackbar); // for canny
+    //createTrackbar("Threshold default", window_name1, &threshold_value, 255, onTrackbar); // for binary threshold
     // Show the image
     onTrackbar(0, 0);
     
@@ -289,5 +289,56 @@ int main( )
         }
     }
     */
+
+    for(int i = 0; i < 960; i+=2){
+        cout << endl << "[" << i << "] ";
+        for(int j = 0; j < 1280; j+=2){
+            //if(255 == bin.at<uchar>(i,j))
+            cout << bin.at<uchar>(i,j) << " ";
+        }
+    }
+
+
+    int left_edge[960];
+    int right_edge[960];
+    bool left_edge_found = false;
+    bool line_detected[960];
+    //bool right_edge_found = false;
+
+    for (int i = 0; i<960; i++){
+        //cout << endl << "[" << i << "] ";
+        left_edge[i] = 300;
+        right_edge[i] = 979;
+
+        for (int j = 300; j<980; j+=2){
+            if (bin.at<uchar>(i,j) > 200){
+                right_edge[i] = j;
+                if (!left_edge_found) {
+                    left_edge[i]=j;
+                    left_edge_found=true;
+                }
+            } 
+        }
+        left_edge_found = false;
+        
+        if (left_edge[i]!=300 && right_edge[i]!=979) line_detected[i] = true;
+        else line_detected[i] = false;
+    }
+
+
+    /*for (int i = 0; i<960; i++){
+        //cout << endl << "[" << i << "] ";
+        //if (line_detected[i]) {
+            for (int j = 300; j<980; j+=2){
+                if (left_edge[i]==j || right_edge[i]==j) cout << "|"; 
+                else cout << " ";
+            }   
+            cout << endl; 
+        //} else {
+          //  cout << endl;
+       // }
+        
+    }*/
+
     return 0;
 }
