@@ -545,6 +545,8 @@ void update_velocity(int drive_command){
                 //vel2 = Saturate(vel2 , 0.5);
                 
                 //Serial.println("remaining distance: "+String(final_dist - dTravel));
+                Serial.println("vel1: "+String(vel1));
+                Serial.println("vel2: "+String(vel2));
               
                   
             } else {
@@ -594,7 +596,7 @@ int pos=0;
 void loop() // @,a=15,b=1,fwd=2,$
 { 
    
-   // feels lonely
+
    reading100ms();
 
 }

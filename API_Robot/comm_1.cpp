@@ -74,7 +74,7 @@ void COMM_TSY::read_serial(){
 				new_msg = false;
 				buf_length = String(buf).length();
 
-				Serial.println("buf: "+String(buf));
+				//Serial.println("buf: "+String(buf));
 
 				msg2params();
 
