@@ -1,13 +1,17 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <raspicam/raspicam_cv.h>
+
 #include <ctime>
 #include <iostream>
 //#include <stdlib.h>
 #include <stdio.h>
 
 #include <string.h>
+#include <string>
 #include <vector>
+
+#include "../../../comm_rpi_1.h"
  
 using namespace cv;
 using namespace std;
@@ -115,6 +119,7 @@ int take_pic_get_cm(){
 	}
 	int cm_y = sum_y/count_y - CAM_W/2;
 	cout<<"CM_y: "<<cm_y<<endl;
+	return cm_y;
 
 /*
 	// @@@@ NEED TO BE TESTED FROM HERE!
@@ -172,8 +177,37 @@ int take_pic_get_cm(){
 }
 
 
-/*
+void send_msg(string msg){
+
+    COMM_RPI cr;
+    cr.serial_open();
+    cr.serial_write(msg);
+    usleep(10000);
+    int count = 0;
+   /* while(count<20){
+        usleep(100000);
+        cr.serial_read();
+        printf("read count %d\n",count);
+        count++;
+    }*/
+    cr.serial_close();
+}
+
+void pic_cm_comm1(){
+    int i=0;
+    send_msg("@a=19,b=1,v=0.3,fwd=0.5$");
+    while (i<1000){
+       int y = take_pic_get_cm();
+       printf("Y: %d\n",y);
+       string msg = "@tht="+to_string(y)+"$";
+       send_msg(msg);
+       i++;
+    }
+}
+
+
 int main(){
-	take_pic_get_cm();
+	
+	pic_cm_comm1();
 	return 0;
-}*/
+}
