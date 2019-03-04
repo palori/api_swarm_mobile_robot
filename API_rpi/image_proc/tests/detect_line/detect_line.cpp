@@ -39,7 +39,7 @@ void display_image(Mat img, string title)
 
 
 
-int take_pic_get_cm(){
+float take_pic_get_cm(){
 	// Take pic example
 	time_t timer_begin,timer_end;
 	raspicam::RaspiCam_Cv Camera;
@@ -117,7 +117,7 @@ int take_pic_get_cm(){
 			}
 		}
 	}
-	int cm_y = sum_y/count_y - CAM_W/2;
+	float cm_y = sum_y/count_y - CAM_W/2;
 	cout<<"CM_y: "<<cm_y<<endl;
 	return cm_y;
 
@@ -177,7 +177,7 @@ int take_pic_get_cm(){
 }
 
 
-void send_msg(COMM_RPI cr, string msg){
+/*void send_msg(COMM_RPI cr, string msg){
 
     
     cr.serial_write(msg);
@@ -190,20 +190,23 @@ void send_msg(COMM_RPI cr, string msg){
         count++;
     }*/
     
-}
+//}
 
 void pic_cm_comm1(){
 	COMM_RPI cr;
     cr.serial_open();
     int i=0;
-    send_msg(cr, "@a=19,b=1,v=0.3,fwd=0.5$");
-    //usleep(10000);
+    float y=0.0;
+    string msg = "@a=19,b=1,v=0.4,fwd=30$";
+    cr.serial_write(msg);
+    usleep(1000000);
     while (i<1000){
-       int y = take_pic_get_cm();
-       printf("Y: %d\n",y);
-       string msg = "@tht="+to_string(y)+"$";
-       send_msg(cr, msg);
-       i++;
+		y = take_pic_get_cm();
+		printf("Y: %d\n",y);
+		msg = "@tht="+to_string(y)+"$";
+		cr.serial_write(msg);
+		usleep(10000);
+		i++;
     }
     cr.serial_close();
 }
