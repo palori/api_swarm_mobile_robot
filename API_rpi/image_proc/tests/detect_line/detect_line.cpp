@@ -177,12 +177,11 @@ int take_pic_get_cm(){
 }
 
 
-void send_msg(string msg){
+void send_msg(COMM_RPI cr, string msg){
 
-    COMM_RPI cr;
-    cr.serial_open();
+    
     cr.serial_write(msg);
-    usleep(10000);
+    usleep(100000);
     int count = 0;
    /* while(count<20){
         usleep(100000);
@@ -190,19 +189,23 @@ void send_msg(string msg){
         printf("read count %d\n",count);
         count++;
     }*/
-    cr.serial_close();
+    
 }
 
 void pic_cm_comm1(){
+	COMM_RPI cr;
+    cr.serial_open();
     int i=0;
-    send_msg("@a=19,b=1,v=0.3,fwd=0.5$");
+    send_msg(cr, "@a=19,b=1,v=0.3,fwd=0.5$");
+    //usleep(10000);
     while (i<1000){
        int y = take_pic_get_cm();
        printf("Y: %d\n",y);
        string msg = "@tht="+to_string(y)+"$";
-       send_msg(msg);
+       send_msg(cr, msg);
        i++;
     }
+    cr.serial_close();
 }
 
 
