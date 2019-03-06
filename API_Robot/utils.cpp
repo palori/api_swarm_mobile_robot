@@ -7,6 +7,7 @@ void setUpPowerPins(){
 	pinMode(PIN_BATTERY_VOLTAGE,INPUT);
   	pinMode(PIN_POWER_ROBOT,OUTPUT);
   	pinMode(PIN_POWER_IR,OUTPUT);
+  	pinMode(PIN_LED_STATUS,OUTPUT);
   	pinMode(M12DIS,OUTPUT);
   	
   	digitalWrite(PIN_POWER_ROBOT, HIGH);
@@ -18,14 +19,20 @@ bool checkBattery(){
 	float batt=analogRead(PIN_BATTERY_VOLTAGE);
 	batt = batt*16.2/1.2/1024*3.3;// /1024*12;
 	//Serial.print("\nBattery [V]: ");
-	Serial.println(String(batt));
+	//Serial.println(String(batt));
 
 	if (batt < 10){
 		//Serial.println("Low battery!");
 		digitalWrite(PIN_POWER_ROBOT, LOW);
 		digitalWrite(PIN_LED_STATUS, LOW);
 		return false;
-	} else { //if(batt > 12){ // Maybe just else, but be careful!!!!
+	}
+	else if (batt<10.5){
+		digitalWrite(PIN_POWER_ROBOT, HIGH);
+		digitalWrite(PIN_LED_STATUS, LOW);
+		return true;
+	}
+	else { //if(batt > 12){ // Maybe just else, but be careful!!!!
 		digitalWrite(PIN_POWER_ROBOT, HIGH);
 		digitalWrite(PIN_LED_STATUS, HIGH);
 		return true;

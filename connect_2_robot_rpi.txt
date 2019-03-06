@@ -1,0 +1,24 @@
+########################
+# Connect to robot rpi #
+########################
+
+1. Turn on hotspot (now only in Pau's phone)
+2. Connect the PC to that network
+3. Check that at least 2 devices are connected (1 PC and at least 1 robot)
+   - can check using ping:
+     ping 192.168.43.N
+                     138
+                     38
+                     174
+                     ...
+4. SSH the robot
+   ssh -X user@192.168.43.N
+   where user is the username of the robot (pi, local...)
+   Introduce the password when asked for (egg, grenen, raspberry...)
+5. Navigate to the folder where you have the script, compile it and run it
+   cd ~/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line		(might be another one)
+   ls
+   cmake .
+   make
+   ls 					(looking for the executable file to run, usually the green one)
+   ./executable_file	(run the executable)

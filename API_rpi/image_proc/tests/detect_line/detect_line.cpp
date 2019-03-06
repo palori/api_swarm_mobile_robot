@@ -12,7 +12,7 @@
 #include <vector>
 
 //#include <signal.h> //deprecated, see csignal
-#include <csignal>
+//#include <csignal>
 
 #include "../../../comm_rpi_1.h"
  
@@ -120,7 +120,9 @@ float take_pic_get_cm(){
 			}
 		}
 	}
-	float cm_y = sum_y/count_y - CAM_W/2;
+	float cm_y = 0;
+	if (count_y>0) cm_y= sum_y/count_y - CAM_W/2;
+	else cout<<"---- NO line found ----"<<endl;
 	cout<<"CM_y: "<<cm_y<<endl;
 	return cm_y;
 
@@ -200,7 +202,7 @@ void pic_cm_comm1(){
     cr.serial_open();
     int i=0;
     float y=0.0;
-    string msg = "@a=19,b=1,v=0.3,fwd=10$";
+    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
     cr.serial_write(msg);
     usleep(1000000);
     while (i<1000){
