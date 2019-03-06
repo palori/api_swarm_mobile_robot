@@ -354,8 +354,8 @@ void followline (double dist) {
     
     enableMotors();
 
-    initializePID(VEL1,1*Kp,Ki,0.01);
-    initializePID(VEL2,1*Kp,Ki,0.01);
+    initializePID(VEL1,0.5*Kp,Ki,0.01);
+    initializePID(VEL2,0.5*Kp,Ki,0.01);
     initializePID(FOLLOW,0.001,0,0.01);
 }
 

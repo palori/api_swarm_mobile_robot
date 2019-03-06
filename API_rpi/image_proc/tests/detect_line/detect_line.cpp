@@ -42,7 +42,7 @@ void display_image(Mat img, string title)
 
 
 
-float take_pic_get_cm(){
+float take_pic_get_cm(int i){
 	// Take pic example
 	time_t timer_begin,timer_end;
 	raspicam::RaspiCam_Cv Camera;
@@ -68,7 +68,8 @@ float take_pic_get_cm(){
 	double secondsElapsed = difftime ( timer_end,timer_begin );
 	cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
 	//save image 
-	imwrite("pic.jpg",img);
+	string pic_name = "pic"+to_string(i)+".jpg";
+	imwrite(pic_name,img);
 	cout<<"Image saved at 'pic.jpg'"<<endl;
 	
 
@@ -204,13 +205,13 @@ void pic_cm_comm1(){
     float y=0.0;
     string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
     cr.serial_write(msg);
-    usleep(1000000);
+    //usleep(1000);
     while (i<1000){
-		y = take_pic_get_cm();
+		y = take_pic_get_cm(i);
 		printf("Y: %d\n",y);
 		msg = "@tht="+to_string(y)+"$";
 		cr.serial_write(msg);
-		usleep(10000);
+		//usleep(100);
 		i++;
     }
     cr.serial_close();
