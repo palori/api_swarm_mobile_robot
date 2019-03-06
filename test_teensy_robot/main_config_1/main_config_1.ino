@@ -568,7 +568,7 @@ void setup()
   Serial.begin(9600);
   setUpPowerPins(); 
   setUpIMU();
-    
+
   enableMotors();
     
   motor1.setVelocity(input);   //sets motor to small speed where they dont move
@@ -598,6 +598,8 @@ void loop() // @,a=15,b=1,fwd=2,$
    
 
    reading100ms();
+   Serial.println("****************************************");
+   checkBattery();
 
 }
 
