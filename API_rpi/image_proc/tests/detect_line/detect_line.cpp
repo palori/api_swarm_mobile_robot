@@ -53,7 +53,7 @@ int camera_start(){
 	//Open camera
 	cout<<"Opening Camera..."<<endl;
 	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
-	Camera.set(CV_CAP_PROP_EXPOSURE, 100);
+	//Camera.set(CV_CAP_PROP_EXPOSURE, 100);
 	usleep(2000000);
 	return 0;	
 }
@@ -232,18 +232,18 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
+	    string msg = "@a=19,b=1,v=0.2,fwd=0.5$";
 	    cr.serial_write(msg);
 	    //usleep(1000);
 	    while (i<500){
-	    	
+	    		camera_start();
 				y = take_pic_get_cm(i);
 				//printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
 				//usleep(10000);
 				i++;
-				
+				camera_stop();
 			
 	    }
 	    cr.serial_close();
@@ -255,9 +255,9 @@ void pic_cm_comm1(){
 
 int main(){
 
-	signal(SIGABRT,&close_all);//If program aborts go to assigned function "myFunction".
-    signal(SIGTERM,&close_all);//If program terminates go to assigned function "myFunction".
-	signal(SIGINT,&close_all);
+	//signal(SIGABRT,&close_all);//If program aborts go to assigned function "myFunction".
+    //signal(SIGTERM,&close_all);//If program terminates go to assigned function "myFunction".
+	//signal(SIGINT,&close_all);
 	pic_cm_comm1();
 	return 0;
 }
