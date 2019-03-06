@@ -226,12 +226,12 @@ void pic_cm_comm1(){
 	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
 	    cr.serial_write(msg);
 	    //usleep(1000);
-	    while (i<1000){
+	    while (i<500){
 			y = take_pic_get_cm(i);
 			//printf("Y: %f\n",y);
 			msg = "@tht="+to_string(y)+"$";
 			cr.serial_write(msg);
-			usleep(10000);
+			//usleep(10000);
 			i++;
 	    }
 	    cr.serial_close();
