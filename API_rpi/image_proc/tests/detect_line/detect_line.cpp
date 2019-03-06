@@ -42,14 +42,15 @@ void display_image(Mat img, string title)
 	imshow( title, img );
 }
 
-void camera_init(){
+int camera_init(){
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
 	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
 
 	//Open camera
 	cout<<"Opening Camera..."<<endl;
-	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}	
+	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
+	return 0;	
 }
 
 void camera_stop(){
@@ -114,8 +115,8 @@ float take_pic_get_cm(int i){
 	//imwrite("pic_canny.jpg",img_canny);
 
 
-	string pic_name = "pics/pic_th_"+to_string(i)+".jpg";
-	imwrite(pic_name,img);
+	string pic_name = "pics/pic_th_"+to_string(i)+".png";
+	imwrite(pic_name,img_th);
 	//cout<<"Image saved at 'pic.jpg'"<<endl;
 
 

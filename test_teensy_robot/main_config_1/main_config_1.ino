@@ -354,8 +354,8 @@ void followline (double dist) {
     
     enableMotors();
 
-    initializePID(VEL1,0.5*Kp,Ki,0.01);
-    initializePID(VEL2,0.5*Kp,Ki,0.01);
+    initializePID(VEL1,2*Kp,Ki,0.01);
+    initializePID(VEL2,2*Kp,Ki,0.01);
     initializePID(FOLLOW,0.001,0,0.01);
 }
 
@@ -586,7 +586,7 @@ void setup()
   //reading.priority(1);
   //writing.begin(read_sensors,1000000);
   //writing.priority(2);
-  myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
+  //myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
    
 } 
 
