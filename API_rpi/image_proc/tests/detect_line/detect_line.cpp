@@ -34,50 +34,59 @@ const int kernel_size = 3;
 const int CAM_W = 640;
 const int CAM_H = 480;
 
+raspicam::RaspiCam_Cv Camera;
+
 void display_image(Mat img, string title)
 {
 	namedWindow( title, WINDOW_AUTOSIZE );  
 	imshow( title, img );
 }
 
+void camera_init(){
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
+	Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
+	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
+
+	//Open camera
+	cout<<"Opening Camera..."<<endl;
+	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}	
+}
+
+void camera_stop(){
+	cout<<"Stop camera..."<<endl;
+	Camera.release();
+}
+
+
 
 
 float take_pic_get_cm(int i){
 	// Take pic example
 	time_t timer_begin,timer_end;
-	raspicam::RaspiCam_Cv Camera;
+	
 	Mat img;
-	int nCount=100;
+	//int nCount=100;
 	//set camera params
-	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
-	Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
-	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
-	//Open camera
-	cout<<"Opening Camera..."<<endl;
-	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
+	
+	
 	//Start capture
 	cout<<"Capturing..."<<endl;
 	time ( &timer_begin );
 	Camera.grab();
 	Camera.retrieve (img);
-	cout<<"Stop camera..."<<endl;
-	Camera.release();
+	
 
 	//show time statistics
 	time ( &timer_end ); /* get current time; same as: timer = time(NULL)  */
 	double secondsElapsed = difftime ( timer_end,timer_begin );
-	cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
-	//save image 
-	string pic_name = "pic"+to_string(i)+".jpg";
-	imwrite(pic_name,img);
-	cout<<"Image saved at 'pic.jpg'"<<endl;
+	//cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
 	
 
 
 	
 	//img = imread(image_path, CV_LOAD_IMAGE_COLOR);  
-	cout << "Image size: " <<  img.size() << endl;
-	cout << "Image channels: " <<  img.channels() << endl;
+	//cout << "Image size: " <<  img.size() << endl;
+	//cout << "Image channels: " <<  img.channels() << endl;
 
 	Mat img_gray, img_canny;
  
@@ -90,17 +99,25 @@ float take_pic_get_cm(int i){
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
 	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
 	
+	if (false){
+		display_image(img, "img");
+		display_image(img_gray, "img_gray");
+		display_image(img_blur, "img_blur");
+		display_image(img_th, "img_th");
+		//display_image(img_canny,"img_canny");
+	}
 
-	display_image(img, "img");
-	display_image(img_gray, "img_gray");
-	display_image(img_blur, "img_blur");
-	display_image(img_th, "img_th");
-	//display_image(img_canny,"img_canny");
-
-	imwrite("pic_gray.jpg",img_gray);
-	imwrite("pic_blur.jpg",img_blur);
-	imwrite("pic_th.jpg",img_th);
+	//save images
+	//imwrite("pic_gray.jpg",img_gray);
+	//imwrite("pic_blur.jpg",img_blur);
+	//imwrite("pic_th.jpg",img_th);
 	//imwrite("pic_canny.jpg",img_canny);
+
+
+	string pic_name = "pics/pic_th_"+to_string(i)+".jpg";
+	imwrite(pic_name,img);
+	//cout<<"Image saved at 'pic.jpg'"<<endl;
+
 
 	//Printing white pixels
 	/*cout << "\n\nBinary values:";
@@ -199,6 +216,8 @@ float take_pic_get_cm(int i){
 //}
 
 void pic_cm_comm1(){
+
+	camera_init();
 	COMM_RPI cr;
     cr.serial_open();
     int i=0;
@@ -215,6 +234,7 @@ void pic_cm_comm1(){
 		i++;
     }
     cr.serial_close();
+    camera_stop();
 }
 
 
