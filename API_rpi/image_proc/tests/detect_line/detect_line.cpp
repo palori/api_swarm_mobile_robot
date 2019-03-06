@@ -11,8 +11,8 @@
 #include <string>
 #include <vector>
 
-//#include <signal.h> //deprecated, see csignal
-#include <csignal>
+#include <signal.h> //deprecated, see csignal
+//#include <csignal>
 
 #include "../../../comm_rpi_1.h"
  
@@ -35,6 +35,7 @@ const int CAM_W = 640;
 const int CAM_H = 480;
 
 raspicam::RaspiCam_Cv Camera;
+COMM_RPI cr;
 
 void display_image(Mat img, string title)
 {
@@ -79,7 +80,7 @@ float take_pic_get_cm(int i){
 	
 	//Start capture
 	cout<<"Capturing "+to_string(i)+"..."<<endl;
-	time ( &timer_begin );
+	//time ( &timer_begin );
 	Camera.grab();
 	Camera.retrieve (img);
 	
@@ -227,7 +228,7 @@ void pic_cm_comm1(){
 
 	camera_init();
 	if (camera_start() >= 0){
-		COMM_RPI cr;
+		
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
