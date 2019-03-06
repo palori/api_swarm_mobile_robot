@@ -12,7 +12,7 @@
 #include <vector>
 
 //#include <signal.h> //deprecated, see csignal
-//#include <csignal>
+#include <csignal>
 
 #include "../../../comm_rpi_1.h"
  
@@ -62,7 +62,10 @@ void camera_stop(){
 	Camera.release();
 }
 
-
+void close_all(){
+	camera_stop();
+	cr.serial_close();
+}
 
 
 float take_pic_get_cm(int i){
@@ -228,15 +231,15 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
-	    //cr.serial_write(msg);
+	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
+	    cr.serial_write(msg);
 	    //usleep(1000);
 	    while (i<500){
 	    	
 				y = take_pic_get_cm(i);
 				//printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
-				//cr.serial_write(msg);
+				cr.serial_write(msg);
 				//usleep(10000);
 				i++;
 				
@@ -250,6 +253,9 @@ void pic_cm_comm1(){
 
 
 int main(){
+
+	signal(SIGABRT,close_all);//If program aborts go to assigned function "myFunction".
+    signal(SIGTERM,close_all);//If program terminates go to assigned function "myFunction".
 	
 	pic_cm_comm1();
 	return 0;
