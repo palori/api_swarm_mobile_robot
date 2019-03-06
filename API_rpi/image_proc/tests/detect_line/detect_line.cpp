@@ -52,6 +52,8 @@ int camera_start(){
 	//Open camera
 	cout<<"Opening Camera..."<<endl;
 	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
+	Camera.set(CV_CAP_PROP_EXPOSURE, 100);
+	usleep(2000000);
 	return 0;	
 }
 
@@ -65,7 +67,7 @@ void camera_stop(){
 
 float take_pic_get_cm(int i){
 	// Take pic example
-	time_t timer_begin,timer_end;
+	//time_t timer_begin,timer_end;
 	
 	Mat img;
 	//int nCount=100;
@@ -80,8 +82,8 @@ float take_pic_get_cm(int i){
 	
 
 	//show time statistics
-	time ( &timer_end ); /* get current time; same as: timer = time(NULL)  */
-	double secondsElapsed = difftime ( timer_end,timer_begin );
+	//time ( &timer_end ); /* get current time; same as: timer = time(NULL)  */
+	//double secondsElapsed = difftime ( timer_end,timer_begin );
 	//cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
 	
 
@@ -220,26 +222,30 @@ float take_pic_get_cm(int i){
 
 void pic_cm_comm1(){
 
-	camera_init()
-	COMM_RPI cr;
-    cr.serial_open();
-    int i=0;
-    float y=0.0;
-    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
-    //cr.serial_write(msg);
-    //usleep(1000);
-    while (i<500){
-    	if (camera_start() >= 0){
-			y = take_pic_get_cm(i);
-			//printf("Y: %f\n",y);
-			msg = "@tht="+to_string(y)+"$";
-			//cr.serial_write(msg);
-			//usleep(10000);
-			i++;
-			camera_stop();
-		}
-    }
-    cr.serial_close();
+	camera_init();
+	if (camera_start() >= 0){
+		COMM_RPI cr;
+	    cr.serial_open();
+	    int i=0;
+	    float y=0.0;
+	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
+	    //cr.serial_write(msg);
+	    //usleep(1000);
+	    while (i<500){
+	    	
+				y = take_pic_get_cm(i);
+				//printf("Y: %f\n",y);
+				msg = "@tht="+to_string(y)+"$";
+				//cr.serial_write(msg);
+				//usleep(10000);
+				i++;
+				
+			
+	    }
+	    cr.serial_close();
+	    camera_stop();
+	}
+
 }
 
 
