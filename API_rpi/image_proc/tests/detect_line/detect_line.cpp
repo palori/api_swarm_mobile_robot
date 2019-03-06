@@ -11,6 +11,9 @@
 #include <string>
 #include <vector>
 
+//#include <signal.h> //deprecated, see csignal
+#include <csignal>
+
 #include "../../../comm_rpi_1.h"
  
 using namespace cv;
@@ -197,7 +200,7 @@ void pic_cm_comm1(){
     cr.serial_open();
     int i=0;
     float y=0.0;
-    string msg = "@a=19,b=1,v=0.4,fwd=30$";
+    string msg = "@a=19,b=1,v=0.3,fwd=10$";
     cr.serial_write(msg);
     usleep(1000000);
     while (i<1000){

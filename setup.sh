@@ -114,3 +114,33 @@ sudo ldconfig
 
 # check this tutorial!!!
 # https://www.youtube.com/watch?v=QV1a1G4lL3U
+
+
+
+# install 0mq libary:
+# all steps can be found here: https://github.com/zeromq/zmqpp
+# but we also copy them here
+
+# Build, check, and install libsodium
+git clone git://github.com/jedisct1/libsodium.git
+cd libsodium
+./autogen.sh 
+./configure && make check 
+sudo make install 
+sudo ldconfig
+cd ../
+# Build, check, and install the latest version of ZeroMQ
+git clone git://github.com/zeromq/libzmq.git
+cd libzmq
+./autogen.sh 
+./configure --with-libsodium && make
+sudo make install
+sudo ldconfig
+cd ../
+# Now install ZMQPP
+git clone git://github.com/zeromq/zmqpp.git
+cd zmqpp
+make
+make check			# got error 201
+sudo make install
+make installcheck	# got error 201
