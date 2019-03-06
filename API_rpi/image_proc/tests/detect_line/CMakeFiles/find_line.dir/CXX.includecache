@@ -53,6 +53,8 @@ string
 -
 vector
 -
+signal.h
+-
 ../../../comm_rpi_1.h
 /home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.h
 

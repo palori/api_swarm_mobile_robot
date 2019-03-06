@@ -23,7 +23,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 80;//150;
+int threshold_value = 140;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
@@ -104,7 +104,8 @@ float take_pic_get_cm(int i){
 	Mat img_blur (img_gray.size(), img_gray.type());
 	blur(img_gray, img_blur, Size(5,5));
 	Mat img_th (img_blur.size(), img_blur.type());
-	threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+	//threshold_value = i*10;
+threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
 	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
 	
@@ -232,18 +233,18 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.2,fwd=0.5$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
 	    cr.serial_write(msg);
 	    //usleep(1000);
 	    while (i<500){
-	    		camera_start();
+	    		//camera_start();
 				y = take_pic_get_cm(i);
 				//printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
 				//usleep(10000);
 				i++;
-				camera_stop();
+				//camera_stop();
 			
 	    }
 	    cr.serial_close();
