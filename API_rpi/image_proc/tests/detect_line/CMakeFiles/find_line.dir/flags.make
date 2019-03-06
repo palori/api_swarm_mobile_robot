@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_FLAGS =  
 
-CXX_DEFINES = 
+CXX_DEFINES = -Draspicam_CV_LIBS
 
 CXX_INCLUDES = -I/usr/local/include -I/usr/include/opencv 
 

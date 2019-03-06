@@ -150,6 +150,60 @@ detect_line.cpp.s:
 	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/detect_line.cpp.s
 .PHONY : detect_line.cpp.s
 
+home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o: home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
+
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o
+
+# target to build an object file
+home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
+
+home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i: home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
+
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i
+
+# target to preprocess a source file
+home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
+
+home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s: home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
+
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s
+
+# target to generate assembly for a file
+home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
+
+home/local/api_swarm_mobile_robot/API_rpi/utils.o: home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.o
+
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/utils.o
+
+# target to build an object file
+home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.o:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.o
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.o
+
+home/local/api_swarm_mobile_robot/API_rpi/utils.i: home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/utils.i
+
+# target to preprocess a source file
+home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.i:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+
+home/local/api_swarm_mobile_robot/API_rpi/utils.s: home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.s
+
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/utils.s
+
+# target to generate assembly for a file
+home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.s:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.s
+.PHONY : home/local/api_swarm_mobile_robot/API_rpi/utils.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +216,12 @@ help:
 	@echo "... detect_line.o"
 	@echo "... detect_line.i"
 	@echo "... detect_line.s"
+	@echo "... home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o"
+	@echo "... home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i"
+	@echo "... home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s"
+	@echo "... home/local/api_swarm_mobile_robot/API_rpi/utils.o"
+	@echo "... home/local/api_swarm_mobile_robot/API_rpi/utils.i"
+	@echo "... home/local/api_swarm_mobile_robot/API_rpi/utils.s"
 .PHONY : help
 
 
