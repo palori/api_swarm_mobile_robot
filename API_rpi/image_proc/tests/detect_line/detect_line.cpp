@@ -46,7 +46,9 @@ int camera_init(){
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
 	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
+}
 
+int camera_start(){
 	//Open camera
 	cout<<"Opening Camera..."<<endl;
 	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
@@ -218,25 +220,26 @@ float take_pic_get_cm(int i){
 
 void pic_cm_comm1(){
 
-	if (camera_init() >= 0){
-		COMM_RPI cr;
-	    cr.serial_open();
-	    int i=0;
-	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
-	    cr.serial_write(msg);
-	    //usleep(1000);
-	    while (i<500){
+	camera_init()
+	COMM_RPI cr;
+    cr.serial_open();
+    int i=0;
+    float y=0.0;
+    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
+    //cr.serial_write(msg);
+    //usleep(1000);
+    while (i<500){
+    	if (camera_start() >= 0){
 			y = take_pic_get_cm(i);
 			//printf("Y: %f\n",y);
 			msg = "@tht="+to_string(y)+"$";
-			cr.serial_write(msg);
+			//cr.serial_write(msg);
 			//usleep(10000);
 			i++;
-	    }
-	    cr.serial_close();
-	    camera_stop();
-	}
+			camera_stop();
+		}
+    }
+    cr.serial_close();
 }
 
 
