@@ -71,7 +71,7 @@ float take_pic_get_cm(int i){
 	
 	
 	//Start capture
-	cout<<"Capturing..."<<endl;
+	cout<<"Capturing "+to_string(i)+"..."<<endl;
 	time ( &timer_begin );
 	Camera.grab();
 	Camera.retrieve (img);
@@ -218,24 +218,25 @@ float take_pic_get_cm(int i){
 
 void pic_cm_comm1(){
 
-	camera_init();
-	COMM_RPI cr;
-    cr.serial_open();
-    int i=0;
-    float y=0.0;
-    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
-    cr.serial_write(msg);
-    //usleep(1000);
-    while (i<1000){
-		y = take_pic_get_cm(i);
-		printf("Y: %d\n",y);
-		msg = "@tht="+to_string(y)+"$";
-		cr.serial_write(msg);
-		//usleep(100);
-		i++;
-    }
-    cr.serial_close();
-    camera_stop();
+	if (camera_init() >= 0){
+		COMM_RPI cr;
+	    cr.serial_open();
+	    int i=0;
+	    float y=0.0;
+	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
+	    cr.serial_write(msg);
+	    //usleep(1000);
+	    while (i<1000){
+			y = take_pic_get_cm(i);
+			//printf("Y: %f\n",y);
+			msg = "@tht="+to_string(y)+"$";
+			cr.serial_write(msg);
+			usleep(10000);
+			i++;
+	    }
+	    cr.serial_close();
+	    camera_stop();
+	}
 }
 
 

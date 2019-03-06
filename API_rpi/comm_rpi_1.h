@@ -78,7 +78,7 @@ public:
 	void debug_params();
 
 private:
-	bool debug = true;
+	bool debug = false;
 	int fd = -1;								// indicates port state, default: -1 (closed)
 	bool port_open = false;
 
