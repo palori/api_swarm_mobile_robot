@@ -255,9 +255,9 @@ void pic_cm_comm1(){
 
 int main(){
 
-	signal(SIGABRT,close_all);//If program aborts go to assigned function "myFunction".
-    signal(SIGTERM,close_all);//If program terminates go to assigned function "myFunction".
-	
+	signal(SIGABRT,&close_all);//If program aborts go to assigned function "myFunction".
+    signal(SIGTERM,&close_all);//If program terminates go to assigned function "myFunction".
+	signal(SIGINT,&close_all);
 	pic_cm_comm1();
 	return 0;
 }
