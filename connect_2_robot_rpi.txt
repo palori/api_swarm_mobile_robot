@@ -2,8 +2,28 @@
 # Connect to robot rpi #
 ########################
 
+
+######################################################
+## Useful links
+
+- RSE WIKI, DTU Elektro Automation and Control department
+  http://rsewiki.elektro.dtu.dk/index.php/Vision_based_Line_Follower
+
+- Change Linux hostname
+  https://www.howtogeek.com/167195/how-to-change-your-raspberry-pi-or-other-linux-devices-hostname/
+
+- Mounting and unmounting using sshfs
+  Mounnting is explained in a simplier way in some of the links from 'rse.wiki'
+  https://help.ubuntu.com/community/SSHFS
+
+
+######################################################
+## Conect from a local network (hotspot...)
+
 1. Turn on hotspot (now only in Pau's phone)
+
 2. Connect the PC to that network
+
 3. Check that at least 2 devices are connected (1 PC and at least 1 robot)
    - can check using ping:
      ping 192.168.43.N
@@ -11,10 +31,46 @@
                      38
                      174
                      ...
+
 4. SSH the robot
    ssh -X user@192.168.43.N
    where user is the username of the robot (pi, local...)
    Introduce the password when asked for (egg, grenen, raspberry...)
+
+5. Navigate to the folder where you have the script, compile it and run it
+   cd ~/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line		(might be another one)
+   ls
+   cmake .
+   make
+   ls 					(looking for the executable file to run, usually the green one)
+   ./executable_file	(run the executable)
+
+
+
+######################################################
+## Conect from a local network (hotspot...)
+
+1. Turn on hotspot (now only in Pau's phone)
+
+2. Connect the PC to that network
+
+3. Check that at least 2 devices are connected (1 PC and at least 1 robot)
+   - can check using ping:
+     ping 192.168.43.N
+                     138
+                     38
+                     174
+                     ...
+          hostname.local
+          cucumber.local		# cucumber would be the 'hostname' in this case
+          ...
+
+4. SSH the robot
+   ssh -X user@192.168.43.N
+   ssh -X user@hostname.local        # '.local' has nothing to do with the possible 'username'
+   where 'user' is the username of the robot (pi, local...)
+   Introduce the password when asked for (egg, grenen, raspberry...)
+
 5. Navigate to the folder where you have the script, compile it and run it
    cd ~/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line		(might be another one)
    ls
