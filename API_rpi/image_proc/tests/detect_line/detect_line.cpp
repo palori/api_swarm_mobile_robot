@@ -23,7 +23,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 30;//150;
+int threshold_value = 150;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
@@ -106,7 +106,8 @@ float take_pic_get_cm(int i){
 	Mat img_th (img_blur.size(), img_blur.type());
 	//threshold_value = i*10;
 	bool bad_threshold = true;
-
+	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+	
 	while (bad_threshold) {
 		threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 
@@ -117,15 +118,15 @@ float take_pic_get_cm(int i){
 		for(int i = CAM_H*3/4; i<CAM_H; i++){
 			for(int j = 0; j<CAM_W; j++){
 				if (img_th.at<uchar>(i,j) > threshold_value){
-					sum_white++;
-					sum_all++;
+					sum_white++;	
 				}
+				sum_all++;
 			}
 		}
 		float white_percent = sum_white/(float)sum_all;
-		cout << "white: " << sum_white << endl;
-		cout << "all: " << sum_all << endl;
-		cout << "percent: " << white_percent << endl;
+		//cout << "white: " << sum_white << endl;
+		//cout << "all: " << sum_all << endl;
+		//cout << "percent: " << white_percent << endl;
 		if (white_percent<0.15) threshold_value-=10;
 		else if (white_percent>0.15 && white_percent<0.4) bad_threshold = false;
 		else threshold_value+=10;
