@@ -356,7 +356,7 @@ void followline (double dist) {
 
     initializePID(VEL1,2*Kp,Ki,0.01);
     initializePID(VEL2,2*Kp,Ki,0.01);
-    initializePID(FOLLOW,0.001,0,0.01);
+    initializePID(FOLLOW,0.005,0,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
