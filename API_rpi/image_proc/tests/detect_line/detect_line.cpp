@@ -122,12 +122,15 @@ float take_pic_get_cm(int i){
 				}
 			}
 		}
-		float white_percent = (float)sum_white/sum_all;
+		float white_percent = sum_white/(float)sum_all;
+		cout << "white: " << sum_white << endl;
+		cout << "all: " << sum_all << endl;
+		cout << "percent: " << white_percent << endl;
 		if (white_percent<0.15) threshold_value-=10;
-		else if (white_percent>0.15 && white_percent<0.3) bad_threshold = false;
+		else if (white_percent>0.15 && white_percent<0.4) bad_threshold = false;
 		else threshold_value+=10;
 
-		if (bad_threshold = true) {
+		if (bad_threshold == true) {
 			string name = "pics/thres_"+to_string(threshold_value)+".png";
 			imwrite(name,img_th);
 
