@@ -36,6 +36,7 @@ const int CAM_H = 480;
 
 raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
+enum Side { LEFT, MIDDLE, RIGHT };
 
 void display_image(Mat img, string title)
 {
@@ -69,7 +70,7 @@ void close_all(){
 }
 
 
-float take_pic_get_cm(int i){
+float take_pic_get_cm(int i, Side side){
 	// Take pic example
 	//time_t timer_begin,timer_end;
 	
@@ -106,6 +107,7 @@ float take_pic_get_cm(int i){
 	Mat img_th (img_blur.size(), img_blur.type());
 	//threshold_value = i*10;
 	bool bad_threshold = true;
+	int count_bad = 0;
 	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 	
 	while (bad_threshold) {
@@ -136,7 +138,16 @@ float take_pic_get_cm(int i){
 			imwrite(name,img_th);
 
 		}
+		count_bad++;
+		if (count_bad>30){   //if it cannot find good img
+			bad_threshold = false;
+			count_bad = 0;
+			threshold(img_blur, img_th, 120, max_BINARY_value,threshold_type);
+		}
+
+
 	}
+
 	
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
 	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
@@ -170,6 +181,8 @@ float take_pic_get_cm(int i){
 			cout << bin.at<uchar>(i,j) << " ";
 		}
 	}*/
+
+
 	int sum_y = 0;
 	int count_y = 0;
 	for(int i = CAM_H*3/4; i<CAM_H; i++){
@@ -184,7 +197,19 @@ float take_pic_get_cm(int i){
 	if (count_y>0) cm_y= sum_y/count_y - CAM_W/2;
 	else cout<<"---- NO line found ----"<<endl;
 	cout<<"CM_y: "<<cm_y<<endl;
-	return cm_y;
+	switch(side){
+
+		case LEFT:
+			cm_y-=20;
+			break;
+		case MIDDLE:
+			cm_y+=0;
+			break;
+		case RIGHT:
+			cm_y+=20;
+			break;
+	}
+	return cm_y;	
 
 /*
 	// @@@@ NEED TO BE TESTED FROM HERE!
@@ -242,6 +267,7 @@ float take_pic_get_cm(int i){
 }
 
 
+
 /*void send_msg(COMM_RPI cr, string msg){
 
     
@@ -270,7 +296,7 @@ void pic_cm_comm1(){
 	    usleep(10000);
 	    while (i<500){
 	    		//camera_start();
-				y = take_pic_get_cm(i);
+				y = take_pic_get_cm(i,LEFT);
 				//printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
