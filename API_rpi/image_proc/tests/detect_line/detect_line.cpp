@@ -23,7 +23,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 140;//150;
+int threshold_value = 150;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
@@ -105,7 +105,39 @@ float take_pic_get_cm(int i){
 	blur(img_gray, img_blur, Size(5,5));
 	Mat img_th (img_blur.size(), img_blur.type());
 	//threshold_value = i*10;
-threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+	bool bad_threshold = true;
+	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+	
+	while (bad_threshold) {
+		threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+
+		
+		//display_image(img_th, "img_th");
+		int sum_white = 0;
+		int sum_all = 0;
+		for(int i = CAM_H*3/4; i<CAM_H; i++){
+			for(int j = 0; j<CAM_W; j++){
+				if (img_th.at<uchar>(i,j) > threshold_value){
+					sum_white++;	
+				}
+				sum_all++;
+			}
+		}
+		float white_percent = sum_white/(float)sum_all;
+		//cout << "white: " << sum_white << endl;
+		//cout << "all: " << sum_all << endl;
+		//cout << "percent: " << white_percent << endl;
+		if (white_percent<0.15) threshold_value-=10;
+		else if (white_percent>0.15 && white_percent<0.4) bad_threshold = false;
+		else threshold_value+=10;
+
+		if (bad_threshold == true) {
+			string name = "pics/thres_"+to_string(threshold_value)+".png";
+			imwrite(name,img_th);
+
+		}
+	}
+	
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
 	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
 	
@@ -233,9 +265,9 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
+	    string msg = "@a=19,b=1,v=0.25,fwd=1$";
 	    cr.serial_write(msg);
-	    //usleep(1000);
+	    usleep(10000);
 	    while (i<500){
 	    		//camera_start();
 				y = take_pic_get_cm(i);
