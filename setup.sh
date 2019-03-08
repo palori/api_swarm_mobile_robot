@@ -144,3 +144,5 @@ make
 make check			# got error 201
 sudo make install
 make installcheck	# got error 201
+
+# Example using 'zmqpp' library: https://gist.github.com/hmartiro/df1eb214f77f549b3691
