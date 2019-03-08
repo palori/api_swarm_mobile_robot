@@ -200,13 +200,13 @@ float take_pic_get_cm(int i, Side side){
 	switch(side){
 
 		case LEFT:
-			cm_y-=20;
+			cm_y-=40;     //determine this value based on the number of the lines - white area percentages
 			break;
 		case MIDDLE:
 			cm_y+=0;
 			break;
 		case RIGHT:
-			cm_y+=20;
+			cm_y+=40;
 			break;
 	}
 	return cm_y;	
