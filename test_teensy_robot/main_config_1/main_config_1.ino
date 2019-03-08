@@ -58,7 +58,7 @@ int VEL1=0;
 int VEL2=1;
 int FOLLOW=2;
 int THETA=3;
-int TURN=4;
+int STOP=4;
 
 //getVelocity variables
 unsigned long oldtime[2] = {0,0};
@@ -303,7 +303,6 @@ void turn(double angle_ref){
     
     enableMotors();
     
-    //initializePID(TURN,Kp_Th,Ki_Th,0.01);
     initializePID(VEL1,3*Kp,Ki,0.01);
     initializePID(VEL2,3*Kp,Ki,0.01);
     
@@ -319,7 +318,7 @@ void turnr(double angle_ref){
     
     enableMotors();
     
-    //initializePID(TURN,Kp_Th,Ki_Th,0.01);
+    
     initializePID(VEL1,Kp,Ki,0.01);
     initializePID(VEL2,Kp,Ki,0.01);
     
@@ -356,7 +355,7 @@ void followline (double dist) {
 
     initializePID(VEL1,2*Kp,Ki,0.01);
     initializePID(VEL2,2*Kp,Ki,0.01);
-    initializePID(FOLLOW,0.005,0,0.01);
+    initializePID(FOLLOW,0.0025,0,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -393,9 +392,7 @@ void update_velocity(int drive_command){
         case comm_tsy.TRN:
             if (fabs(angle_error)>0.01){
       
-                //vel2 = update_PID(angle_ref_abs,odoTh,TURN);
-                //vel1 = -update_PID(angle_ref_abs,odoTh,TURN);
-          
+                
                 vel1 = - sign(angle_error) * comm_tsy.get_vel();
                 vel2 = sign(angle_error) * comm_tsy.get_vel();
                 
@@ -422,8 +419,7 @@ void update_velocity(int drive_command){
         case comm_tsy.TRNR:   //turnr function: v2/v1=(R+b/2)/(R-b/2)
             if (fabs(angle_error)>0.01){
       
-                //vel2 = update_PID(angle_ref_abs,odoTh,TURN);
-                //vel1 = -update_PID(angle_ref_abs,odoTh,TURN);
+          
                 double turning_radius = 0.3;
                 double vel_ratio = (turning_radius + wheels_distance / 2.0) / (turning_radius - wheels_distance / 2.0);
                 

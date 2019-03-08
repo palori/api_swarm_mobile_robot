@@ -130,8 +130,8 @@ float take_pic_get_cm(int i, Side side){
 		//cout << "all: " << sum_all << endl;
 		//cout << "percent: " << white_percent << endl;
 		if (white_percent<0.15) threshold_value-=10;
-		else if (white_percent>0.15 && white_percent<0.4) bad_threshold = false;
-		else threshold_value+=10;
+		else if (white_percent>0.15 && white_percent<0.46) bad_threshold = false;  //one line should cover around 22% of the bottom quarter of image
+		else threshold_value+=10;			// change these constants if camera position changes
 
 		if (bad_threshold == true) {
 			string name = "pics/thres_"+to_string(threshold_value)+".png";
@@ -139,7 +139,7 @@ float take_pic_get_cm(int i, Side side){
 
 		}
 		count_bad++;
-		if (count_bad>30){   //if it cannot find good img
+		if (count_bad>30){   //if it cannot find good img, return the first one
 			bad_threshold = false;
 			count_bad = 0;
 			threshold(img_blur, img_th, 120, max_BINARY_value,threshold_type);
@@ -291,7 +291,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.25,fwd=1$";
+	    string msg = "@a=19,b=1,v=0.25,fwd=1.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<500){
