@@ -24,7 +24,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 150;//150;
+int threshold_value = 180;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
@@ -290,7 +290,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
+	    string msg = "@a=19,b=1,v=0.4,fwd=1.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<300){
