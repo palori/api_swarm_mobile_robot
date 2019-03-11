@@ -6,6 +6,7 @@
 #include <iostream>
 //#include <stdlib.h>
 #include <stdio.h>
+#include <cmath>
 
 #include <string.h>
 #include <string>
@@ -196,19 +197,20 @@ float take_pic_get_cm(int i, Side side){
 	float cm_y = 0;
 	if (count_y>0) cm_y= sum_y/count_y - CAM_W/2;
 	else cout<<"---- NO line found ----"<<endl;
-	cout<<"CM_y: "<<cm_y<<endl;
+	
 	switch(side){
 
 		case LEFT:
-			cm_y-=40;     //determine this value based on the number of the lines - white area percentages
+			cm_y-=round(40*white_percent/0.22);     //determine this value based on the number of the lines - white area percentages
 			break;
 		case MIDDLE:
 			cm_y+=0;
 			break;
 		case RIGHT:
-			cm_y+=40;
+			cm_y+=round(40*white_percent/0.22);
 			break;
 	}
+	cout<<"CM_y: "<<cm_y<<endl;
 	return cm_y;	
 
 /*
