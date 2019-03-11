@@ -38,6 +38,9 @@ const int CAM_H = 480;
 raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
+SimpleBlobDetector detector;
+SimpleBlobDetector::Params params;
+<KeyPoint> keypoints;
 
 void display_image(Mat img, string title)
 {
@@ -149,11 +152,9 @@ float take_pic_get_cm(int i, Side side){
 
 	//BLOB DETECTION
 
-	SimpleBlobDetector detector;
-	SimpleBlobDetector::Params params;
+	
 	params.filterByArea = true;
 	params.minArea = 10000;
-	<KeyPoint> keypoints;
 	detector.detect(img_blur, keypoints);
 	Mat im_with_keypoints;
 	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
