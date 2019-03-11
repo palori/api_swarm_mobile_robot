@@ -41,16 +41,7 @@ COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
 SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
-params.filterByArea = true;
-params.minArea = 1000;
-params.minThreshold = 10;
-params.maxThreshold = 230;
-params.filterByCircularity = false;
-params.minCircularity = 0.1;
-params.filterByConvexity = false;
-params.minConvexity = 0.87;
-params.filterByInertia = false;
-params.minInertiaRatio = 0.01;
+
 SimpleBlobDetector detector(params);
 
 void display_image(Mat img, string title)
@@ -164,7 +155,16 @@ float take_pic_get_cm(int i, Side side){
 	//BLOB DETECTION
 
 	
-
+	params.filterByArea = true;
+	params.minArea = 1000;
+	params.minThreshold = 10;
+	params.maxThreshold = 230;
+	params.filterByCircularity = false;
+	params.minCircularity = 0.1;
+	params.filterByConvexity = false;
+	params.minConvexity = 0.87;
+	params.filterByInertia = false;
+	params.minInertiaRatio = 0.01;
 	detector.detect(img_blur, keypoints);
 	Mat im_with_keypoints;
 	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
