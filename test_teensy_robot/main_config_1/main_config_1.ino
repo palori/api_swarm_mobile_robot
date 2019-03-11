@@ -347,7 +347,7 @@ void drive(double Xr, double Yr, double Thr) {
 }
 
 void followline (double dist) {
-    Serial.println("Oops I did it again! :o-----------------------");
+    //Serial.println("Oops I did it again! :o-----------------------");
     //Th_0 = odoTh;
     final_dist = dTravel + dist;
     
@@ -355,7 +355,7 @@ void followline (double dist) {
 
     initializePID(VEL1,2*Kp,Ki,0.01);
     initializePID(VEL2,2*Kp,Ki,0.01);
-    initializePID(FOLLOW,0.0025,0,0.01);
+    initializePID(FOLLOW,0.003,0,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
