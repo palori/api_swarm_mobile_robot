@@ -1,6 +1,6 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/features2d.hpp"
+#include "opencv2/opencv.hpp"
 #include <raspicam/raspicam_cv.h>
 
 #include <ctime>
@@ -39,9 +39,19 @@ const int CAM_H = 480;
 raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
-SimpleBlobDetector detector;
 SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
+params.filterByArea = true;
+params.minArea = 1000;
+params.minThreshold = 10;
+params.maxThreshold = 230;
+params.filterByCircularity = false;
+params.minCircularity = 0.1;
+params.filterByConvexity = false;
+params.minConvexity = 0.87;
+params.filterByInertia = false;
+params.minInertiaRatio = 0.01;
+SimpleBlobDetector detector(params);
 
 void display_image(Mat img, string title)
 {
@@ -108,7 +118,7 @@ float take_pic_get_cm(int i, Side side){
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
 	img_gray = img;
 	Mat img_blur (img_gray.size(), img_gray.type());
-	blur(img_gray, img_blur, Size(8,8));
+	blur(img_gray, img_blur, Size(6,6));
 	Mat img_th (img_blur.size(), img_blur.type());
 	//threshold_value = i*10;
 	bool bad_threshold = true;
@@ -154,8 +164,7 @@ float take_pic_get_cm(int i, Side side){
 	//BLOB DETECTION
 
 	
-	params.filterByArea = true;
-	params.minArea = 10000;
+
 	detector.detect(img_blur, keypoints);
 	Mat im_with_keypoints;
 	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
