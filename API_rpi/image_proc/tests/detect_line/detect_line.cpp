@@ -104,7 +104,7 @@ float take_pic_get_cm(int i, Side side){
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
 	img_gray = img;
 	Mat img_blur (img_gray.size(), img_gray.type());
-	blur(img_gray, img_blur, Size(5,5));
+	blur(img_gray, img_blur, Size(8,8));
 	Mat img_th (img_blur.size(), img_blur.type());
 	//threshold_value = i*10;
 	bool bad_threshold = true;
