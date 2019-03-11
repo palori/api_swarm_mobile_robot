@@ -47,6 +47,8 @@ iostream
 -
 stdio.h
 -
+cmath
+-
 string.h
 -
 string

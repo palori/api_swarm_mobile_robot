@@ -110,7 +110,7 @@ float take_pic_get_cm(int i, Side side){
 	bool bad_threshold = true;
 	int count_bad = 0;
 	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
-	
+	float white_percent = 0.0;
 	while (bad_threshold) {
 		threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 
@@ -126,7 +126,7 @@ float take_pic_get_cm(int i, Side side){
 				sum_all++;
 			}
 		}
-		float white_percent = sum_white/(float)sum_all;
+		white_percent = sum_white/(float)sum_all;
 		//cout << "white: " << sum_white << endl;
 		//cout << "all: " << sum_all << endl;
 		//cout << "percent: " << white_percent << endl;
@@ -169,7 +169,7 @@ float take_pic_get_cm(int i, Side side){
 
 
 	string pic_name = "pics/pic_th_"+to_string(i)+".png";
-	imwrite(pic_name,img_th);
+	//imwrite(pic_name,img_th);
 	//cout<<"Image saved at 'pic.jpg'"<<endl;
 
 
@@ -293,12 +293,12 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.25,fwd=1.5$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<500){
 	    		//camera_start();
-				y = take_pic_get_cm(i,LEFT);
+				y = take_pic_get_cm(i,MIDDLE);
 				//printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
