@@ -114,6 +114,7 @@ double kb=-0.15;
 
 //follow line function
 double final_dist = 0.0;
+double delta_vel = 0.0;
 
 
 
@@ -347,7 +348,7 @@ void drive(double Xr, double Yr, double Thr) {
 }
 
 void followline (double dist) {
-    Serial.println("Oops I did it again! :o-----------------------");
+    //Serial.println("Oops I did it again! :o-----------------------");
     //Th_0 = odoTh;
     final_dist = dTravel + dist;
     
@@ -355,7 +356,7 @@ void followline (double dist) {
 
     initializePID(VEL1,2*Kp,Ki,0.01);
     initializePID(VEL2,2*Kp,Ki,0.01);
-    initializePID(FOLLOW,0.0025,0,0.01);
+    initializePID(FOLLOW,0.005,0,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -529,10 +530,16 @@ void update_velocity(int drive_command){
             Serial.println("dTravel: "+String(dTravel));
             Serial.println("delta travel: "+String(final_dist - dTravel));
             if (fabs(final_dist - dTravel) > 0.02){
+
+                delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 100),FOLLOW);
+                if (comm_tsy.get_th_t()<0) {
+                  vel1=comm_tsy.get_vel() - delta_vel;   // in robot coord. syst.
+                  vel2=comm_tsy.get_vel();
+                }else{
+                  vel1=comm_tsy.get_vel();
+                  vel2=comm_tsy.get_vel() + delta_vel;;
+                }
                 
-                
-                vel1=comm_tsy.get_vel() - update_PID(0,Saturate(comm_tsy.get_th_t() , 100),FOLLOW);   // in robot coord. syst.
-                vel2=comm_tsy.get_vel() + update_PID(0,Saturate(comm_tsy.get_th_t() , 100),FOLLOW);
                 
                 v_max = sqrt(1.0 * fabs(final_dist - dTravel));
                 

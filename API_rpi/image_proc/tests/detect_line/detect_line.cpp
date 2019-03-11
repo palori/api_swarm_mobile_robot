@@ -108,7 +108,6 @@ float take_pic_get_cm(int i, Side side){
 	Mat img_th (img_blur.size(), img_blur.type());
 	//threshold_value = i*10;
 	bool bad_threshold = true;
-	int count_bad = 0;
 	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 	float white_percent = 0.0;
 	while (bad_threshold) {
@@ -139,10 +138,8 @@ float take_pic_get_cm(int i, Side side){
 			imwrite(name,img_th);
 
 		}
-		count_bad++;
-		if (count_bad>30){   //if it cannot find good img, return the first one
+		if (threshold_value<10 || threshold_value>240){   //if it cannot find good img, return the first one
 			bad_threshold = false;
-			count_bad = 0;
 			threshold(img_blur, img_th, 120, max_BINARY_value,threshold_type);
 		}
 
@@ -296,7 +293,7 @@ void pic_cm_comm1(){
 	    string msg = "@a=19,b=1,v=0.4,fwd=1.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
-	    while (i<500){
+	    while (i<300){
 	    		//camera_start();
 				y = take_pic_get_cm(i,MIDDLE);
 				//printf("Y: %f\n",y);
