@@ -1,5 +1,6 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/features2d.hpp"
 #include <raspicam/raspicam_cv.h>
 
 #include <ctime>
@@ -40,7 +41,7 @@ COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
 SimpleBlobDetector detector;
 SimpleBlobDetector::Params params;
-<KeyPoint> keypoints;
+vector<KeyPoint> keypoints;
 
 void display_image(Mat img, string title)
 {
