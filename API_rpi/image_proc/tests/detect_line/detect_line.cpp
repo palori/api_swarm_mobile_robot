@@ -110,6 +110,7 @@ float take_pic_get_cm(int i, Side side){
 	bool bad_threshold = true;
 	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 	float white_percent = 0.0;
+
 	while (bad_threshold) {
 		threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 
@@ -146,6 +147,17 @@ float take_pic_get_cm(int i, Side side){
 
 	}
 
+	//BLOB DETECTION
+
+	SimpleBlobDetector detector;
+	SimpleBlobDetector::Params params;
+	params.filterByArea = true;
+	params.minArea = 10000;
+	<KeyPoint> keypoints;
+	detector.detect(img_blur, keypoints);
+	Mat im_with_keypoints;
+	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
 	
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
 	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
@@ -166,7 +178,7 @@ float take_pic_get_cm(int i, Side side){
 
 
 	string pic_name = "pics/pic_th_"+to_string(i)+".png";
-	imwrite(pic_name,img_th);
+	imwrite(pic_name,im_with_keypoints);
 	//cout<<"Image saved at 'pic.jpg'"<<endl;
 
 
