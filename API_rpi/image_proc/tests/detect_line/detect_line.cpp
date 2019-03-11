@@ -24,7 +24,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 150;//150;
+int threshold_value = 180;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
