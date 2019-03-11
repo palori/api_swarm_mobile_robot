@@ -166,7 +166,7 @@ float take_pic_get_cm(int i, Side side){
 
 
 	string pic_name = "pics/pic_th_"+to_string(i)+".png";
-	//imwrite(pic_name,img_th);
+	imwrite(pic_name,img_th);
 	//cout<<"Image saved at 'pic.jpg'"<<endl;
 
 
