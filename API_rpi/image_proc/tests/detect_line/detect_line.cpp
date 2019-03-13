@@ -35,6 +35,10 @@ const int ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 640;
 const int CAM_H = 480;
+//closing
+int closing_elem = MORPH_RECT;
+int closing_size = 5;
+
 
 raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
@@ -157,8 +161,8 @@ float take_pic_get_cm(int i, Side side){
 	
 	params.filterByArea = true;
 	params.minArea = 1000;
-	params.minThreshold = 10;
-	params.maxThreshold = 230;
+	params.minThreshold = 50;
+	params.maxThreshold = 200;
 	params.filterByCircularity = false;
 	params.minCircularity = 0.1;
 	params.filterByConvexity = false;
@@ -187,9 +191,22 @@ float take_pic_get_cm(int i, Side side){
 	//imwrite("pic_th.jpg",img_th);
 	//imwrite("pic_canny.jpg",img_canny);
 
+	//CLOSING
+
+	Mat img_dil, img_closed;
+	Mat element = getStructuringElement(closing_elem, 
+		                                Size(2*closing_size+1,2*closing_size+1),
+		                                Point(closing_size,closing_size));
+	dilate(img_th, img_dil, element);
+	erode(img_dil, img_closed , element);
+
+	string pic_name_cl = "pics/pic_cl_"+to_string(i)+".png";
+	imwrite(pic_name_cl,img_closed);
 
 	string pic_name = "pics/pic_th_"+to_string(i)+".png";
-	imwrite(pic_name,im_with_keypoints);
+	imwrite(pic_name,img_th);
+
+
 	//cout<<"Image saved at 'pic.jpg'"<<endl;
 
 
@@ -313,7 +330,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.4,fwd=1.5$";
+	    string msg = "@a=19,b=1,v=0.4,fwd=0.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<300){

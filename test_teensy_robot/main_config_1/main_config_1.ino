@@ -356,7 +356,7 @@ void followline (double dist) {
 
     initializePID(VEL1,2*Kp,Ki,0.01);
     initializePID(VEL2,2*Kp,Ki,0.01);
-    initializePID(FOLLOW,0.005,0,0.01);
+    initializePID(FOLLOW,0.003,0,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -531,13 +531,13 @@ void update_velocity(int drive_command){
             Serial.println("delta travel: "+String(final_dist - dTravel));
             if (fabs(final_dist - dTravel) > 0.02){
 
-                delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 100),FOLLOW);
+                delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 150),FOLLOW);
                 if (comm_tsy.get_th_t()<0) {
-                  vel1=comm_tsy.get_vel() - delta_vel;   // in robot coord. syst.
-                  vel2=comm_tsy.get_vel();
+                  vel1=comm_tsy.get_vel();   // in robot coord. syst.
+                  vel2=comm_tsy.get_vel() + delta_vel;
                 }else{
-                  vel1=comm_tsy.get_vel();
-                  vel2=comm_tsy.get_vel() + delta_vel;;
+                  vel1=comm_tsy.get_vel() - delta_vel;
+                  vel2=comm_tsy.get_vel();
                 }
                 
                 
@@ -649,11 +649,11 @@ void update10ms(){
     velocity2 = getVelocity(RIGHT_MOTOR , millis());
     updatePosition((double)encoder1.read() , (double)encoder2.read());   //check overflow, it should overflow when int/double overflows
 
-    Serial.println("velocity1: "+String(velocity1));
-    Serial.println("velocity2: "+String(velocity2));
-    //Serial.println("odoX: "+String(odoX));
-    //Serial.println("odoY: "+String(odoY));
-    //Serial.println("odoTh: "+String(odoTh));
+    //Serial.println("velocity1: "+String(velocity1));
+    //Serial.println("velocity2: "+String(velocity2));
+    Serial.println("odoX: "+String(odoX));
+    Serial.println("odoY: "+String(odoY));
+    Serial.println("odoTh: "+String(odoTh));
     //Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
     //Serial.println("ir1: "+String(ir_1.getDistance()));
     //Serial.println("ir1: "+String(ir_2.getDistance()));
