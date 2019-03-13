@@ -103,6 +103,8 @@ float take_pic_get_cm(int i, Side side){
 	//double secondsElapsed = difftime ( timer_end,timer_begin );
 	//cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
 	
+	//crop!!!
+	Mat img_crop = img(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 
 
 	
@@ -113,7 +115,7 @@ float take_pic_get_cm(int i, Side side){
 	Mat img_gray, img_canny;
  
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
-	img_gray = img;
+	img_gray = img_crop;
 	Mat img_blur (img_gray.size(), img_gray.type());
 	blur(img_gray, img_blur, Size(6,6));
 	Mat img_th (img_blur.size(), img_blur.type());
@@ -129,8 +131,8 @@ float take_pic_get_cm(int i, Side side){
 		//display_image(img_th, "img_th");
 		int sum_white = 0;
 		int sum_all = 0;
-		for(int i = CAM_H*3/4; i<CAM_H; i++){
-			for(int j = 0; j<CAM_W; j++){
+		for(int i = img_th.rows/2 ; i<img_th.rows; i++){
+			for(int j = 0; j<img_th.cols; j++){
 				if (img_th.at<uchar>(i,j) > threshold_value){
 					sum_white++;	
 				}
@@ -146,6 +148,7 @@ float take_pic_get_cm(int i, Side side){
 		else threshold_value+=10;			// change these constants if camera position changes
 
 		if (bad_threshold == true) {
+			cout << "New threshold value: " << threshold_value << endl;
 			string name = "pics/thres_"+to_string(threshold_value)+".png";
 			imwrite(name,img_th);
 
@@ -238,8 +241,8 @@ float take_pic_get_cm(int i, Side side){
 
 	int sum_y = 0;
 	int count_y = 0;
-	for(int i = CAM_H*3/4; i<CAM_H; i++){
-		for(int j = 0; j<CAM_W; j++){
+	for(int i = img_th.rows/2; i<img_th.rows; i++){
+		for(int j = 0; j<img_th.cols; j++){
 			if (img_th.at<uchar>(i,j) > threshold_value){
 				sum_y += j;
 				count_y++;
@@ -345,7 +348,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.4,fwd=0.5$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<300){
