@@ -36,8 +36,10 @@ const int kernel_size = 3;
 const int CAM_W = 640;
 const int CAM_H = 480;
 //closing
-int closing_elem = MORPH_RECT;
-int closing_size = 5;
+int closing_elem = MORPH_ELLIPSE;
+int closing_size = 7;
+int opening_elem = MORPH_ELLIPSE;
+int opening_size = 11;
 
 
 raspicam::RaspiCam_Cv Camera;
@@ -193,15 +195,28 @@ float take_pic_get_cm(int i, Side side){
 
 	//CLOSING
 
-	Mat img_dil, img_closed;
-	Mat element = getStructuringElement(closing_elem, 
-		                                Size(2*closing_size+1,2*closing_size+1),
+	Mat img_dil, img_closed, img_opened, img_ero;
+	
+	Mat element_closing = getStructuringElement(closing_elem, 
+		                                Size(2*closing_size-1,2*closing_size-1),
 		                                Point(closing_size,closing_size));
-	dilate(img_th, img_dil, element);
-	erode(img_dil, img_closed , element);
+
+	Mat element_opening = getStructuringElement(opening_elem, 
+		                                Size(2*opening_size-1,2*opening_size-1),
+		                                Point(opening_size,opening_size));
+	
+	erode(img_th, img_ero , element_opening);
+	dilate(img_ero, img_opened, element_opening);
+	
+
+	dilate(img_opened, img_dil, element_closing);
+	erode(img_dil, img_closed , element_closing);
 
 	string pic_name_cl = "pics/pic_cl_"+to_string(i)+".png";
 	imwrite(pic_name_cl,img_closed);
+
+	string pic_name_op = "pics/pic_op_"+to_string(i)+".png";
+	imwrite(pic_name_op,img_opened);
 
 	string pic_name = "pics/pic_th_"+to_string(i)+".png";
 	imwrite(pic_name,img_th);
