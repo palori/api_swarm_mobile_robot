@@ -85,7 +85,7 @@ void close_all(){
 float take_pic_get_cm(int i, Side side){
 	// Take pic example
 	//time_t timer_begin,timer_end;
-	
+	double function_time = (double)getTickCount();
 	Mat img;
 	//int nCount=100;
 	//set camera params
@@ -267,6 +267,8 @@ float take_pic_get_cm(int i, Side side){
 			break;
 	}
 	cout<<"CM_y: "<<cm_y<<endl;
+	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+	cout << "Function time: " << function_time << endl;
 	return cm_y;	
 
 /*
