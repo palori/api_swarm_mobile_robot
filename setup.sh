@@ -124,7 +124,7 @@ sudo ldconfig
 # Build, check, and install libsodium
 git clone git://github.com/jedisct1/libsodium.git
 cd libsodium
-./autogen.sh 
+./autogen.sh 		# might need to: sudo apt-get install libtool autoconf
 ./configure && make check 
 sudo make install 
 sudo ldconfig
@@ -141,8 +141,17 @@ cd ../
 git clone git://github.com/zeromq/zmqpp.git
 cd zmqpp
 make
+# migth need to: sudo apt-get install libboost-all-dev
 make check			# got error 201
 sudo make install
 make installcheck	# got error 201
 
 # Example using 'zmqpp' library: https://gist.github.com/hmartiro/df1eb214f77f549b3691
+
+# if error when runing because it cannot find the file: libzmqpp.so.4
+# it happened on the raspi
+cd
+find * -name libzmqpp.so.4 # get file path
+nano .bashrc
+# add the following line at the end of the file
+export LD_LIBRARY_PATH=/home/pi/git_repos/zmqpp/build/max-g++
