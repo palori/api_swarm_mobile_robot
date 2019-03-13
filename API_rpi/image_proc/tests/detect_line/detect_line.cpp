@@ -1,11 +1,13 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/opencv.hpp"
 #include <raspicam/raspicam_cv.h>
 
 #include <ctime>
 #include <iostream>
 //#include <stdlib.h>
 #include <stdio.h>
+#include <cmath>
 
 #include <string.h>
 #include <string>
@@ -23,7 +25,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 150;//150;
+int threshold_value = 180;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
@@ -33,9 +35,20 @@ const int ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 640;
 const int CAM_H = 480;
+//closing
+int closing_elem = MORPH_ELLIPSE;
+int closing_size = 7;
+int opening_elem = MORPH_ELLIPSE;
+int opening_size = 11;
+
 
 raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
+enum Side { LEFT, MIDDLE, RIGHT };
+SimpleBlobDetector::Params params;
+vector<KeyPoint> keypoints;
+
+SimpleBlobDetector detector(params);
 
 void display_image(Mat img, string title)
 {
@@ -69,10 +82,10 @@ void close_all(){
 }
 
 
-float take_pic_get_cm(int i){
+float take_pic_get_cm(int i, Side side){
 	// Take pic example
 	//time_t timer_begin,timer_end;
-	
+	double function_time = (double)getTickCount();
 	Mat img;
 	//int nCount=100;
 	//set camera params
@@ -90,6 +103,8 @@ float take_pic_get_cm(int i){
 	//double secondsElapsed = difftime ( timer_end,timer_begin );
 	//cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
 	
+	//crop!!!
+	Mat img_crop = img(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 
 
 	
@@ -100,14 +115,15 @@ float take_pic_get_cm(int i){
 	Mat img_gray, img_canny;
  
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
-	img_gray = img;
+	img_gray = img_crop;
 	Mat img_blur (img_gray.size(), img_gray.type());
-	blur(img_gray, img_blur, Size(5,5));
+	blur(img_gray, img_blur, Size(6,6));
 	Mat img_th (img_blur.size(), img_blur.type());
 	//threshold_value = i*10;
 	bool bad_threshold = true;
 	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
-	
+	float white_percent = 0.0;
+
 	while (bad_threshold) {
 		threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 
@@ -115,28 +131,53 @@ float take_pic_get_cm(int i){
 		//display_image(img_th, "img_th");
 		int sum_white = 0;
 		int sum_all = 0;
-		for(int i = CAM_H*3/4; i<CAM_H; i++){
-			for(int j = 0; j<CAM_W; j++){
+		for(int i = img_th.rows/2 ; i<img_th.rows; i++){
+			for(int j = 0; j<img_th.cols; j++){
 				if (img_th.at<uchar>(i,j) > threshold_value){
 					sum_white++;	
 				}
 				sum_all++;
 			}
 		}
-		float white_percent = sum_white/(float)sum_all;
+		white_percent = sum_white/(float)sum_all;
 		//cout << "white: " << sum_white << endl;
 		//cout << "all: " << sum_all << endl;
 		//cout << "percent: " << white_percent << endl;
 		if (white_percent<0.15) threshold_value-=10;
-		else if (white_percent>0.15 && white_percent<0.4) bad_threshold = false;
-		else threshold_value+=10;
+		else if (white_percent>0.15 && white_percent<0.46) bad_threshold = false;  //one line should cover around 22% of the bottom quarter of image
+		else threshold_value+=10;			// change these constants if camera position changes
 
 		if (bad_threshold == true) {
+			cout << "New threshold value: " << threshold_value << endl;
 			string name = "pics/thres_"+to_string(threshold_value)+".png";
 			imwrite(name,img_th);
 
 		}
+		if (threshold_value<10 || threshold_value>240){   //if it cannot find good img, return the first one
+			bad_threshold = false;
+			threshold(img_blur, img_th, 120, max_BINARY_value,threshold_type);
+		}
+
+
 	}
+
+	//BLOB DETECTION
+
+	
+	params.filterByArea = true;
+	params.minArea = 1000;
+	params.minThreshold = 50;
+	params.maxThreshold = 200;
+	params.filterByCircularity = false;
+	params.minCircularity = 0.1;
+	params.filterByConvexity = false;
+	params.minConvexity = 0.87;
+	params.filterByInertia = false;
+	params.minInertiaRatio = 0.01;
+	detector.detect(img_blur, keypoints);
+	Mat im_with_keypoints;
+	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
 	
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
 	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
@@ -155,9 +196,35 @@ float take_pic_get_cm(int i){
 	//imwrite("pic_th.jpg",img_th);
 	//imwrite("pic_canny.jpg",img_canny);
 
+	//CLOSING
+
+	Mat img_dil, img_closed, img_opened, img_ero;
+	
+	Mat element_closing = getStructuringElement(closing_elem, 
+		                                Size(2*closing_size-1,2*closing_size-1),
+		                                Point(closing_size,closing_size));
+
+	Mat element_opening = getStructuringElement(opening_elem, 
+		                                Size(2*opening_size-1,2*opening_size-1),
+		                                Point(opening_size,opening_size));
+	
+	erode(img_th, img_ero , element_opening);
+	dilate(img_ero, img_opened, element_opening);
+	
+
+	dilate(img_opened, img_dil, element_closing);
+	erode(img_dil, img_closed , element_closing);
+
+	string pic_name_cl = "pics/pic_cl_"+to_string(i)+".png";
+	imwrite(pic_name_cl,img_closed);
+
+	string pic_name_op = "pics/pic_op_"+to_string(i)+".png";
+	imwrite(pic_name_op,img_opened);
 
 	string pic_name = "pics/pic_th_"+to_string(i)+".png";
 	imwrite(pic_name,img_th);
+
+
 	//cout<<"Image saved at 'pic.jpg'"<<endl;
 
 
@@ -170,10 +237,12 @@ float take_pic_get_cm(int i){
 			cout << bin.at<uchar>(i,j) << " ";
 		}
 	}*/
+
+
 	int sum_y = 0;
 	int count_y = 0;
-	for(int i = CAM_H*3/4; i<CAM_H; i++){
-		for(int j = 0; j<CAM_W; j++){
+	for(int i = img_th.rows/2; i<img_th.rows; i++){
+		for(int j = 0; j<img_th.cols; j++){
 			if (img_th.at<uchar>(i,j) > threshold_value){
 				sum_y += j;
 				count_y++;
@@ -183,8 +252,24 @@ float take_pic_get_cm(int i){
 	float cm_y = 0;
 	if (count_y>0) cm_y= sum_y/count_y - CAM_W/2;
 	else cout<<"---- NO line found ----"<<endl;
+	int delta_cm = round(50*white_percent/0.22); 
+	cout << "delta_cm: " << delta_cm << endl;
+	switch(side){
+
+		case LEFT:
+			cm_y-= delta_cm;    //determine this value based on the number of the lines - white area percentages
+			break;
+		case MIDDLE:
+			cm_y+=0;
+			break;
+		case RIGHT:
+			cm_y+= delta_cm;
+			break;
+	}
 	cout<<"CM_y: "<<cm_y<<endl;
-	return cm_y;
+	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+	cout << "Function time: " << function_time << endl;
+	return cm_y;	
 
 /*
 	// @@@@ NEED TO BE TESTED FROM HERE!
@@ -242,6 +327,7 @@ float take_pic_get_cm(int i){
 }
 
 
+
 /*void send_msg(COMM_RPI cr, string msg){
 
     
@@ -265,12 +351,12 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.25,fwd=1$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
-	    while (i<500){
+	    while (i<300){
 	    		//camera_start();
-				y = take_pic_get_cm(i);
+				y = take_pic_get_cm(i,MIDDLE);
 				//printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
