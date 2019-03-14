@@ -102,21 +102,3 @@ void Subscriber::set_publish_endpoint(){
 
 
 
-
-
-
-
-
-
-
-
-//////////
-// TEST //
-//////////
-
-int main(int argc, char *argv[]) {
-
-	Subscriber subs(4000, "localhost");
-	cout << "listening..." << endl;
-	subs.listen();
-}
