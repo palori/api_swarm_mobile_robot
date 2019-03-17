@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/take_pic/save_picture.cpp
+ctime
+-
+iostream
+-
+raspicam/raspicam_cv.h
+-
+
+/usr/local/include/raspicam/raspicam_cv.h
+opencv2/core/core.hpp
+-
+opencv2/highgui/highgui.hpp
+-
+

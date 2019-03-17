@@ -155,3 +155,10 @@ find * -name libzmqpp.so.4 # get file path
 nano .bashrc
 # add the following line at the end of the file
 export LD_LIBRARY_PATH=/home/pi/git_repos/zmqpp/build/max-g++
+
+
+
+
+### SSHFS -> mount files from raspi into linux
+# example:
+sshfs local@cucumber:/home/local/api_swarm_mobile_robot /home/pau/raspi_mount
