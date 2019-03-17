@@ -21,6 +21,7 @@ public:
 	int robot_id;
 	float x;
 	float y;
+	float z;
 	float th;
 	string task;
 
