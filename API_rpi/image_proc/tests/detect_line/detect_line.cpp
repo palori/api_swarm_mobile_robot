@@ -1,9 +1,11 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/core/utility.hpp"
-#include "opencv2/imgcodecs.hpp"
+
+#include "opencv2/core/core.hpp"
+//#include "opencv2/core/utility.hpp"
+//#include "opencv2/imgcodecs.hpp"
+
 #include <raspicam/raspicam_cv.h>
 
 #include <ctime>
@@ -195,17 +197,17 @@ float take_pic_get_cm(int i, Side side){
 	params.minConvexity = 0.87;
 	params.filterByInertia = false;
 	params.minInertiaRatio = 0.01;
-	detector.detect(img_, keypoints);
+	detector.detect(img_canny, keypoints);
 	Mat im_with_keypoints;
-	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	drawKeypoints(img_canny,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
 	
 	
 	
 	if (false){
 		display_image(img, "img");
-		display_image(img_gray, "img_gray");
-		display_image(img_blur, "img_blur");
+		display_image(img_hist, "img_hist");
+		display_image(img_gamma, "img_gamma");
 		display_image(img_th, "img_th");
 		//display_image(img_canny,"img_canny");
 	}
