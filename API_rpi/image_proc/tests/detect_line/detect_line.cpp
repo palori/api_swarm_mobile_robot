@@ -33,8 +33,8 @@ int const max_BINARY_value = 255;
 int lowThreshold = 0;
 const int ratio = 3;
 const int kernel_size = 3;
-const int CAM_W = 640;
-const int CAM_H = 480;
+const int CAM_W = 320;
+const int CAM_H = 240;
 //closing
 int closing_elem = MORPH_ELLIPSE;
 int closing_size = 7;
