@@ -174,9 +174,9 @@ float take_pic_get_cm(int i, Side side){
 	params.minConvexity = 0.87;
 	params.filterByInertia = false;
 	params.minInertiaRatio = 0.01;
-	detector.detect(img_blur, keypoints);
+	//detector.detect(img_blur, keypoints);
 	Mat im_with_keypoints;
-	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	//drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
 	
 	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
@@ -204,25 +204,25 @@ float take_pic_get_cm(int i, Side side){
 		                                Size(2*closing_size-1,2*closing_size-1),
 		                                Point(closing_size,closing_size));
 
-	Mat element_opening = getStructuringElement(opening_elem, 
-		                                Size(2*opening_size-1,2*opening_size-1),
-		                                Point(opening_size,opening_size));
+	//Mat element_opening = getStructuringElement(opening_elem, 
+	//	                                Size(2*opening_size-1,2*opening_size-1),
+	//	                                Point(opening_size,opening_size));
 	
-	erode(img_th, img_ero , element_opening);
-	dilate(img_ero, img_opened, element_opening);
+	//erode(img_th, img_ero , element_opening);
+	//dilate(img_ero, img_opened, element_opening);
 	
 
-	dilate(img_opened, img_dil, element_closing);
+	dilate(img_th, img_dil, element_closing);
 	erode(img_dil, img_closed , element_closing);
 
-	string pic_name_cl = "pics/pic_cl_"+to_string(i)+".png";
-	imwrite(pic_name_cl,img_closed);
+	//string pic_name_cl = "pics/pic_cl_"+to_string(i)+".png";
+	//imwrite(pic_name_cl,img_closed);
 
-	string pic_name_op = "pics/pic_op_"+to_string(i)+".png";
-	imwrite(pic_name_op,img_opened);
+	//string pic_name_op = "pics/pic_op_"+to_string(i)+".png";
+	//imwrite(pic_name_op,img_opened);
 
-	string pic_name = "pics/pic_th_"+to_string(i)+".png";
-	imwrite(pic_name,img_th);
+	//string pic_name = "pics/pic_th_"+to_string(i)+".png";
+	//imwrite(pic_name,img_th);
 
 
 	//cout<<"Image saved at 'pic.jpg'"<<endl;

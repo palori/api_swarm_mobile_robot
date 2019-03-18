@@ -39,6 +39,8 @@ opencv2/highgui/highgui.hpp
 /home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/highgui/highgui.hpp
 opencv2/imgproc/imgproc.hpp
 /home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/imgproc/imgproc.hpp
+opencv2/opencv.hpp
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/opencv.hpp
 raspicam/raspicam_cv.h
 -
 ctime

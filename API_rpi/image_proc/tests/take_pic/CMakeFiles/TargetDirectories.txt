@@ -1,0 +1,3 @@
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/take_pic/CMakeFiles/rebuild_cache.dir
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/take_pic/CMakeFiles/edit_cache.dir
+/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/take_pic/CMakeFiles/save_picture.dir
