@@ -86,7 +86,7 @@ void close_all(){
 	cr.serial_close();
 }
 
-void GammaMapping(Mat& src, Mat& dst, float fGamma) {
+/*void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 	CV_Assert(src.data);
 
@@ -105,7 +105,7 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
 		*it = lut[(*it)];
 
-}
+}*/
 
 float take_pic_get_cm(int i, Side side){
 	
@@ -127,9 +127,9 @@ float take_pic_get_cm(int i, Side side){
 	equalizeHist(img, img_hist);
 
 	//gamma mapping
-	Mat img_gamma;
+	Mat img_gamma = img_hist;
 	float gamma = 2.5;	
-	GammaMapping(img_hist, img_gamma, gamma);
+	//GammaMapping(img_hist, img_gamma, gamma);
 
 	//cropping
 	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
