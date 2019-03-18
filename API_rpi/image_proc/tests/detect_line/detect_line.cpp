@@ -36,7 +36,7 @@ int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
 int lowThreshold = 70;
-const int ratio = 3;
+const int thres_ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
@@ -91,7 +91,7 @@ void close_all(){
 	CV_Assert(src.data);
 
 	//accept only char type matrices
-	CV_Assert(src.depth! != sizeof(uchar));
+	CV_Assert(src.depth != sizeof(uchar));
 
 	//build look up table
 	unsigned char lut[256];
@@ -182,7 +182,7 @@ float take_pic_get_cm(int i, Side side){
 
 	//canny edge detection
 	Mat img_canny;
-	Canny(img_gamma, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
+	Canny(img_gamma, img_canny, lowThreshold, lowThreshold * thres_ratio, kernel_size);
 	
 
 	//BLOB DETECTION
@@ -236,12 +236,12 @@ float take_pic_get_cm(int i, Side side){
 
 	//dilate(img_th, img_dil, element_closing);
 	//erode(img_dil, img_closed , element_closing);
-
+	
 	string pic_name_hist = "pics/pic_hist_"+to_string(i)+".png";
 	imwrite(pic_name_hist,img_hist);
 
-	string pic_name_gamma = "pics/pic_gamma_"+to_string(i)+".png";
-	imwrite(pic_name_gamma,img_gamma);
+	string pic_name_img = "pics/pic_img_"+to_string(i)+".png";
+	imwrite(pic_name_img,img);
 
 	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
 	imwrite(pic_name_canny,img_canny);
