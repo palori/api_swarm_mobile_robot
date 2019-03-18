@@ -1,6 +1,9 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
+#include "opencv2/core.hpp"
+#include "opencv2/core/utility.hpp"
+#include "opencv2/imgcodecs.hpp"
 #include <raspicam/raspicam_cv.h>
 
 #include <ctime>
@@ -30,7 +33,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold = 0;
+int lowThreshold = 70;
 const int ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -81,54 +84,68 @@ void close_all(){
 	cr.serial_close();
 }
 
+void GammaMapping(Mat& src, Mat& dst, float fGamma) {
+
+	CV_Assert(src.data);
+
+	//accept only char type matrices
+	CV_Assert(src.depth! != sizeof(uchar));
+
+	//build look up table
+	unsigned char lut[256];
+	for (int i = 0; i<256; i++){
+		 lut[i] = saturate_cast<uchar>(pow((float)(i/255.0),fGamma) * 255.0f);
+	}
+
+	dst = src.clone();
+
+	MatIterator_<uchar> it, end;
+	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
+		*it = lut[(*it)];
+
+}
 
 float take_pic_get_cm(int i, Side side){
-	// Take pic example
-	//time_t timer_begin,timer_end;
+	
+	//start timer
 	double function_time = (double)getTickCount();
+
+	//Start capture - gray image
 	Mat img;
-	//int nCount=100;
-	//set camera params
-	
-	
-	//Start capture
 	cout<<"Capturing "+to_string(i)+"..."<<endl;
-	//time ( &timer_begin );
 	Camera.grab();
 	Camera.retrieve (img);
-	
 
-	//show time statistics
-	//time ( &timer_end ); /* get current time; same as: timer = time(NULL)  */
-	//double secondsElapsed = difftime ( timer_end,timer_begin );
-	//cout<< secondsElapsed<<" seconds for "<< nCount<<"  frames : FPS = "<<  ( float ) ( ( float ) ( nCount ) /secondsElapsed ) <<endl;
-	
-	//crop!!!
-	Mat img_crop = img(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
-
-
-	
-	//img = imread(image_path, CV_LOAD_IMAGE_COLOR);  
-	//cout << "Image size: " <<  img.size() << endl;
-	//cout << "Image channels: " <<  img.channels() << endl;
-
-	Mat img_gray, img_canny;
- 
+	//convert to gray
+	//Mat img_gray;
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
-	img_gray = img_crop;
-	Mat img_blur (img_gray.size(), img_gray.type());
-	blur(img_gray, img_blur, Size(6,6));
-	Mat img_th (img_blur.size(), img_blur.type());
-	//threshold_value = i*10;
+	
+	//histogram stretch
+	Mat img_hist;
+	equalizeHist(img, img_hist);
+
+	//gamma mapping
+	Mat img_gamma;
+	float gamma = 2.5;	
+	GammaMapping(img_hist, img_gamma, gamma);
+
+	//cropping
+	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
+	
+	//blurring
+	//Mat img_blur;
+	//blur(img_gray, img_blur, Size(6,6));
+
+	//thresholding
+	Mat img_th;
 	bool bad_threshold = true;
-	//threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
 	float white_percent = 0.0;
 
 	while (bad_threshold) {
-		threshold(img_blur, img_th, threshold_value, max_BINARY_value,threshold_type);
+		
+		threshold(img_crop, img_th, threshold_value, max_BINARY_value,threshold_type);
 
 		
-		//display_image(img_th, "img_th");
 		int sum_white = 0;
 		int sum_all = 0;
 		for(int i = img_th.rows/2 ; i<img_th.rows; i++){
@@ -140,9 +157,7 @@ float take_pic_get_cm(int i, Side side){
 			}
 		}
 		white_percent = sum_white/(float)sum_all;
-		//cout << "white: " << sum_white << endl;
-		//cout << "all: " << sum_all << endl;
-		//cout << "percent: " << white_percent << endl;
+		
 		if (white_percent<0.15) threshold_value-=10;
 		else if (white_percent>0.15 && white_percent<0.46) bad_threshold = false;  //one line should cover around 22% of the bottom quarter of image
 		else threshold_value+=10;			// change these constants if camera position changes
@@ -155,17 +170,23 @@ float take_pic_get_cm(int i, Side side){
 		}
 		if (threshold_value<10 || threshold_value>240){   //if it cannot find good img, return the first one
 			bad_threshold = false;
-			threshold(img_blur, img_th, 120, max_BINARY_value,threshold_type);
+			threshold(img_crop, img_th, 150, max_BINARY_value,threshold_type);
+			threshold_value = 150;
 		}
 
 
 	}
 
+
+	//canny edge detection
+	Mat img_canny;
+	Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
+	
+
 	//BLOB DETECTION
 
-	
 	params.filterByArea = true;
-	params.minArea = 1000;
+	params.minArea = 80;
 	params.minThreshold = 50;
 	params.maxThreshold = 200;
 	params.filterByCircularity = false;
@@ -174,13 +195,12 @@ float take_pic_get_cm(int i, Side side){
 	params.minConvexity = 0.87;
 	params.filterByInertia = false;
 	params.minInertiaRatio = 0.01;
-	//detector.detect(img_blur, keypoints);
+	detector.detect(img_, keypoints);
 	Mat im_with_keypoints;
-	//drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	drawKeypoints(img_blur,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
 	
-	//adaptiveThreshold(img_blur, img_th, max_BINARY_value, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 5);
-	//Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
+	
 	
 	if (false){
 		display_image(img, "img");
@@ -198,11 +218,11 @@ float take_pic_get_cm(int i, Side side){
 
 	//CLOSING
 
-	Mat img_dil, img_closed, img_opened, img_ero;
+	//Mat img_dil, img_closed, img_opened, img_ero;
 	
-	Mat element_closing = getStructuringElement(closing_elem, 
-		                                Size(2*closing_size-1,2*closing_size-1),
-		                                Point(closing_size,closing_size));
+	//Mat element_closing = getStructuringElement(closing_elem, 
+	//	                                Size(2*closing_size-1,2*closing_size-1),
+	//	                                Point(closing_size,closing_size));
 
 	//Mat element_opening = getStructuringElement(opening_elem, 
 	//	                                Size(2*opening_size-1,2*opening_size-1),
@@ -212,17 +232,20 @@ float take_pic_get_cm(int i, Side side){
 	//dilate(img_ero, img_opened, element_opening);
 	
 
-	dilate(img_th, img_dil, element_closing);
-	erode(img_dil, img_closed , element_closing);
+	//dilate(img_th, img_dil, element_closing);
+	//erode(img_dil, img_closed , element_closing);
 
-	//string pic_name_cl = "pics/pic_cl_"+to_string(i)+".png";
-	//imwrite(pic_name_cl,img_closed);
+	string pic_name_hist = "pics/pic_hist_"+to_string(i)+".png";
+	imwrite(pic_name_hist,img_hist);
 
-	//string pic_name_op = "pics/pic_op_"+to_string(i)+".png";
-	//imwrite(pic_name_op,img_opened);
+	string pic_name_gamma = "pics/pic_gamma_"+to_string(i)+".png";
+	imwrite(pic_name_gamma,img_gamma);
 
-	//string pic_name = "pics/pic_th_"+to_string(i)+".png";
-	//imwrite(pic_name,img_th);
+	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
+	imwrite(pic_name_canny,img_canny);
+
+	string pic_name = "pics/pic_th_"+to_string(i)+".png";
+	imwrite(pic_name,img_th);
 
 
 	//cout<<"Image saved at 'pic.jpg'"<<endl;
@@ -307,8 +330,6 @@ float take_pic_get_cm(int i, Side side){
 	if (col_found) cout<<"Target point (image coord. syst):\n  x = "<<row<"\n  y = "<<col<<endl;
 	else cout<<"No clear target, try again..."<<endl;
 
-
-
 	// Once target is found in image coord. syst. need to transform to
 	// camera and robot coord. syst.
 	int focal_length_px = 100; // [px] // random choice now, need to be computed (maybe with callibration)
@@ -326,22 +347,6 @@ float take_pic_get_cm(int i, Side side){
 
 }
 
-
-
-/*void send_msg(COMM_RPI cr, string msg){
-
-    
-    cr.serial_write(msg);
-    usleep(100000);
-    int count = 0;
-   /* while(count<20){
-        usleep(100000);
-        cr.serial_read();
-        printf("read count %d\n",count);
-        count++;
-    }*/
-    
-//}
 
 void pic_cm_comm1(){
 
