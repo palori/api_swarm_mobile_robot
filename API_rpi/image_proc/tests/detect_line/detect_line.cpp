@@ -180,7 +180,7 @@ float take_pic_get_cm(int i, Side side){
 
 	//canny edge detection
 	Mat img_canny;
-	Canny(img_th, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
+	Canny(img_gamma, img_canny, lowThreshold, lowThreshold * ratio, kernel_size);
 	
 
 	//BLOB DETECTION
