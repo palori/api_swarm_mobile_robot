@@ -36,7 +36,7 @@ int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
 int lowThreshold = 50;
-const int thres_ratio = 3;
+const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
@@ -179,10 +179,14 @@ float take_pic_get_cm(int i, Side side){
 
 	}
 
+	//thresholding for canny with otsu method - consider using it as adaptive
+	Mat img_otsu;
+	threshold(img_gamma,img_otsu,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
+
 
 	//canny edge detection
 	Mat img_canny;
-	Canny(img_gamma, img_canny, lowThreshold, lowThreshold * thres_ratio, kernel_size);
+	Canny(img_otsu, img_canny, lowThreshold, lowThreshold * thres_ratio, kernel_size);
 	
 
 	//BLOB DETECTION

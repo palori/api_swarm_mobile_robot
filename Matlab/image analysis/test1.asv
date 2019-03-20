@@ -16,9 +16,8 @@ Imagename = sprintf('test1_%03d.png', n(i));
 I=imread(Imagename);
 
 %% Transfrom to gray level
-if n<51 
-    I = rgb2gray(I);
-end
+if n<
+I = rgb2gray(I);
 
 %% Resize to 320 pixels
 s=size(I);
@@ -69,10 +68,10 @@ level*255
 I5_2 = imbinarize(I4,level);
 figure
 subplot(1,2,1)
-I5 = edge(I4,'Canny',level);   %with gamma
+I5 = edge(I3,'Canny',level);   %without gamma
 imshow(I5)
 subplot(1,2,2)
-I5_2 = edge(I3,'Canny',level);  %without gamma
+I5_2 = edge(I4,'Canny',level);  %with gamma
 imshow(I5_2)
 
 %% BLOB
