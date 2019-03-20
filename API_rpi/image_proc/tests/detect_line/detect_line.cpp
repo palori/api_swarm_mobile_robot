@@ -118,18 +118,18 @@ void HistStretch(Mat& src, Mat& dst) {
 
 	//build look up table
 	unsigned char lut[256];
-	float vmax=140.0;
-	float vmin=100.0;
+	double vmax=140.0;
+	double vmin=100.0;
 
 	MatIterator_<uchar> it, end;
-	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++){
+	/*for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++){
 		if ((*it) < vmin) vmin = (float)(*it);
 		if ((*it) > vmax) vmax = (float)(*it);
-	}
-
+	}*/
+	minMaxIdx(src, &vmin, &vmax);
 
 	for (int i = 0; i<256; i++){
-		 lut[i] = saturate_cast<uchar>(255.0f*((float)i-vmin)/(vmax-vmin));
+		 lut[i] = saturate_cast<uchar>(255.0f*((float)i-(float)vmin)/((float)vmax-(float)vmin));
 	}
 
 	dst = src.clone();
