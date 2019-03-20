@@ -118,8 +118,8 @@ void HistStretch(Mat& src, Mat& dst) {
 
 	//build look up table
 	unsigned char lut[256];
-	float vmax=240.0;
-	float vmin=10.0;
+	float vmax=200.0;
+	float vmin=40.0;
 
 	for (int i = 0; i<256; i++){
 		 lut[i] = saturate_cast<uchar>(255.0f*((float)i-vmin)/(vmax-vmin));
@@ -155,7 +155,7 @@ float take_pic_get_cm(int i, Side side){
 	//equalizeHist(img, img_hist);
 	HistStretch(img,img_hist);
 	//gamma mapping
-	Mat img_gamma = img_hist;
+	Mat img_gamma ;
 	float gamma = 3;	
 
 	GammaMapping(img_hist, img_gamma, gamma);
@@ -273,6 +273,7 @@ float take_pic_get_cm(int i, Side side){
 	//dilate(img_th, img_dil, element_closing);
 	//erode(img_dil, img_closed , element_closing);
 	
+
 	string pic_name_gm = "pics/pic_gm_"+to_string(i)+".png";
 	imwrite(pic_name_gm,img_gamma);
 
@@ -282,8 +283,8 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
 	imwrite(pic_name_canny,img_canny);
 
-	string pic_name = "pics/pic_th_"+to_string(i)+".png";
-	imwrite(pic_name,img_th);
+	string pic_name = "pics/pic_hist_"+to_string(i)+".png";
+	imwrite(pic_name,img_hist);
 
 	string pic_name_blob = "pics/pic_bl_"+to_string(i)+".png";
 	imwrite(pic_name_blob,im_with_keypoints);
