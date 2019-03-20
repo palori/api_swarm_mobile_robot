@@ -152,7 +152,7 @@ float take_pic_get_cm(int i, Side side){
 	Camera.grab();
 	Camera.retrieve (img);
 	
-	img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
+	//img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
 	//convert to gray
 	//Mat img_gray;
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
@@ -250,11 +250,12 @@ float take_pic_get_cm(int i, Side side){
 	vector<Vec4i> hierarchy;
 
 	//RNG rng(12345);
-	findContours(img_canny, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPRPX_SIMPLE, Point(0,0));
-	Mat img_cont;
+	findContours(img_canny, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
+	Mat img_cont = Mat::zeros(img.size(),CV_8UC1);
+	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
-		Scalar color = Scalar(0,0,255);
-		drawContours(img_cont, contours, i , color, 2, 8, hierarchy, 0, Point());
+		Scalar color = Scalar(255,255,255);
+		drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 
 	}
 	
