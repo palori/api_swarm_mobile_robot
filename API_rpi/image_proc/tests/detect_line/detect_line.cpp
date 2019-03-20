@@ -130,27 +130,19 @@ float take_pic_get_cm(int i, Side side){
 
 	//gamma mapping
 	Mat img_gamma = img_hist;
-<<<<<<< HEAD
-	float gamma = 2.5;	
-=======
-	float gamma = 4;	
->>>>>>> master
+	float gamma = 3;	
+
 	GammaMapping(img_hist, img_gamma, gamma);
 
 	//cropping
 	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 	
 	//blurring
-<<<<<<< HEAD
-	Mat img_blur;
-	blur(img_gamma, img_blur, Size(3,3));
-
-=======
 	Mat img_blur,img_med;
 	//medianBlur(img_gamma, img_med, 7);
 	blur(img_gamma, img_blur, Size(3,3));
 	//medianBlur(img_gamma, img_blur, 9);
->>>>>>> master
+
 	//thresholding
 	Mat img_th;
 	bool bad_threshold = true;
