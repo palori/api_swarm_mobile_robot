@@ -35,7 +35,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold = 70;
+int lowThreshold = 50;
 const int thres_ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -189,14 +189,15 @@ float take_pic_get_cm(int i, Side side){
 
 	params.filterByArea = true;
 	params.minArea = 100;
-	params.minThreshold = 100;
-	params.maxThreshold = 150;
+	params.minThreshold = 50;
+	params.maxThreshold = 200;
 	params.filterByCircularity = false;
 	params.minCircularity = 0.1;
 	params.filterByConvexity = false;
 	params.minConvexity = 0.87;
 	params.filterByInertia = false;
 	params.minInertiaRatio = 0.01;
+	SimpleBlobDetector detector(params);
 	detector.detect(img_canny, keypoints);
 	Mat im_with_keypoints;
 	drawKeypoints(img_canny,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
