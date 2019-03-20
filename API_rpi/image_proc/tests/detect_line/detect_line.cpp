@@ -31,13 +31,13 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 180;//150;
+int threshold_value = 150;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold = 40;
-const int thres_ratio = 2.5;
+int lowThreshold = 50;
+const int thres_ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
@@ -230,15 +230,15 @@ float take_pic_get_cm(int i, Side side){
 	//BLOB DETECTION
 
 	params.filterByArea = true;
-	params.minArea = 100;
-	params.minThreshold = 50;
-	params.maxThreshold = 200;
+	params.minArea = 50;
+	//params.minThreshold = 50;
+	//params.maxThreshold = 200;
 	params.filterByCircularity = false;
 	params.minCircularity = 0.1;
 	params.filterByConvexity = false;
 	params.minConvexity = 0.87;
-	params.filterByInertia = false;
-	params.minInertiaRatio = 0.01;
+	params.filterByInertia = true;
+	params.maxInertiaRatio = 0.1;
 	SimpleBlobDetector detector(params);
 	detector.detect(img_canny, keypoints);
 	Mat im_with_keypoints;
