@@ -8,7 +8,7 @@ clc;
 %n=[4 5 13 23 26 41 46 53];
 % n=6;
 % n=[51 52 53 54]
-n=51;
+n=53;
 
 for i=1:length(n)
 
@@ -66,9 +66,10 @@ imhist(I4);
 
 level=graythresh(I4);
 level*255
-I5_2 = imbinarize(I4,level);
+%I5_2 = imbinarize(I4,level);
 figure
 subplot(1,2,1)
+level=0.6;
 I5 = edge(I4,'Canny',level);   %with gamma
 imshow(I5)
 subplot(1,2,2)

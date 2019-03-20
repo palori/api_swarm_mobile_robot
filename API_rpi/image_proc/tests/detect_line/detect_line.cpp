@@ -36,7 +36,7 @@ int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
 int lowThreshold = 40;
-const int thres_ratio = 3;
+const int thres_ratio = 2.5;
 const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
@@ -86,7 +86,7 @@ void close_all(){
 	cr.serial_close();
 }
 
-/*void GammaMapping(Mat& src, Mat& dst, float fGamma) {
+void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 	CV_Assert(src.data);
 
@@ -105,7 +105,7 @@ void close_all(){
 	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
 		*it = lut[(*it)];
 
-}*/
+}
 
 float take_pic_get_cm(int i, Side side){
 	
@@ -129,14 +129,14 @@ float take_pic_get_cm(int i, Side side){
 	//gamma mapping
 	Mat img_gamma = img_hist;
 	float gamma = 2.5;	
-	//GammaMapping(img_hist, img_gamma, gamma);
+	GammaMapping(img_hist, img_gamma, gamma);
 
 	//cropping
 	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 	
 	//blurring
-	//Mat img_blur;
-	//blur(img_gray, img_blur, Size(6,6));
+	Mat img_blur;
+	blur(img_gamma, img_blur, Size(3,3));
 
 	//thresholding
 	Mat img_th;
