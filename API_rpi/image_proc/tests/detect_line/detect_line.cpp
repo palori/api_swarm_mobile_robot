@@ -138,8 +138,6 @@ void HistStretch(Mat& src, Mat& dst) {
 	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
 		*it = lut[(*it)];
 
-	cout << "vmin: " << vmin << endl;
-	cout << "vmax: " << vmax << endl;
 }
 
 
