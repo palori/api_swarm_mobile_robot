@@ -244,8 +244,19 @@ float take_pic_get_cm(int i, Side side){
 	Mat im_with_keypoints;
 	drawKeypoints(img_canny,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
-	
-	
+	//find contours
+
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+
+	//RNG rng(12345);
+	findContours(img_canny, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPRPX_SIMPLE, Point(0,0));
+	Mat img_cont;
+	for (int i=0;i < contours.size(); i++){
+		Scalar color = Scalar(0,0,255);
+		drawContours(img_cont, contours, i , color, 2, 8, hierarchy, 0, Point());
+
+	}
 	
 	if (false){
 		display_image(img, "img");
@@ -293,8 +304,8 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name = "pics/pic_hist_"+to_string(i)+".png";
 	imwrite(pic_name,img_hist);
 
-	string pic_name_blob = "pics/pic_bl_"+to_string(i)+".png";
-	imwrite(pic_name_blob,im_with_keypoints);
+	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
+	imwrite(pic_name_cont,img_cont);
 	
 
 	int sum_y = 0;
