@@ -2,7 +2,12 @@
 //#include <ctime>
 #include <iostream>
 #include <thread>
+#include <mutex>
+
 #include "camera.h"
+#include "publisher.h"
+#include "subscriber.h"
+#include "utils.h"
 
 
 class Image_analysis
@@ -11,13 +16,17 @@ public:
 	Image_analysis();
 	~Image_analysis();
 
+	Image_analysis(int publisher_port, int subscriber_port, double image_format, int image_height, int image_width); // add other input arguments
+
 private:
 	Camera cam;
 	string message;			// ?? need to be encoded, might not need to be an attr
 	int task;				// ?? decide if int, enum...
 	int old_task;
-	int publish_port;
-	int subscibe_port;
+	Publisher pub;
+	Subscriber subs;
+
+	mutex mtx_task;
 
 public:
 
@@ -25,16 +34,12 @@ public:
 	string get_message();	// might not need to be an attr
 	int get_task();
 	int get_old_task();
-	int get_publish_port();
-	int get_subscibe_port();
 
 
 	// Setters
-	void set_message();		// might not need to be an attr
-	void set_task();
-	void set_old_task();
-	void set_publish_port();
-	void set_subscibe_port();
+	void set_message(string s);		// might not need to be an attr
+	void set_task(int i);
+	void set_old_task(int i);
 
 
 
@@ -51,15 +56,14 @@ public:
 	 * - detect obstacle
 	 * - find ArUco code
 	 */
-	void run();				// loop forever
-
-
 	void idle();
 	void follow_line();
-	void crossing();
+	void crossing();		// ?? maybe not needed, integrated in 'follow_line'
 	void ball();
 	void shape();
 	void obstacle();		// ?? maybe not needed
 	void ArUco();
+
+	void run();				// loop forever
 	
 };

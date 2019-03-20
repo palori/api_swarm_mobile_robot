@@ -1,7 +1,6 @@
 
-
-#ifndef COMM_RPI_1_H
-#define COMM_RPI_1_H
+#ifndef COMM_RPI_2_H
+#define COMM_RPI_2_H
 
 
 #include <stdio.h>
@@ -18,6 +17,8 @@
 
 
 #include "utils.h"
+#include "sensors.h"
+
 
 using namespace std;
 using namespace std::chrono;
@@ -60,7 +61,7 @@ public:
 
 	// Might be called from other nodes
 	void params2msg(string & msg);		// encode the new params to send the message
-	void msg2sensorData(string msg);	// decode the received message
+	void msg2sensorData(string msg, Sensors & sens);	// decode the received message
 
 	// getters
 	int get_fd() {return fd;}
@@ -167,28 +168,40 @@ private:
 		bool stop;
 		// ...
 	};
+
 	// have to go with struct flags
 	void print_flags(flags status);
+
+
 	// might go in an other place
 	struct target{ // info RPi send to Teensy
 		// tartet position in robot coord. syst.
 		float x;
 		float y;
 		float th;
+
 		// servo setpoint
 		float servo; // maybe not here?
 	};
+
 	// have to go with struct target
 	void print_target(target new_pose);
+
+
+
 	// might go in an other place
 	// @@@@ talk with Andrija if we need it or not
 	struct sensors{ // info coming from Teensy to RPi
+
 		// Sensing the environment
 		// IR sensors
 		float ir1;
 		float ir2;
+
 		// IMU
 		// ...
+
+
 		// Current robot position
 		// robot position in robot coord. syst.
 		float x;
@@ -199,16 +212,20 @@ private:
 		float yw;
 		float thw;
 	};
+
 	// have to go with struct sensors
 	void print_sensors(sensors new_sens);
 	*/
 
 
 	/**** TO DO ****
+
 	msg2sensors();
 	sensors2msg();
+
 	msg2flags();
 	flags2msg();
+
 	****************/
 };
 
