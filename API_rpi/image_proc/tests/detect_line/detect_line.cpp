@@ -249,20 +249,9 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name = "pics/pic_th_"+to_string(i)+".png";
 	imwrite(pic_name,img_th);
 
-
-	//cout<<"Image saved at 'pic.jpg'"<<endl;
-
-
-	//Printing white pixels
-	/*cout << "\n\nBinary values:";
-	for(int i = 0; i < 960; i++){
-		cout << endl << "[" << i << "] ";
-		for(int j = 0; j < 1280; j++){
-			//if(255 == bin.at<uchar>(i,j))
-			cout << bin.at<uchar>(i,j) << " ";
-		}
-	}*/
-
+	string pic_name_blob = "pics/pic_bl_"+to_string(i)+".png";
+	imwrite(pic_name_blob,im_with_keypoints);
+	
 
 	int sum_y = 0;
 	int count_y = 0;
