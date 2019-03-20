@@ -96,6 +96,7 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 	//build look up table
 	unsigned char lut[256];
+
 	for (int i = 0; i<256; i++){
 		 lut[i] = saturate_cast<uchar>(pow((float)(i/255.0),fGamma) * 255.0f);
 	}
@@ -107,6 +108,31 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 		*it = lut[(*it)];
 
 }
+
+void HistStretch(Mat& src, Mat& dst) {
+
+	CV_Assert(src.data);
+
+	//accept only char type matrices
+	CV_Assert(src.depth() != sizeof(uchar));
+
+	//build look up table
+	unsigned char lut[256];
+	float vmax=240.0;
+	float vmin=10.0;
+
+	for (int i = 0; i<256; i++){
+		 lut[i] = saturate_cast<uchar>(255.0f*((float)i-vmin)/(vmax-vmin));
+	}
+
+	dst = src.clone();
+
+	MatIterator_<uchar> it, end;
+	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
+		*it = lut[(*it)];
+
+}
+
 
 float take_pic_get_cm(int i, Side side){
 	
@@ -126,8 +152,8 @@ float take_pic_get_cm(int i, Side side){
 	
 	//histogram stretch
 	Mat img_hist;
-	equalizeHist(img, img_hist);
-
+	//equalizeHist(img, img_hist);
+	HistStretch(img,img_hist);
 	//gamma mapping
 	Mat img_gamma = img_hist;
 	float gamma = 3;	
