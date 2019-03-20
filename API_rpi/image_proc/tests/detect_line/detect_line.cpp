@@ -3,6 +3,7 @@
 #include "opencv2/opencv.hpp"
 
 #include "opencv2/core/core.hpp"
+
 //#include "opencv2/core/utility.hpp"
 //#include "opencv2/imgcodecs.hpp"
 
@@ -91,7 +92,7 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 	CV_Assert(src.data);
 
 	//accept only char type matrices
-	CV_Assert(src.depth != sizeof(uchar));
+	CV_Assert(src.depth() != sizeof(uchar));
 
 	//build look up table
 	unsigned char lut[256];
@@ -117,7 +118,8 @@ float take_pic_get_cm(int i, Side side){
 	cout<<"Capturing "+to_string(i)+"..."<<endl;
 	Camera.grab();
 	Camera.retrieve (img);
-
+	
+	img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
 	//convert to gray
 	//Mat img_gray;
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
@@ -128,16 +130,27 @@ float take_pic_get_cm(int i, Side side){
 
 	//gamma mapping
 	Mat img_gamma = img_hist;
+<<<<<<< HEAD
 	float gamma = 2.5;	
+=======
+	float gamma = 4;	
+>>>>>>> master
 	GammaMapping(img_hist, img_gamma, gamma);
 
 	//cropping
 	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 	
 	//blurring
+<<<<<<< HEAD
 	Mat img_blur;
 	blur(img_gamma, img_blur, Size(3,3));
 
+=======
+	Mat img_blur,img_med;
+	//medianBlur(img_gamma, img_med, 7);
+	blur(img_gamma, img_blur, Size(3,3));
+	//medianBlur(img_gamma, img_blur, 9);
+>>>>>>> master
 	//thresholding
 	Mat img_th;
 	bool bad_threshold = true;
@@ -185,10 +198,10 @@ float take_pic_get_cm(int i, Side side){
 
 
 	//canny edge detection
-	Mat img_canny;
-	Canny(img_otsu, img_canny, lowThreshold, lowThreshold * thres_ratio, kernel_size);
-	
-
+	Mat img_canny, img_sobel;
+	Canny(img_blur, img_canny,lowThreshold, lowThreshold * thres_ratio , kernel_size);
+	//Sobel(img_blur, img_sobel, );
+	//img_canny=img_sobel;
 	//BLOB DETECTION
 
 	params.filterByArea = true;
@@ -242,8 +255,8 @@ float take_pic_get_cm(int i, Side side){
 	//dilate(img_th, img_dil, element_closing);
 	//erode(img_dil, img_closed , element_closing);
 	
-	string pic_name_hist = "pics/pic_hist_"+to_string(i)+".png";
-	imwrite(pic_name_hist,img_hist);
+	string pic_name_gm = "pics/pic_gm_"+to_string(i)+".png";
+	imwrite(pic_name_gm,img_gamma);
 
 	string pic_name_img = "pics/pic_img_"+to_string(i)+".png";
 	imwrite(pic_name_img,img);
