@@ -188,9 +188,9 @@ float take_pic_get_cm(int i, Side side){
 	//BLOB DETECTION
 
 	params.filterByArea = true;
-	params.minArea = 80;
-	params.minThreshold = 50;
-	params.maxThreshold = 200;
+	params.minArea = 100;
+	params.minThreshold = 100;
+	params.maxThreshold = 150;
 	params.filterByCircularity = false;
 	params.minCircularity = 0.1;
 	params.filterByConvexity = false;
