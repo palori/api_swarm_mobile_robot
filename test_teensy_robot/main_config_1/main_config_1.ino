@@ -533,11 +533,11 @@ void update_velocity(int drive_command){
 
                 delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 150),FOLLOW);
                 if (comm_tsy.get_th_t()<0) {
-                  vel1=comm_tsy.get_vel();   // in robot coord. syst.
-                  vel2=comm_tsy.get_vel() + delta_vel;
+                  vel1=comm_tsy.get_vel() - delta_vel;   // in robot coord. syst.
+                  vel2=comm_tsy.get_vel();// + delta_vel;
                 }else{
-                  vel1=comm_tsy.get_vel() - delta_vel;
-                  vel2=comm_tsy.get_vel();
+                  vel1=comm_tsy.get_vel();// - delta_vel;
+                  vel2=comm_tsy.get_vel() + delta_vel;
                 }
                 
                 
