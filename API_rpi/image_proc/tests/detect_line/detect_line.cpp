@@ -31,7 +31,7 @@ using namespace std;
 ///////////////////////////////
 
 // Thresholding == binarize
-int threshold_value = 150;//150;
+int threshold_value = 100;//150;
 int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
@@ -159,19 +159,22 @@ float take_pic_get_cm(int i, Side side){
 	float gamma = 3;	
 	GammaMapping(img_hist, img_gamma, gamma);
 
-	//cropping
-	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
-
 	//thresholding
 	Mat img_th;
 	bool bad_threshold = true;
 	float white_percent = 0.0;
+	bool otsu_thresholding = true;
 
 	while (bad_threshold) {
 		
-		threshold(img_gamma, img_th, threshold_value, max_BINARY_value,threshold_type);
-
 		
+		if (otsu_thresholding) threshold(img_gamma,img_th,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
+		else threshold(img_gamma, img_th, threshold_value, max_BINARY_value,threshold_type);
+		otsu_thresholding = false;
+
+		//cropping
+		Mat img_crop = img_th(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
+
 		int sum_white = 0;
 		int sum_all = 0;
 		for(int i = img_th.rows/2 ; i<img_th.rows; i++){
@@ -184,6 +187,8 @@ float take_pic_get_cm(int i, Side side){
 		}
 		white_percent = sum_white/(float)sum_all;
 		
+
+		//WATCH OUT FOR THIS PART WHEN ENTERING THE CROSSINGS
 		if (white_percent<0.15) threshold_value-=10;
 		else if (white_percent>0.15 && white_percent<0.46) bad_threshold = false;  //one line should cover around 22% of the bottom quarter of image
 		else threshold_value+=10;			// change these constants if camera position changes
@@ -196,19 +201,12 @@ float take_pic_get_cm(int i, Side side){
 		}
 		if (threshold_value<10 || threshold_value>240){   //if it cannot find good img, return the first one
 			bad_threshold = false;
-			threshold(img_crop, img_th, 150, max_BINARY_value,threshold_type);
-			threshold_value = 150;
+			threshold(img_gamma,img_th,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
+			threshold_value = 100;  //reinitialize threshold value
 		}
 
 
 	}
-
-
-
-	//thresholding for canny with otsu method - consider using it as adaptive
-	Mat img_otsu;
-	threshold(img_gamma,img_otsu,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
-
 
 	//blurring
 	Mat img_blur;
@@ -286,8 +284,8 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
 	imwrite(pic_name_canny,img_canny);
 
-	string pic_name = "pics/pic_otsu_"+to_string(i)+".png";
-	imwrite(pic_name,img_otsu);
+	string pic_name = "pics/pic_hist_"+to_string(i)+".png";
+	imwrite(pic_name,img_hist);
 
 	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
 	imwrite(pic_name_cont,img_cont);
