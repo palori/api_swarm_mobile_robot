@@ -152,7 +152,7 @@ float take_pic_get_cm(int i, Side side){
 	Camera.grab();
 	Camera.retrieve (img);
 	
-	//img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
+	img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
 	//convert to gray
 	//Mat img_gray;
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
@@ -255,7 +255,7 @@ float take_pic_get_cm(int i, Side side){
 	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
-		drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
+		if (contourArea(contours.at(i))>20) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 
 	}
 	
