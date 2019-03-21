@@ -143,7 +143,7 @@ float take_pic_get_cm(int i, Side side){
 	Camera.retrieve (img);
 	
 	//load image - just for testing
-	img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
+	//img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
 	
 	//convert to gray
 	//Mat img_gray;
@@ -169,7 +169,7 @@ float take_pic_get_cm(int i, Side side){
 
 	while (bad_threshold) {
 		
-		threshold(img_crop, img_th, threshold_value, max_BINARY_value,threshold_type);
+		threshold(img_gamma, img_th, threshold_value, max_BINARY_value,threshold_type);
 
 		
 		int sum_white = 0;
@@ -207,7 +207,7 @@ float take_pic_get_cm(int i, Side side){
 
 	//thresholding for canny with otsu method - consider using it as adaptive
 	Mat img_otsu;
-	threshold(img_crop,img_otsu,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
+	threshold(img_gamma,img_otsu,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
 
 
 	//blurring
@@ -277,8 +277,8 @@ float take_pic_get_cm(int i, Side side){
 
 	//SAVING IMAGES
 
-	string pic_name_gm = "pics/pic_gm_"+to_string(i)+".png";
-	imwrite(pic_name_gm,img_gamma);
+	string pic_name_th = "pics/pic_th_"+to_string(i)+".png";
+	imwrite(pic_name_th,img_th);
 
 	string pic_name_img = "pics/pic_img_"+to_string(i)+".png";
 	imwrite(pic_name_img,img);
