@@ -36,7 +36,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold = 50;
+int lowThreshold = 40;
 const int thres_ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -167,7 +167,6 @@ float take_pic_get_cm(int i, Side side){
 
 	while (bad_threshold) {
 		
-		
 		if (otsu_thresholding) threshold(img_gamma,img_th,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
 		else threshold(img_gamma, img_th, threshold_value, max_BINARY_value,threshold_type);
 		otsu_thresholding = false;
@@ -177,9 +176,9 @@ float take_pic_get_cm(int i, Side side){
 
 		int sum_white = 0;
 		int sum_all = 0;
-		for(int i = img_th.rows/2 ; i<img_th.rows; i++){
-			for(int j = 0; j<img_th.cols; j++){
-				if (img_th.at<uchar>(i,j) > threshold_value){
+		for(int i = img_crop.rows/2 ; i<img_crop.rows; i++){
+			for(int j = 0; j<img_crop.cols; j++){
+				if (img_crop.at<uchar>(i,j) > threshold_value){
 					sum_white++;	
 				}
 				sum_all++;
@@ -187,7 +186,6 @@ float take_pic_get_cm(int i, Side side){
 		}
 		white_percent = sum_white/(float)sum_all;
 		
-
 		//WATCH OUT FOR THIS PART WHEN ENTERING THE CROSSINGS
 		if (white_percent<0.15) threshold_value-=10;
 		else if (white_percent>0.15 && white_percent<0.46) bad_threshold = false;  //one line should cover around 22% of the bottom quarter of image
@@ -205,12 +203,12 @@ float take_pic_get_cm(int i, Side side){
 			threshold_value = 100;  //reinitialize threshold value
 		}
 
-
 	}
+
 
 	//blurring
 	Mat img_blur;
-	blur(img_gamma, img_blur, Size(3,3));
+	blur(img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2)), img_blur, Size(3,3));
 	//medianBlur(img_gamma, img_blur, 9);
 
 	//canny edge detection
@@ -293,9 +291,9 @@ float take_pic_get_cm(int i, Side side){
 	//CALCULATING CENTER OF MASS
 	int sum_y = 0;
 	int count_y = 0;
-	for(int i = img_th.rows/2; i<img_th.rows; i++){
-		for(int j = 0; j<img_th.cols; j++){
-			if (img_th.at<uchar>(i,j) > threshold_value){
+	for(int i = img_crop.rows/2; i<img_crop.rows; i++){
+		for(int j = 0; j<img_crop.cols; j++){
+			if (img_crop.at<uchar>(i,j) > threshold_value){
 				sum_y += j;
 				count_y++;
 			}
@@ -304,6 +302,7 @@ float take_pic_get_cm(int i, Side side){
 	float cm_y = 0;
 	if (count_y>0) cm_y= sum_y/count_y - CAM_W/2;
 	else cout<<"---- NO line found ----"<<endl;
+	
 	int delta_cm = round(50*white_percent/0.22); 
 	cout << "delta_cm: " << delta_cm << endl;
 	switch(side){
