@@ -155,17 +155,12 @@ float take_pic_get_cm(int i, Side side){
 	HistStretch(img,img_hist);
 	
 	//gamma mapping
-	Mat img_gamma ;
+	Mat img_gamma;
 	float gamma = 3;	
 	GammaMapping(img_hist, img_gamma, gamma);
 
 	//cropping
 	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
-	
-	//blurring
-	Mat img_blur;
-	blur(img_gamma, img_blur, Size(3,3));
-	//medianBlur(img_gamma, img_blur, 9);
 
 	//thresholding
 	Mat img_th;
@@ -208,10 +203,17 @@ float take_pic_get_cm(int i, Side side){
 
 	}
 
+
+
 	//thresholding for canny with otsu method - consider using it as adaptive
 	Mat img_otsu;
-	threshold(img_gamma,img_otsu,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
+	threshold(img_crop,img_otsu,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
 
+
+	//blurring
+	Mat img_blur;
+	blur(img_gamma, img_blur, Size(3,3));
+	//medianBlur(img_gamma, img_blur, 9);
 
 	//canny edge detection
 	Mat img_canny, img_sobel;
@@ -284,8 +286,8 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
 	imwrite(pic_name_canny,img_canny);
 
-	string pic_name = "pics/pic_hist_"+to_string(i)+".png";
-	imwrite(pic_name,img_hist);
+	string pic_name = "pics/pic_otsu_"+to_string(i)+".png";
+	imwrite(pic_name,img_otsu);
 
 	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
 	imwrite(pic_name_cont,img_cont);
