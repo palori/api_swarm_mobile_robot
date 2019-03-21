@@ -236,7 +236,8 @@ float take_pic_get_cm(int i, Side side){
 
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	Mat img_canny_crop = img_canny(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
+	Mat img_canny_crop = img_canny;
+	img_canny_crop = img_canny_crop(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 	findContours(img_canny_crop, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
 	Mat img_cont = Mat::zeros(img_canny_crop.size(),CV_8UC1);
 	cout << "number of contours: "<< contours.size() << endl;
