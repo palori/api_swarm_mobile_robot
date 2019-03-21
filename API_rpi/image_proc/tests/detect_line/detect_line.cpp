@@ -42,19 +42,20 @@ const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
 //closing
+/*
 int closing_elem = MORPH_ELLIPSE;
 int closing_size = 7;
 int opening_elem = MORPH_ELLIPSE;
 int opening_size = 11;
-
+*/
 
 raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
-SimpleBlobDetector::Params params;
-vector<KeyPoint> keypoints;
 
-SimpleBlobDetector detector(params);
+/*SimpleBlobDetector::Params params;
+vector<KeyPoint> keypoints;
+SimpleBlobDetector detector(params);*/
 
 void display_image(Mat img, string title)
 {
@@ -96,13 +97,10 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 	//build look up table
 	unsigned char lut[256];
-
 	for (int i = 0; i<256; i++){
 		 lut[i] = saturate_cast<uchar>(pow((float)(i/255.0),fGamma) * 255.0f);
 	}
-
 	dst = src.clone();
-
 	MatIterator_<uchar> it, end;
 	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
 		*it = lut[(*it)];
@@ -120,21 +118,13 @@ void HistStretch(Mat& src, Mat& dst) {
 	unsigned char lut[256];
 	double vmax=140.0;
 	double vmin=100.0;
-
-	MatIterator_<uchar> it, end;
-	/*for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++){
-		if ((*it) < vmin) vmin = (float)(*it);
-		if ((*it) > vmax) vmax = (float)(*it);
-	}*/
 	minMaxIdx(src, &vmin, &vmax);
-
 	for (int i = 0; i<256; i++){
 		 lut[i] = saturate_cast<uchar>(255.0f*((float)i-(float)vmin)/((float)vmax-(float)vmin));
 	}
 
 	dst = src.clone();
-
-	
+	MatIterator_<uchar> it, end;
 	for (it = dst. begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
 		*it = lut[(*it)];
 
@@ -152,7 +142,9 @@ float take_pic_get_cm(int i, Side side){
 	Camera.grab();
 	Camera.retrieve (img);
 	
+	//load image - just for testing
 	img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
+	
 	//convert to gray
 	//Mat img_gray;
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
@@ -161,18 +153,17 @@ float take_pic_get_cm(int i, Side side){
 	Mat img_hist;
 	//equalizeHist(img, img_hist);
 	HistStretch(img,img_hist);
+	
 	//gamma mapping
 	Mat img_gamma ;
 	float gamma = 3;	
-
 	GammaMapping(img_hist, img_gamma, gamma);
 
 	//cropping
 	Mat img_crop = img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 	
 	//blurring
-	Mat img_blur,img_med;
-	//medianBlur(img_gamma, img_med, 7);
+	Mat img_blur;
 	blur(img_gamma, img_blur, Size(3,3));
 	//medianBlur(img_gamma, img_blur, 9);
 
@@ -225,14 +216,12 @@ float take_pic_get_cm(int i, Side side){
 	//canny edge detection
 	Mat img_canny, img_sobel;
 	Canny(img_blur, img_canny,lowThreshold, lowThreshold * thres_ratio , kernel_size);
-	//Sobel(img_blur, img_sobel, );
-	//img_canny=img_sobel;
+	
 	//BLOB DETECTION
-
-	params.filterByArea = true;
+	/*params.filterByArea = true;
 	params.minArea = 50;
-	//params.minThreshold = 50;
-	//params.maxThreshold = 200;
+	params.minThreshold = 50;
+	params.maxThreshold = 200;
 	params.filterByCircularity = false;
 	params.minCircularity = 0.1;
 	params.filterByConvexity = false;
@@ -243,55 +232,48 @@ float take_pic_get_cm(int i, Side side){
 	detector.detect(img_canny, keypoints);
 	Mat im_with_keypoints;
 	drawKeypoints(img_canny,keypoints,im_with_keypoints,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	*/
 
 	//find contours
 
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-
-	//RNG rng(12345);
 	findContours(img_canny, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
 	Mat img_cont = Mat::zeros(img.size(),CV_8UC1);
 	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
+		cout << "Contour " << i << ". size: " << contourArea(contours[i]) << endl;
 		if (contourArea(contours.at(i))>20) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 
 	}
 	
+	/*
 	if (false){
 		display_image(img, "img");
 		display_image(img_hist, "img_hist");
 		display_image(img_gamma, "img_gamma");
 		display_image(img_th, "img_th");
-		//display_image(img_canny,"img_canny");
-	}
-
-	//save images
-	//imwrite("pic_gray.jpg",img_gray);
-	//imwrite("pic_blur.jpg",img_blur);
-	//imwrite("pic_th.jpg",img_th);
-	//imwrite("pic_canny.jpg",img_canny);
+		display_image(img_canny,"img_canny");
+	}*/
 
 	//CLOSING
+	/*
+	Mat img_dil, img_closed, img_opened, img_ero;
+	Mat element_closing = getStructuringElement(closing_elem, 
+		                                Size(2*closing_size-1,2*closing_size-1),
+		                                Point(closing_size,closing_size));
+	Mat element_opening = getStructuringElement(opening_elem, 
+		                                Size(2*opening_size-1,2*opening_size-1),
+		                                Point(opening_size,opening_size));
+	erode(img_th, img_ero , element_opening);
+	dilate(img_ero, img_opened, element_opening);
 
-	//Mat img_dil, img_closed, img_opened, img_ero;
-	
-	//Mat element_closing = getStructuringElement(closing_elem, 
-	//	                                Size(2*closing_size-1,2*closing_size-1),
-	//	                                Point(closing_size,closing_size));
+	dilate(img_th, img_dil, element_closing);
+	erode(img_dil, img_closed , element_closing);
+	*/
 
-	//Mat element_opening = getStructuringElement(opening_elem, 
-	//	                                Size(2*opening_size-1,2*opening_size-1),
-	//	                                Point(opening_size,opening_size));
-	
-	//erode(img_th, img_ero , element_opening);
-	//dilate(img_ero, img_opened, element_opening);
-	
-
-	//dilate(img_th, img_dil, element_closing);
-	//erode(img_dil, img_closed , element_closing);
-	
+	//SAVING IMAGES
 
 	string pic_name_gm = "pics/pic_gm_"+to_string(i)+".png";
 	imwrite(pic_name_gm,img_gamma);
@@ -308,7 +290,7 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
 	imwrite(pic_name_cont,img_cont);
 	
-
+	//CALCULATING CENTER OF MASS
 	int sum_y = 0;
 	int count_y = 0;
 	for(int i = img_th.rows/2; i<img_th.rows; i++){
