@@ -36,8 +36,8 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold = 50;
-const int thres_ratio = 3;
+int lowThreshold = 40;
+const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
@@ -212,7 +212,7 @@ float take_pic_get_cm(int i, Side side){
 	//medianBlur(img_gamma, img_blur, 9);
 
 	//canny edge detection
-	Mat img_canny, img_sobel;
+	Mat img_canny;
 	Canny(img_blur, img_canny,lowThreshold, lowThreshold * thres_ratio , kernel_size);
 	
 	//BLOB DETECTION
@@ -236,28 +236,16 @@ float take_pic_get_cm(int i, Side side){
 
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	findContours(img_canny, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
-	Mat img_cont = Mat::zeros(img.size(),CV_8UC1);
+	Mat img_canny_crop = img_canny(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
+	findContours(img_canny_crop, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
+	Mat img_cont = Mat::zeros(img_canny_crop.size(),CV_8UC1);
 	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
 		cout << "Contour " << i << ". size: " << contourArea(contours[i]) << endl;
-		if (contourArea(contours.at(i))>15) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
+		if (contourArea(contours.at(i))>0) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 
 	}
-
-	img_cont = img_cont(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
-	vector<vector<Point>> contours1;
-	vector<Vec4i> hierarchy1;
-	findContours(img_cont, contours1, hierarchy1, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
-	img_cont1 = Mat::zeros(img.size(),CV_8UC1);
-	cout << "number of contour1s: "<< contours1.size() << endl;
-	for (int i=0;i < contours1.size(); i++){
-		Scalar color1 = Scalar(255,255,255);
-		cout << "Contour1 " << i << ". size: " << contourArea(contours1[i]) << endl;
-		if (contourArea(contours1.at(i))>15) drawContours(img_cont1, contours1, i , color1, 1, 8, hierarchy1, 0, Point());
-
-	}	
 
 
 	
@@ -297,8 +285,8 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
 	imwrite(pic_name_canny,img_canny);
 
-	string pic_name = "pics/pic_cont1_"+to_string(i)+".png";
-	imwrite(pic_name,img_cont1);
+	string pic_name = "pics/pic_crop_"+to_string(i)+".png";
+	imwrite(pic_name,img_canny_crop);
 
 	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
 	imwrite(pic_name_cont,img_cont);
