@@ -36,7 +36,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold = 40;
+int lowThreshold = 50;
 const int thres_ratio = 3;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -160,7 +160,7 @@ float take_pic_get_cm(int i, Side side){
 	GammaMapping(img_hist, img_gamma, gamma);
 
 	//thresholding
-	Mat img_th;
+	Mat img_th,img_crop;
 	bool bad_threshold = true;
 	float white_percent = 0.0;
 	bool otsu_thresholding = true;
@@ -172,7 +172,7 @@ float take_pic_get_cm(int i, Side side){
 		otsu_thresholding = false;
 
 		//cropping
-		Mat img_crop = img_th(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
+		img_crop = img_th(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 
 		int sum_white = 0;
 		int sum_all = 0;
@@ -208,7 +208,7 @@ float take_pic_get_cm(int i, Side side){
 
 	//blurring
 	Mat img_blur;
-	blur(img_gamma(Rect(0,CAM_H/2,CAM_W,CAM_H/2)), img_blur, Size(3,3));
+	blur(img_gamma, img_blur, Size(3,3));
 	//medianBlur(img_gamma, img_blur, 9);
 
 	//canny edge detection
@@ -242,9 +242,24 @@ float take_pic_get_cm(int i, Side side){
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
 		cout << "Contour " << i << ". size: " << contourArea(contours[i]) << endl;
-		if (contourArea(contours.at(i))>20) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
+		if (contourArea(contours.at(i))>15) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 
 	}
+
+	img_cont = img_cont(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
+	vector<vector<Point>> contours1;
+	vector<Vec4i> hierarchy1;
+	findContours(img_cont, contours1, hierarchy1, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
+	img_cont1 = Mat::zeros(img.size(),CV_8UC1);
+	cout << "number of contour1s: "<< contours1.size() << endl;
+	for (int i=0;i < contours1.size(); i++){
+		Scalar color1 = Scalar(255,255,255);
+		cout << "Contour1 " << i << ". size: " << contourArea(contours1[i]) << endl;
+		if (contourArea(contours1.at(i))>15) drawContours(img_cont1, contours1, i , color1, 1, 8, hierarchy1, 0, Point());
+
+	}	
+
+
 	
 	/*
 	if (false){
@@ -282,8 +297,8 @@ float take_pic_get_cm(int i, Side side){
 	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
 	imwrite(pic_name_canny,img_canny);
 
-	string pic_name = "pics/pic_hist_"+to_string(i)+".png";
-	imwrite(pic_name,img_hist);
+	string pic_name = "pics/pic_cont1_"+to_string(i)+".png";
+	imwrite(pic_name,img_cont1);
 
 	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
 	imwrite(pic_name_cont,img_cont);
