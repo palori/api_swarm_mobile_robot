@@ -1,5 +1,5 @@
 
-#include "comm_rpi_1.h"
+#include "comm_rpi_2.h"
 
 COMM_RPI::COMM_RPI(){}
 COMM_RPI::~COMM_RPI(){}
@@ -48,6 +48,7 @@ void COMM_RPI::serial_write(string msg){
     for(uint i=0; i < c_msg.size(); i++){
         ccc[i] = c_msg[i];
     }
+
     write(fd, ccc, c_msg.size()); */          // @@@@ improvement, it returns some value that could be used to know if wrote or not
     /*for(int i=0; i < c_msg.size(); i++){
         write(fd, c_msg[i], 1);
@@ -147,7 +148,7 @@ string COMM_RPI::serial_read(){ //read_char_by_char
  * decode the received message
  * USING VECTOR -> WORKING!
  */
-void COMM_RPI::msg2sensorData(string msg){          // STILL TO WORK ON IT!
+void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO WORK ON IT!
 
     // split the message
     char str[msg.length()];
@@ -185,6 +186,7 @@ void COMM_RPI::msg2sensorData(string msg){          // STILL TO WORK ON IT!
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.servo = val;
+                sens.set_s(val);
                 i++;
             }
         }
@@ -192,6 +194,7 @@ void COMM_RPI::msg2sensorData(string msg){          // STILL TO WORK ON IT!
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.x = val;
+                sens.set_x();
                 i++;
             }
         }
@@ -199,6 +202,7 @@ void COMM_RPI::msg2sensorData(string msg){          // STILL TO WORK ON IT!
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.y = val;
+                sens.set_y(val);
                 i++;
             }
         }
@@ -206,9 +210,13 @@ void COMM_RPI::msg2sensorData(string msg){          // STILL TO WORK ON IT!
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.th = val;
+                sens.set_th(val);
                 i++;
             }
         }
+
+        // ...
+        // missing others (ir1, ir2, obst_dist, obst_found, gyro[3], acc[3], comp[3])
     }
 
     if (get_debug()){ // show that results are saved
@@ -259,6 +267,7 @@ void print_flags(flags status){
     cout << "\n    Work in progress...";
     cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";   
 }
+
 // have to go with struct target
 void print_target(target new_pose){
     cout << "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nTarget:";
@@ -268,6 +277,7 @@ void print_target(target new_pose){
     cout << "\n    th = " << new_pose.th;
     cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
 }
+
 // have to go with struct sensors
 void print_sensors(sensors new_sens){
     cout << "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nSensors:";
