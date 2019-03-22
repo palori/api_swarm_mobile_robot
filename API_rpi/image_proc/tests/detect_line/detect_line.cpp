@@ -217,6 +217,10 @@ float take_pic_get_cm(int i, Side side){
 	img_canny = Scalar::all(0);
 	img_gamma.copyTo(img_canny, canny_edges);
 
+	//thresholding canny
+	Mat img_ct;
+	threshold(img_canny,img_ct,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
+
 	//BLOB DETECTION
 	/*params.filterByArea = true;
 	params.minArea = 50;
@@ -238,7 +242,7 @@ float take_pic_get_cm(int i, Side side){
 
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	Mat img_canny_crop = img_canny.clone();
+	Mat img_canny_crop = img_ct.clone();
 	img_canny_crop = img_canny_crop(Rect(0,CAM_H/2,CAM_W,CAM_H/2));
 	findContours(img_canny_crop, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
 	Mat img_cont = Mat::zeros(img_canny_crop.size(),CV_8UC1);
