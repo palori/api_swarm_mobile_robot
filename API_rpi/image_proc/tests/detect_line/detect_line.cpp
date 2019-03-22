@@ -212,9 +212,11 @@ float take_pic_get_cm(int i, Side side){
 	//medianBlur(img_gamma, img_blur, 9);
 
 	//canny edge detection
-	Mat img_canny;
-	Canny(img_blur, img_canny,lowThreshold, lowThreshold * thres_ratio , kernel_size);
-	
+	Mat img_canny,canny_edges;
+	Canny(img_blur, canny_edges, lowThreshold, lowThreshold * thres_ratio , kernel_size);
+	img_canny = Scalar::all(0);
+	img_gamma.copyTo(img_canny, canny_edges);
+
 	//BLOB DETECTION
 	/*params.filterByArea = true;
 	params.minArea = 50;
