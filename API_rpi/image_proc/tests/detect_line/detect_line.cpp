@@ -248,6 +248,7 @@ float take_pic_get_cm(int i, Side side){
 	//find contours
 
 	vector<vector<Point>> contours;
+	vector<vector<Point>> good_contours;
 	vector<Vec4i> hierarchy;
 	Mat img_canny_crop = img_canny.clone();
 	img_canny_crop = img_canny_crop(Rect(0,CAM_H*0.5,CAM_W,CAM_H*0.5));
@@ -257,20 +258,58 @@ float take_pic_get_cm(int i, Side side){
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
 		cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
-		Rect rect = boundingRect(contours[i]);
-		Point p1,p2;
+		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
+		if (arcLength(contours.at(i),false)>120){ 
+			good_contours.push_back(contour[i]);
+			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
+		}
+	}
+
+	vector<Point> left_contour;
+	double left_cm;
+	vector<Point> right_contour;
+	double right_cm;
+	for (int i=0; i < good_contours.size(); i++){
+		Rect new_rect = boundingRect(good_contours[i]);
+		Point p_cm;
 		p1.x = rect.x;
 		p1.y = rect.y;
 		p2.x = rect.x + rect.width;
 		p2.y = rect.y + rect.height;
-		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours.at(i),false)>120){ 
-			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
-			rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		}
+		p_cm.x= (p1.x+p2.x)/ 2;
+		p_cm.y= (p1.y+p2.y)/ 2;
 
+		if (i==0) {
+			left_contour = good_contours[i];
+			right_contour = good_contours[i];
+			left_cm = p_cm.y;
+			right_cm = p_cm.y;
+		} else if (p_cm.y < left_cm) {
+			left_contour = good_contours[i];
+			left_cm = p_cm.y;
+		} else if (p_cm.y > right_cm) {
+			right_contour = good_contours[i];
+			right_cm = p_cm.y;
+		}
+		
 	}
 
+
+	// plot only left and right rectangle;
+
+	Rect rect_plot_l = boundingRect(left_contour);
+	Rect rect_plot_r = boundingRect(right_contour);
+	Point p1_l,p2_l,p1_r,p2_r; 
+	p1_l.x = rect_plot_l.x;
+	p1_l.y = rect_plot_l.y;
+	p2_l.x = rect_plot_l.x + rect_plot_l.width;
+	p2_l.y = rect_plot_l.y + rect_plot_l.height;
+	rectangle(img_cont,p1_l,p2_l,CV_RGB(255,255,255),1);
+	p1_r.x = rect_plot_r.x;
+	p1_r.y = rect_plot_r.y;
+	p2_r.x = rect_plot_r.x + rect_plot_r.width;
+	p2_r.y = rect_plot_r.y + rect_plot_r.height;
+	rectangle(img_cont,p1_r,p2_r,CV_RGB(255,255,255),1);
 
 	
 	/*
@@ -329,7 +368,7 @@ float take_pic_get_cm(int i, Side side){
 		}
 	}
 	float cm_y = 0;
-	if (count_y>0) cm_y= sum_y/count_y - CAM_W/2;
+	if (count_y>0) cm_y=(right_cm+left_cm)/2 - - CAM_W/2;//cm_y= sum_y/count_y - CAM_W/2;
 	else cout<<"---- NO line found ----"<<endl;
 	
 	int delta_cm = round(50*white_percent/0.22); 
