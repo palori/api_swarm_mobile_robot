@@ -260,7 +260,7 @@ float take_pic_get_cm(int i, Side side){
 		cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
 		if (arcLength(contours.at(i),false)>120){ 
-			good_contours.push_back(contour[i]);
+			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
 	}
@@ -271,11 +271,11 @@ float take_pic_get_cm(int i, Side side){
 	double right_cm;
 	for (int i=0; i < good_contours.size(); i++){
 		Rect new_rect = boundingRect(good_contours[i]);
-		Point p_cm;
-		p1.x = rect.x;
-		p1.y = rect.y;
-		p2.x = rect.x + rect.width;
-		p2.y = rect.y + rect.height;
+		Point p_cm,p1,p2;
+		p1.x = new_rect.x;
+		p1.y = new_rect.y;
+		p2.x = new_rect.x + new_rect.width;
+		p2.y = new_rect.y + new_rect.height;
 		p_cm.x= (p1.x+p2.x)/ 2;
 		p_cm.y= (p1.y+p2.y)/ 2;
 
