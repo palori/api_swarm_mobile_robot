@@ -286,10 +286,10 @@ float take_pic_get_cm(int i, Side side){
 				right_contour = good_contours[i];
 				left_cm = p_cm.x;
 				right_cm = p_cm.x;
-			} else if (p_cm.x < left_cm && p_cm.y > (img_cont.height / 4)) {
+			} else if (p_cm.x < left_cm && p_cm.y > (img_cont.rows / 4)) {
 				left_contour = good_contours[i];
 				left_cm = p_cm.x;
-			} else if (p_cm.x > right_cm && p_cm.y > (img_cont.height / 4)) {
+			} else if (p_cm.x > right_cm && p_cm.y > (img_cont.rows / 4)) {
 				right_contour = good_contours[i];
 				right_cm = p_cm.x;
 			}
