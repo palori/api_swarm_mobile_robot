@@ -146,7 +146,7 @@ float take_pic_get_cm(int i, Side side){
 	Camera.retrieve (img);
 
 	//load image - just for testing
-	//img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
+	img = imread("../take_pic/crossings/pic_img_040.png",CV_LOAD_IMAGE_GRAYSCALE);
 
 	//namedWindow("image", WINDOW_NORMAL);
 	//imshow("image", img);
@@ -263,8 +263,11 @@ float take_pic_get_cm(int i, Side side){
 		p1.y = rect.y;
 		p2.x = rect.x + rect.width;
 		p2.y = rect.y + rect.height;
-		rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours.at(i),false)>120) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
+		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
+		if (arcLength(contours.at(i),false)>120){ 
+			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
+			rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
+		}
 
 	}
 
