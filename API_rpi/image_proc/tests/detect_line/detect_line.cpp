@@ -1,3 +1,4 @@
+
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
@@ -23,7 +24,9 @@
 //#include <csignal>
 
 #include "../../../comm_rpi_1.h"
- 
+
+
+
 using namespace cv;
 using namespace std;
 
@@ -55,13 +58,13 @@ enum Side { LEFT, MIDDLE, RIGHT };
 
 /*SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
-SimpleBlobDetector detector(params);*/
+SimpleBlobDetector detector(params);
 
 void display_image(Mat img, string title)
 {
 	namedWindow( title, WINDOW_AUTOSIZE );  
 	imshow( title, img );
-}
+}*/
 
 int camera_init(){
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
@@ -138,12 +141,16 @@ float take_pic_get_cm(int i, Side side){
 
 	//Start capture - gray image
 	Mat img;
-	cout<<"Capturing "+to_string(i)+"..."<<endl;
-	Camera.grab();
-	Camera.retrieve (img);
-	
+	//cout<<"Capturing "+to_string(i)+"..."<<endl;
+	//Camera.grab();
+	//Camera.retrieve (img);
+
 	//load image - just for testing
-	//img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
+	img = imread("pics/pic_img_0.png",CV_LOAD_IMAGE_GRAYSCALE);
+
+	namedWindow("image", WINDOW_NORMAL);
+	imshow("image", img);
+	waitKey(0);
 	
 	//convert to gray
 	//Mat img_gray;
@@ -250,6 +257,13 @@ float take_pic_get_cm(int i, Side side){
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
 		cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
+		Rect rect = boundingRect(contours[i]);
+		Point p1,p2;
+		p1.x = rect.x;
+		p1.y = rect.y;
+		p2.x = rect.x + rect.width;
+		p2.y = rext.y + rect.height;
+		rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
 		if (arcLength(contours.at(i),false)>120) drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 
 	}
@@ -282,6 +296,8 @@ float take_pic_get_cm(int i, Side side){
 	*/
 
 	//SAVING IMAGES
+
+
 
 	string pic_name_th = "pics/pic_th_"+to_string(i)+".png";
 	imwrite(pic_name_th,img_th);
@@ -400,7 +416,7 @@ void pic_cm_comm1(){
 	    while (i<300){
 	    		//camera_start();
 				y = take_pic_get_cm(i,MIDDLE);
-				//printf("Y: %f\n",y);
+				printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
 				//usleep(10000);
