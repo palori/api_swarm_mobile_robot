@@ -245,7 +245,7 @@ void pic_cm_comm1(){
     int i=0;
     send_msg("@a=19,b=1,v=0.3,fwd=0.5$");
     while (i<10){
-       int y = take_pic_get_cm();
+       int y=0;// = take_pic_get_cm();
        printf("Y: %d\n",y);
        string msg = "@tht="+to_string(y)+"$";
        send_msg(msg);
@@ -257,12 +257,14 @@ void pic_cm_comm1(){
 void turn_coupling(){
     int i=0;
     float deg = 20, rad;
-
+    COMM_RPI cr;
+    cr.serial_open();
     while (i<1000){
-       printf("Turn: %dº\n",deg);
+       printf("Turn: %fº\n",deg);
        rad = deg*3.1415/180;
        string msg = "@a=16,b=1,v=0.3,trn="+to_string(rad)+"$";
-       send_msg(msg);
+       cout << "  msg: " << msg << endl;
+       cr.serial_write(msg);
 
        usleep(5000000);
        deg = -deg;
@@ -294,7 +296,7 @@ int main(){
     //test_enum();                      test validated!
 
     //test_read_comm1();
-    //pic_cm_comm1();                 // working, nice for testing
+    //pic_cm_comm1();                 // not working, need to use opencv and compile with cmake
     turn_coupling();
     return 0;
 }

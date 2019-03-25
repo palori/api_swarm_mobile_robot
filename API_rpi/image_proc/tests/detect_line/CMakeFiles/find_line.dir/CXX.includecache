@@ -75,6 +75,10 @@ string
 -
 string.h
 -
+string
+-
+vector
+-
 
 /usr/local/include/raspicam/raspicam_cv.h
 opencv2/core/core.hpp
