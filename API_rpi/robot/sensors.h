@@ -1,10 +1,7 @@
-#ifndef SENSORS_1_H
-#define SENSORS_H
+#ifndef sensors_h
+#define sensors_h
 
-#include <iostream>
-#include <mutex>
-
-//#include "utils.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -17,19 +14,30 @@ public:
 
 private:
 	// Attributes
-	float s;				// might want to be vectors so we can use
-	float x;				// historical data to compute stuff like
-	float y;				// good localization :)
-	float th;
-	
-	float ir1;
-	float ir2;
-	float obst_dist;
-	bool obst_found;
 
-	float gyro[3];			// then those will be matrices (see how to do that)
-	float acc[3];
-	float comp[3];
+	int MAX_LEN = 10;				// default
+
+	vector<float> s;				// vectors, so we can use historical
+	vector<float> x;				// data to compute stuff like
+	vector<float> y;				// good localization :)
+	vector<float> th;
+	
+	vector<float> ir1;
+	vector<float> ir2;
+	vector<float> obst_dist;
+	vector<bool> obst_found;
+
+	vector<float> gyro_x;
+	vector<float> gyro_y;
+	vector<float> gyro_z;
+
+	vector<float> acc_x;
+	vector<float> acc_y;
+	vector<float> acc_z;
+
+	vector<float> comp_x;
+	vector<float> comp_y;
+	vector<float> comp_z;
 
 
 	// Mutex (for critical sections, reading and writing attributes from different threads)
@@ -49,22 +57,34 @@ private:
 
 public:
 	// Getters
-	float get_s();
-	float get_x();
-	float get_y();
-	float get_th();
+	int get_MAX_LEN();
 
-	float get_ir1();
-	float get_ir2();
-	float get_obst_dist();
-	bool get_obst_found();
+	vector<float> get_s();
+	vector<float> get_x();
+	vector<float> get_y();
+	vector<float> get_th();
 
-	/*float get_gyro();				// maybe with pointers???
-	float get_acc();
-	float get_comp();*/
+	vector<float> get_ir1();
+	vector<float> get_ir2();
+	vector<float> get_obst_dist();
+	vector<bool> get_obst_found();
+
+	vector<float> get_gyro_x();
+	vector<float> get_gyro_y();
+	vector<float> get_gyro_z();
+
+	vector<float> get_acc_x();
+	vector<float> get_acc_y();
+	vector<float> get_acc_z();
+
+	vector<float> get_comp_x();
+	vector<float> get_comp_y();
+	vector<float> get_comp_z();
 
 
 	// Setters
+	void set_MAX_LEN(int i);
+
 	void set_s(float f);
 	void set_x(float f);
 	void set_y(float f);

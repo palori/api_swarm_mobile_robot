@@ -25,7 +25,8 @@ using namespace std::chrono;
 
 
 #define USB_SERIAL_PORT "/dev/ttyACM0"		// maybe into a configuration file
-
+#define START "@"
+#define END "$"
 
 /*
  * IF YOU MAKE ANY CHANGE IN THIS FILE, YOU HAVE TO MODIFY ACCORDINGLY
@@ -33,8 +34,8 @@ using namespace std::chrono;
  * 
  *   - comm_1.h
  *   - comm_1.cpp
- *   - ../API_rpi/comm_rpi_1.h
- *   - ../API_rpi/comm_rpi_1.cpp
+ *   - ../API_rpi/comm_rpi_2.h
+ *   - ../API_rpi/comm_rpi_2.cpp
  */
 
 
@@ -84,6 +85,8 @@ private:
 	int fd = -1;								// indicates port state, default: -1 (closed)
 	bool port_open = false;
 
+
+public: // if we want to use them in other files -> maybe even outside the class...
 	enum Actions {
 		CONNECT,			// To know when the connection started and ended to send (or not) messages
 		RESET_ENC,
@@ -111,7 +114,8 @@ private:
 		FWD,
 		TRN,
 		TRNR,
-		DRIVE
+		DRIVE,
+		FOLLOW
 	};
 
 	struct Command {
@@ -146,87 +150,6 @@ private:
 		string OF = "of";				// obstacle found
 	};
 
-
-
-
-
-
-
-
-
-
-	// OLD functions
-
-
-	/*/ Message stiles
-	// might go in an other place
-	// @@@@ NEED TO DESIGN IT -> TO SEND STATUS MESSAGES BETWEEN 2 BOARDS @@@@
-	struct flags{ // info RPi send to Teensy
-		// some possible examples...
-		int robot_id;
-		bool running;
-		bool stop;
-		// ...
-	};
-
-	// have to go with struct flags
-	void print_flags(flags status);
-
-
-	// might go in an other place
-	struct target{ // info RPi send to Teensy
-		// tartet position in robot coord. syst.
-		float x;
-		float y;
-		float th;
-
-		// servo setpoint
-		float servo; // maybe not here?
-	};
-
-	// have to go with struct target
-	void print_target(target new_pose);
-
-
-
-	// might go in an other place
-	// @@@@ talk with Andrija if we need it or not
-	struct sensors{ // info coming from Teensy to RPi
-
-		// Sensing the environment
-		// IR sensors
-		float ir1;
-		float ir2;
-
-		// IMU
-		// ...
-
-
-		// Current robot position
-		// robot position in robot coord. syst.
-		float x;
-		float y;
-		float th;
-		// robot position in world coord. syst.
-		float xw;
-		float yw;
-		float thw;
-	};
-
-	// have to go with struct sensors
-	void print_sensors(sensors new_sens);
-	*/
-
-
-	/**** TO DO ****
-
-	msg2sensors();
-	sensors2msg();
-
-	msg2flags();
-	flags2msg();
-
-	****************/
 };
 
 #endif

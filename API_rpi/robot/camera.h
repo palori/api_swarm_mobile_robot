@@ -1,3 +1,5 @@
+#ifndef camera_h
+#define camera_h
 
 #include <iostream>
 #include <ctime>
@@ -46,3 +48,5 @@ public:
 
 	
 };
+
+#endif

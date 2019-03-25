@@ -1,11 +1,7 @@
-#ifndef ROBOT_PARAMS_H
-#define ROBOT_PARAMS_H
+#ifndef robot_params_h
+#define robot_params_h
 
-#include <iostream>
-#include <vector>
-#include <mutex>
-
-//#include "utils.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -27,7 +23,7 @@ private:
 	int port_info;
 	int port_info_robot_a;
 	int port_info_robot_b;
-	float x;
+	float x;						// may want to change to vectors
 	float y;
 	float z;
 	float th;

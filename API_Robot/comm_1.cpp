@@ -187,7 +187,7 @@ void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 
 	while (pch != NULL && keep_reading)
 	{
-		if (get_debug()) Serial.println("pch="+String(pch));
+		if (get_debug()) Serial.pr intln("pch="+String(pch));
 
 		if(*pch=='@' && !store){
 			store=true;

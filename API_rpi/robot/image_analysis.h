@@ -1,3 +1,5 @@
+#ifndef image_analysis_h
+#define image_analysis_h
 
 //#include <ctime>
 #include <iostream>
@@ -67,3 +69,5 @@ public:
 	void run();				// loop forever
 	
 };
+
+#endif
