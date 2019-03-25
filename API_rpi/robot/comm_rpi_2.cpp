@@ -91,10 +91,10 @@ string COMM_RPI::serial_read(){ //read_char_by_char
                 if(cs>0){
                     //cout << c[0];
                     
-                    if(c[0]=='@' && !store){
+                    if(c[0]==START && !store){
                         store=true;
                     }
-                    else if(c[0]=='$' && store){
+                    else if(c[0]==END && store){
                         keep_reading=false;
                         //store = false;
                         //cout << endl;
@@ -151,38 +151,12 @@ string COMM_RPI::serial_read(){ //read_char_by_char
 void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO WORK ON IT!
 
     // split the message
-    char str[msg.length()];
-    for(unsigned int i=0; i< msg.length(); i++){
-        str[i] = msg[i];
-    }
-    char * pch;
-    vector<string> words;
-    bool keep_reading=true, store=false;
-    pch = strtok (str," ,="); //" ,.-"
-    while (pch != NULL && keep_reading)
-    {
-        //usleep(1000000); //microseconds
-        
-        //cout << c[0];
-        if(*pch=='@' && !store){
-            store=true;
-        }
-        else if(*pch=='$' && store){
-            keep_reading=false;
-            store = false;
-        }
-        else if(*pch!='$' && store) {
-            words.push_back(pch);
-            if (get_debug()){
-                printf ("%s\n",pch);
-            }
-        }
-        pch = strtok (NULL, " ,="); //" ,.-"
-    }
+    vector<string> words = split_str(msg, "=,");    // utils
+    Command command;
 
     // save it as new target pose
     for (uint i=0; i<words.size(); i++){
-        if(words.at(i) == "s"){
+        if(words.at(i) == command.S){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.servo = val;
@@ -190,15 +164,15 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
                 i++;
             }
         }
-        else if(words.at(i) == "x"){
+        else if(words.at(i) == command.X_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.x = val;
-                sens.set_x();
+                sens.set_x(val);
                 i++;
             }
         }
-        else if(words.at(i) == "y"){
+        else if(words.at(i) == command.Y_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.y = val;
@@ -206,7 +180,15 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
                 i++;
             }
         }
-        else if(words.at(i) == "th"){
+        else if(words.at(i) == command.TH_w){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                //new_pose.th = val;
+                sens.set_th(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.IR1){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
                 //new_pose.th = val;
@@ -239,12 +221,12 @@ void COMM_RPI::params2msg(string & msg){        // STILL TO WORK ON IT!
     // @@@@ 'send_only_if_updaded' this might mean that we need to keep track of the previous pose
     // NOT implemented for the moment
 
-    string new_msg = "@";
-    new_msg += ",s=" + to_string(0.0);
+    string new_msg = START;
+    new_msg += "s=" + to_string(0.0);
     new_msg += ",x=" + to_string(0.0);
     new_msg += ",y=" + to_string(0.0);
     new_msg += ",th=" + to_string(0.0);
-    new_msg += ",$";
+    new_msg += END;
 
     // update message
     msg = new_msg;
@@ -255,37 +237,4 @@ void COMM_RPI::params2msg(string & msg){        // STILL TO WORK ON IT!
 
 
 
-
-
-
-
-
-
-/*
-void print_flags(flags status){
-    cout << "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nStatus flags:";
-    cout << "\n    Work in progress...";
-    cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";   
-}
-
-// have to go with struct target
-void print_target(target new_pose){
-    cout << "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nTarget:";
-    cout << "\n    Servo = " << new_pose.servo;
-    cout << "\n    x = " << new_pose.x;
-    cout << "\n    y = " << new_pose.y;
-    cout << "\n    th = " << new_pose.th;
-    cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
-}
-
-// have to go with struct sensors
-void print_sensors(sensors new_sens){
-    cout << "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nSensors:";
-    cout << "\n    ir1 = " << new_sens.ir1;
-    cout << "\n    ir2 = " << new_sens.ir2;
-    cout << "\n    xw = " << new_sens.xw;
-    cout << "\n    yw = " << new_sens.yw;
-    cout << "\n    thw = " << new_sens.thw;
-}
-*/
 

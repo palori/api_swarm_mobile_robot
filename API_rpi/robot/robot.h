@@ -1,5 +1,5 @@
-#ifndef ROBOT_H
-#define ROBOT_H
+#ifndef robot_h
+#define robot_h
 
 #include <iostream>
 #include <thread>

@@ -244,11 +244,28 @@ void test_read_comm1(){
 void pic_cm_comm1(){
     int i=0;
     send_msg("@a=19,b=1,v=0.3,fwd=0.5$");
-    while (i<1000){
+    while (i<10){
        int y = take_pic_get_cm();
        printf("Y: %d\n",y);
        string msg = "@tht="+to_string(y)+"$";
        send_msg(msg);
+       i++;
+    }
+}
+
+
+void turn_coupling(){
+    int i=0;
+    float deg = 20, rad;
+
+    while (i<1000){
+       printf("Turn: %dº\n",deg);
+       rad = deg*3.1415/180;
+       string msg = "@a=16,b=1,v=0.3,trn="+to_string(rad)+"$";
+       send_msg(msg);
+
+       usleep(5000000);
+       deg = -deg;
        i++;
     }
 }
@@ -277,6 +294,7 @@ int main(){
     //test_enum();                      test validated!
 
     //test_read_comm1();
-    pic_cm_comm1();
+    //pic_cm_comm1();                 // working, nice for testing
+    turn_coupling();
     return 0;
 }

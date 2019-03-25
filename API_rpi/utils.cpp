@@ -3,6 +3,7 @@
 
 using namespace std;
 
+/*
 int str2int(string s){
 	try{
         return stoi(s); 
@@ -13,6 +14,7 @@ int str2int(string s){
     }
     return BIG_INT;
 }
+*/
 
 float str2float(string s){
     try{
@@ -24,3 +26,4 @@ float str2float(string s){
     }
     return BIG_FLOAT;
 }
+
