@@ -146,7 +146,7 @@ float take_pic_get_cm(int i, Side side){
 	Camera.retrieve (img);
 
 	//load image - just for testing
-	img = imread("../take_pic/crossings/pic_img_040.png",CV_LOAD_IMAGE_GRAYSCALE);
+	//img = imread("../take_pic/crossings/pic_img_040.png",CV_LOAD_IMAGE_GRAYSCALE);
 
 	//namedWindow("image", WINDOW_NORMAL);
 	//imshow("image", img);
@@ -374,7 +374,7 @@ float take_pic_get_cm(int i, Side side){
 		}
 	}
 	float cm_y = 0;
-	if (count_y>0) cm_y=(right_cm+left_cm)/2 - - CAM_W/2;//cm_y= sum_y/count_y - CAM_W/2;
+	if (count_y>0) cm_y=(right_cm+left_cm)/2 - CAM_W/2;//cm_y= sum_y/count_y - CAM_W/2;
 	else cout<<"---- NO line found ----"<<endl;
 	
 	int delta_cm = round(50*white_percent/0.22); 
