@@ -134,10 +134,10 @@ void HistStretch(Mat& src, Mat& dst) {
 
 }
 
-bool compareContours(vector<Point> contour1, vector<Point> contour2){
-	double arc1 = fabs(arcLength(contour1,false));
-	double arc2 = fabs(arcLength(contour2,false));
-	return (arc1 > arc2);
+bool compareContoursHeight(vector<Point> contour1, vector<Point> contour2){
+	Rect rect1 = boundingRect(contour1);
+	Rect rect2 = boundingRect(contour2);
+	return (rect1.height > rect2.height);
 }
 
 
@@ -305,7 +305,9 @@ float take_pic_get_cm(int i, Side side){
 				right_cm = p_cm.x;
 			}
 
-			if (new_rect.height < (img_cont.rows / 4) && new_rect.widht > (3 * img_cont.cols / 4)) cout << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" << endl;
+			if (new_rect.height < (img_cont.rows / 4) && new_rect.width > (3 * img_cont.cols / 4)) {
+				cout << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" << endl;
+			}
 			
 		}
 		feature = LINE;
@@ -478,7 +480,7 @@ void pic_cm_comm1(){
 	    usleep(10000);
 	    while (i<300){
 	    		//camera_start();
-				y = take_pic_get_cm(i,MIDDLE);
+				y = take_pic_get_cm(i,LEFT);
 				printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
