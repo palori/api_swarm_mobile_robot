@@ -153,7 +153,7 @@ float take_pic_get_cm(int i, Side side){
 	Camera.retrieve (img);
 
 	//load image - just for testing
-	img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
+	//img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
 
 	//namedWindow("image", WINDOW_NORMAL);
 	//imshow("image", img);
@@ -304,6 +304,8 @@ float take_pic_get_cm(int i, Side side){
 				right_contour = good_contours[i];
 				right_cm = p_cm.x;
 			}
+
+			if (new_rect.height < (img_cont.rows / 4) && new_rect.widht > (3 * img_cont.cols / 4)) cout << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" << endl;
 			
 		}
 		feature = LINE;
@@ -395,10 +397,10 @@ float take_pic_get_cm(int i, Side side){
 			cm = left_cm;    //determine this value based on the number of the lines - white area percentages
 			break;
 		case MIDDLE:
-			cm_y = (left_cm + right_cm)/2;
+			cm = (left_cm + right_cm)/2;
 			break;
 		case RIGHT:
-			cm_y = right_cm;
+			cm = right_cm;
 			break;
 	}
 	
