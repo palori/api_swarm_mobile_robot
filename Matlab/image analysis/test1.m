@@ -7,10 +7,8 @@ clc;
 %n=13;
 %n=[4 5 13 23 26 41 46 53];
 % n=6;
-% n=[51 52 53 54]
-n=[1 2 3 4 5 6 7 8 9 10];
-n=n+40;
-
+ n=[53 52 51]
+%n=[1 2 3 4 5 6 7 8 9 10];
 
 
 for i=1:length(n)
@@ -73,14 +71,14 @@ imhist(I4);
 level=graythresh(I4);
 level*255
 %I5_2 = imbinarize(I4,level);
-figure
-subplot(1,2,1)
+%figure
+%subplot(1,2,1)
 level=0.6;
 I5 = edge(I4,'Canny',level);   %with gamma
-imshow(I5)
-subplot(1,2,2)
-I5_2 = edge(I3,'Canny',level);  %without gamma
-imshow(I5_2)
+%imshow(I5)
+%subplot(1,2,2)
+%I5_2 = edge(I3,'Canny',level);  %without gamma
+%imshow(I5_2)
 
 %% BLOB
 I6 = bwlabel(I5); % apply bwlabel with 8-neighbours
