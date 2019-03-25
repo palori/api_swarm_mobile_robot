@@ -8,7 +8,10 @@ clc;
 %n=[4 5 13 23 26 41 46 53];
 % n=6;
 % n=[51 52 53 54]
-n=53;
+n=[1 2 3 4 5 6 7 8 9 10];
+n=n+40;
+
+
 
 for i=1:length(n)
 
@@ -23,7 +26,10 @@ end
 %% Resize to 320 pixels
 s=size(I);
 factor=320/max(s);
-I2=imresize(I,factor); 
+I2=imresize(I,factor);
+newname = sprintf('pic_img_%03d.png', n(i))
+imwrite(I2,newname);
+
 
 %% Mean filter
 
