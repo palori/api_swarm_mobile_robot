@@ -133,6 +133,12 @@ void HistStretch(Mat& src, Mat& dst) {
 
 }
 
+bool compareContours(vector<Point> contour1, vector<Point> contour2){
+	double arc1 = fabs(arcLength(contour1,false));
+	double arc2 = fabs(arcLength(contour2,false));
+	return (arc1 > arc2);
+}
+
 
 float take_pic_get_cm(int i, Side side){
 	
@@ -265,6 +271,10 @@ float take_pic_get_cm(int i, Side side){
 		}
 	}
 
+	//sort contours by arc length
+	sort(good_contours.begin(),good_contours.end(),compareContours);
+
+	//initialize left and right contour
 	vector<Point> left_contour;
 	double left_cm;
 	vector<Point> right_contour;
@@ -286,10 +296,10 @@ float take_pic_get_cm(int i, Side side){
 				right_contour = good_contours[i];
 				left_cm = p_cm.x;
 				right_cm = p_cm.x;
-			} else if (p_cm.x < left_cm && p_cm.y > (img_cont.rows / 4)) {
+			} else if (p_cm.x < left_cm && new_rect.height > (img_cont.rows / 2)) {
 				left_contour = good_contours[i];
 				left_cm = p_cm.x;
-			} else if (p_cm.x > right_cm && p_cm.y > (img_cont.rows / 4)) {
+			} else if (p_cm.x > right_cm && new_rect.height > (img_cont.rows / 2)) {
 				right_contour = good_contours[i];
 				right_cm = p_cm.x;
 			}
