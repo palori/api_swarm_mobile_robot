@@ -55,6 +55,7 @@ int opening_size = 11;
 raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
+enum Feature {NOTHING, LINE, Y_SPLIT, T_MAIN, T_LEFT, T_RIGHT, CROSS};
 
 /*SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
@@ -133,10 +134,10 @@ void HistStretch(Mat& src, Mat& dst) {
 
 }
 
-bool compareContours(vector<Point> contour1, vector<Point> contour2){
-	double arc1 = fabs(arcLength(contour1,false));
-	double arc2 = fabs(arcLength(contour2,false));
-	return (arc1 > arc2);
+bool compareContoursHeight(vector<Point> contour1, vector<Point> contour2){
+	Rect rect1 = boundingRect(contour1);
+	Rect rect2 = boundingRect(contour2);
+	return (rect1.height > rect2.height);
 }
 
 
@@ -152,7 +153,7 @@ float take_pic_get_cm(int i, Side side){
 	Camera.retrieve (img);
 
 	//load image - just for testing
-	//img = imread("../take_pic/crossings/pic_img_040.png",CV_LOAD_IMAGE_GRAYSCALE);
+	//img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
 
 	//namedWindow("image", WINDOW_NORMAL);
 	//imshow("image", img);
@@ -271,7 +272,7 @@ float take_pic_get_cm(int i, Side side){
 		}
 	}
 
-	//sort contours by arc length
+	//sort contours by arc length - assuming line contours are longer than noise contours
 	sort(good_contours.begin(),good_contours.end(),compareContours);
 
 	//initialize left and right contour
@@ -279,7 +280,7 @@ float take_pic_get_cm(int i, Side side){
 	double left_cm;
 	vector<Point> right_contour;
 	double right_cm;
-
+	Feature feature;
 	if (good_contours.size()>0){
 		for (int i=0; i < good_contours.size(); i++){
 			Rect new_rect = boundingRect(good_contours[i]);
@@ -296,20 +297,28 @@ float take_pic_get_cm(int i, Side side){
 				right_contour = good_contours[i];
 				left_cm = p_cm.x;
 				right_cm = p_cm.x;
-			} else if (p_cm.x < left_cm && new_rect.height > (img_cont.rows / 2)) {
+			} else if (p_cm.x <= left_cm && (new_rect.height > (img_cont.rows / 2) || i==1)) {
 				left_contour = good_contours[i];
 				left_cm = p_cm.x;
-			} else if (p_cm.x > right_cm && new_rect.height > (img_cont.rows / 2)) {
+			} else if (p_cm.x > right_cm && (new_rect.height > (img_cont.rows / 2) || i==1)) {
 				right_contour = good_contours[i];
 				right_cm = p_cm.x;
 			}
+
+			if (new_rect.height < (img_cont.rows / 4) && new_rect.width > (3 * img_cont.cols / 4)) {
+				cout << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" << endl;
+			}
 			
 		}
+		feature = LINE;
 	} else {
+		feature = NOTHING;
 		cout << "no line found !!!"<<endl;
 		left_cm=CAM_W/2;
 		right_cm=CAM_W/2;
 	}	
+
+
 
 	// plot only left and right rectangle;
 
@@ -355,8 +364,6 @@ float take_pic_get_cm(int i, Side side){
 
 	//SAVING IMAGES
 
-
-
 	string pic_name_th = "pics/pic_th_"+to_string(i)+".png";
 	imwrite(pic_name_th,img_th);
 
@@ -373,7 +380,7 @@ float take_pic_get_cm(int i, Side side){
 	imwrite(pic_name_cont,img_cont);
 	
 	//CALCULATING CENTER OF MASS
-	int sum_y = 0;
+	/*int sum_y = 0;
 	int count_y = 0;
 	for(int i = img_crop.rows/2; i<img_crop.rows; i++){
 		for(int j = 0; j<img_crop.cols; j++){
@@ -382,29 +389,29 @@ float take_pic_get_cm(int i, Side side){
 				count_y++;
 			}
 		}
-	}
-	float cm_y = 0;
-	if (count_y>0) cm_y=(right_cm+left_cm)/2 - CAM_W/2;//cm_y= sum_y/count_y - CAM_W/2;
-	else cout<<"---- NO line found ----"<<endl;
+	}*/
 	
-	int delta_cm = round(50*white_percent/0.22); 
-	cout << "delta_cm: " << delta_cm << endl;
+	float cm = CAM_W/2;
+
 	switch(side){
 
 		case LEFT:
-			cm_y-= delta_cm;    //determine this value based on the number of the lines - white area percentages
+			cm = left_cm;    //determine this value based on the number of the lines - white area percentages
 			break;
 		case MIDDLE:
-			cm_y+=0;
+			cm = (left_cm + right_cm)/2;
 			break;
 		case RIGHT:
-			cm_y+= delta_cm;
+			cm = right_cm;
 			break;
 	}
-	cout<<"CM_y: "<<cm_y<<endl;
+	
+	cm -= CAM_W/2; //cm_y= sum_y/count_y - CAM_W/2;
+
+	cout<<"CM: "<<cm<<endl;
 	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
-	return cm_y;	
+	return cm;	
 
 /*
 	// @@@@ NEED TO BE TESTED FROM HERE!
@@ -473,7 +480,7 @@ void pic_cm_comm1(){
 	    usleep(10000);
 	    while (i<300){
 	    		//camera_start();
-				y = take_pic_get_cm(i,MIDDLE);
+				y = take_pic_get_cm(i,LEFT);
 				printf("Y: %f\n",y);
 				msg = "@tht="+to_string(y)+"$";
 				cr.serial_write(msg);
