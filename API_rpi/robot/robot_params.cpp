@@ -19,6 +19,7 @@ Robot_params::Robot_params(string hostname, int port_image, int port_task, int p
 
 
 // Getters
+int Robot_params::get_MAX_LEN(){return MAX_LEN;}
 string Robot_params::get_hostname(){return hostname;}
 int Robot_params::get_port_image(){return port_image;}
 int Robot_params::get_port_task(){return port_task;}
@@ -26,33 +27,33 @@ int Robot_params::get_port_info(){return port_info;}
 int Robot_params::get_port_info_robot_a(){return port_info_robot_a;}
 int Robot_params::get_port_info_robot_b(){return port_info_robot_b;}
 
-float Robot_params::get_x(){
+vector<float> Robot_params::get_x(){
 	mtx_x.lock();
-	float xm = x;
+	vector<float> xm = x;
 	mtx_x.unlock();
 	return xm;
 }
-float Robot_params::get_y(){
+vector<float> Robot_params::get_y(){
 	mtx_y.lock();
-	float ym = y;
+	vector<float> ym = y;
 	mtx_y.unlock();
 	return ym;
 }
-float Robot_params::get_z(){
+vector<float> Robot_params::get_z(){
 	mtx_z.lock();
-	float zm = z;
+	vector<float> zm = z;
 	mtx_z.unlock();
 	return zm;
 }
-float Robot_params::get_th(){
+vector<float> Robot_params::get_th(){
 	mtx_th.lock();
-	float thm = th;
+	vector<float> thm = th;
 	mtx_th.unlock();
 	return thm;
 }
-string Robot_params::get_task(){
+vector<int> Robot_params::get_tasks(){
 	mtx_task.lock();
-	string taskm = task;
+	vector<int>taskm = task;
 	mtx_task.unlock();
 	return taskm;
 }
@@ -60,6 +61,7 @@ string Robot_params::get_task(){
 
 
 // Setters
+void Robot_params::set_MAX_LEN(int i){MAX_LEN = i;}
 void Robot_params::set_hostname(string s){hostname = s;}
 void Robot_params::set_port_image(int i){port_image = i;}
 void Robot_params::set_port_task(int i){port_task = i;}
@@ -69,26 +71,26 @@ void Robot_params::set_port_info_robot_b(int i){port_info_robot_b = i;}
 
 void Robot_params::set_x(float f){
 	mtx_x.lock();
-	x = f;
+	x = add2vector(x, f, get_MAX_LEN());
 	mtx_x.unlock();
 }
 void Robot_params::set_y(float f){
 	mtx_y.lock();
-	y = f;
+	y = add2vector(y, f, get_MAX_LEN());
 	mtx_y.unlock();
 }
 void Robot_params::set_z(float f){
 	mtx_z.lock();
-	z = f;
+	z = add2vector(z, f, get_MAX_LEN());
 	mtx_z.unlock();
 }
 void Robot_params::set_th(float f){
 	mtx_th.lock();
-	th = f;
+	th = add2vector(th, f, get_MAX_LEN());
 	mtx_th.unlock();
 }
-void Robot_params::set_task(string s){
+void Robot_params::set_task(int i){
 	mtx_task.lock();
-	task = s;
+	tasks = add2vector(tasks, i, get_MAX_LEN());
 	mtx_task.unlock();
 }

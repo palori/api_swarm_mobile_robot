@@ -12,6 +12,9 @@ public:
 	Sensors();
 	~Sensors();
 
+	// may want to add an extra level of abstraction:
+	// component (const, dest, get, set...)
+
 private:
 	// Attributes
 
@@ -95,9 +98,17 @@ public:
 	void set_obst_dist(float f);
 	void set_obst_found(bool b);
 
-	void set_gyro(float f1, float f2, float f3);
-	void set_acc(float f1, float f2, float f3);
-	void set_comp(float f1, float f2, float f3);
+	void set_gyro_x(float f);
+	void set_gyro_y(float f);
+	void set_gyro_z(float f);
+
+	void set_acc_x(float f);
+	void set_acc_y(float f);
+	void set_acc_z(float f);
+
+	void set_comp_x(float f);
+	void set_comp_y(float f);
+	void set_comp_z(float f);
 };
 
 #endif

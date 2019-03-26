@@ -83,7 +83,8 @@ void COMM_TSY::read_serial(){
 				buf[buf_count] = c;
 				buf_count++;
 			}
-			  else if (buf_count > BUF_LEN){
+			
+			if (buf_count > BUF_LEN){ // check always
 				buf_count = 0;
 				new_msg = false;
 			}
@@ -170,6 +171,7 @@ void COMM_TSY::debug_params(){
 
 
 // decode the received message into target
+// Called within 'read_serial()' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 	/* OLD WAY
 	// split the message
@@ -411,7 +413,7 @@ String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], 
 
 	String new_msg = "@";
 
-	new_msg += ","+command.X_w+"=" + String(_odo[0]);
+	new_msg += command.X_w+"=" + String(_odo[0]);
 	new_msg += ","+command.Y_w+"=" + String(_odo[1]);
 	new_msg += ","+command.TH_w+"=" + String(_odo[2]);
 
@@ -443,7 +445,7 @@ String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], 
 		new_msg += ","+command.COMP3+"=" + String(_imu_cmps[2]);
 	}
 
-	new_msg += ",$";
+	new_msg += "$";
 
 	if (get_debug()) Serial.println("Message: " + new_msg);
 	return new_msg;

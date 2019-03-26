@@ -1,8 +1,5 @@
 #include "sensors.h"
 
-using namespace std;
-
-
 Sensors::Sensors(){}
 Sensors::~Sensors(){}
 
@@ -163,24 +160,51 @@ void Sensors::set_obst_found(bool b){
 	mtx_of.unlock();
 }
 
-void Sensors::set_gyro(float f1, float f2, float f3){
+void Sensors::set_gyro_x(float f){
 	mtx_gyro.lock();
-	gyro_x = add2vector(gyro_x, f1, get_MAX_LEN());
-	gyro_y = add2vector(gyro_y, f2, get_MAX_LEN());
-	gyro_z = add2vector(gyro_z, f3, get_MAX_LEN());
+	gyro_x = add2vector(gyro_x, f, get_MAX_LEN());
 	mtx_gyro.unlock();
 }
-void Sensors::set_acc(float f1, float f2, float f3){
+void Sensors::set_gyro_y(float f1, float f2, float f3){
+	mtx_gyro.lock();
+	gyro_y = add2vector(gyro_y, f2, get_MAX_LEN());
+	mtx_gyro.unlock();
+}
+void Sensors::set_gyro_z(float f){
+	mtx_gyro.lock();
+	gyro_z = add2vector(gyro_z, f, get_MAX_LEN());
+	mtx_gyro.unlock();
+}
+
+void Sensors::set_acc_x(float f){
 	mtx_acc.lock();
-	acc_x = add2vector(acc_x, f1, get_MAX_LEN());
-	acc_y = add2vector(acc_y, f2, get_MAX_LEN());
-	acc_z = add2vector(acc_z, f3, get_MAX_LEN());
+	acc_x = add2vector(acc_x, f, get_MAX_LEN());
 	mtx_acc.unlock();
 }
-void Sensors::set_comp(float f1, float f2, float f3){
+void Sensors::set_acc_y(float f){
+	mtx_acc.lock();
+	acc_y = add2vector(acc_y, f, get_MAX_LEN());
+	mtx_acc.unlock();
+}
+void Sensors::set_acc_z(float f){
+	mtx_acc.lock();
+	acc_z = add2vector(acc_z, f, get_MAX_LEN());
+	mtx_acc.unlock();
+}
+
+void Sensors::set_comp_x(float f){
 	mtx_comp.lock();
-	comp_x = add2vector(comp_x, f1, get_MAX_LEN());
-	comp_y = add2vector(comp_y, f2, get_MAX_LEN());
-	comp_z = add2vector(comp_z, f3, get_MAX_LEN());
+	comp_x = add2vector(comp_x, f, get_MAX_LEN());
 	mtx_comp.unlock();
 }
+void Sensors::set_comp_y(float f){
+	mtx_comp.lock();
+	comp_y = add2vector(comp_y, f, get_MAX_LEN());
+	mtx_comp.unlock();
+}
+void Sensors::set_comp_z(float f){
+	mtx_comp.lock();
+	comp_z = add2vector(comp_z, f, get_MAX_LEN());
+	mtx_comp.unlock();
+}
+

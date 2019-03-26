@@ -1,7 +1,5 @@
 
-#include "utils.h"
-
-using namespace std;
+// #include "utils.h" // because there are templates we include this .tpp file at the end of the .h file
 
 int str2int(string s){
 	try {return stoi(s);}
@@ -65,8 +63,7 @@ vector<string> split_str(string msg, string delimiters){
  *		- float
  *		- bool
  */
-//template <typename type_ident>
-//vector<type_ident> add2vector(vector<type_ident> v, type_ident new_data, int max_len){
+/*
 vector<string> add2vector(vector<string> v, string new_data, int max_len){
 	if (v.size() >= max_len){
 		v.erase (v.begin());    // only when it's full, delete the first position
@@ -95,6 +92,16 @@ vector<float> add2vector(vector<float> v, float new_data, int max_len){
 
 
 vector<bool> add2vector(vector<bool> v, bool new_data, int max_len){
+	if (v.size() >= max_len){
+		v.erase (v.begin());    // only when it's full, delete the first position
+	}
+	v.push_back(new_data);
+	return v;
+}
+*/
+
+template <class T>
+vector<T> add2vector(vector<T> v, T new_data, int max_len){
 	if (v.size() >= max_len){
 		v.erase (v.begin());    // only when it's full, delete the first position
 	}

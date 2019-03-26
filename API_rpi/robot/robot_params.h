@@ -14,8 +14,14 @@ public:
 	Robot_params(string hostname, int port_info);
 	Robot_params(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b);
 
+	// may want to add an extra level of abstraction:
+	// component (const, dest, get, set...)
+
+
 private:
 	// Attributes
+	int MAX_LEN = 10;			// default
+
 	int id;
 	string hostname;
 	int port_image;
@@ -23,12 +29,12 @@ private:
 	int port_info;
 	int port_info_robot_a;
 	int port_info_robot_b;
-	float x;						// may want to change to vectors
-	float y;
-	float z;
-	float th;
-	string task;					// maybe int if taks is enum???
-	vector<string> tasks_done;
+	vector<float> x;
+	vector<float> y;
+	vector<float> z;
+	vector<float> th;
+	vector<int> tasks;			// maybe change to task object
+	
 
 
 	// Mutex (for critical sections, reading and writing attributes from different threads)
@@ -40,20 +46,21 @@ private:
 
 public:
 	// Getters
+	int get_MAX_LEN();
 	string get_hostname();
 	int get_port_image();
 	int get_port_task();
 	int get_port_info();
 	int get_port_info_robot_a();
 	int get_port_info_robot_b();
-	float get_x();
-	float get_y();
-	float get_z();
-	float get_th();
-	string get_task();
-	// tasks_done() ???
+	vector<float> get_x();
+	vector<float> get_y();
+	vector<float> get_z();
+	vector<float> get_th();
+	vector<int> get_tasks();
 
 	// Setters
+	void set_MAX_LEN(int i);
 	void set_hostname(string s);
 	void set_port_image(int i);
 	void set_port_task(int i);
@@ -64,7 +71,7 @@ public:
 	void set_y(float f);
 	void set_z(float f);
 	void set_th(float f);
-	void set_task(string s);
+	void set_task(int i);
 };
 
 #endif

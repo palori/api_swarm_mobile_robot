@@ -68,14 +68,15 @@ string COMM_RPI::serial_read(){ //read_char_by_char
     if(get_port_open()){
         //char *c = new char[1];
         char c[1]={'1'};
-        bool keep_reading=true, store=false;
+        bool keep_reading=true, new_msg=false;
         
         bool use_string = true;
 
             // with strings -> recommended not to use them
             string msg="";
             // with c_strings
-            const int MAX_CHAR2READ = 100;
+            const int MAX_CHAR2READ = 500;
+            const int MAX_BUF = 100;
             //char * msg = new char[MAX_CHAR2READ]; @@@@ can be done with static strings
             //char msg[MAX_CHAR2READ]; // uncomment to use c_string
             int msg_count = 0;
@@ -83,56 +84,41 @@ string COMM_RPI::serial_read(){ //read_char_by_char
         
         
         
-        int char_read = 0;
+        int char_read = 0, buf_count=0;
         try{
             while(keep_reading){
                 //cout << "hola!\n";
                 int cs = read(fd,&c,sizeof(c));  // @@@@ need some timeout if not reading anything!!! -> maybe adding a queue
                 if(cs>0){
-                    //cout << c[0];
-                    
-                    if(c[0]==START && !store){
-                        store=true;
+                    if(c[0]==START){
+                        buf_count = 0;
+                        msg = "";
+                        new_msg = true;
                     }
-                    else if(c[0]==END && store){
-                        keep_reading=false;
-                        //store = false;
-                        //cout << endl;
+                    if(new_msg && c[0]==END){
+                        keep_reading=false; // == break;
+                        store = false;
                     }
-                    if(store) {
-                        if (use_string){
-                            msg+=c[0];
-                        }
-                        else{
-                            msg[msg_count]+=c[0];
-                            msg_count++;
-                        }
-                        
+                    else if(store) {
+                        msg+=c[0];
+                        buf_count++;
                     }
+
+                    if (buf_count > MAX_BUF) break;
                 }
                 else{
                     break; // read nothing
                 }
-                char_read+=1; // @@@@ sleep the thread (1-2-10 ms)
-                //cout << char_read;
-                if (char_read>=MAX_CHAR2READ){
-                    break;
-                }
-
+                char_read+=1;
+                if (char_read>=MAX_CHAR2READ) break; 
             }
         }
-        catch (exception& e)
-        {
+        catch (exception& e){
             cout << e.what() << '\n';
             //cout << "msg: " << msg << endl;
         }
 
-        if (!use_string){
-            msg[msg_count]+='\0';
-        }
-
         if (get_debug()) cout << "msg: " << msg << endl;
-
         return msg;
     }
     else {if(get_debug()) cout << "Serial port: can't read, port closed" << endl;}
@@ -159,7 +145,6 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
         if(words.at(i) == command.S){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                //new_pose.servo = val;
                 sens.set_s(val);
                 i++;
             }
@@ -167,7 +152,6 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
         else if(words.at(i) == command.X_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                //new_pose.x = val;
                 sens.set_x(val);
                 i++;
             }
@@ -175,7 +159,6 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
         else if(words.at(i) == command.Y_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                //new_pose.y = val;
                 sens.set_y(val);
                 i++;
             }
@@ -183,7 +166,6 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
         else if(words.at(i) == command.TH_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                //new_pose.th = val;
                 sens.set_th(val);
                 i++;
             }
@@ -191,20 +173,98 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
         else if(words.at(i) == command.IR1){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                //new_pose.th = val;
-                sens.set_th(val);
+                sens.set_ir1(val);
                 i++;
             }
         }
-
+        else if(words.at(i) == command.IR2){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_ir2(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.OD){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_obst_dist(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.OF){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_obst_found(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.GYRO1){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_gyro_x(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.GYRO2){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_gyro_y(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.GYRO3){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_gyro_z(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.ACC1){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_acc_x(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.ACC2){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_acc_y(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.ACC3){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_acc_z(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.COMP1){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_comp_x(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.COMP2){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_comp_y(val);
+                i++;
+            }
+        }
+        else if(words.at(i) == command.COMP3){
+            float val = str2float(words.at(i+1));
+            if (val != BIG_FLOAT) {
+                sens.set_comp_z(val);
+                i++;
+            }
+        }
         // ...
         // missing others (ir1, ir2, obst_dist, obst_found, gyro[3], acc[3], comp[3])
     }
 
-    if (get_debug()){ // show that results are saved
-        //print_target(new_pose);
-        cout << "target: " << endl;
-    }
 }
 
 

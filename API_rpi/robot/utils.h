@@ -18,21 +18,28 @@ float str2float(string s);
 
 vector<string> split_str(string msg, string delimiters);
 
-//template <typename type_ident>
-//vector<type_ident> add2vector(vector<type_ident> v, type_ident new_data, int max_len);
-vector<string> add2vector(vector<string> v, string new_data, int max_len);
+/*vector<string> add2vector(vector<string> v, string new_data, int max_len);
 vector<int> add2vector(vector<int> v, int new_data, int max_len);
 vector<float> add2vector(vector<float> v, float new_data, int max_len);
 vector<bool> add2vector(vector<bool> v, bool new_data, int max_len);
+*/
 
-
-void print_vector(vector<string> v);
+/*void print_vector(vector<string> v);
 void print_vector(vector<int> v);
 void print_vector(vector<float> v);
-void print_vector(vector<bool> v);
+void print_vector(vector<bool> v);*/
+
+template <class T>
+vector<T> add2vector(vector<T> v, T new_data, int max_len);
+template <class T>
+void print_vector(vector<T> v);
 
 
 /* to do
 time time_elapse(time t0, time t1); 
 */
+
+
+#include "utils.tpp" // because some of the functions are templates!!!
+
 #endif

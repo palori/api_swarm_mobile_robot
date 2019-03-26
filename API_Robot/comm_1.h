@@ -245,35 +245,5 @@ public:
 	String sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
 
 
-
-
-
-
-
-
-
-
-
-	// OLD functions
-
-	// have to go with struct target
-	//void print_target(target new_pose);
-
-
-	//void init_output_buffer();
-
-
-	/*/ might go in an other place
-	struct target{ // info RPi send to Teensy
-		// tartet position in robot coord. syst.
-	    float x;
-	    float y;
-	    float th;
-
-	    // servo setpoint
-	    float servo; // maybe not here?
-	};*/
-
-
 };
 #endif
