@@ -6,10 +6,13 @@
 using namespace std;
 
 
+
+#ifndef ITEM 		// defined (or not) in 'utils.h'
 class Sensors
 {
 public:
 	Sensors();
+	Sensors(int max_len);
 	~Sensors();
 
 	// may want to add an extra level of abstraction:
@@ -110,5 +113,63 @@ public:
 	void set_comp_y(float f);
 	void set_comp_z(float f);
 };
+
+
+
+
+
+
+
+
+
+#else  // ITEM
+
+
+class Sensors
+{
+public:
+	Sensors();
+	Sensors(int max_len);
+	~Sensors();
+
+	// may want to add an extra level of abstraction:
+	// component (const, dest, get, set...)
+
+private:
+	// Attributes
+
+	int MAX_LEN = 10;				// default
+
+	Items<float> s("Servo");				// vectors, so we can use historical
+	Items<float> x("X");				// data to compute stuff like
+	Items<float> y("Y");				// good localization :)
+	Items<float> th("Th");
+	
+	Items<float> ir1("IR1");
+	Items<float> ir2("IR2");
+	Items<float> obst_dist("Obstacle distance");
+	Items<bool> obst_found("Obstacle found");
+
+	Items<float> gyro_x("Gyro. X");
+	Items<float> gyro_y("Gyro. Y");
+	Items<float> gyro_z("Gyro. Z");
+
+	Items<float> acc_x("Accel. X");
+	Items<float> acc_y("Accel. Y");
+	Items<float> acc_z("Accel. Z");
+
+	Items<float> comp_x("Comp. X");
+	Items<float> comp_y("Comp. Y");
+	Items<float> comp_z("Comp. Z");
+
+
+public:
+	int get_MAX_LEN();
+	void set_MAX_LEN(int i);
+
+};
+
+
+#endif // ITEM
 
 #endif

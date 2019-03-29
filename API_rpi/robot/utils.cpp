@@ -1,5 +1,5 @@
 
-// #include "utils.h" // because there are templates we include this .tpp file at the end of the .h file
+#include "utils.h" // comment if there are templates we include this .tpp file at the end of the .h file
 
 int str2int(string s){
 	try {return stoi(s);}
@@ -100,6 +100,7 @@ vector<bool> add2vector(vector<bool> v, bool new_data, int max_len){
 }
 */
 
+/* moved to Items class
 template <class T>
 vector<T> add2vector(vector<T> v, T new_data, int max_len){
 	if (v.size() >= max_len){
@@ -108,7 +109,7 @@ vector<T> add2vector(vector<T> v, T new_data, int max_len){
 	v.push_back(new_data);
 	return v;
 }
-
+*/
 
 
 
@@ -121,6 +122,7 @@ vector<T> add2vector(vector<T> v, T new_data, int max_len){
  *		- float
  *		- bool
  */
+/*
 void print_vector(vector<string> v){
 	cout << "\nVector:\n";
 	for (int i = 0; i < v.size(); i++){
@@ -152,3 +154,25 @@ void print_vector(vector<bool> v){
 	}
 	cout << endl;
 }
+*/
+
+/* moved to Items class
+template <class T>
+void print_vector(vector<T> v){
+	cout << "\nVector:\n";
+	for (int i = 0; i < v.size(); i++){
+		cout << to_string(v.at(i)) << endl;
+	}
+	cout << endl;
+}
+*/
+
+/* cant be here for dependencies!!!
+template <class T>
+void print_vector(vector<Item<T>> v){
+	cout << "\nVector:\n";
+	for (int i = 0; i < v.size(); i++){
+		cout << to_string(v.at(i).get_noMutex()) << endl;
+	}
+	cout << endl;
+}*/

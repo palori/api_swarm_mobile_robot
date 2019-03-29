@@ -2,11 +2,17 @@
 #define messages_h
 
 #include "utils.h"
-#include "tasks.h" 	// or an equivalent
 #include "controllers.h"
+#include "robot_params.h"
+#include "item.h"
 
-void encode(Tasks t, string & msg);
-void decode(string msg, Controllers & c);
+
+string detect_message(string msg);
+
+string encode(Item<int> task);
+string encode(Items<int> tasks);
+string encode_image_params(Items<int> tasks, bool obst_found, float obst_dist, int theta, int crossing);
+void decode(string msg, Controllers & c, Robot_params r);
 
 
 
@@ -56,7 +62,7 @@ enum Actions {
 
 
 enum crossing{
-	NO,			// there is no crossing
+	NO_CROSS,			// there is no crossing
 	T_MIDDLE,
 	T_LEFT,
 	T_RIGHT,
@@ -104,5 +110,41 @@ struct Command {
 	// image
 	string CROSS = "cr";
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// decide what to do with this enum...
+enum obstacle{
+		NO,					// there is no obstacle
+		GUILLOTINE,
+		RAMP_1,
+		RAMP_2,
+		SEE_SAW_BALL_1,
+		STAIRS_UP,
+		//STAIRS_DOWN,
+		BALL_2,
+		//...
+
+		RACE,
+		SHAPES,				// maybe expand: CROSS, CIRCLE, TRIANGLE and SQUARE
+		AX_GATE,
+		TUNNEL,
+		PORT_3,
+
+		ROUNDABOUT,			// ?
+
+		GOAL
+	};
 
 #endif

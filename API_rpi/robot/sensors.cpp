@@ -1,6 +1,13 @@
 #include "sensors.h"
 
+
+
+
+#ifndef ITEM 		// defined (or not) in 'utils.h'
+
+
 Sensors::Sensors(){}
+Sensors::Sensors(int max_len){set_MAX_LEN(max_len);}
 Sensors::~Sensors(){}
 
 
@@ -208,3 +215,54 @@ void Sensors::set_comp_z(float f){
 	mtx_comp.unlock();
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#else  // ITEM
+
+
+Sensors::Sensors(){}
+Sensors::Sensors(int max_len){set_MAX_LEN(max_len);}
+Sensors::~Sensors(){}
+
+
+
+int Sensors::get_MAX_LEN(){return MAX_LEN;}
+void Sensors::set_MAX_LEN(int i){
+	MAX_LEN = i;
+	this->s.set_MAX_LEN(i);
+	this->x.set_MAX_LEN(i);
+	this->y.set_MAX_LEN(i);
+	this->th.set_MAX_LEN(i);
+
+	this->ir1.set_MAX_LEN(i);
+	this->ir2.set_MAX_LEN(i);
+	this->obst_dist.set_MAX_LEN(i);
+	this->obst_found.set_MAX_LEN(i);
+
+	this->gyro_x.set_MAX_LEN(i);
+	this->gyro_y.set_MAX_LEN(i);
+	this->gyro_z.set_MAX_LEN(i);
+
+	this->acc_x.set_MAX_LEN(i);
+	this->acc_y.set_MAX_LEN(i);
+	this->acc_z.set_MAX_LEN(i);
+
+	this->comp_x.set_MAX_LEN(i);
+	this->comp_y.set_MAX_LEN(i);
+	this->comp_z.set_MAX_LEN(i);	
+}
+
+#endif // ITEM

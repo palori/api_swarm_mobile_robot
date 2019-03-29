@@ -29,17 +29,18 @@ void print_vector(vector<int> v);
 void print_vector(vector<float> v);
 void print_vector(vector<bool> v);*/
 
-template <class T>
-vector<T> add2vector(vector<T> v, T new_data, int max_len);
-template <class T>
-void print_vector(vector<T> v);
-
+//template <class T>
+//vector<T> add2vector(vector<T> v, T new_data, int max_len);
+//template <class T>
+//void print_vector(vector<T> v);
+//template <class T>
+//void print_vector(vector<Item<T>> v);
 
 /* to do
 time time_elapse(time t0, time t1); 
 */
 
 
-#include "utils.tpp" // because some of the functions are templates!!!
+//#include "utils.tpp" // uncomment if some of the functions are templates!!!
 
 #endif

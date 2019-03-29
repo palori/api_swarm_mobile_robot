@@ -1,20 +1,25 @@
 #include "robot_params.h"
 
+
+#ifndef ITEM 		// defined (or not) in 'utils.h'
+
 Robot_params::Robot_params(){}
 Robot_params::~Robot_params(){}
 
-Robot_params::Robot_params(string hostname, int port_info){
+Robot_params::Robot_params(string hostname, int port_info, int max_len){
 	set_hostname(hostname);
 	set_port_info(port_info);
+	set_MAX_LEN(max_len);
 }
 
-Robot_params::Robot_params(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
+Robot_params::Robot_params(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b, int max_len){
 	set_hostname(hostname);
 	set_port_image(port_image);
 	set_port_task(port_task);
 	set_port_info(port_info);
 	set_port_info_robot_a(port_info_robot_a);
 	set_port_info_robot_b(port_info_robot_b);
+	set_MAX_LEN(max_len);
 }
 
 
@@ -94,3 +99,44 @@ void Robot_params::set_task(int i){
 	tasks = add2vector(tasks, i, get_MAX_LEN());
 	mtx_task.unlock();
 }
+
+
+
+
+
+
+
+#else // ITEM
+
+Robot_params::Robot_params(){}
+Robot_params::~Robot_params(){}
+
+Robot_params::Robot_params(string hostname, int port_info, int max_len){
+	this->hostname.set_noMutex(hostname);
+	this->port_info.set_noMutex(port_info);
+	set_MAX_LEN(max_len);
+}
+
+Robot_params::Robot_params(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b, int max_len){
+	this->hostname.set_noMutex(hostname);
+	this->port_image.set_noMutex(port_image);
+	this->port_task.set_noMutex(port_task);
+	this->port_info.set_noMutex(port_info);
+	this->port_info_robot_a.set_noMutex(port_info_robot_a);
+	this->port_info_robot_b.set_noMutex(port_info_robot_b);
+	set_MAX_LEN(max_len);
+}
+
+int Robot_params::get_MAX_LEN(){return MAX_LEN;}
+
+
+void Robot_params::set_MAX_LEN(int i){
+	MAX_LEN = i;
+	x.set_MAX_LEN(i);
+	y.set_MAX_LEN(i);
+	z.set_MAX_LEN(i);
+	th.set_MAX_LEN(i);
+	tasks.set_MAX_LEN(i);
+}
+
+#endif // ITEM
