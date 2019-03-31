@@ -2,6 +2,7 @@
 #define controllers_h
 
 #include "utils.h"
+#include "item.h"
 
 using namespace std;
 
@@ -12,35 +13,54 @@ public:
 	Controllers();
 	~Controllers();
 
-	// may want to add an extra level of abstraction:
-	// component (const, dest, get, set...)
 
-private:
 	// Attributes
-
 	int MAX_LEN = 10;		// default
 
-	vector<float> s;
-	vector<float> th;
+	Items<int> tasks;		// do we need this??
+
+	//Items<float> connect;
+	Items<bool> reset_enc;
+	Items<bool> stop;
+	Items<bool> avoid_obst;
+	Items<float> obst_dist;
+
+	Items<bool> ir_on;
+	Items<bool> ir_send;
+
+	Items<bool> imu_on;
+	Items<bool> imu_gyro_send;
+	Items<bool> imu_acc_send;
+	Items<bool> imu_comp_send;		
+
+	Items<bool> motors_on;
+	Items<float> vel;
+
+	Items<float> m1_kp;
+	Items<float> m1_ki;
+	Items<float> m2_kp;
+	Items<float> m2_ki;
+	Items<float> th_kp;
+	Items<float> th_ki;
+
+	Items<float> fwd_dist;
+	Items<float> trn_deg;
+	Items<float> trn_r;
+	Items<float> s;			// might not be used at the end...
+	
+	Items<float> x_t;
+	Items<float> y_t;
+	Items<float> th_t;
 
 
-	// Mutex (for critical sections, reading and writing attributes from different threads)
-	mutex mtx_s;
-	mutex mtx_th;
 
-
-public:
-	// Getters
 	int get_MAX_LEN();
-
-	vector<float> get_s();
-	vector<float> get_th();
-
-	// Setters
 	void set_MAX_LEN(int i);
 
-	void set_s(float f);
-	void set_th(float f);
+	void print_info();
+
+private:
+	void init_items();
 	
 };
 

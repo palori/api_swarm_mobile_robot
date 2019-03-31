@@ -2,8 +2,10 @@
 #include <iostream>
 #include <vector>
 //#include "../comm_rpi_2.h"
-//#include "../sensors.h"
 #include "../item.h"
+#include "../robot_params.h"
+#include "../sensors.h"
+#include "../controllers.h"
 
 //#import "graph.h"
 
@@ -84,7 +86,7 @@ void test_item_template(){	// working
 }
 
 
-void test_items_template(){
+void test_items_template(){ // working
 
 	cout << endl << "Test 'Items' template" << endl;
 	
@@ -95,27 +97,48 @@ void test_items_template(){
 	its.print_items();
 	
 	Item<string> it("hi");
-	//string it = "hi";
 	its.add_item(it.get());
 	its.print_items();
 
 	Item<string> it1("bye");
-	//string it1 = "bye";
 	its.add_item(it1.get_noMutex());
 	its.print_items();
 
-	/*
-	Item<string> it("hola");
-	cout << it.get() << endl;
-	Item<string> it1("adeu");
-	cout << it1.get() << endl;
-	it1 = it;
-	cout << it1.get() << endl;
-	*/
+	cout << endl << "last item: " << its.get_last_item() << endl;
 
 }
 
+void test_robot_params(){		// working
+	Robot_params rob("potato", 6000, 2);
+	cout << "hi!" << endl;
+	rob.x.add_item(2.0);
+	rob.print_info();
+}
 
+
+void test_sensors(){
+	Sensors sens(2);
+	cout << "hi!" << endl;
+	//cout << sens.s.get_MAX_LEN() << endl;
+	//cout << sens.s.get_last_item_noMutex() << endl;
+	sens.x.add_item(1.0);
+	sens.x.add_item(2.0);
+	sens.obst_found.add_item(true);
+	sens.print_info();
+	sens.x.print_items();
+}
+
+void test_controllers(){
+	Controllers ctrl;
+	cout << "hi!" << endl;
+	//cout << ctrl.s.get_MAX_LEN() << endl;
+	//cout << ctrl.s.get_last_item_noMutex() << endl;
+	ctrl.x_t.add_item(12.5);
+	ctrl.x_t.add_item(24.75);
+	ctrl.stop.add_item(true);
+	ctrl.print_info();
+	ctrl.x_t.print_items();
+}
 
 //  compile from terminal!!!!!!!!!!!
 //  g++ -O -W -Wall -pedantic -o test_utils -p ../utils.cpp ../comm_rpi_2.cpp test_utils.cpp ../sensors.cpp
@@ -127,8 +150,10 @@ int main(int argc, char const *argv[])
 	//test_msg2sensorData();
 	//test_add2vector_print_vector();
 	//test_item_template();
-	test_items_template();				//***
-
+	//test_items_template();
+	//test_robot_params();
+	test_sensors();
+	test_controllers();
 
 	return 0;
 }

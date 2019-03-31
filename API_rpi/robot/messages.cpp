@@ -3,7 +3,7 @@
 
 
 string detect_message(string msg){
-	string msg = "00@a=1,b=1,l=3.00$99";
+	//string msg = "00@a=1,b=1,l=3.00$99";
 	//cout << "msg = " << msg << endl;
 	bool store = false, end = false;
 	string msg_out = "";
@@ -14,7 +14,7 @@ string detect_message(string msg){
 		}
 		else if(store && msg[i]=='$'){
 			end = true;
-			store = false
+			store = false;
 			break;
 		}
 		else if(store){
@@ -43,7 +43,7 @@ string encode_task(Items<int> tasks){
 
 
 string encode_image_params(Items<int> tasks, bool obst_found, float obst_dist, int theta, int crossing){
-	string msg = encode_task(tasks, msg); // first part of the message, send task
+	string msg = "@" + encode_task(tasks, msg); // first part of the message, send task
 	
 	// if what you were looking for is found in the image (line, ball...)
 	msg += "," + command.OF + "=" + to_string(obst_found);
@@ -69,12 +69,13 @@ string encode_image_params(Items<int> tasks, bool obst_found, float obst_dist, i
 			msg += "";
 		}
 	}
+	msg += "$";
 	return msg;
 	
 }
 
 
-void decode(string msg, Controllers & c, Robot_params r){
+void decode(string msg, Controllers & ctrl, Robot_params rob){
 	// detect if the message is 
 	string msg = detect_message(string msg);
 	if (msg != ""){
@@ -87,17 +88,141 @@ void decode(string msg, Controllers & c, Robot_params r){
 	        if(words.at(i) == command.A){
 	            int val = str2int(words.at(i+1));
 	            if (val != BIG_INT) {
-	                sens.set_s(val);
+	                sens.s.set(val);
 	                i++;
 	            }
 	        }
+	        else if(words.at(i) == command.B){
+	            float val = str2int(words.at(i+1));
+	            if (val != BIG_INT) {
+	                sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        /*
+	        else if(words.at(i) == command.FWD){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.TRN){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.TRNR){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.V){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.S){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }*/
+	        else if(words.at(i) == command.OD){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }/*
+	        else if(words.at(i) == command.KP){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.KI){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }*/
+	        else if(words.at(i) == command.X_t){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.Y_t){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.TH_t){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+
+
+
+
+
+
 	        else if(words.at(i) == command.X_w){
 	            float val = str2float(words.at(i+1));
 	            if (val != BIG_FLOAT) {
-	                sens.set_x(val);
+	                //sens.x.set(val);
 	                i++;
 	            }
 	        }
+	        else if(words.at(i) == command.Y_w){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.TH_w){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+	        else if(words.at(i) == command.OF){
+	            int val = str2int(words.at(i+1));
+	            if (val != BIG_INT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+
+
+
+
+	        else if(words.at(i) == command.CROSS){
+	            float val = str2float(words.at(i+1));
+	            if (val != BIG_FLOAT) {
+	                //sens.x.set(val);
+	                i++;
+	            }
+	        }
+
     	}
 	}
 }

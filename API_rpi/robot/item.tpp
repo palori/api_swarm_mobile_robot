@@ -118,6 +118,7 @@ vector<T> Items<T>::get_items_noMutex(){return items;}
 
 template<class T>
 void Items<T>::add_item_noMutex(T t){ 	// modification of 'utils/add2vector()'
+	cout << "" << endl;
 	if (items.size() >= get_MAX_LEN()){
 		items.erase (items.begin());    	// Only when it's full, delete the first position
 	}

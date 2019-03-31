@@ -71,7 +71,7 @@ public:
 private:
 	vector<T> items;
 	mutex mtx;
-	int MAX_LEN;				// maximum length of the vector
+	int MAX_LEN = 10;				// maximum length of the vector
 	string name;				// identifier
 
 public:

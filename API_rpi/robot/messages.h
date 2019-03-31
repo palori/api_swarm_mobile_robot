@@ -62,7 +62,7 @@ enum Actions {
 
 
 enum crossing{
-	NO_CROSS,			// there is no crossing
+	NO_CROSS,	// there is no crossing
 	T_MIDDLE,
 	T_LEFT,
 	T_RIGHT,

@@ -145,124 +145,122 @@ void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO 
         if(words.at(i) == command.S){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_s(val);
+                sens.s.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.X_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_x(val);
+                sens.x.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.Y_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_y(val);
+                sens.y.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.TH_w){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_th(val);
+                sens.th.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.IR1){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_ir1(val);
+                sens.ir1.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.IR2){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_ir2(val);
+                sens.ir2.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.OD){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_obst_dist(val);
+                sens.obst_dist.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.OF){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_obst_found(val);
+                sens.obst_found.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.GYRO1){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_gyro_x(val);
+                sens.gyro_x.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.GYRO2){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_gyro_y(val);
+                sens.gyro_y.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.GYRO3){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_gyro_z(val);
+                sens.gyro_z.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.ACC1){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_acc_x(val);
+                sens.acc_x.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.ACC2){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_acc_y(val);
+                sens.acc_y.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.ACC3){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_acc_z(val);
+                sens.acc_z.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.COMP1){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_comp_x(val);
+                sens.comp_x.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.COMP2){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_comp_y(val);
+                sens.comp_y.set(val);
                 i++;
             }
         }
         else if(words.at(i) == command.COMP3){
             float val = str2float(words.at(i+1));
             if (val != BIG_FLOAT) {
-                sens.set_comp_z(val);
+                sens.comp_z.set(val);
                 i++;
             }
         }
-        // ...
-        // missing others (ir1, ir2, obst_dist, obst_found, gyro[3], acc[3], comp[3])
     }
 
 }
