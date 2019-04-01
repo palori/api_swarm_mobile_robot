@@ -348,15 +348,15 @@ void drive(double Xr, double Yr, double Thr) {
 }
 
 void followline (double dist) {
-    //Serial.println("Oops I did it again! :o-----------------------");
+    
     //Th_0 = odoTh;
     final_dist = dTravel + dist;
     
     enableMotors();
 
-    initializePID(VEL1,2*Kp,Ki,0.01);
-    initializePID(VEL2,2*Kp,Ki,0.01);
-    initializePID(FOLLOW,0.003,0,0.01);
+    initializePID(VEL1,3*Kp,1*Ki,0.01);
+    initializePID(VEL2,3*Kp,1*Ki,0.01);
+    initializePID(FOLLOW,0.0025,0,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -527,11 +527,16 @@ void update_velocity(int drive_command){
         break;
 
         case comm_tsy.FOLLOW:
-            Serial.println("dTravel: "+String(dTravel));
-            Serial.println("delta travel: "+String(final_dist - dTravel));
+            //Serial.println("dTravel: "+String(dTravel));
+            //Serial.println("delta travel: "+String(final_dist - dTravel));
             if (fabs(final_dist - dTravel) > 0.02){
 
-                delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 150),FOLLOW);
+                //delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 100),FOLLOW);
+                double cm = Saturate(comm_tsy.get_th_t() , 100);
+                double K = 0.004 - sign(cm) * cm / 40000;
+                K=0.0025; 
+                delta_vel = - K * cm;
+                
                 if (comm_tsy.get_th_t()<0) {
                   vel1=comm_tsy.get_vel() - delta_vel;   // in robot coord. syst.
                   vel2=comm_tsy.get_vel();// + delta_vel;
@@ -539,12 +544,14 @@ void update_velocity(int drive_command){
                   vel1=comm_tsy.get_vel();// - delta_vel;
                   vel2=comm_tsy.get_vel() + delta_vel;
                 }
+
+                if (vel1 < 0) vel1 = 0;
+                if (vel2 < 0) vel2 = 0;
+                    
+                //v_max = sqrt(1.0 * fabs(final_dist - dTravel));
                 
-                
-                v_max = sqrt(1.0 * fabs(final_dist - dTravel));
-                
-                vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
-                vel2 = Saturate(vel2 , v_max);
+                //vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
+                //vel2 = Saturate(vel2 , v_max);
           
                 //vel1 = Saturate(vel1 , 0.5);   
                 //vel2 = Saturate(vel2 , 0.5);
@@ -649,11 +656,11 @@ void update10ms(){
     velocity2 = getVelocity(RIGHT_MOTOR , millis());
     updatePosition((double)encoder1.read() , (double)encoder2.read());   //check overflow, it should overflow when int/double overflows
 
-    //Serial.println("velocity1: "+String(velocity1));
-    //Serial.println("velocity2: "+String(velocity2));
-    Serial.println("odoX: "+String(odoX));
-    Serial.println("odoY: "+String(odoY));
-    Serial.println("odoTh: "+String(odoTh));
+    Serial.println("velocity1: "+String(velocity1));
+    Serial.println("velocity2: "+String(velocity2));
+    //Serial.println("odoX: "+String(odoX));
+    //Serial.println("odoY: "+String(odoY));
+    //Serial.println("odoTh: "+String(odoTh));
     //Serial.println("odoTh: "+String(WrapTo2PI(odoTh))); 
     //Serial.println("ir1: "+String(ir_1.getDistance()));
     //Serial.println("ir1: "+String(ir_2.getDistance()));

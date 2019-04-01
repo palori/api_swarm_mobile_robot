@@ -273,14 +273,17 @@ float take_pic_get_cm(int i, Side side){
 	}
 
 	//sort contours by arc length - assuming line contours are longer than noise contours
-	sort(good_contours.begin(),good_contours.end(),compareContours);
+	sort(good_contours.begin(),good_contours.end(),compareContoursHeight);
 
 	//initialize left and right contour
 	vector<Point> left_contour;
 	double left_cm;
 	vector<Point> right_contour;
 	double right_cm;
+	vector<Point> middle_contour;
+	double middle_cm;
 	Feature feature;
+
 	if (good_contours.size()>0){
 		for (int i=0; i < good_contours.size(); i++){
 			Rect new_rect = boundingRect(good_contours[i]);
@@ -308,15 +311,24 @@ float take_pic_get_cm(int i, Side side){
 			if (new_rect.height < (img_cont.rows / 4) && new_rect.width > (3 * img_cont.cols / 4)) {
 				cout << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" << endl;
 			}
-			
+
 		}
+		// T_left : if (left_contour == short/wide and right_contour == tall/thin ); similarly for T_right
+
+		// Ysplit : if contour between left and right contour becomes taller and taller , better: check distance between 2 tall contours
+
+		// save only 3 contours and make decisions based on if there are 2 or 3 ??
+
+
 		feature = LINE;
 	} else {
 		feature = NOTHING;
 		cout << "no line found !!!"<<endl;
 		left_cm=CAM_W/2;
 		right_cm=CAM_W/2;
-	}	
+	}
+
+
 
 
 
