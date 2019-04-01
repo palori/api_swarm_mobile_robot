@@ -9,6 +9,11 @@
 
 using namespace std;
 
+
+#define ITEM 1			// to compile some files using 'item.h'
+						// e.g: robot_params, sensors...
+
+
 const float BIG_INT = 989898;
 const float BIG_FLOAT = 191919.191919;
 

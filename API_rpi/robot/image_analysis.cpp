@@ -20,23 +20,10 @@ Image_analysis::Image_analysis(int publisher_port, int subscriber_port, double i
 
 // Getters
 string Image_analysis::get_message(){return message;}	// might not need to be an attr
-int Image_analysis::get_task(){
-	mtx_task.lock();
-	int taskm = task;
-	mtx_task.unlock();
-	return taskm;
-}
-int Image_analysis::get_old_task(){return old_task;}
 
 
 // Setters
 void Image_analysis::set_message(string s){message = s;}		// might not need to be an attr
-void Image_analysis::set_task(int i){
-	mtx_task.lock();
-	task = i;
-	mtx_task.unlock();
-}
-void Image_analysis::set_old_task(int i){task = i;}
 
 
 
@@ -53,7 +40,7 @@ void Image_analysis::get_new_task(){
 		new_task = subs.listen();
 		// some decoding ??
 		tsk = str2int(new_task);
-		set_task(tsk);
+		tasks.add_item(tsk);
 	}
 }
 

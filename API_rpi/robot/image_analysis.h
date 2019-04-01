@@ -4,11 +4,11 @@
 //#include <ctime>
 #include <iostream>
 #include <thread>
-#include <mutex>
 
 #include "camera.h"
 #include "publisher.h"
 #include "subscriber.h"
+#include "item.h"
 #include "utils.h"
 
 
@@ -23,25 +23,21 @@ public:
 private:
 	Camera cam;
 	string message;			// ?? need to be encoded, might not need to be an attr
-	int task;				// ?? decide if int, enum...
-	int old_task;
+	Items<int> tasks;
 	Publisher pub;
 	Subscriber subs;
 
-	mutex mtx_task;
 
 public:
 
 	// Getters
 	string get_message();	// might not need to be an attr
 	int get_task();
-	int get_old_task();
 
 
 	// Setters
 	void set_message(string s);		// might not need to be an attr
 	void set_task(int i);
-	void set_old_task(int i);
 
 
 

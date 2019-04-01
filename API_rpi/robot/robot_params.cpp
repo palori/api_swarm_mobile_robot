@@ -1,94 +1,88 @@
 #include "robot_params.h"
 
-Robot_params::Robot_params(){}
+
+Robot_params::Robot_params(){
+	init_items();
+	set_MAX_LEN(MAX_LEN);
+}
 Robot_params::~Robot_params(){}
 
-Robot_params::Robot_params(string hostname, int port_info){
-	set_hostname(hostname);
-	set_port_info(port_info);
+Robot_params::Robot_params(string hostname, int port_info, int max_len){
+	init_items();
+	this->hostname.set_noMutex(hostname);
+	this->port_info.set_noMutex(port_info);
+	set_MAX_LEN(max_len);
 }
 
-Robot_params::Robot_params(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
-	set_hostname(hostname);
-	set_port_image(port_image);
-	set_port_task(port_task);
-	set_port_info(port_info);
-	set_port_info_robot_a(port_info_robot_a);
-	set_port_info_robot_b(port_info_robot_b);
+Robot_params::Robot_params(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b, int max_len){
+	init_items();
+	this->hostname.set_noMutex(hostname);
+	this->port_image.set_noMutex(port_image);
+	this->port_task.set_noMutex(port_task);
+	this->port_info.set_noMutex(port_info);
+	this->port_info_robot_a.set_noMutex(port_info_robot_a);
+	this->port_info_robot_b.set_noMutex(port_info_robot_b);
+	set_MAX_LEN(max_len);
+}
+
+int Robot_params::get_MAX_LEN(){return MAX_LEN;}
+
+
+void Robot_params::set_MAX_LEN(int i){
+	MAX_LEN = i;
+	x.set_MAX_LEN(i);
+	y.set_MAX_LEN(i);
+	//z.set_MAX_LEN(i);
+	th.set_MAX_LEN(i);
+	tasks.set_MAX_LEN(i);
 }
 
 
-// Getters
-string Robot_params::get_hostname(){return hostname;}
-int Robot_params::get_port_image(){return port_image;}
-int Robot_params::get_port_task(){return port_task;}
-int Robot_params::get_port_info(){return port_info;}
-int Robot_params::get_port_info_robot_a(){return port_info_robot_a;}
-int Robot_params::get_port_info_robot_b(){return port_info_robot_b;}
 
-float Robot_params::get_x(){
-	mtx_x.lock();
-	float xm = x;
-	mtx_x.unlock();
-	return xm;
+void Robot_params::print_info(){
+
+	cout << endl << endl << STAR_LINE << endl << endl;
+	cout << "Robot info (last)" << endl << endl;
+
+	cout << "  Name:              " << hostname.get_noMutex() << endl;
+	cout << "  Port_image:        " << port_image.get_noMutex() << endl;
+	cout << "  Port_task:         " << port_task.get_noMutex() << endl;
+	cout << "  Port_info:         " << port_info.get_noMutex() << endl;
+	cout << "  Port_info_robot_a: " << port_info_robot_a.get_noMutex() << endl;
+	cout << "  Port_info_robot_b: " << port_info_robot_b.get_noMutex() << endl;
+	cout << endl;
+	cout << "  Data: " << endl;
+	cout << "    Xw:   " << x.get_last_item_noMutex() << endl;
+	cout << "    Yw:   " << y.get_last_item_noMutex() << endl;
+	//cout << "    Zw:   " << z.get_last_item_noMutex() << endl;
+	cout << "    Thw:  " << th.get_last_item_noMutex() << endl;
+	cout << "    Task: " << tasks.get_last_item_noMutex() << "          (currently)" << endl;
+
+	cout << endl << STAR_LINE << endl << endl;
+	
 }
-float Robot_params::get_y(){
-	mtx_y.lock();
-	float ym = y;
-	mtx_y.unlock();
-	return ym;
-}
-float Robot_params::get_z(){
-	mtx_z.lock();
-	float zm = z;
-	mtx_z.unlock();
-	return zm;
-}
-float Robot_params::get_th(){
-	mtx_th.lock();
-	float thm = th;
-	mtx_th.unlock();
-	return thm;
-}
-string Robot_params::get_task(){
-	mtx_task.lock();
-	string taskm = task;
-	mtx_task.unlock();
-	return taskm;
-}
-// tasks_done() ???
 
 
-// Setters
-void Robot_params::set_hostname(string s){hostname = s;}
-void Robot_params::set_port_image(int i){port_image = i;}
-void Robot_params::set_port_task(int i){port_task = i;}
-void Robot_params::set_port_info(int i){port_info = i;}
-void Robot_params::set_port_info_robot_a(int i){port_info_robot_a = i;}
-void Robot_params::set_port_info_robot_b(int i){port_info_robot_b = i;}
 
-void Robot_params::set_x(float f){
-	mtx_x.lock();
-	x = f;
-	mtx_x.unlock();
-}
-void Robot_params::set_y(float f){
-	mtx_y.lock();
-	y = f;
-	mtx_y.unlock();
-}
-void Robot_params::set_z(float f){
-	mtx_z.lock();
-	z = f;
-	mtx_z.unlock();
-}
-void Robot_params::set_th(float f){
-	mtx_th.lock();
-	th = f;
-	mtx_th.unlock();
-}
-void Robot_params::set_task(string s){
-	mtx_task.lock();
-	task = s;
-	mtx_task.unlock();
+
+
+void Robot_params::init_items(){
+	this->hostname.set_noMutex("localhost");
+	this->port_image.set_noMutex(7002);
+	this->port_task.set_noMutex(7001);
+	this->port_info.set_noMutex(7000);
+	this->port_info_robot_a.set_noMutex(7000);
+	this->port_info_robot_b.set_noMutex(7000);
+
+	x.set_name("Xw");		// maybe just the current position???
+	y.set_name("Yw");
+	//z.set_name("Z world");
+	th.set_name("Tw");
+	tasks.set_name("Tasks");	// list of completed tasks by this robot (the last one is the current, working on)
+	
+	this->x.add_item_noMutex(0.0);
+	this->y.add_item_noMutex(0.0);
+	//this->z.add_item_noMutex(0.0);
+	this->th.add_item_noMutex(0.0);
+	this->tasks.add_item_noMutex(0);
 }
