@@ -58,6 +58,7 @@ raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
 enum Feature {NOTHING, LINE, Y_SPLIT, T_MAIN, T_LEFT, T_RIGHT, CROSS};
+Feature feature = NOTHING;
 
 /*SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
@@ -284,7 +285,7 @@ float take_pic_get_cm(int i, Side side){
 	double right_cm;
 	vector<Point> middle_contour;
 	double middle_cm;
-	Feature feature;
+	
 
 	if (good_contours.size()>0){
 		for (int i=0; i < good_contours.size(); i++){
