@@ -174,11 +174,11 @@ float take_pic_get_cm(int i, Side side){
 	GammaMapping(img_hist, img_gamma, gamma);
 
 	//thresholding
-	Mat img_th,img_crop;
-	bool bad_threshold = true;
-	float white_percent = 0.0;
-	bool otsu_thresholding = true;
-
+	//Mat img_th,img_crop;
+	//bool bad_threshold = true;
+	//float white_percent = 0.0;
+	//bool otsu_thresholding = true;
+	/*
 	while (bad_threshold) {
 		
 		if (otsu_thresholding) threshold(img_gamma,img_th,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
@@ -217,7 +217,7 @@ float take_pic_get_cm(int i, Side side){
 			threshold_value = 100;  //reinitialize threshold value
 		}
 
-	}
+	}*/
 
 
 	//blurring
@@ -284,7 +284,7 @@ float take_pic_get_cm(int i, Side side){
 	double middle_cm;
 	Feature feature;
 
-	if (good_contours.size()>0){
+	if (good_contours.size()>1){
 		for (int i=0; i < good_contours.size(); i++){
 			Rect new_rect = boundingRect(good_contours[i]);
 			Point p_cm,p1,p2;
@@ -333,7 +333,7 @@ float take_pic_get_cm(int i, Side side){
 
 
 	// plot only left and right rectangle;
-
+	/*
 	Rect rect_plot_l = boundingRect(left_contour);
 	Rect rect_plot_r = boundingRect(right_contour);
 	Point p1_l,p2_l,p1_r,p2_r; 
@@ -347,7 +347,7 @@ float take_pic_get_cm(int i, Side side){
 	p2_r.x = rect_plot_r.x + rect_plot_r.width;
 	p2_r.y = rect_plot_r.y + rect_plot_r.height;
 	rectangle(img_cont,p1_r,p2_r,CV_RGB(255,255,255),1);
-
+	*/
 	
 	/*
 	if (false){
@@ -376,17 +376,17 @@ float take_pic_get_cm(int i, Side side){
 
 	//SAVING IMAGES
 
-	string pic_name_th = "pics/pic_th_"+to_string(i)+".png";
-	imwrite(pic_name_th,img_th);
+	//string pic_name_th = "pics/pic_th_"+to_string(i)+".png";
+	//imwrite(pic_name_th,img_th);
 
 	string pic_name_img = "pics/pic_img_"+to_string(i)+".png";
 	imwrite(pic_name_img,img);
 
-	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
-	imwrite(pic_name_canny,img_canny);
+	//string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
+	//imwrite(pic_name_canny,img_canny);
 
-	string pic_name = "pics/pic_crop_"+to_string(i)+".png";
-	imwrite(pic_name,img_canny_crop);
+	//string pic_name = "pics/pic_crop_"+to_string(i)+".png";
+	//imwrite(pic_name,img_canny_crop);
 
 	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
 	imwrite(pic_name_cont,img_cont);
