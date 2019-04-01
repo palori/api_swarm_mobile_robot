@@ -534,7 +534,7 @@ void update_velocity(int drive_command){
                 //delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 100),FOLLOW);
                 double cm = Saturate(comm_tsy.get_th_t() , 100);
                 double K = 0.004 - sign(cm) * cm / 40000;
-                K=0.0025; 
+                K=0.0035; 
                 delta_vel = - K * cm;
                 
                 if (comm_tsy.get_th_t()<0) {
