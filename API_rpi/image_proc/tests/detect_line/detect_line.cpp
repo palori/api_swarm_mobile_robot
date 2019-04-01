@@ -44,6 +44,8 @@ const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
+double old_left = 0.0;
+double old_right = 0.0;
 //closing
 /*
 int closing_elem = MORPH_ELLIPSE;
@@ -56,6 +58,7 @@ raspicam::RaspiCam_Cv Camera;
 COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
 enum Feature {NOTHING, LINE, Y_SPLIT, T_MAIN, T_LEFT, T_RIGHT, CROSS};
+Feature feature = NOTHING;
 
 /*SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
@@ -174,11 +177,11 @@ float take_pic_get_cm(int i, Side side){
 	GammaMapping(img_hist, img_gamma, gamma);
 
 	//thresholding
-	Mat img_th,img_crop;
-	bool bad_threshold = true;
-	float white_percent = 0.0;
-	bool otsu_thresholding = true;
-
+	//Mat img_th,img_crop;
+	//bool bad_threshold = true;
+	//float white_percent = 0.0;
+	//bool otsu_thresholding = true;
+	/*
 	while (bad_threshold) {
 		
 		if (otsu_thresholding) threshold(img_gamma,img_th,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
@@ -217,7 +220,7 @@ float take_pic_get_cm(int i, Side side){
 			threshold_value = 100;  //reinitialize threshold value
 		}
 
-	}
+	}*/
 
 
 	//blurring
@@ -264,7 +267,7 @@ float take_pic_get_cm(int i, Side side){
 	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
-		cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
+		//cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
 		if (arcLength(contours.at(i),false)>120){ 
 			good_contours.push_back(contours[i]);
@@ -273,24 +276,23 @@ float take_pic_get_cm(int i, Side side){
 	}
 
 	//sort contours by arc length - assuming line contours are longer than noise contours
-	sort(good_contours.begin(),good_contours.end(),compareContours);
+	sort(good_contours.begin(),good_contours.end(),compareContoursHeight);
 
 	//initialize left and right contour
 	vector<Point> left_contour;
 	double left_cm;
 	vector<Point> right_contour;
 	double right_cm;
-	Feature feature;
+	vector<Point> middle_contour;
+	double middle_cm;
+	
+
 	if (good_contours.size()>0){
 		for (int i=0; i < good_contours.size(); i++){
 			Rect new_rect = boundingRect(good_contours[i]);
-			Point p_cm,p1,p2;
-			p1.x = new_rect.x;
-			p1.y = new_rect.y;
-			p2.x = new_rect.x + new_rect.width;
-			p2.y = new_rect.y + new_rect.height;
-			p_cm.x= (p1.x+p2.x)/ 2;
-			p_cm.y= (p1.y+p2.y)/ 2;
+			Point p_cm;
+			p_cm.x= new_rect.x + new_rect.width / 2;
+			p_cm.y= new_rect.y + new_rect.height / 2;
 
 			if (i==0) {
 				left_contour = good_contours[i];
@@ -308,20 +310,44 @@ float take_pic_get_cm(int i, Side side){
 			if (new_rect.height < (img_cont.rows / 4) && new_rect.width > (3 * img_cont.cols / 4)) {
 				cout << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" << endl;
 			}
-			
+
 		}
+
+		if (good_contours.size() == 1){
+			Rect only_rect = boundingRect(good_contours[i]);
+			if (only_rect.width > 65) {
+				left_cm -= 32;
+				right_cm += 32;
+			} else if (abs(old_left-left_cm)<abs(old_right-right_cm)){
+				right_cm += 65; 
+			} else {
+				left_cm -= 65;	
+			}
+
+		}
+		// T_left : if (left_contour == short/wide and right_contour == tall/thin ); similarly for T_right
+
+		// Ysplit : if contour between left and right contour becomes taller and taller , better: check distance between 2 tall contours
+
+		// save only 3 contours and make decisions based on if there are 2 or 3 ??
 		feature = LINE;
+
+
 	} else {
 		feature = NOTHING;
 		cout << "no line found !!!"<<endl;
 		left_cm=CAM_W/2;
 		right_cm=CAM_W/2;
-	}	
+	}
+
+
+
+
 
 
 
 	// plot only left and right rectangle;
-
+	/*
 	Rect rect_plot_l = boundingRect(left_contour);
 	Rect rect_plot_r = boundingRect(right_contour);
 	Point p1_l,p2_l,p1_r,p2_r; 
@@ -335,7 +361,7 @@ float take_pic_get_cm(int i, Side side){
 	p2_r.x = rect_plot_r.x + rect_plot_r.width;
 	p2_r.y = rect_plot_r.y + rect_plot_r.height;
 	rectangle(img_cont,p1_r,p2_r,CV_RGB(255,255,255),1);
-
+	*/
 	
 	/*
 	if (false){
@@ -364,17 +390,17 @@ float take_pic_get_cm(int i, Side side){
 
 	//SAVING IMAGES
 
-	string pic_name_th = "pics/pic_th_"+to_string(i)+".png";
-	imwrite(pic_name_th,img_th);
+	//string pic_name_th = "pics/pic_th_"+to_string(i)+".png";
+	//imwrite(pic_name_th,img_th);
 
 	string pic_name_img = "pics/pic_img_"+to_string(i)+".png";
 	imwrite(pic_name_img,img);
 
-	string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
-	imwrite(pic_name_canny,img_canny);
+	//string pic_name_canny = "pics/pic_canny_"+to_string(i)+".png";
+	//imwrite(pic_name_canny,img_canny);
 
-	string pic_name = "pics/pic_crop_"+to_string(i)+".png";
-	imwrite(pic_name,img_canny_crop);
+	//string pic_name = "pics/pic_crop_"+to_string(i)+".png";
+	//imwrite(pic_name,img_canny_crop);
 
 	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
 	imwrite(pic_name_cont,img_cont);
@@ -411,6 +437,8 @@ float take_pic_get_cm(int i, Side side){
 	cout<<"CM: "<<cm<<endl;
 	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
+	old_left = left_cm;
+	old_right = right_cm;
 	return cm;	
 
 /*
@@ -480,10 +508,14 @@ void pic_cm_comm1(){
 	    usleep(10000);
 	    while (i<300){
 	    		//camera_start();
+
 				y = take_pic_get_cm(i,LEFT);
 				printf("Y: %f\n",y);
-				msg = "@tht="+to_string(y)+"$";
-				cr.serial_write(msg);
+
+				if (feature == LINE) {
+					msg = "@tht="+to_string(y)+"$";
+					cr.serial_write(msg);
+				}
 				//usleep(10000);
 				i++;
 				//camera_stop();
