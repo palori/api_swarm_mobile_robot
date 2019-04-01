@@ -264,7 +264,7 @@ float take_pic_get_cm(int i, Side side){
 	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
-		cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
+		//cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
 		if (arcLength(contours.at(i),false)>120){ 
 			good_contours.push_back(contours[i]);
