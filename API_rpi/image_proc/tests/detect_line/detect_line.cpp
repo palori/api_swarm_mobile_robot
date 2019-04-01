@@ -44,6 +44,8 @@ const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
 const int CAM_H = 240;
+double old_left = 0.0;
+double old_right = 0.0;
 //closing
 /*
 int closing_elem = MORPH_ELLIPSE;
@@ -284,16 +286,12 @@ float take_pic_get_cm(int i, Side side){
 	double middle_cm;
 	Feature feature;
 
-	if (good_contours.size()>1){
+	if (good_contours.size()>0){
 		for (int i=0; i < good_contours.size(); i++){
 			Rect new_rect = boundingRect(good_contours[i]);
-			Point p_cm,p1,p2;
-			p1.x = new_rect.x;
-			p1.y = new_rect.y;
-			p2.x = new_rect.x + new_rect.width;
-			p2.y = new_rect.y + new_rect.height;
-			p_cm.x= (p1.x+p2.x)/ 2;
-			p_cm.y= (p1.y+p2.y)/ 2;
+			Point p_cm;
+			p_cm.x= new_rect.x + new_rect.width / 2;
+			p_cm.y= new_rect.y + new_rect.height / 2;
 
 			if (i==0) {
 				left_contour = good_contours[i];
@@ -313,20 +311,35 @@ float take_pic_get_cm(int i, Side side){
 			}
 
 		}
+
+		if (good_contours.size() == 1){
+			Rect only_rect = boundingRect(good_contours[i]);
+			if (only_rect.width > 65) {
+				left_cm -= 32;
+				right_cm += 32;
+			} else if (abs(old_left-left_cm)<abs(old_right-right_cm)){
+				right_cm += 65; 
+			} else {
+				left_cm -= 65;	
+			}
+
+		}
 		// T_left : if (left_contour == short/wide and right_contour == tall/thin ); similarly for T_right
 
 		// Ysplit : if contour between left and right contour becomes taller and taller , better: check distance between 2 tall contours
 
 		// save only 3 contours and make decisions based on if there are 2 or 3 ??
-
-
 		feature = LINE;
+
+
 	} else {
 		feature = NOTHING;
 		cout << "no line found !!!"<<endl;
 		left_cm=CAM_W/2;
 		right_cm=CAM_W/2;
 	}
+
+
 
 
 
@@ -423,6 +436,8 @@ float take_pic_get_cm(int i, Side side){
 	cout<<"CM: "<<cm<<endl;
 	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
+	old_left = left_cm;
+	old_right = right_cm;
 	return cm;	
 
 /*
@@ -492,10 +507,14 @@ void pic_cm_comm1(){
 	    usleep(10000);
 	    while (i<300){
 	    		//camera_start();
+
 				y = take_pic_get_cm(i,LEFT);
 				printf("Y: %f\n",y);
-				msg = "@tht="+to_string(y)+"$";
-				cr.serial_write(msg);
+
+				if (feature == LINE) {
+					msg = "@tht="+to_string(y)+"$";
+					cr.serial_write(msg);
+				}
 				//usleep(10000);
 				i++;
 				//camera_stop();
