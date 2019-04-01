@@ -26,8 +26,7 @@ using namespace std::chrono;
 
 
 #define USB_SERIAL_PORT "/dev/ttyACM0"		// maybe into a configuration file
-#define START "@"
-#define END "$"
+
 
 /*
  * IF YOU MAKE ANY CHANGE IN THIS FILE, YOU HAVE TO MODIFY ACCORDINGLY
@@ -61,9 +60,9 @@ public:
 	void serial_write(string msg);
 	string serial_read();
 
-	// Might be called from other nodes
-	void params2msg(string & msg);		// encode the new params to send the message
-	void msg2sensorData(string msg, Sensors & sens);	// decode the received message
+	//encoding and decoding messages -> both moved to 'messages.h'
+	//void params2msg(string & msg);
+	//void msg2sensorData(string msg, Sensors & sens);
 
 	// getters
 	int get_fd() {return fd;}

@@ -5,11 +5,14 @@
 #include <thread>
 #include <mutex>
 
+#include "item.h"
 #include "robot_params.h"
 #include "sensors.h"
+//#include "controllers.h"
+#include "messages.h"
 #include "comm_rpi_2.h"
-#include "publisher.h"
-#include "subscriber.h"
+#include "../publisher.h"
+#include "../subscriber.h"
 //#include "localization.h"
 //#include "task_planner.h"
 #include "utils.h"
@@ -36,41 +39,32 @@ public:
 	Robot_params robot_b;
 
 	Sensors sensors;			// Store last sensor data read from serial
+								// and image data from the image process
 
 
 	COMM_RPI serial_comm;
-	//Publisher pub_image_task;		// what to look for in the image pocess
+	Publisher pub_image_task;		// what to look for in the image pocess
 	Publisher pub_robot_info;		// send info to the rest of the robots
-	//Subscriber subs_image_data;	// features extracted from image processing
+	Subscriber subs_image_data;	// features extracted from image processing
 	Subscriber subs_robot_a;		// susbcribe to 2 other robots A and B
 	Subscriber subs_robot_b;		// maybe in an array????
 	//Localization loc;
 	// Task_planner task_planner;
 
 
-	string image_data;
-
-
-	// Mutex
-	mutex mtx_image_data;
+	Item<string> image_data;
 
 
 	/////////////
 	// Methods //
 	/////////////
 
-	// Getters
-	string get_image_data();
-
-	// Setters
-	void set_image_data(string s);
-
 
 	// Each of them will run in a separate thread
 	void serial();
 	void listen_image_process();
-	void listen_robot_a(int id); 	// maybe make it general to be scalable to 'n' robots
-	void listen_robot_b(int id);
+	void listen_robot_a(); 	// maybe make it general to be scalable to 'n' robots
+	void listen_robot_b();
 
 	void run();						// start the threads and while true loop
 	

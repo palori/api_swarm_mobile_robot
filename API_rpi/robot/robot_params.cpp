@@ -86,3 +86,25 @@ void Robot_params::init_items(){
 	this->th.add_item_noMutex(0.0);
 	this->tasks.add_item_noMutex(0);
 }
+
+
+
+
+
+Robot_params & Robot_params::operator=(Robot_params & rp){
+	set_MAX_LEN(rp.get_MAX_LEN());
+	//this->hostname.set(rp.hostname.get());
+	this->hostname = rp.hostname;
+	this->port_image = rp.port_image;
+	this->port_task = rp.port_task;
+	this->port_info = rp.port_info;
+	this->port_info_robot_a = rp.port_info_robot_a;
+	this->port_info_robot_b = rp.port_info_robot_b;
+
+	this->x = rp.x;
+	this->y = rp.y;
+	this->th = rp.th;
+	this->tasks = rp.tasks;
+
+	return *this;
+}

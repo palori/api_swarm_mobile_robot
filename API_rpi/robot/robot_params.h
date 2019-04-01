@@ -23,7 +23,6 @@ public:
 	// Attributes
 	int MAX_LEN = 10;			// default
 
-	Item<int> id;
 	Item<string> hostname;
 	Item<int> port_image;
 	Item<int> port_task;
@@ -43,6 +42,8 @@ public:
 	void set_MAX_LEN(int i);
 
 	void print_info();
+
+	Robot_params & operator=(Robot_params & rp);
 
 private:
 	void init_items();
