@@ -1,35 +1,33 @@
 
 #include "robot.h"
 
-Robot::Robot(int id){
+Robot::Robot(){
+	//params.hostname.set("localhost");
 
+	Robot_params rp("test",1,2,3,4,5,10);
+	this->params = rp;
 }
 
 Robot::~Robot(){}
 
-Robot::Robot(int id, string hostname){ // params from other 2 robots (port and hostname)
-	Subscriber subs_robot_a();
-	Subscriber subs_robot_b();
-	Robot_params params(hostname);
+
+// probably never used...
+Robot::Robot(string hostname){ // params from other 2 robots (port and hostname)
+	//Subscriber subs_robot_a();
+	//Subscriber subs_robot_b();
+	Robot_params rp(hostname,5000,20);
+	this->params = rp;
+	//this->params(hostname,1,2,3,4,5,10);
+	//params.hostname.set(hostname);
+	//cout << "hostname: " << this->params.hostname.get_last_item() << endl;
+
 }
 
-
-
-// Getters
-string get_image_data(){
-	mtx_image_data.lock();
-	string image_data_m = image_data;
-	mtx_image_data.unlock();
-	return image_data_m;
+// always use this one
+Robot::Robot(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
+	Robot_params rp(hostname, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b,20);
+	this->params = rp;
 }
-
-// Setters
-void set_image_data(string s){
-	mtx_image_data.lock();
-	image_data = s;
-	mtx_image_data.unlock();
-}
-
 
 
 
@@ -45,7 +43,7 @@ void Robot::serial(){
 	while(true){
 		cout << "reading serial..." << endl;
 		data = serial_comm.serial_read();
-		msg2sensorData(data, & sensors);
+		decode_sensors(data, sensors);
 		// save data
 		// need to be decoded to be used (can be done here or in localization...)
 		// maybe easier to modify 'comm_rpi_1.cpp' and do it there
@@ -53,8 +51,8 @@ void Robot::serial(){
 
 		cout << "writing serial..." << endl;
 		// update msg
-		msg = get_image_data();		// probably there are other cases, now we want to test this
-		cr.serial_write(msg);
+		msg = image_data.get();		// probably there are other cases, now we want to test this
+		serial_comm.serial_write(msg);
 	}
 	serial_comm.serial_close();
 }
@@ -67,14 +65,14 @@ void Robot::listen_image_process(){
 		data = subs_image_data.listen();	// blocking call
 		// decode data into params to use for localization and send to TSY
 
-		set_image_data(data);
+		image_data.set(data);
 	}
 }
 
-void Robot::listen_robot_a(int id){
+void Robot::listen_robot_a(){
 	string info;
 	while(true){
-		cout << "listenning to robot " << id << "..." << endl;
+		cout << "listenning to robot " << robot_a.hostname.get() << "..." << endl;
 		info = subs_robot_a.listen();		// blocking call
 		// decode info message
 
@@ -85,10 +83,10 @@ void Robot::listen_robot_a(int id){
 }
 
 
-void Robot::listen_robot_b(int id){
+void Robot::listen_robot_b(){
 	string info;
 	while(true){
-		cout << "listenning to robot " << id << "..." << endl;
+		cout << "listenning to robot " << robot_b.hostname.get() << "..." << endl;
 		info = subs_robot_b.listen();		// blocking call
 		// decode info message
 
@@ -105,10 +103,10 @@ void Robot::listen_robot_b(int id){
 
 void Robot::run(){
 	//thread task_planning(task_planner_run);	// may be in the same thread for now
-	thread thread_serial(serial);
-	thread thread_image(listen_image_process);
-	thread thread_robot_a(listen_robot_a, 1, subs_robot_a); // maybe loop for listenning to other robots??
-	thread thread_robot_b(listen_robot_b, 2, subs_robot_b);
+	thread thread_serial(&Robot::serial, this);
+	thread thread_image(&Robot::listen_image_process, this);
+	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
+	thread thread_robot_b(&Robot::listen_robot_b, this);
 
 
 

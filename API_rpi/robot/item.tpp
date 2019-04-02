@@ -167,3 +167,12 @@ void Items<T>::print_items(){
 		cout << "  - " << t << endl;
 	}
 }
+
+
+template<class T>
+Items<T> & Items<T>::operator=(Items<T>& items_to_copy){
+	set_name(items_to_copy.get_name());
+	set_MAX_LEN(items_to_copy.get_MAX_LEN());
+	this->items = items_to_copy.get_items();
+	return *this;
+}

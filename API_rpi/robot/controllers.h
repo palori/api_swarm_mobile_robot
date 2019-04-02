@@ -46,12 +46,11 @@ public:
 	Items<float> fwd_dist;
 	Items<float> trn_deg;
 	Items<float> trn_r;
-	Items<float> s;			// might not be used at the end...
+	Items<float> s;					// might not be used at the end...
 	
 	Items<float> x_t;
 	Items<float> y_t;
 	Items<float> th_t;
-
 
 
 	int get_MAX_LEN();
@@ -59,6 +58,8 @@ public:
 
 	void print_info();
 
+	Controllers & operator=(Controllers & ctrl);
+	
 private:
 	void init_items();
 	

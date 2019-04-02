@@ -68,7 +68,7 @@ string COMM_RPI::serial_read(){ //read_char_by_char
     if(get_port_open()){
         //char *c = new char[1];
         char c[1]={'1'};
-        bool keep_reading=true, new_msg=false;
+        bool keep_reading=true, store=false;
         
         bool use_string = true;
 
@@ -90,12 +90,12 @@ string COMM_RPI::serial_read(){ //read_char_by_char
                 //cout << "hola!\n";
                 int cs = read(fd,&c,sizeof(c));  // @@@@ need some timeout if not reading anything!!! -> maybe adding a queue
                 if(cs>0){
-                    if(c[0]==START){
+                    if(c[0]=='@'){
                         buf_count = 0;
                         msg = "";
-                        new_msg = true;
+                        store = true;
                     }
-                    if(new_msg && c[0]==END){
+                    if(store && c[0]=='$'){
                         keep_reading=false; // == break;
                         store = false;
                     }
@@ -124,173 +124,6 @@ string COMM_RPI::serial_read(){ //read_char_by_char
     else {if(get_debug()) cout << "Serial port: can't read, port closed" << endl;}
     return "";
 }
-
-
-
-
-/*
- * msg2target
- *
- * decode the received message
- * USING VECTOR -> WORKING!
- */
-void COMM_RPI::msg2sensorData(string msg, Sensors & sens){          // STILL TO WORK ON IT!
-
-    // split the message
-    vector<string> words = split_str(msg, "=,");    // utils
-    Command command;
-
-    // save it as new target pose
-    for (uint i=0; i<words.size(); i++){
-        if(words.at(i) == command.S){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.s.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.X_w){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.x.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.Y_w){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.y.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.TH_w){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.th.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.IR1){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.ir1.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.IR2){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.ir2.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.OD){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.obst_dist.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.OF){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.obst_found.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.GYRO1){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.gyro_x.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.GYRO2){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.gyro_y.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.GYRO3){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.gyro_z.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.ACC1){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.acc_x.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.ACC2){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.acc_y.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.ACC3){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.acc_z.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.COMP1){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.comp_x.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.COMP2){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.comp_y.set(val);
-                i++;
-            }
-        }
-        else if(words.at(i) == command.COMP3){
-            float val = str2float(words.at(i+1));
-            if (val != BIG_FLOAT) {
-                sens.comp_z.set(val);
-                i++;
-            }
-        }
-    }
-
-}
-
-
-
-
-/*
- * params2msg
- * 
- * // encode the new params to send the message
- * USING string -> WORKING IN RPi
- */
-void COMM_RPI::params2msg(string & msg){        // STILL TO WORK ON IT!
-
-    // @@@@ 'send_only_if_updaded' this might mean that we need to keep track of the previous pose
-    // NOT implemented for the moment
-
-    string new_msg = START;
-    new_msg += "s=" + to_string(0.0);
-    new_msg += ",x=" + to_string(0.0);
-    new_msg += ",y=" + to_string(0.0);
-    new_msg += ",th=" + to_string(0.0);
-    new_msg += END;
-
-    // update message
-    msg = new_msg;
-
-    if (get_debug()) cout << "Message: " << msg << endl;
-}   
 
 
 

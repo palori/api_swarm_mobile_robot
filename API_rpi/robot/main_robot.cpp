@@ -17,15 +17,15 @@ int main(int argc, char const *argv[])
 
 	// default params
 	string hostname = "";
-	int port_image = 7100;
-	int port_task = 7101;
+	int port_image = 7000;
+	int port_task = 7001;
 	int port_info = 8000;
-	int port_info_robot_a = 8001;
-	int port_info_robot_b = 8002;
+	int port_info_robot_a = 8000;
+	int port_info_robot_b = 8000;
 
 	bool ready2run = false;
 
-	Robot robot;
+	//Robot robot;
 
 	cout << "**************************************** " << endl;
 
@@ -44,8 +44,10 @@ int main(int argc, char const *argv[])
 		}
 
 		cout << "Welcome " << hostname << "!" << endl;
-		Robot robot(hostname, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b);
-		robot.run();		// while true loop
+		Robot robot;//(hostname, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b);
+		//robot.params.hostname.set(hostname);
+		//robot.params.print_info();
+		//robot.run();		// while true loop
 	}
 	else {
 		cout << "Wrong inputs!" << endl;

@@ -4,16 +4,19 @@
 #include "utils.h"
 #include "controllers.h"
 #include "robot_params.h"
+#include "sensors.h"
 #include "item.h"
 
 
 string detect_message(string msg);
 
-string encode(Item<int> task);
-string encode(Items<int> tasks);
-string encode_image_params(Items<int> tasks, bool obst_found, float obst_dist, int theta, int crossing);
-void decode(string msg, Controllers & c, Robot_params r);
-
+string encode_task(Items<int> tasks);
+string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing);
+//void params2msg(string & msg);
+void decode_ctrl(string msg, Controllers & ctrl);	// NOT fully tested, but the important ones yes
+void decode_robot_params(string msg, Robot_params & rob);
+void decode_image(string msg, Sensors & sens, string & new_target);
+void decode_sensors(string msg, Sensors & sens);
 
 
 enum Actions {
@@ -108,7 +111,9 @@ struct Command {
 	string OF = "of";				// obstacle found
 
 	// image
-	string CROSS = "cr";
+	string OF_i = "of_i";			// obstacle found in the image
+	string CROSS = "cr";			// which crossing type was found
+	string OD_i = "od_i";			// Distance of the obstacle from the robot[mm]
 };
 
 

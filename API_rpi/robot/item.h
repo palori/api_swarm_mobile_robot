@@ -93,10 +93,9 @@ public:
 	T get_last_item();
 	T get_last_item_noMutex();
 
-
-	//Items<T> operator=(Items<T> items_to_copy);
-
 	void print_items();
+	
+	Items<T> & operator=(Items<T>& items_to_copy);
 	
 };
 

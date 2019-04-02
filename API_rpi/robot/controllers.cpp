@@ -160,3 +160,43 @@ void Controllers::init_items(){
 	this->th_t.add_item_noMutex(0.0);
 
 }
+
+
+
+Controllers & Controllers::operator=(Controllers & ctrl){
+	set_MAX_LEN(ctrl.get_MAX_LEN());
+
+	this->reset_enc = ctrl.reset_enc;
+	this->stop = ctrl.stop;
+	this->avoid_obst = ctrl.avoid_obst;
+	this->obst_dist = ctrl.obst_dist;
+
+	this->ir_on = ctrl.ir_on;
+	this->ir_send = ctrl.ir_send;
+
+	this->imu_on = ctrl.imu_on;
+	this->imu_gyro_send = ctrl.imu_gyro_send;
+	this->imu_acc_send = ctrl.imu_acc_send;
+	this->imu_comp_send = ctrl.imu_comp_send;
+
+	this->motors_on = ctrl.motors_on;
+	this->vel = ctrl.vel;
+
+	this->m1_kp = ctrl.m1_kp;
+	this->m1_ki = ctrl.m1_ki;
+	this->m2_kp = ctrl.m2_kp;
+	this->m2_ki = ctrl.m2_ki;
+	this->th_kp = ctrl.th_kp;
+	this->th_ki = ctrl.th_ki;
+
+	this->fwd_dist = ctrl.fwd_dist;
+	this->trn_deg = ctrl.trn_deg;
+	this->trn_r = ctrl.trn_r;
+	this->s = ctrl.s;
+
+	this->x_t = ctrl.x_t;
+	this->y_t = ctrl.y_t;
+	this->th_t = ctrl.th_t;
+
+	return *this;
+}
