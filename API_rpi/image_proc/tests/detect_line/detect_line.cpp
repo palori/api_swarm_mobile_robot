@@ -161,6 +161,9 @@ float take_pic_get_cm(int i, Side side){
 	Camera.grab();
 	Camera.retrieve (img);
 
+	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+	cout << "Function time: " << function_time << endl;
+
 	//load image - just for testing
 	//img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
 
@@ -372,13 +375,7 @@ float take_pic_get_cm(int i, Side side){
 		right_cm=CAM_W/2;
 	}
 
-
-
 	cout << " FEATURE: " << feature << endl;	
-
-
-
-
 
 	// plot only left and right rectangle;
 	/*
@@ -469,8 +466,7 @@ float take_pic_get_cm(int i, Side side){
 	cm -= CAM_W/2; //cm_y= sum_y/count_y - CAM_W/2;
 
 	cout<<"CM: "<<cm<<endl;
-	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
-	cout << "Function time: " << function_time << endl;
+	
 	old_left = left_cm;
 	old_right = right_cm;
 	return cm;	
@@ -546,7 +542,7 @@ void pic_cm_comm1(){
 				y = take_pic_get_cm(i,LEFT);
 				printf("Y: %f\n",y);
 
-				if (feature == LINE) {
+				if (feature != NOTHING) {
 					msg = "@tht="+to_string(y)+"$";
 					cr.serial_write(msg);
 				}
