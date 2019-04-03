@@ -278,7 +278,7 @@ float take_pic_get_cm(int i, Side side){
 		Scalar color = Scalar(255,255,255);
 		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours[i],false)>120){ //  && contourArea(contours[i])<12){ 
+		if (arcLength(contours[i],false)>120 && contourArea(contours[i])<20){ 
 			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
@@ -298,7 +298,7 @@ float take_pic_get_cm(int i, Side side){
 	if (good_contours.size()>0){
 		feature = LINE;
 		for (int i=0; i < good_contours.size(); i++){
-			cout << "Good contour " << i << ". area: " << contourArea(contours[i]) << endl;
+			//cout << "Good contour " << i << ". area: " << contourArea(good_contours[i]) << endl;
 			Rect new_rect = boundingRect(good_contours[i]);
 			Point p_cm;
 			p_cm.x= new_rect.x + new_rect.width / 2;
@@ -327,7 +327,7 @@ float take_pic_get_cm(int i, Side side){
 		}
 
 		if (good_contours.size() == 1){
-			Rect only_rect = boundingRect(good_contours[i]);
+			Rect only_rect = boundingRect(good_contours[0]);
 			if (only_rect.width > 65) {
 				left_cm -= 32;
 				right_cm += 32;
@@ -341,6 +341,22 @@ float take_pic_get_cm(int i, Side side){
 
 		Rect left_rect = boundingRect(left_contour);
 		Rect right_rect = boundingRect(right_contour);
+
+		Point left,right;
+		left.y = left_rect.y + left_rect.height / 2;
+		right.y = right_rect.y + right_rect.height / 2;
+
+		if (abs(left.y - right.y) > img_cont.rows / 4 && left_rect.width > 50 || right_rect.width > 50) {
+
+			if (left_rect.height > right_rect.height) {
+				right_cm = left_cm + 32;
+				left_cm -= 32;
+			} else {
+				left_cm = right_cm - 32;
+				right_cm += 32;
+			}
+
+		}
 
 		if (left_rect.height < img_cont.rows / 2 && left_rect.width > img_cont.cols / 4 && right_rect.height > img_cont.rows / 2 && right_rect.width < img_cont.cols/4) {
 			if (t_left_candidate == true){
@@ -364,6 +380,8 @@ float take_pic_get_cm(int i, Side side){
 				y_split_candidate = false;
 			} else y_split_candidate = true;
 		} else y_split_candidate = false;
+
+
 		// T_left : if (left_contour == short/wide and right_contour == tall/thin ); similarly for T_right
 
 		// Ysplit : if contour between left and right contour becomes taller and taller , better: check distance between 2 tall contours
