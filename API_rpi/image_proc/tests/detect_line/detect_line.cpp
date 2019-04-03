@@ -59,6 +59,12 @@ COMM_RPI cr;
 enum Side { LEFT, MIDDLE, RIGHT };
 enum Feature {NOTHING, LINE, Y_SPLIT, T_MAIN, T_LEFT, T_RIGHT, CROSS};
 Feature feature = NOTHING;
+bool t_main_candidate = false;  //{NOTHING, LINE, Y_SPLIT, T_MAIN, T_LEFT, T_RIGHT, CROSS};
+bool y_split_candidate = false;
+bool t_left_candidate = false;
+bool t_right_candidate = false;
+bool cross_candidate = false;
+
 
 /*SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
@@ -154,6 +160,9 @@ float take_pic_get_cm(int i, Side side){
 	cout<<"Capturing "+to_string(i)+"..."<<endl;
 	Camera.grab();
 	Camera.retrieve (img);
+
+	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+	cout << "Function time: " << function_time << endl;
 
 	//load image - just for testing
 	//img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
@@ -267,9 +276,9 @@ float take_pic_get_cm(int i, Side side){
 	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
-		//cout << "Contour " << i << ". length: " << arcLength(contours[i],false) << endl;
+		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours.at(i),false)>120){ 
+		if (arcLength(contours[i],false)>120 && contourArea(contours[i])<20){ 
 			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
@@ -286,9 +295,10 @@ float take_pic_get_cm(int i, Side side){
 	vector<Point> middle_contour;
 	double middle_cm;
 	
-
 	if (good_contours.size()>0){
+		feature = LINE;
 		for (int i=0; i < good_contours.size(); i++){
+			//cout << "Good contour " << i << ". area: " << contourArea(good_contours[i]) << endl;
 			Rect new_rect = boundingRect(good_contours[i]);
 			Point p_cm;
 			p_cm.x= new_rect.x + new_rect.width / 2;
@@ -308,13 +318,16 @@ float take_pic_get_cm(int i, Side side){
 			}
 
 			if (new_rect.height < (img_cont.rows / 4) && new_rect.width > (3 * img_cont.cols / 4)) {
-				cout << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" << endl;
-			}
+				if (t_main_candidate == true) {
+					feature = T_MAIN;
+					t_main_candidate = false;
+				} else t_main_candidate = true;	
+			} else t_main_candidate = false;
 
 		}
 
 		if (good_contours.size() == 1){
-			Rect only_rect = boundingRect(good_contours[i]);
+			Rect only_rect = boundingRect(good_contours[0]);
 			if (only_rect.width > 65) {
 				left_cm -= 32;
 				right_cm += 32;
@@ -325,14 +338,55 @@ float take_pic_get_cm(int i, Side side){
 			}
 
 		}
+
+		Rect left_rect = boundingRect(left_contour);
+		Rect right_rect = boundingRect(right_contour);
+
+		Point left,right;
+		left.y = left_rect.y + left_rect.height / 2;
+		right.y = right_rect.y + right_rect.height / 2;
+
+		if (abs(left.y - right.y) > img_cont.rows / 4 && left_rect.width > 50 || right_rect.width > 50) {
+
+			if (left_rect.height > right_rect.height) {
+				right_cm = left_cm + 32;
+				left_cm -= 32;
+			} else {
+				left_cm = right_cm - 32;
+				right_cm += 32;
+			}
+
+		}
+
+		if (left_rect.height < img_cont.rows / 2 && left_rect.width > img_cont.cols / 4 && right_rect.height > img_cont.rows / 2 && right_rect.width < img_cont.cols/4) {
+			if (t_left_candidate == true){
+				feature = T_LEFT;
+				t_left_candidate = false;
+			} else t_left_candidate = true;
+		} else t_left_candidate = false;
+
+
+		if (left_rect.height > img_cont.rows / 2 && left_rect.width < img_cont.cols / 4 && right_rect.height < img_cont.rows / 2 && right_rect.width > img_cont.cols/4) {
+			if (t_right_candidate == true){
+				feature = T_RIGHT;
+				t_right_candidate = false;
+			} else t_right_candidate = true;
+		} else t_right_candidate = false;
+
+
+		if ( right_rect.x + right_rect.width - left_rect.x > img_cont.cols / 2) {
+			if (y_split_candidate == true){
+				feature = Y_SPLIT;
+				y_split_candidate = false;
+			} else y_split_candidate = true;
+		} else y_split_candidate = false;
+
+
 		// T_left : if (left_contour == short/wide and right_contour == tall/thin ); similarly for T_right
 
 		// Ysplit : if contour between left and right contour becomes taller and taller , better: check distance between 2 tall contours
 
 		// save only 3 contours and make decisions based on if there are 2 or 3 ??
-		feature = LINE;
-
-
 	} else {
 		feature = NOTHING;
 		cout << "no line found !!!"<<endl;
@@ -340,11 +394,7 @@ float take_pic_get_cm(int i, Side side){
 		right_cm=CAM_W/2;
 	}
 
-
-
-
-
-
+	cout << " FEATURE: " << feature << endl;	
 
 	// plot only left and right rectangle;
 	/*
@@ -435,8 +485,7 @@ float take_pic_get_cm(int i, Side side){
 	cm -= CAM_W/2; //cm_y= sum_y/count_y - CAM_W/2;
 
 	cout<<"CM: "<<cm<<endl;
-	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
-	cout << "Function time: " << function_time << endl;
+	
 	old_left = left_cm;
 	old_right = right_cm;
 	return cm;	
@@ -512,7 +561,7 @@ void pic_cm_comm1(){
 				y = take_pic_get_cm(i,LEFT);
 				printf("Y: %f\n",y);
 
-				if (feature == LINE) {
+				if (feature != NOTHING) {
 					msg = "@tht="+to_string(y)+"$";
 					cr.serial_write(msg);
 				}

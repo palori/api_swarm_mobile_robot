@@ -91,6 +91,15 @@ void Subscriber::set_is_connected(bool b){is_connected = b;}
 void Subscriber::set_publisher_ip(string s){publisher_ip = s;}
 
 
+Subscriber & Subscriber::operator=(Subscriber & subs){
+	set_debug(subs.get_debug());
+	set_port(subs.get_port());
+	set_topic(subs.get_topic());
+	set_is_connected(subs.get_is_connected());
+	set_publisher_ip(subs.get_publisher_ip());
+	return *this;
+}
+
 
 
 /////////////////////

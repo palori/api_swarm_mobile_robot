@@ -6,6 +6,25 @@ Robot::Robot(){
 
 	Robot_params rp("test",1,2,3,4,5,10);
 	this->params = rp;
+
+	/*Publisher pub(this->params.port_image.get());
+	pub.disconnect();
+	pub_image_task = pub;
+	pub_image_task.setup();
+
+	Publisher pub1(this->params.port_info.get());
+	pub1.disconnect();
+	pub_robot_info = pub1;
+	pub_robot_info.setup();*/
+
+	//pub_image_task(this->params.port_image.get());
+	//pub_robot_info(this->params.port_info.get());
+
+	pub_image_task.set_port(this->params.port_image.get());
+	pub_image_task.setup();
+
+	pub_robot_info.set_port(this->params.port_image.get());
+	pub_robot_info.setup();
 }
 
 Robot::~Robot(){}
@@ -35,6 +54,30 @@ Robot::Robot(string hostname, string hostname_a, string hostname_b, int max_len,
 
 	Robot_params rp_b(hostname_b, port_info_robot_b, max_len);
 	this->robot_b = rp_b;
+
+
+
+	/*
+	Publisher pub(this->params.port_image.get());
+	pub.disconnect();
+	pub_image_task = pub;
+	pub_image_task.setup();
+
+	Publisher pub1(this->params.port_info.get());
+	pub1.disconnect();
+	pub_robot_info = pub1;
+	pub_robot_info.setup();
+	*/
+
+	//pub_image_task(this->params.port_image.get());
+	//pub_robot_info(this->params.port_info.get());
+
+	pub_image_task.set_port(this->params.port_image.get());
+	pub_image_task.setup();
+
+	pub_robot_info.set_port(this->params.port_image.get());
+	pub_robot_info.setup();
+
 	
 }
 
@@ -109,6 +152,14 @@ void Robot::listen_robot_b(){
 }
 
 
+void Robot::send_task(){//Publisher pub_image_task){
+	count++; // only to test (delete after)
+	this->params.tasks.add_item(count);
+	string msg = encode_task(this->params.tasks.get_last_item());
+	pub_image_task.publish(msg);
+}
+
+
 
 
 
@@ -121,13 +172,13 @@ void Robot::run(){
 	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 
-	Publisher pub_image_task(params.port_task.get());
-	Publisher pub_robot_info(params.port_info.get());
+
 
 	while(true){
 		// localization
 		// task planner
 		// path planning -> if there is one
+		send_task();//pub_image_task);
 
 	}
 

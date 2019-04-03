@@ -10,9 +10,11 @@
 
 string detect_message(string msg);
 
-string encode_task(Items<int> tasks);
+string encode_task(int task);
 string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing);
 //void params2msg(string & msg);
+
+void decode_task(string msg, Items<int> & tasks);
 void decode_ctrl(string msg, Controllers & ctrl);	// NOT fully tested, but the important ones yes
 void decode_robot_params(string msg, Robot_params & rob);
 void decode_image(string msg, Sensors & sens, string & new_target);

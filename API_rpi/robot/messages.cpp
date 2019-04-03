@@ -30,9 +30,9 @@ string detect_message(string msg){
 
 
 // mainly use this, it's easier
-string encode_task(Items<int> tasks){
+string encode_task(int task){
 	Command command;
-	return command.A + "=" + to_string(tasks.get_last_item());
+	return "@" + command.A + "=" + to_string(task) + "$";
 }
 
 
@@ -93,6 +93,32 @@ string encode_image_params(int task, bool obst_found, float obst_dist, float the
 
 	if (get_debug()) cout << "Message: " << msg << endl;
 }  */
+
+
+
+
+
+
+void decode_task(string msg, Items<int> & tasks){
+	// detect if the message is 
+	msg = detect_message(msg);
+	if (msg != ""){
+		// split the message
+		vector<string> words = split_str(msg, "=,");    // utils
+		Command command;
+
+		// save it as new target pose
+		for (uint i=0; i<words.size(); i++){
+			if(words.at(i) == command.A){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					tasks.add_item(val);
+					i++;
+				}
+			}
+		}
+	}
+}
 
 
 

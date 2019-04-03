@@ -43,8 +43,8 @@ public:
 
 
 	COMM_RPI serial_comm;
-	//Publisher pub_image_task;		// what to look for in the image pocess
-	//Publisher pub_robot_info;		// send info to the rest of the robots
+	Publisher pub_image_task;		// what to look for in the image pocess
+	Publisher pub_robot_info;		// send info to the rest of the robots
 	//Subscriber subs_image_data;	// features extracted from image processing
 	//Subscriber subs_robot_a;		// susbcribe to 2 other robots A and B
 	//Subscriber subs_robot_b;		// maybe in an array????
@@ -53,6 +53,9 @@ public:
 
 
 	Item<string> image_data;
+
+
+	int count=0; // only to test (delete after)
 
 
 	/////////////
@@ -65,6 +68,8 @@ public:
 	void listen_image_process();
 	void listen_robot_a(); 	// maybe make it general to be scalable to 'n' robots
 	void listen_robot_b();
+
+	void send_task();
 
 	void run();						// start the threads and while true loop
 	

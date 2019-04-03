@@ -34,6 +34,9 @@ public:
 	void set_publisher_ip(string s);
 
 
+	Subscriber & operator=(Subscriber & subs);
+
+
 //private:
 	void setup();
 	void set_publish_endpoint();

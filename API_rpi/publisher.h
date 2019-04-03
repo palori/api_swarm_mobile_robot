@@ -31,6 +31,9 @@ public:
 	void set_is_connected(bool b);
 
 
+	Publisher & operator=(Publisher & pub);
+
+
 //private:
 	void setup();
 	void set_publish_endpoint();

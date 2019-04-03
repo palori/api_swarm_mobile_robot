@@ -6,7 +6,7 @@
 
 Publisher::Publisher(){
 	// automatically connects and opens to the port
-	setup();
+	//setup();
 }
 
 
@@ -86,6 +86,22 @@ void Publisher::set_debug(bool b){debug = b;}
 void Publisher::set_port(int i){port = i;}
 void Publisher::set_topic(string s){topic = s;}
 void Publisher::set_is_connected(bool b){is_connected = b;}
+
+
+
+
+Publisher & Publisher::operator=(Publisher & pub){
+	set_debug(pub.get_debug());
+	set_port(pub.get_port());
+	set_topic(pub.get_topic());
+	set_is_connected(pub.get_is_connected());
+
+	//this->context = pub.context;
+	//this->type = pub.type;
+	//this->*sok = pub.*sok;
+	return *this;
+}
+
 
 
 
