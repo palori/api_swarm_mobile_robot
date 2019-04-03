@@ -278,7 +278,7 @@ float take_pic_get_cm(int i, Side side){
 		Scalar color = Scalar(255,255,255);
 		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours[i],false)>120  && contourArea(contours[i])<12){ 
+		if (arcLength(contours[i],false)>120){ //  && contourArea(contours[i])<12){ 
 			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
