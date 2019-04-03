@@ -276,9 +276,9 @@ float take_pic_get_cm(int i, Side side){
 	cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
-		cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
+		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours.at(i),false)>120){ 
+		if (arcLength(contours[i],false)>120  && contourArea(contours[i])<12){ 
 			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
@@ -298,6 +298,7 @@ float take_pic_get_cm(int i, Side side){
 	if (good_contours.size()>0){
 		feature = LINE;
 		for (int i=0; i < good_contours.size(); i++){
+			cout << "Good contour " << i << ". area: " << contourArea(contours[i]) << endl;
 			Rect new_rect = boundingRect(good_contours[i]);
 			Point p_cm;
 			p_cm.x= new_rect.x + new_rect.width / 2;
