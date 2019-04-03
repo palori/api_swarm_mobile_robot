@@ -71,6 +71,23 @@ mkdir git_repos
 cd git_repos
 git clone https://github.com/palori/api_swarm_mobile_robot.git
 
+
+# Customize pi
+# - change hostname
+https://www.howtogeek.com/167195/how-to-change-your-raspberry-pi-or-other-linux-devices-hostname/
+# - change password
+https://www.raspberrypi.org/documentation/linux/usage/users.md
+
+
+# Setup networks and apply changes
+https://normally.online/2017/07/11/how-to-connect-your-raspberry-pi-to-eduroam/
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+# add/modify networks
+sudo wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+
+
+
+
 # create links into other folders from where the code will be run
 
 

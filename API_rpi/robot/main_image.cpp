@@ -52,7 +52,7 @@ int main(int argc, char const *argv[])
 
 		cout << "Welcome!" << endl;
 		Image_analysis ia(port_image, port_task, image_format, image_height, image_width);
-		ia.run();		// while true loop
+		//ia.run();		// while true loop
 	}
 	else {
 		cout << "Wrong inputs!" << endl;

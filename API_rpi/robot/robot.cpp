@@ -11,7 +11,7 @@ Robot::Robot(){
 Robot::~Robot(){}
 
 
-// probably never used...
+/*/ probably never used...
 Robot::Robot(string hostname){ // params from other 2 robots (port and hostname)
 	//Subscriber subs_robot_a();
 	//Subscriber subs_robot_b();
@@ -21,12 +21,21 @@ Robot::Robot(string hostname){ // params from other 2 robots (port and hostname)
 	//params.hostname.set(hostname);
 	//cout << "hostname: " << this->params.hostname.get_last_item() << endl;
 
-}
+}*/
 
 // always use this one
-Robot::Robot(string hostname, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
-	Robot_params rp(hostname, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b,20);
+Robot::Robot(string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
+	//cout << "start robot constructor" << endl;
+	Robot_params rp(hostname, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b,max_len);
 	this->params = rp;
+	//cout << "this params done" << endl;
+	
+	Robot_params rp_a(hostname_a, port_info_robot_a, max_len);
+	this->robot_a = rp_a;
+
+	Robot_params rp_b(hostname_b, port_info_robot_b, max_len);
+	this->robot_b = rp_b;
+	
 }
 
 
@@ -59,6 +68,7 @@ void Robot::serial(){
 
 
 void Robot::listen_image_process(){
+	Subscriber subs_image_data(params.port_image.get(), params.hostname.get());
 	string data = "";
 	while(true){
 		cout << "listenning to image processing..." << endl;
@@ -70,6 +80,7 @@ void Robot::listen_image_process(){
 }
 
 void Robot::listen_robot_a(){
+	Subscriber subs_robot_a(robot_a.port_info.get(), robot_a.hostname.get());
 	string info;
 	while(true){
 		cout << "listenning to robot " << robot_a.hostname.get() << "..." << endl;
@@ -84,6 +95,7 @@ void Robot::listen_robot_a(){
 
 
 void Robot::listen_robot_b(){
+	Subscriber subs_robot_b(robot_b.port_info.get(), robot_b.hostname.get());
 	string info;
 	while(true){
 		cout << "listenning to robot " << robot_b.hostname.get() << "..." << endl;
@@ -103,12 +115,14 @@ void Robot::listen_robot_b(){
 
 void Robot::run(){
 	//thread task_planning(task_planner_run);	// may be in the same thread for now
-	thread thread_serial(&Robot::serial, this);
+	
+	//thread thread_serial(&Robot::serial, this);
 	thread thread_image(&Robot::listen_image_process, this);
 	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 
-
+	Publisher pub_image_task(params.port_task.get());
+	Publisher pub_robot_info(params.port_info.get());
 
 	while(true){
 		// localization
@@ -117,7 +131,7 @@ void Robot::run(){
 
 	}
 
-	thread_serial.join();	// it will never reach this point, but good to have
+	//thread_serial.join();	// it will never reach this point, but good to have
 	thread_image.join();
 	thread_robot_a.join();
 	thread_robot_b.join();

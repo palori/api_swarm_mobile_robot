@@ -10,7 +10,7 @@ Image_analysis::Image_analysis(int publisher_port, int subscriber_port, double i
 	Subscriber subs(subscriber_port, "localhost");
 
 	// camera params...
-	Camera cam(image_format, image_height, image_width);
+	//Camera cam(image_format, image_height, image_width);		//comment to compile when NO Raspi
 
 	// ...
 }
@@ -33,7 +33,7 @@ void Image_analysis::set_message(string s){message = s;}		// might not need to b
 
 
 void Image_analysis::get_new_task(){
-
+	Subscriber subs;
 	string new_task;
 	int tsk;
 	while(true){
@@ -47,6 +47,7 @@ void Image_analysis::get_new_task(){
 
 void Image_analysis::send_data(){
 	set_message("Can I publish now???");// data should be encoded somewhere else (delete this line)
+	Publisher pub(7000);
 	pub.publish(get_message()); 
 }
 
@@ -98,7 +99,7 @@ void Image_analysis::ArUco(){}
 
 void Image_analysis::run(){
 
-	std::thread subscribe_new_task(get_new_task);
+	std::thread subscribe_new_task(&Image_analysis::get_new_task, this);
 	string data = "";
 
 	while(true){

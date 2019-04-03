@@ -5,9 +5,9 @@
 #include <iostream>
 #include <thread>
 
-#include "camera.h"
-#include "publisher.h"
-#include "subscriber.h"
+//#include "camera.h"				// comment to compile when NO Raspi
+#include "../publisher.h"
+#include "../subscriber.h"
 #include "item.h"
 #include "utils.h"
 
@@ -21,11 +21,11 @@ public:
 	Image_analysis(int publisher_port, int subscriber_port, double image_format, int image_height, int image_width); // add other input arguments
 
 private:
-	Camera cam;
+	//Camera cam;					// comment to compile when NO Raspi
 	string message;			// ?? need to be encoded, might not need to be an attr
 	Items<int> tasks;
-	Publisher pub;
-	Subscriber subs;
+	//Publisher pub;
+	//Subscriber subs;
 
 
 public:
