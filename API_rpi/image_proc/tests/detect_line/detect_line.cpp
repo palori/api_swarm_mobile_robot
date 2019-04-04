@@ -64,6 +64,7 @@ bool y_split_candidate = false;
 bool t_left_candidate = false;
 bool t_right_candidate = false;
 bool cross_candidate = false;
+//something
 
 
 /*SimpleBlobDetector::Params params;
