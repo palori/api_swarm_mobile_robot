@@ -72,10 +72,10 @@ Robot::Robot(string hostname, string hostname_a, string hostname_b, int max_len,
 	//pub_image_task(this->params.port_image.get());
 	//pub_robot_info(this->params.port_info.get());
 
-	pub_image_task.set_port(this->params.port_image.get());
+	pub_image_task.set_port(this->params.port_task.get());
 	pub_image_task.setup();
 
-	pub_robot_info.set_port(this->params.port_image.get());
+	pub_robot_info.set_port(this->params.port_info.get());
 	pub_robot_info.setup();
 
 	
@@ -93,6 +93,15 @@ void Robot::serial(){
 
 	serial_comm.serial_open();
 	while(true){
+
+		int millis_sleep = 2000;
+		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+
+		cout << endl << "### new task to Teensy: " << image_data.get() << " ###" << endl << endl;
+		sensors.print_info();
+
+
+		/* Commented for testing in Pau's pc
 		cout << "reading serial..." << endl;
 		data = serial_comm.serial_read();
 		decode_sensors(data, sensors);
@@ -105,20 +114,21 @@ void Robot::serial(){
 		// update msg
 		msg = image_data.get();		// probably there are other cases, now we want to test this
 		serial_comm.serial_write(msg);
+		*/
 	}
 	serial_comm.serial_close();
 }
 
 
 void Robot::listen_image_process(){
-	Subscriber subs_image_data(params.port_image.get(), params.hostname.get());
-	string data = "";
+	Subscriber subs_image_data(params.port_image.get(), "localhost");//params.hostname.get());
+	string data = "", new_target;
 	while(true){
 		cout << "listenning to image processing..." << endl;
 		data = subs_image_data.listen();	// blocking call
 		// decode data into params to use for localization and send to TSY
-
-		image_data.set(data);
+		decode_image(data, sensors, new_target);
+		image_data.set(new_target);
 	}
 }
 
@@ -167,7 +177,7 @@ void Robot::send_task(){//Publisher pub_image_task){
 void Robot::run(){
 	//thread task_planning(task_planner_run);	// may be in the same thread for now
 	
-	//thread thread_serial(&Robot::serial, this);
+	thread thread_serial(&Robot::serial, this);
 	thread thread_image(&Robot::listen_image_process, this);
 	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
 	thread thread_robot_b(&Robot::listen_robot_b, this);
@@ -178,7 +188,11 @@ void Robot::run(){
 		// localization
 		// task planner
 		// path planning -> if there is one
-		send_task();//pub_image_task);
+		
+		int millis_sleep = 5000;
+		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+		
+		send_task();
 
 	}
 
