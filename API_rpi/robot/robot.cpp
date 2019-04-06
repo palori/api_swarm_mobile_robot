@@ -90,6 +90,7 @@ void Robot::serial(){
 	// params like: wheel diameter, dist btw wheels, gearbox ratio...
 
 	string msg = "", data = "";
+	bool once = true; 				// delete after testing
 
 	serial_comm.serial_open();
 	while(true){
@@ -109,12 +110,15 @@ void Robot::serial(){
 		// need to be decoded to be used (can be done here or in localization...)
 		// maybe easier to modify 'comm_rpi_1.cpp' and do it there
 		// then update 'robot_params'
-
+		*/
 		cout << "writing serial..." << endl;
 		// update msg
 		msg = image_data.get();		// probably there are other cases, now we want to test this
+		
+		if (once) {msg = "@a=15,b=1,fwd=5,v=0.6$"; once = false;}
+		else msg = "";
 		serial_comm.serial_write(msg);
-		*/
+		
 	}
 	serial_comm.serial_close();
 }
