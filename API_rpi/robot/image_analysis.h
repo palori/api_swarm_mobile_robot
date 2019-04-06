@@ -4,6 +4,7 @@
 //#include <ctime>
 #include <iostream>
 #include <thread>
+#include <chrono>		// only for sleeping the threads while testing
 
 //#include "camera.h"				// comment to compile when NO Raspi
 #include "../publisher.h"

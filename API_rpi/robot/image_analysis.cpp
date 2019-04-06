@@ -59,8 +59,9 @@ void Image_analysis::get_new_task(){
 	while(true){
 		new_task = subs.listen();
 		// some decoding ??
-		tsk = str2int(new_task);
-		this->tasks.add_item(tsk);
+		//tsk = str2int(new_task);
+		//this->tasks.add_item(tsk);
+		decode_task(new_task,this->tasks);
 	}
 }
 
@@ -122,14 +123,21 @@ void Image_analysis::run(){
 	std::thread subscribe_new_task(&Image_analysis::get_new_task, this);
 	string data = "";
 
-
+	float theta = 0; // only for testing
 	while(true){
 		// if or switch to run the according task
 		cout << "    Task: " << tasks.get_last_item() << endl;
 
 		// update 'data' in the running task
 		// encode params in a string
-		this->message.set("");
+		theta++;
+		data = encode_image_params(10, 1, 0.67, theta, 3);
+		//data = "@of_i=1,cr=2,tht=40,od_i=0.23$";
+		this->message.set(data);
+
+		int millis_sleep = 5000;
+		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+
 		// at the end send the data to the robot
 		send_data();
 	}

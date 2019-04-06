@@ -115,6 +115,8 @@ double kb=-0.15;
 //follow line function
 double final_dist = 0.0;
 double delta_vel = 0.0;
+int count10=1;
+double int_action[10]={0,0,0,0,0,0,0,0,0,0};
 
 
 
@@ -191,13 +193,30 @@ void initializePID(int index, double K_P, double K_I, double time_period){
     T[index] = time_period;  
     e[index] = 0.0;
     e_i[index] = 0.0;
+    for (int i=0;i < 10;i++) int_action[i]=0.0;
 }
 
 double update_PID(double referent_value, double current_value, int index){
-
+    
     e[index] = referent_value - current_value;
     e_i[index] += e[index]*T[index];
     return KP[index] * e[index] + KI[index] * e_i[index];
+  
+}
+
+double update_PID_follow(double referent_value, double current_value, int index){
+
+    e[index] = referent_value - current_value;
+    int_action[count10 - 1] = e[index];
+    e_i[index] = 0;
+    for (int i=0;i<10;i++){
+        e_i[index] += int_action[i];
+    }
+    e_i[index] *= T[index];
+    count10++;
+    if (count10 == 10) count10 = 1;
+    double KV = (velocity1 + velocity2) / (2 * comm_tsy.get_vel()); 
+    return KV * KP[index] * e[index] + KV * KI[index] * e_i[index];
   
 }
 
@@ -356,7 +375,7 @@ void followline (double dist) {
 
     initializePID(VEL1,3*Kp,1*Ki,0.01);
     initializePID(VEL2,3*Kp,1*Ki,0.01);
-    initializePID(FOLLOW,0.0025,0,0.01);
+    initializePID(FOLLOW,0.0025,0.01,0.01);
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -531,11 +550,11 @@ void update_velocity(int drive_command){
             //Serial.println("delta travel: "+String(final_dist - dTravel));
             if (fabs(final_dist - dTravel) > 0.02){
 
-                //delta_vel = update_PID(0,Saturate(comm_tsy.get_th_t() , 100),FOLLOW);
-                double cm = Saturate(comm_tsy.get_th_t() , 150);
-                double K = 0.004 - sign(cm) * cm / 50000;
-                K=0.002 * (velocity1 + velocity2) / 0.6; 
-                delta_vel = - K * cm;
+                delta_vel = update_PID_follow(0,Saturate(comm_tsy.get_th_t() , 150),FOLLOW);
+                //double cm = Saturate(comm_tsy.get_th_t() , 150);
+                //double K = 0.004 - sign(cm) * cm / 50000;
+                //K=0.002 * (velocity1 + velocity2) / 0.6; 
+                //delta_vel = - K * cm;
                 
                 if (comm_tsy.get_th_t()<0) {
                   vel1=comm_tsy.get_vel() - delta_vel;   // in robot coord. syst.
@@ -548,10 +567,10 @@ void update_velocity(int drive_command){
                 if (vel1 < 0) vel1 = 0;
                 if (vel2 < 0) vel2 = 0;
                     
-                //v_max = sqrt(1.0 * fabs(final_dist - dTravel));
+                v_max = sqrt(1.0 * fabs(final_dist - dTravel));
                 
-                //vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
-                //vel2 = Saturate(vel2 , v_max);
+                vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
+                vel2 = Saturate(vel2 , v_max);
           
                 //vel1 = Saturate(vel1 , 0.5);   
                 //vel2 = Saturate(vel2 , 0.5);

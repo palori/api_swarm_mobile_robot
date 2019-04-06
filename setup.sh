@@ -180,4 +180,9 @@ export LD_LIBRARY_PATH=/home/pi/git_repos/zmqpp/build/max-g++
 
 ### SSHFS -> mount files from raspi into linux
 # example:
-sshfs local@cucumber:/home/local/api_swarm_mobile_robot /home/pau/raspi_mount
+sshfs local@cucumber:/home/local/api_swarm_mobile_robot /tmp/robot_mount
+sshfs local@broccoli:/home/local/git_repos/api_swarm_mobile_robot /tmp/robot_mount
+sshfs local@potato:/home/local/git_repos/api_swarm_mobile_robot /tmp/robot_mount
+
+# to unmount:
+umount /tmp/robot_mount
