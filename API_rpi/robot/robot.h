@@ -54,6 +54,7 @@ public:
 
 
 	Item<string> image_data;
+	Item<bool> run_mission;
 
 
 	int count=0; // only to test (delete after)

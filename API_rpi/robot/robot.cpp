@@ -89,35 +89,45 @@ void Robot::serial(){
 	// may want to send some initialization
 	// params like: wheel diameter, dist btw wheels, gearbox ratio...
 
-	string msg = "", data = "";
-	bool once = true; 				// delete after testing
+	string msg = "", old_msg = "", data = "";
+	//msg = "@a=15,b=1,fwd=5,v=0.6$";				// delete after testing
 
 	serial_comm.serial_open();
 	while(true){
 
-		int millis_sleep = 2000;
-		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+		if(run_mission.get()){
 
-		cout << endl << "### new task to Teensy: " << image_data.get() << " ###" << endl << endl;
-		sensors.print_info();
+			int millis_sleep = 2000;
+			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+
+			cout << endl << "### new task to Teensy: " << image_data.get() << " ###" << endl << endl;
+			sensors.print_info();
 
 
-		/* Commented for testing in Pau's pc
-		cout << "reading serial..." << endl;
-		data = serial_comm.serial_read();
-		decode_sensors(data, sensors);
-		// save data
-		// need to be decoded to be used (can be done here or in localization...)
-		// maybe easier to modify 'comm_rpi_1.cpp' and do it there
-		// then update 'robot_params'
-		*/
-		cout << "writing serial..." << endl;
-		// update msg
-		msg = image_data.get();		// probably there are other cases, now we want to test this
-		
-		if (once) {msg = "@a=15,b=1,fwd=5,v=0.6$"; once = false;}
-		else msg = "";
-		serial_comm.serial_write(msg);
+			/* Commented for testing in Pau's pc
+			cout << "reading serial..." << endl;
+			data = serial_comm.serial_read();
+			decode_sensors(data, sensors);
+			// save data
+			// need to be decoded to be used (can be done here or in localization...)
+			// maybe easier to modify 'comm_rpi_1.cpp' and do it there
+			// then update 'robot_params'
+			*/
+			
+			// update msg
+			msg = image_data.get();		// probably there are other cases, now we want to test this
+			
+			if (msg != old_msg) {
+				cout << "writing serial..." << endl;
+				serial_comm.serial_write(msg);
+				old_msg = msg;
+				cout << "serial message: " << msg << endl;
+			}
+		}
+		else{
+			// Maybe send to stop --> ask Andrija
+			cout << "Should send STOP to Teensy, but not implemented yet!" << endl;
+		}
 		
 	}
 	serial_comm.serial_close();
@@ -165,6 +175,30 @@ void Robot::listen_robot_b(){
 
 }
 
+void Robot::listen_master(){
+	Subscriber subs_master(8000, "ginger");
+	string msg;
+	int action;
+	float fwd, vel;
+	while(true){
+		cout << "listenning to master " << "(ginger)" << "..." << endl;
+		msg = subs_master.listen();		// blocking call
+
+		// decode info message
+		action = NULL;
+		fwd = NULL;
+		vel = NULL;
+		decode_master_commands(msg, params.hostname.get(), int & action, float & fwd, float & vel);
+
+		if (action != NULL || fwd != NULL || vel != NULL) image_data.set(new_target);		// maybe need to change the name to the param (image_data)
+
+		if (action == START) run_mission.set(true);
+		else if (action == PAUSE) run_mission.set(false);
+
+	}
+
+}
+
 
 void Robot::send_task(){//Publisher pub_image_task){
 	count++; // only to test (delete after)
@@ -185,23 +219,28 @@ void Robot::run(){
 	thread thread_image(&Robot::listen_image_process, this);
 	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
 	thread thread_robot_b(&Robot::listen_robot_b, this);
+	thread thread_master(&Robot::listen_master, this);
 
-
+	run_mission.set(false);
 
 	while(true){
-		// localization
-		// task planner
-		// path planning -> if there is one
-		
-		int millis_sleep = 5000;
-		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-		
-		send_task();
+
+		if(run_mission.get()){
+			// localization
+			// task planner
+			// path planning -> if there is one
+			
+			int millis_sleep = 5000;
+			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			
+			send_task();
+		}
 
 	}
 
-	//thread_serial.join();	// it will never reach this point, but good to have
+	thread_serial.join();	// it will never reach this point, but good to have
 	thread_image.join();
 	thread_robot_a.join();
 	thread_robot_b.join();
+	thread_master.join();
 }

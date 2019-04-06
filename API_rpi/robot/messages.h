@@ -19,6 +19,7 @@ void decode_ctrl(string msg, Controllers & ctrl);	// NOT fully tested, but the i
 void decode_robot_params(string msg, Robot_params & rob);
 void decode_image(string msg, Sensors & sens, string & new_target);
 void decode_sensors(string msg, Sensors & sens);
+void decode_master_commands(string msg, string hostname, int & action, float & fwd, float & vel);
 
 
 enum Actions {
@@ -61,7 +62,11 @@ enum Actions {
 	BALL,				// find balls (orange golf balls in this case)
 	HOLE,				// find a hole in the floor to place the ball
 	SHAPE,				// find shapes (orange cross, orange circle, green triangle and green square)
-	ARUCO				// find ArUco codes (for localization) (similar to QR codes)
+	ARUCO,				// find ArUco codes (for localization) (similar to QR codes)
+
+	// Mission options
+	START,
+	PAUSE
 
 };
 
@@ -116,6 +121,10 @@ struct Command {
 	string OF_i = "of_i";			// obstacle found in the image
 	string CROSS = "cr";			// which crossing type was found
 	string OD_i = "od_i";			// Distance of the obstacle from the robot[mm]
+
+
+	// robot
+	string ROB = "rob";				// in case the message is sent to a specific robot (hostname)
 };
 
 

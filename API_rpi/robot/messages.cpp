@@ -551,3 +551,62 @@ void decode_sensors(string msg, Sensors & sens){
 	}
 
 }
+
+
+
+
+
+
+
+void decode_master_commands(string msg, string hostname, int & action, float & fwd, float & vel){
+	// detect if the message is 
+	bool message_to_this_robot = true;
+	msg = detect_message(msg);
+	if (msg != ""){
+		// split the message
+		vector<string> words = split_str(msg, "=,");    // utils
+		Command command;
+
+		// save it as new target pose
+		for (uint i=0; i<words.size(); i++){
+			if(words.at(i) == command.ROB){
+				//int val = str2int();
+				if (!(words.at(i+1) == hostname || words.at(i+1) == "all")) {
+					message_to_this_robot = false;
+					break;
+				}
+			}
+
+			else if(words.at(i) == command.A){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					action = val;
+					i++;
+				}
+			}
+			else if(words.at(i) == command.FWD){
+				float val = str2float(words.at(i+1));
+				if (val != BIG_FLOAT) {
+					fwd = val;
+					i++;
+				}
+			}
+			else if(words.at(i) == command.V){
+				float val = str2float(words.at(i+1));
+				if (val != BIG_FLOAT) {
+					vel = val;
+					i++;
+				}
+			}
+
+		}
+
+
+		if (!message_to_this_robot){
+			action = NULL;
+			fwd == NULL;
+			vel == NULL;
+		}
+	}
+
+}
