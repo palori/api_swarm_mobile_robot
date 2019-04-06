@@ -25,6 +25,8 @@ Robot::Robot(){
 
 	pub_robot_info.set_port(this->params.port_image.get());
 	pub_robot_info.setup();
+
+	run_mission.set(false);
 }
 
 Robot::~Robot(){}
@@ -78,6 +80,7 @@ Robot::Robot(string hostname, string hostname_a, string hostname_b, int max_len,
 	pub_robot_info.set_port(this->params.port_info.get());
 	pub_robot_info.setup();
 
+	run_mission.set(false);
 	
 }
 
@@ -89,7 +92,7 @@ void Robot::serial(){
 	// may want to send some initialization
 	// params like: wheel diameter, dist btw wheels, gearbox ratio...
 
-	string msg = "", old_msg = "", data = "";
+	string msg = "", old_msg = "1", data = "";
 	//msg = "@a=15,b=1,fwd=5,v=0.6$";				// delete after testing
 
 	serial_comm.serial_open();
@@ -125,8 +128,11 @@ void Robot::serial(){
 			}
 		}
 		else{
-			// Maybe send to stop --> ask Andrija
-			cout << "Should send STOP to Teensy, but not implemented yet!" << endl;
+			if (msg != old_msg) {
+				// Maybe send to stop --> ask Andrija
+				cout << "Should send STOP to Teensy, but not implemented yet!" << endl;
+				old_msg = msg;
+			}
 		}
 		
 	}
@@ -188,9 +194,9 @@ void Robot::listen_master(){
 		action = NULL;
 		fwd = NULL;
 		vel = NULL;
-		decode_master_commands(msg, params.hostname.get(), int & action, float & fwd, float & vel);
+		decode_master_commands(msg, params.hostname.get(), action, fwd, vel);
 
-		if (action != NULL || fwd != NULL || vel != NULL) image_data.set(new_target);		// maybe need to change the name to the param (image_data)
+		if (action != NULL || fwd != NULL || vel != NULL) image_data.set(msg);		// maybe need to change the name to the param (image_data)
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
@@ -220,8 +226,6 @@ void Robot::run(){
 	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 	thread thread_master(&Robot::listen_master, this);
-
-	run_mission.set(false);
 
 	while(true){
 

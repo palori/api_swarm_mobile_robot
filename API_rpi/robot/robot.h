@@ -70,6 +70,7 @@ public:
 	void listen_image_process();
 	void listen_robot_a(); 	// maybe make it general to be scalable to 'n' robots
 	void listen_robot_b();
+	void listen_master();
 
 	void send_task();
 
