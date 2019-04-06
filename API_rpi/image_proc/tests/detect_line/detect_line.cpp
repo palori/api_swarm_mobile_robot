@@ -553,7 +553,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=2$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<300){
