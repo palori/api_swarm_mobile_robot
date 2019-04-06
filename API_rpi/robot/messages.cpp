@@ -49,7 +49,7 @@ string encode_image_params(int task, bool obst_found, float obst_dist, float the
 
 		if (task != ARUCO){
 			// distance to the obstacle
-			msg += "," + command.OD_i + "=" + to_string(theta);
+			msg += "," + command.OD_i + "=" + to_string(obst_dist);
 
 			// heading error parameter -> int or float???
 			msg += "," + command.TH_t + "=" + to_string(theta);

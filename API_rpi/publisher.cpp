@@ -5,8 +5,7 @@
 ////////////////////
 
 Publisher::Publisher(){
-	// automatically connects and opens to the port
-	//setup();
+	//setup();	// automatically connects and opens to the port
 }
 
 
