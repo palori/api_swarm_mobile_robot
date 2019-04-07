@@ -39,7 +39,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold=220; //% = 40;
+int lowThreshold=170; //% = 40;
 const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -145,8 +145,8 @@ void CannyThreshold(int param){
 		}
 	}
 
-	string pic_name_cont = "pics/pic_cont_"+to_string(param)+".png";
-	imwrite(pic_name_cont,img_cont);
+	string pic_name_th = "pics/pic_th_"+to_string(param)+".png";
+	imwrite(pic_name_th,img_cont);
 
 }
 
@@ -187,15 +187,15 @@ float take_pic_get_cm(int i, Side side){
 
 	//Start capture - gray image
 	//%Mat img;
-	//%cout<<"Capturing "+to_string(i)+"..."<<endl;
-	//%Camera.grab();
-	//%Camera.retrieve (img);
+	cout<<"Capturing "+to_string(i)+"..."<<endl;
+	Camera.grab();
+	Camera.retrieve (img);
 
 	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
 
 	//load image - just for testing
-	img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
+	//img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
 
 	//namedWindow("image", WINDOW_NORMAL);
 	//imshow("image", img);
@@ -332,7 +332,7 @@ float take_pic_get_cm(int i, Side side){
 		}
 	}
 
-	lowThreshold = 220;
+	lowThreshold = 170;
 	
 	//sort contours by arc length - assuming line contours are longer than noise contours
 	sort(good_contours.begin(),good_contours.end(),compareContoursHeight);
@@ -502,8 +502,8 @@ float take_pic_get_cm(int i, Side side){
 	//string pic_name = "pics/pic_crop_"+to_string(i)+".png";
 	//imwrite(pic_name,img_canny_crop);
 
-	//string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
-	//imwrite(pic_name_cont,img_cont);
+	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
+	imwrite(pic_name_cont,img_cont);
 	
 	//CALCULATING CENTER OF MASS
 	/*int sum_y = 0;
@@ -602,7 +602,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<300){
