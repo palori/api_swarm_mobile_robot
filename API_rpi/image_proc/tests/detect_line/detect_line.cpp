@@ -39,7 +39,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold = 40;
+int lowThreshold; //% = 40;
 const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -64,8 +64,8 @@ bool y_split_candidate = false;
 bool t_left_candidate = false;
 bool t_right_candidate = false;
 bool cross_candidate = false;
-//something
 
+Mat img, img_gamma, img_blur, img_canny, canny_edges, img_hist; 
 
 /*SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
@@ -121,6 +121,15 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 }
 
+void CannyThreshold(int,void*){
+
+	Canny(img_blur, canny_edges, lowThreshold, lowThreshold * thres_ratio , kernel_size);
+	img_canny = Scalar::all(0);
+	img_gamma.copyTo(img_canny, canny_edges);
+	imshow("edges",img_canny);
+
+}
+
 void HistStretch(Mat& src, Mat& dst) {
 
 	CV_Assert(src.data);
@@ -157,7 +166,7 @@ float take_pic_get_cm(int i, Side side){
 	double function_time = (double)getTickCount();
 
 	//Start capture - gray image
-	Mat img;
+	//%Mat img;
 	cout<<"Capturing "+to_string(i)+"..."<<endl;
 	Camera.grab();
 	Camera.retrieve (img);
@@ -177,12 +186,12 @@ float take_pic_get_cm(int i, Side side){
 	//cvtColor(img, img_gray, COLOR_RGB2GRAY);
 	
 	//histogram stretch
-	Mat img_hist;
+	//%Mat img_hist;
 	//equalizeHist(img, img_hist);
 	HistStretch(img,img_hist);
 	
 	//gamma mapping
-	Mat img_gamma;
+	//%Mat img_gamma;
 	float gamma = 3;	
 	GammaMapping(img_hist, img_gamma, gamma);
 
@@ -234,16 +243,21 @@ float take_pic_get_cm(int i, Side side){
 
 
 	//blurring
-	Mat img_blur;
+	//%Mat img_blur;
 	blur(img_gamma, img_blur, Size(3,3));
 	//medianBlur(img_gamma, img_blur, 9);
 
 	//canny edge detection
-	Mat img_canny,canny_edges;
-	Canny(img_blur, canny_edges, lowThreshold, lowThreshold * thres_ratio , kernel_size);
-	img_canny = Scalar::all(0);
-	img_gamma.copyTo(img_canny, canny_edges);
+	//%Mat img_canny,canny_edges;
+	//%Canny(img_blur, canny_edges, lowThreshold, lowThreshold * thres_ratio , kernel_size);
+	//%img_canny = Scalar::all(0);
+	//%img_gamma.copyTo(img_canny, canny_edges);
 
+	namedWindow("edges",CV_WINDOW_AUTOSIZE); //%
+	createTrackbar("Min Threshold: ", "edges", &lowThreshold, 60, CannyThreshold); //%
+	CannyThreshold(0,0); //%
+
+	waitKey(0); //%
 	//thresholding canny
 	//Mat img_ct;
 	//threshold(img_canny,img_ct,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
@@ -553,7 +567,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=2$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<300){
