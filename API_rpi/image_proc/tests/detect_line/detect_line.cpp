@@ -65,7 +65,11 @@ bool t_left_candidate = false;
 bool t_right_candidate = false;
 bool cross_candidate = false;
 
-Mat img, img_gamma, img_blur, img_canny, canny_edges, img_hist; 
+Mat img, img_gamma, img_blur, img_canny, canny_edges, img_hist, img_canny_crop, img_cont; 
+
+vector<vector<Point>> contours;
+vector<vector<Point>> good_contours;
+vector<Vec4i> hierarchy;
 
 /*SimpleBlobDetector::Params params;
 vector<KeyPoint> keypoints;
@@ -126,7 +130,21 @@ void CannyThreshold(int,void*){
 	Canny(img_blur, canny_edges, lowThreshold, lowThreshold * thres_ratio , kernel_size);
 	img_canny = Scalar::all(0);
 	img_gamma.copyTo(img_canny, canny_edges);
-	imshow("edges",img_canny);
+	img_canny_crop = img_canny.clone();
+	img_canny_crop = img_canny_crop(Rect(0,CAM_H*0.5,CAM_W,CAM_H*0.5));
+	findContours(img_canny_crop, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
+	img_cont = Mat::zeros(img_canny_crop.size(),CV_8UC1);
+	//cout << "number of contours: "<< contours.size() << endl;
+	for (int i=0;i < contours.size(); i++){
+		Scalar color = Scalar(255,255,255);
+		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
+		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
+		if (arcLength(contours[i],false)>120 && contourArea(contours[i])<20){ 
+			good_contours.push_back(contours[i]);
+			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
+		}
+	}
+	imshow("contours",img_cont);
 
 }
 
@@ -253,8 +271,8 @@ float take_pic_get_cm(int i, Side side){
 	//%img_canny = Scalar::all(0);
 	//%img_gamma.copyTo(img_canny, canny_edges);
 
-	namedWindow("edges",CV_WINDOW_AUTOSIZE); //%
-	createTrackbar("Min Threshold: ", "edges", &lowThreshold, 60, CannyThreshold); //%
+	namedWindow("contours",CV_WINDOW_AUTOSIZE); //%
+	createTrackbar("Min Threshold: ", "contours", &lowThreshold, 60, CannyThreshold); //%
 	CannyThreshold(0,0); //%
 
 	waitKey(0); //%
@@ -280,15 +298,13 @@ float take_pic_get_cm(int i, Side side){
 	*/
 
 	//find contours
-
-	vector<vector<Point>> contours;
-	vector<vector<Point>> good_contours;
-	vector<Vec4i> hierarchy;
-	Mat img_canny_crop = img_canny.clone();
+	
+	/*
+	img_canny_crop = img_canny.clone();
 	img_canny_crop = img_canny_crop(Rect(0,CAM_H*0.5,CAM_W,CAM_H*0.5));
 	findContours(img_canny_crop, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
-	Mat img_cont = Mat::zeros(img_canny_crop.size(),CV_8UC1);
-	cout << "number of contours: "<< contours.size() << endl;
+	img_cont = Mat::zeros(img_canny_crop.size(),CV_8UC1);
+	//cout << "number of contours: "<< contours.size() << endl;
 	for (int i=0;i < contours.size(); i++){
 		Scalar color = Scalar(255,255,255);
 		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
@@ -297,8 +313,8 @@ float take_pic_get_cm(int i, Side side){
 			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
-	}
-
+	}*/
+	
 	//sort contours by arc length - assuming line contours are longer than noise contours
 	sort(good_contours.begin(),good_contours.end(),compareContoursHeight);
 
