@@ -39,7 +39,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold; //% = 40;
+int lowThreshold=1; //% = 40;
 const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -125,9 +125,9 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 }
 
-void CannyThreshold(int,void*){
+void CannyThreshold(int param){
 
-	Canny(img_blur, canny_edges, lowThreshold, lowThreshold * thres_ratio , kernel_size);
+	Canny(img_blur, canny_edges, param, param * thres_ratio , kernel_size);
 	img_canny = Scalar::all(0);
 	img_gamma.copyTo(img_canny, canny_edges);
 	img_canny_crop = img_canny.clone();
@@ -144,7 +144,9 @@ void CannyThreshold(int,void*){
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
 	}
-	imshow("contours",img_cont);
+
+	string pic_name_cont = "pics/pic_cont_"+to_string(param)+".png";
+	imwrite(pic_name_cont,img_cont);
 
 }
 
@@ -271,11 +273,13 @@ float take_pic_get_cm(int i, Side side){
 	//%img_canny = Scalar::all(0);
 	//%img_gamma.copyTo(img_canny, canny_edges);
 
-	namedWindow("contours",CV_WINDOW_AUTOSIZE); //%
-	createTrackbar("Min Threshold: ", "contours", &lowThreshold, 60, CannyThreshold); //%
-	CannyThreshold(0,0); //%
+	//namedWindow("contours",CV_WINDOW_AUTOSIZE); //%
+	//createTrackbar("Min Threshold: ", "contours", &lowThreshold, 60, CannyThreshold); //%
+	//CannyThreshold(0,0); //%
 
-	waitKey(0); //%
+	//waitKey(0); //%
+
+
 	//thresholding canny
 	//Mat img_ct;
 	//threshold(img_canny,img_ct,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
@@ -314,6 +318,12 @@ float take_pic_get_cm(int i, Side side){
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
 	}*/
+
+	for (int i = 1; i<60;i++){
+
+		CannyThreshold(i);
+
+	}
 	
 	//sort contours by arc length - assuming line contours are longer than noise contours
 	sort(good_contours.begin(),good_contours.end(),compareContoursHeight);
@@ -483,8 +493,8 @@ float take_pic_get_cm(int i, Side side){
 	//string pic_name = "pics/pic_crop_"+to_string(i)+".png";
 	//imwrite(pic_name,img_canny_crop);
 
-	string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
-	imwrite(pic_name_cont,img_cont);
+	//string pic_name_cont = "pics/pic_cont_"+to_string(i)+".png";
+	//imwrite(pic_name_cont,img_cont);
 	
 	//CALCULATING CENTER OF MASS
 	/*int sum_y = 0;
