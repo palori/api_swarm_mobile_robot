@@ -185,15 +185,15 @@ float take_pic_get_cm(int i, Side side){
 
 	//Start capture - gray image
 	//%Mat img;
-	cout<<"Capturing "+to_string(i)+"..."<<endl;
-	Camera.grab();
-	Camera.retrieve (img);
+	//%cout<<"Capturing "+to_string(i)+"..."<<endl;
+	//%Camera.grab();
+	//%Camera.retrieve (img);
 
 	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
 
 	//load image - just for testing
-	//img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
+	img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
 
 	//namedWindow("image", WINDOW_NORMAL);
 	//imshow("image", img);
