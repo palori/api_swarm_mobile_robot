@@ -39,7 +39,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold=1; //% = 40;
+int lowThreshold=220; //% = 40;
 const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -127,7 +127,7 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 void CannyThreshold(int param){
 
-	Canny(img_blur, canny_edges, param, param * thres_ratio , kernel_size);
+	Canny(img_blur, canny_edges, param, param + 50 , kernel_size);
 	img_canny = Scalar::all(0);
 	img_gamma.copyTo(img_canny, canny_edges);
 	img_canny_crop = img_canny.clone();
@@ -139,7 +139,7 @@ void CannyThreshold(int param){
 		Scalar color = Scalar(255,255,255);
 		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours[i],false)>120 && contourArea(contours[i])<20){ 
+		if (arcLength(contours[i],false)>120){// && contourArea(contours[i])<20){ 
 			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
@@ -318,12 +318,21 @@ float take_pic_get_cm(int i, Side side){
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
 	}*/
-
-	for (int i = 1; i<60;i++){
-
-		CannyThreshold(i);
-
+	
+	bool bad_threshold = true;
+	while (bad_threshold){
+		good_contours.clear();
+		contours.clear();
+		CannyThreshold(lowThreshold);
+		if (good_contours.size()==0) lowThreshold-=50;
+		else bad_threshold = false;
+		if (lowThreshold<50) {
+			CannyThreshold(150);
+			bad_threshold = false;
+		}
 	}
+
+	lowThreshold = 220;
 	
 	//sort contours by arc length - assuming line contours are longer than noise contours
 	sort(good_contours.begin(),good_contours.end(),compareContoursHeight);
