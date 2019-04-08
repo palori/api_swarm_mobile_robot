@@ -5,8 +5,7 @@
 Camera::Camera(){}
 Camera::~Camera(){}
 
-Camera::Camera(double image_format, int image_height, int image_width){
-	set_image_format(image_format);
+Camera::Camera(int image_height, int image_width){
 	set_image_height(image_height);
 	set_image_width(image_width);
 }

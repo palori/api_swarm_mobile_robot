@@ -5,13 +5,12 @@ Image_analysis::Image_analysis(){}
 
 Image_analysis::~Image_analysis(){}
 
-Image_analysis::Image_analysis(int port_image, int port_task, int image_height, int image_width){		// add other input arguments
+Image_analysis::Image_analysis(int port_image, int port_task){		// add other input arguments
 	//Publisher pub(port_image);
 	//Subscriber subs(port_task, "localhost");
 
-	// camera params...
-	//Camera cam(image_format, image_height, image_width);		//comment to compile when NO Raspi
 
+	
 	// ...
 	this->port_image.set(port_image);
 	this->port_task.set(port_task);
@@ -73,7 +72,57 @@ void Image_analysis::send_data(){
 }
 
 
+void Image_analysis::take_picture(){
+	Camera cam;
+	cam.init();
+	cam.start();
 
+	int old_task = -1, task = -1;
+	Mat pic;
+
+
+	while (true){
+		task = tasks.get_last_item();
+		if (old_task != task){
+			cam.stop();
+			if (task == LINE){
+				cam.set_image_format(CV_8UC1);
+				cam.set_image_height(240);
+				cam.set_image_width(320);
+			}
+			else if (task == BALL){
+				cam.set_image_format(CV_8UC3);
+				cam.set_image_height(240);
+				cam.set_image_width(320);
+			}
+			else if (task == HOLE){
+				cam.set_image_format(CV_8UC1);
+				cam.set_image_height(240);
+				cam.set_image_width(320);
+			}
+			else if (task == SHAPE){
+				cam.set_image_format(CV_8UC3);
+				cam.set_image_height(240);
+				cam.set_image_width(320);
+			}
+			else if (task == ARUCO){
+				cam.set_image_format(CV_8UC1);
+				cam.set_image_height(960);
+				cam.set_image_width(1280);
+			}
+			else{
+				
+			}
+			cam.init();
+			old_task = task;
+			cam.start();
+		}
+		else {
+			pic = cam.take_picture();
+			picture.set(pic);
+		}
+	}
+}
 
 
 
@@ -99,34 +148,29 @@ void task(){
 }
 */
 
-void Image_analysis::idle(){}
-void Image_analysis::follow_line(){}
-void Image_analysis::crossing(){}		// ?? maybe not needed, integrated in 'follow_line'
-void Image_analysis::ball(){}
-void Image_analysis::shape(){}
-void Image_analysis::obstacle(){}		// ?? maybe not needed
-void Image_analysis::ArUco(){}
-
-
-
-
-
-
-
-
-
 
 
 
 void Image_analysis::run(){
 
 	std::thread subscribe_new_task(&Image_analysis::get_new_task, this);
+	std::thread subscribe_pictures(&Image_analysis::take_picture, this);
 	string data = "";
 
 	float theta = 0; // only for testing
 	while(true){
 		// if or switch to run the according task
 		cout << "    Task: " << tasks.get_last_item() << endl;
+
+
+		if (task == LINE) follow_line(picture.get());
+		else if (task == BALL) follow_line(picture.get());
+		else if (task == HOLE) follow_line(picture.get());
+		else if (task == SHAPE) follow_line(picture.get());
+		else if (task == ARUCO) follow_line(picture.get());
+
+
+
 
 		// update 'data' in the running task
 		// encode params in a string

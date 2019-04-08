@@ -13,6 +13,8 @@
 #include "item.h"
 #include "utils.h"
 
+#include "computer_vision.h"
+
 // opencv libraries???
 //#include "opencv2/highgui/highgui.hpp"
 //#include "opencv2/imgproc/imgproc.hpp"
@@ -27,7 +29,7 @@ public:
 	Image_analysis();
 	~Image_analysis();
 
-	Image_analysis(int port_image, int port_task, int image_height, int image_width); // add other input arguments
+	Image_analysis(int port_image, int port_task); // add other input arguments
 
 //private:
 	// params
@@ -36,12 +38,11 @@ public:
 	Item<int> image_height;
 	Item<int> image_width;
 
-	//Camera cam;					// comment to compile when NO Raspi
 	Item<string> message;			// ?? need to be encoded, might not need to be an attr
 	Items<int> tasks;
 	Publisher pub_image;
 	//Subscriber subs;
-	//Item<Mat> picture;
+	Item<Mat> picture;
 
 
 //public:
@@ -64,22 +65,7 @@ public:
 	void take_picture();	// in charge of taking puctures
 
 
-	/* TASKS:
-	 * - idle
-	 * - follow line
-	 * - detect crossing
-	 * - detect ball
-	 * - detect shape
-	 * - detect obstacle
-	 * - find ArUco code
-	 */
-	void idle();
-	void follow_line();
-	void crossing();		// ?? maybe not needed, integrated in 'follow_line'
-	void ball();
-	void shape();
-	void obstacle();		// ?? maybe not needed
-	void ArUco();
+	
 
 	void run();				// loop forever
 	

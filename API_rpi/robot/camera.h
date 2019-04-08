@@ -15,13 +15,13 @@ public:
 	Camera();
 	~Camera();
 
-	Camera(double image_format, int image_height, int image_width);
+	Camera(int image_height, int image_width);
 
 private:
 	raspicam::RaspiCam_Cv camera;
-	double image_format;			// OpenCV param: CV_8UC1 (gray), CV_8UC3 (RGB)
-	int image_height;
-	int image_width;
+	double image_format = CV_8UC1;			// OpenCV param: CV_8UC1 (gray), CV_8UC3 (RGB)
+	int image_height = 240;
+	int image_width = 320;
 	int focal_length;
 	// some calibration params...
 
