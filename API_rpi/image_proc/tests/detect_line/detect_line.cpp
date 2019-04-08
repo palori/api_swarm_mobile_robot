@@ -39,7 +39,7 @@ int threshold_type = 0;
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
-int lowThreshold; //% = 40;
+int lowThreshold=170; //% = 40;
 const int thres_ratio = 4;
 const int kernel_size = 3;
 const int CAM_W = 320;
@@ -125,9 +125,9 @@ void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 
 }
 
-void CannyThreshold(int,void*){
+void CannyThreshold(int param){
 
-	Canny(img_blur, canny_edges, lowThreshold, lowThreshold * thres_ratio , kernel_size);
+	Canny(img_blur, canny_edges, param, param + 50 , kernel_size);
 	img_canny = Scalar::all(0);
 	img_gamma.copyTo(img_canny, canny_edges);
 	img_canny_crop = img_canny.clone();
@@ -139,12 +139,14 @@ void CannyThreshold(int,void*){
 		Scalar color = Scalar(255,255,255);
 		//cout << "Contour " << i << ". area: " << contourArea(contours[i]) << endl;
 		//rectangle(img_cont,p1,p2,CV_RGB(255,255,255),1);
-		if (arcLength(contours[i],false)>120 && contourArea(contours[i])<20){ 
+		if (arcLength(contours[i],false)>120){// && contourArea(contours[i])<20){ 
 			good_contours.push_back(contours[i]);
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
 	}
-	imshow("contours",img_cont);
+
+	string pic_name_th = "pics/pic_th_"+to_string(param)+".png";
+	imwrite(pic_name_th,img_cont);
 
 }
 
@@ -185,15 +187,15 @@ float take_pic_get_cm(int i, Side side){
 
 	//Start capture - gray image
 	//%Mat img;
-	//%cout<<"Capturing "+to_string(i)+"..."<<endl;
-	//%Camera.grab();
-	//%Camera.retrieve (img);
+	cout<<"Capturing "+to_string(i)+"..."<<endl;
+	Camera.grab();
+	Camera.retrieve (img);
 
 	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
 
 	//load image - just for testing
-	img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
+	//img = imread("../take_pic/crossings/pic_img_031.png",CV_LOAD_IMAGE_GRAYSCALE);
 
 	//namedWindow("image", WINDOW_NORMAL);
 	//imshow("image", img);
@@ -271,11 +273,13 @@ float take_pic_get_cm(int i, Side side){
 	//%img_canny = Scalar::all(0);
 	//%img_gamma.copyTo(img_canny, canny_edges);
 
-	namedWindow("contours",CV_WINDOW_AUTOSIZE); //%
-	createTrackbar("Min Threshold: ", "contours", &lowThreshold, 60, CannyThreshold); //%
-	CannyThreshold(0,0); //%
+	//namedWindow("contours",CV_WINDOW_AUTOSIZE); //%
+	//createTrackbar("Min Threshold: ", "contours", &lowThreshold, 60, CannyThreshold); //%
+	//CannyThreshold(0,0); //%
 
-	waitKey(0); //%
+	//waitKey(0); //%
+
+
 	//thresholding canny
 	//Mat img_ct;
 	//threshold(img_canny,img_ct,0,255,CV_THRESH_BINARY | CV_THRESH_OTSU);
@@ -314,6 +318,21 @@ float take_pic_get_cm(int i, Side side){
 			drawContours(img_cont, contours, i , color, 1, 8, hierarchy, 0, Point());
 		}
 	}*/
+	
+	bool bad_threshold = true;
+	while (bad_threshold){
+		good_contours.clear();
+		contours.clear();
+		CannyThreshold(lowThreshold);
+		if (good_contours.size()==0) lowThreshold-=50;
+		else bad_threshold = false;
+		if (lowThreshold<50) {
+			CannyThreshold(150);
+			bad_threshold = false;
+		}
+	}
+
+	lowThreshold = 170;
 	
 	//sort contours by arc length - assuming line contours are longer than noise contours
 	sort(good_contours.begin(),good_contours.end(),compareContoursHeight);
@@ -583,7 +602,7 @@ void pic_cm_comm1(){
 	    cr.serial_open();
 	    int i=0;
 	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=0.5$";
+	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
 	    cr.serial_write(msg);
 	    usleep(10000);
 	    while (i<300){

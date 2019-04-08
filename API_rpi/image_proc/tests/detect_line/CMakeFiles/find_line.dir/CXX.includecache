@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp
 comm_rpi_1.h
-/home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.h
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.h
 
-/home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.h
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.h
 stdio.h
 -
 fcntl.h
@@ -32,17 +32,17 @@ unistd.h
 chrono
 -
 utils.h
-/home/local/api_swarm_mobile_robot/API_rpi/utils.h
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.h
 
-/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/detect_line.cpp
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/detect_line.cpp
 opencv2/highgui/highgui.hpp
-/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/highgui/highgui.hpp
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/highgui/highgui.hpp
 opencv2/imgproc/imgproc.hpp
-/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/imgproc/imgproc.hpp
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/imgproc/imgproc.hpp
 opencv2/opencv.hpp
-/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/opencv.hpp
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/opencv.hpp
 opencv2/core/core.hpp
-/home/local/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/core/core.hpp
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/opencv2/core/core.hpp
 raspicam/raspicam_cv.h
 -
 ctime
@@ -62,13 +62,13 @@ vector
 signal.h
 -
 ../../../comm_rpi_1.h
-/home/local/api_swarm_mobile_robot/API_rpi/comm_rpi_1.h
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.h
 
-/home/local/api_swarm_mobile_robot/API_rpi/utils.cpp
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp
 utils.h
-/home/local/api_swarm_mobile_robot/API_rpi/utils.h
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.h
 
-/home/local/api_swarm_mobile_robot/API_rpi/utils.h
+/home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.h
 iostream
 -
 string
