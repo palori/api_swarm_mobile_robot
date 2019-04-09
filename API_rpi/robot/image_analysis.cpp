@@ -164,10 +164,10 @@ void Image_analysis::run(){
 
 
 		if (task == LINE) follow_line(picture.get());
-		else if (task == BALL) follow_line(picture.get());
-		else if (task == HOLE) follow_line(picture.get());
-		else if (task == SHAPE) follow_line(picture.get());
-		else if (task == ARUCO) follow_line(picture.get());
+		else if (task == BALL) ball(picture.get());
+		else if (task == HOLE) hole(picture.get());
+		else if (task == SHAPE) shape(picture.get());
+		else if (task == ARUCO) ArUco(picture.get());
 
 
 
