@@ -36,9 +36,11 @@ using namespace std;
 // Thresholding == binarize
 int threshold_value = 100;//150;
 int threshold_type = 0;
+
 int const max_value = 255;
 int const max_type = 4;
 int const max_BINARY_value = 255;
+
 int lowThreshold=170; //% = 40;
 const int thres_ratio = 4;
 const int kernel_size = 3;
@@ -597,31 +599,51 @@ float take_pic_get_cm(int i, Side side){
 void pic_cm_comm1(){
 
 	camera_init();
+	bool followline = false;
+	bool pictures = true;
 	if (camera_start() >= 0){
 		
-	    cr.serial_open();
-	    int i=0;
-	    float y=0.0;
-	    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
-	    cr.serial_write(msg);
-	    usleep(10000);
-	    while (i<300){
-	    		//camera_start();
+		if (followline) {
+			cr.serial_open();
+		    int i=0;
+		    float y=0.0;
+		    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
+		    cr.serial_write(msg);
+		    usleep(10000);
+		    while (i<300){
+		    		//camera_start();
 
-				y = take_pic_get_cm(i,LEFT);
-				printf("Y: %f\n",y);
+					y = take_pic_get_cm(i,LEFT);
+					printf("Y: %f\n",y);
 
-				if (feature != NOTHING) {
-					msg = "@tht="+to_string(y)+"$";
-					cr.serial_write(msg);
-				}
-				//usleep(10000);
-				i++;
-				//camera_stop();
-			
-	    }
-	    cr.serial_close();
-	    camera_stop();
+					if (feature != NOTHING) {
+						msg = "@tht="+to_string(y)+"$";
+						cr.serial_write(msg);
+					}
+					//usleep(10000);
+					i++;
+					//camera_stop();
+				
+		    }
+		    cr.serial_close();
+		    camera_stop();	
+		}
+		if (pictures) {
+
+			int j=0;
+			Mat pic;
+			while(j<20){
+				cout<<"Capturing "+to_string(j)+"..."<<endl;
+				Camera.grab();
+				Camera.retrieve (pic);
+				string pic_name = "pics/pic_"+to_string(j)+".png";
+				imwrite(pic_name,pic);
+				j++;
+				usleep(1000000);
+			}
+
+		}
+	    
 	}
 
 }

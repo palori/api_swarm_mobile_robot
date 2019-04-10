@@ -215,7 +215,7 @@ double update_PID_follow(double referent_value, double current_value, int index)
     e_i[index] *= T[index];
     count10++;
     if (count10 == 10) count10 = 1;
-    double KV = (velocity1 + velocity2) / (2 * comm_tsy.get_vel()); 
+    double KV = (velocity1 + velocity2) / (2 * 0.3); 
     return KV * KP[index] * e[index] + KV * KI[index] * e_i[index];
   
 }
