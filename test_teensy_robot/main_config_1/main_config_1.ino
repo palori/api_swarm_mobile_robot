@@ -97,7 +97,7 @@ double angle_ref_abs = 0.0;
 double angle_error = 0.0;
 enum Command {TRN, FWD, TRNR};
 bool newCommand = true;
-bool new_drive = false;
+
 
 //drive function
 double ThTw=0.0;
@@ -375,7 +375,7 @@ void followline (double dist) {
 
     initializePID(VEL1,3*Kp,1*Ki,0.01);
     initializePID(VEL2,3*Kp,1*Ki,0.01);
-    initializePID(FOLLOW,0.0025,0.01,0.01);
+    initializePID(FOLLOW,0.0025,0.01,0.01); //0.0025
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -402,7 +402,7 @@ void update_velocity(int drive_command){
 
         case comm_tsy.STOP:
             if (fabs(velocity1)<0.05 && fabs(velocity2)<0.05) {
-              disableMotors(); 
+              //disableMotors(); 
               newCommand = true;
               comm_tsy.set_stop(false);     
             } else {
@@ -429,7 +429,7 @@ void update_velocity(int drive_command){
             } else {
                 vel1 = 0.01;
                 vel2 = 0.01;
-                disableMotors();  
+                //disableMotors();  
                 newCommand = true;
                 comm_tsy.set_trn(false);       
             }
@@ -464,7 +464,7 @@ void update_velocity(int drive_command){
             } else {
                 vel1 = 0.01;
                 vel2 = 0.01;
-                disableMotors();
+                //disableMotors();
                 newCommand = true;  
                 comm_tsy.set_trnr(false);       
             }
@@ -584,7 +584,7 @@ void update_velocity(int drive_command){
                 Serial.println("Follow line STOP!!!");
                 vel1 = 0.01;
                 vel2 = 0.01;
-                disableMotors();  
+                //disableMotors();  
                 newCommand = true;    
                 comm_tsy.set_followline(false); 
             }
@@ -696,12 +696,12 @@ void update10ms(){
         newCommand=true;
     }
 
-    //if (comm_tsy.get_x_t()!=0.0 || comm_tsy.get_y_t()!=0.0 || comm_tsy.get_th_t()!=0.0) new_drive = true;
+   
     
     
 
     //Serial.println("*** drive command: "+String(drive_command)+ " , new command: "+String(newCommand));
-    if (newCommand == true || comm_tsy.get_stop() || new_drive){   //new_drive = 1 if x,y,th != 0
+    if (newCommand == true || comm_tsy.get_stop()){  
       switch (drive_command) {
         case comm_tsy.STOP:
           emergency_stop();
@@ -726,7 +726,7 @@ void update10ms(){
         case comm_tsy.DRIVE:
           drive(double(comm_tsy.get_x_t()),double(comm_tsy.get_y_t()),double(comm_tsy.get_th_t()));
           newCommand=false;
-          new_drive = 0;
+          
           break;
       }
       //newCommand = false;

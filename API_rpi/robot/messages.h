@@ -81,6 +81,12 @@ enum crossing{
 	XY			// combination of X and Y crossings
 };
 
+enum Side {  // on which side to follow the line 
+	LEFT, 
+	MIDDLE, 
+	RIGHT 
+};
+
 
 struct Command {
 	// general
