@@ -20,8 +20,8 @@ Image_analysis::Image_analysis(int port_image, int port_task){		// add other inp
 	cout << endl << "image params:" << endl;
 	cout << "  - port img:   " << this->port_image.get() << endl;
 	cout << "  - port task:  " << this->port_task.get() << endl;
-	cout << "  - img heigth: " << this->image_height.get() << endl;
-	cout << "  - img with:   " << this->image_width.get() << endl;
+	//cout << "  - img heigth: " << this->image_height.get() << endl;
+	//cout << "  - img with:   " << this->image_width.get() << endl;
 
 	// initialization
 	this->tasks.add_item(0);
@@ -164,10 +164,10 @@ void Image_analysis::run(){
 
 
 		if (task == LINE) follow_line(picture.get());
-		else if (task == BALL) follow_line(picture.get());
-		else if (task == HOLE) follow_line(picture.get());
-		else if (task == SHAPE) follow_line(picture.get());
-		else if (task == ARUCO) follow_line(picture.get());
+		else if (task == BALL) ball(picture.get());
+		else if (task == HOLE) hole(picture.get());
+		else if (task == SHAPE) shape(picture.get());
+		else if (task == ARUCO) ArUco(picture.get());
 
 
 
