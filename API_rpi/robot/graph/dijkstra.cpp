@@ -1,6 +1,7 @@
 /*************************************
   * Dijkstra’s Algorithm code in C++ *
   ************************************
+  source: https://www.reviewmylife.co.uk/blog/2008/07/15/dijkstras-algorithm-code-in-c/
 
 Dijkstra’s algorithm is a famous algorithm that calculates the routes and
 distances from a start node to all other nodes in a connected graph where all
@@ -30,7 +31,7 @@ struct orientation{			// used in edges
 };
 
 struct line{				// used in nodes
-	bool is_line = false;
+	bool line = false;
 	int crossing = 0;
 };
 
@@ -44,7 +45,7 @@ enum node_type{				// see how to use it
 class Node
 {
 public:
-	Node(string id, float x, float y, int type, bool is_line, int crossing);
+	Node(string id, float x, float y, int type, bool line, int crossing);
 	void print_info();
 public:
 	string id;
@@ -53,7 +54,7 @@ public:
 	float x;
 	float y;
 	int type;
-	bool is_line;
+	bool line;
 	int crossing;
 };
 
@@ -74,14 +75,14 @@ private:
 vector<Node*> nodes;
 vector<Edge*> edges;
 
-Node::Node(string id, float x, float y, int type, bool is_line, int crossing)
+Node::Node(string id, float x, float y, int type, bool line, int crossing)
 	: id(id), previous(NULL),
 	distanceFromStart(INT_MAX)
 {
 	this->x = x;
 	this->y = y;
 	this->type = type;
-	this->is_line = is_line;
+	this->line = line;
 	this->crossing = crossing;
 	nodes.push_back(this);
 }
@@ -93,7 +94,7 @@ void Node::print_info(){
 	cout << "\n  x =           " << this->x;
 	cout << "\n  y =           " << this->y;
 	cout << "\n  type =        " << this->type;
-	cout << "\n  is_line =     " << this->is_line;
+	cout << "\n  line =        " << this->line;
 	cout << "\n  crossing =    " << this->crossing;
 	cout << endl;
 }
@@ -206,8 +207,8 @@ void load_map(){
 	Node* a = new Node("a", 0, 0, TASK_START, true, 0);
 	Node* b = new Node("b", 1, 1, TASK_END, true, 0);
 	Node* c = new Node("c", 1, 2, TRANSITION, false, 0);
-	Edge* e1 = new Edge(a, b, 1);
-	Edge* e2 = new Edge(b, c, 2);
+	Edge* e1 = new Edge(a, b);
+	Edge* e2 = new Edge(b, c);
 	auto map_end = chrono::system_clock::now();
 
 	chrono::duration<double> map_elapsed = map_end - map_start;

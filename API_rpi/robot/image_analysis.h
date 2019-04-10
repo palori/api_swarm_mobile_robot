@@ -35,8 +35,8 @@ public:
 	// params
 	Item<int> port_image;
 	Item<int> port_task;
-	Item<int> image_height;
-	Item<int> image_width;
+	//Item<int> image_height;
+	//Item<int> image_width;
 
 	Item<string> message;			// ?? need to be encoded, might not need to be an attr
 	Items<int> tasks;
