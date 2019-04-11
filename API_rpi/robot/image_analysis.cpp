@@ -14,8 +14,8 @@ Image_analysis::Image_analysis(int port_image, int port_task){		// add other inp
 	// ...
 	this->port_image.set(port_image);
 	this->port_task.set(port_task);
-	this->image_height.set(image_height);
-	this->image_width.set(image_width);
+	//this->image_height.set(image_height);
+	//this->image_width.set(image_width);
 
 	cout << endl << "image params:" << endl;
 	cout << "  - port img:   " << this->port_image.get() << endl;
@@ -156,26 +156,28 @@ void Image_analysis::run(){
 	std::thread subscribe_new_task(&Image_analysis::get_new_task, this);
 	std::thread subscribe_pictures(&Image_analysis::take_picture, this);
 	string data = "";
+	int task;
 
-	float theta = 0; // only for testing
+	//float theta = 0; // only for testing
 	while(true){
 		// if or switch to run the according task
-		cout << "    Task: " << tasks.get_last_item() << endl;
 
+		cout << "    Task: " << task << endl;
+		task = tasks.get_last_item();
 
-		if (task == LINE) follow_line(picture.get());
-		else if (task == BALL) ball(picture.get());
-		else if (task == HOLE) hole(picture.get());
-		else if (task == SHAPE) shape(picture.get());
-		else if (task == ARUCO) ArUco(picture.get());
+		if (task == LINE) data = follow_line(picture.get(),MIDDLE);
+		else if (task == BALL) data = ball(picture.get());
+		else if (task == HOLE) data = hole(picture.get());
+		else if (task == SHAPE) data = shape(picture.get());
+		else if (task == ARUCO) data = ArUco(picture.get());
 
 
 
 
 		// update 'data' in the running task
 		// encode params in a string
-		theta++;
-		data = encode_image_params(10, 1, 0.67, theta, 3);
+		//theta++;
+		//data = encode_image_params(10, 1, 0.67, theta, 3);
 		//data = "@of_i=1,cr=2,tht=40,od_i=0.23$";
 		this->message.set(data);
 
