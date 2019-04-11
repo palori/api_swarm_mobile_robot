@@ -83,7 +83,24 @@ https://www.raspberrypi.org/documentation/linux/usage/users.md
 https://normally.online/2017/07/11/how-to-connect-your-raspberry-pi-to-eduroam/
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 # add/modify networks
-sudo wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+network={
+        ssid="eduroam"
+        scan_ssid=1
+        key_mgmt=WPA-EAP
+        eap=PEAP
+        identity="jcan"
+        password=hash:e8e8dd66e9c50d2329fbd6fff86bc0ec
+        phase2="auth=MSCHAPV2"
+}
+
+network={
+        ssid="pieiiu"
+        psk="eggplant"
+        #key_mgmt=WPA_PSK
+        #password="Minions2.0"
+}
+# apply changes
+sudo wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf -B
 
 
 
