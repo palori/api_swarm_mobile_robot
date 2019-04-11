@@ -20,6 +20,8 @@ string follow_line(Mat img,Side side){
 	int lowThreshold=170; //% = 40;
 	const int thres_ratio = 4;
 	const int kernel_size = 3;
+	const int CAM_H = 240;
+	const int CAM_W = 320;
 	
 	//histogram stretch
 	Mat img_hist;
@@ -47,7 +49,7 @@ string follow_line(Mat img,Side side){
 		hierarchy.clear();
 		
 		//canny edges
-		Canny(img_blur, canny_edges, param, param + 50 , kernel_size);
+		Canny(img_blur, canny_edges, lowThreshold, lowThreshold + 50 , kernel_size);
 		img_canny = Scalar::all(0);
 		img_gamma.copyTo(img_canny, canny_edges);
 
@@ -202,16 +204,16 @@ string follow_line(Mat img,Side side){
 	old_left = left_cm;
 	old_right = right_cm;
 	bool obstacle = false;
-	if (feature != NO_CROSS) obstacle = true
+	if (feature != NO_CROSS) obstacle = true;
 	//return string composed of feature and theta for line following
 	return encode_image_params(LINE,obstacle, 0.0, cm, feature);
 }
 
 
-string ball(Mat img){}
-string hole(Mat img){}
-string shape(Mat img){}
-string ArUco(Mat img){}
+string ball(Mat img){return "";}
+string hole(Mat img){return "";}
+string shape(Mat img){return "";}
+string ArUco(Mat img){return "";}
 
 void GammaMapping(Mat& src, Mat& dst, float fGamma) {
 

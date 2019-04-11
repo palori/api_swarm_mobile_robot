@@ -9,6 +9,9 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
 
+using namespace std;
+using namespace cv;
+
 class Camera
 {
 public:
@@ -44,7 +47,7 @@ public:
 	int init();
 	int start();
 	void stop();
-	Mat take_picture();
+	cv::Mat take_picture();
 
 	
 };

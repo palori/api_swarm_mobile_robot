@@ -215,7 +215,7 @@ double update_PID_follow(double referent_value, double current_value, int index)
     e_i[index] *= T[index];
     count10++;
     if (count10 == 10) count10 = 1;
-    double KV = (velocity1 + velocity2) / (2 * comm_tsy.get_vel()); 
+    double KV = (velocity1 + velocity2) / (2 * 0.3); 
     return KV * KP[index] * e[index] + KV * KI[index] * e_i[index];
   
 }
@@ -406,8 +406,8 @@ void update_velocity(int drive_command){
               newCommand = true;
               comm_tsy.set_stop(false);     
             } else {
-              vel1=0;
-              vel2=0; 
+              vel1=0.001;
+              vel2=0.001; 
             }
         case comm_tsy.TRN:
             if (fabs(angle_error)>0.01){
@@ -427,8 +427,8 @@ void update_velocity(int drive_command){
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.01;
-                vel2 = 0.01;
+                vel1 = 0.001;
+                vel2 = 0.001;
                 //disableMotors();  
                 newCommand = true;
                 comm_tsy.set_trn(false);       
@@ -462,8 +462,8 @@ void update_velocity(int drive_command){
                 //Serial.println("vel2:"+String(vel2));
                 
             } else {
-                vel1 = 0.01;
-                vel2 = 0.01;
+                vel1 = 0.001;
+                vel2 = 0.001;
                 //disableMotors();
                 newCommand = true;  
                 comm_tsy.set_trnr(false);       
@@ -493,8 +493,8 @@ void update_velocity(int drive_command){
                 dist_error = comm_tsy.get_fwd_dist() - dist_curr;
             
             } else {
-                vel1 = 0.01;
-                vel2 = 0.01;
+                vel1 = 0.001;
+                vel2 = 0.001;
                 disableMotors();  
                 newCommand = true;    
                 comm_tsy.set_fwd(false); 
@@ -536,8 +536,8 @@ void update_velocity(int drive_command){
               
            }  else {
             
-              vel1 = 0.01;
-              vel2 = 0.01;
+              vel1 = 0.001;
+              vel2 = 0.001;
               disableMotors(); 
               newCommand = true;    
               comm_tsy.set_drive(false); 
@@ -582,8 +582,8 @@ void update_velocity(int drive_command){
                   
             } else {
                 Serial.println("Follow line STOP!!!");
-                vel1 = 0.01;
-                vel2 = 0.01;
+                vel1 = 0.001;
+                vel2 = 0.001;
                 //disableMotors();  
                 newCommand = true;    
                 comm_tsy.set_followline(false); 
