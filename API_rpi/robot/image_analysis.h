@@ -6,7 +6,7 @@
 #include <thread>
 #include <chrono>		// only for sleeping the threads while testing
 
-//#include "camera.h"				// comment to compile when NO Raspi
+#include "camera.h"				// comment to compile when NO Raspi
 #include "../publisher.h"
 #include "../subscriber.h"
 #include "messages.h"
@@ -16,12 +16,12 @@
 #include "computer_vision.h"
 
 // opencv libraries???
-//#include "opencv2/highgui/highgui.hpp"
-//#include "opencv2/imgproc/imgproc.hpp"
-//#include "opencv2/opencv.hpp"				// cv::Mat
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/opencv.hpp"				// cv::Mat
 
 using namespace std;
-//using namespace cv;
+using namespace cv;
 
 class Image_analysis
 {

@@ -36,20 +36,20 @@ int Camera::init(){
 int Camera::start(){
 	//Open camera
 	cout<<"Opening Camera..."<<endl;
-	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
+	if (!camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
 	//Camera.set(CV_CAP_PROP_EXPOSURE, 100);
-	usleep(2000000);
+	//usleep(2000000);
 	return 0;	
 }
 
 void Camera::stop(){
 	cout<<"Stop camera..."<<endl;
-	Camera.release();
+	camera.release();
 }
 
 Mat Camera::take_picture(){
 	Mat img;
-	Camera.grab();
-	Camera.retrieve (img);
+	camera.grab();
+	camera.retrieve (img);
 	return img;
 }
