@@ -39,21 +39,17 @@ Graph* map(){
 	Node* c = new Node("c", 1, 2, TRANSITION, false, 0);
 	Edge* e1 = new Edge(a, b, true, true, 90, 135);
 	Edge* e2 = new Edge(b, c, true, false, 0, 0);
-	/*
-	Node* a = Node("a", 0, 0, TASK_START, true, 0);
-	Node* b = Node("b", 1, 1, TASK_END, true, 0);
-	Node* c = Node("c", 1, 2, TRANSITION, false, 0);
-	Edge* e1 = Edge(a, b, true, true, 90, 135);
-	Edge* e2 = Edge(b, c, true, false, 0, 0);
-	*/
-	Graph* graph;
+
+
+	Graph* graph = new Graph();
 	graph->add_node(a);
 	graph->add_node(b);
 	graph->add_node(c);
 	graph->add_edge(e1);
 	graph->add_edge(e2);
-	auto map_end = chrono::system_clock::now();
 
+	auto map_end = chrono::system_clock::now();
+	
 	chrono::duration<double> map_elapsed = map_end - map_start;
 	cout << "\n\nMap created in " << map_elapsed.count() << "s.\n\n";
 	return graph;
@@ -66,12 +62,12 @@ void DijkstrasTest(){
 	Graph* graph = map();
 
 	graph->print_nodes();
-	//print_edges();
+	graph->print_edges();
 
 
-	//Dijkstra dijkstra(graph);
-	//dijkstra.find_route("a", "c");
-	//dijkstra.print_route();
+	Dijkstra dijkstra(graph);
+	dijkstra.find_route("a", "c");
+	dijkstra.print_route();
 	
 
 	

@@ -2,7 +2,11 @@
 #include "graph.h"
 
 
-Graph::Graph(){}
+Graph::Graph(){
+	/*Node* a = new Node("default", -1, -1, 0, true, 0);
+	add_node(a);
+	print_nodes();*/
+}
 
 
 void Graph::add_node(Node* node){
@@ -16,7 +20,7 @@ void Graph::add_edge(Edge* edge){
 
 
 void Graph::reset_nodes(){
-	for (int i = 0; i < nodes.size(); ++i){
+	for (int i = 0; i < nodes.size(); i++){
 		nodes.at(i)->reset();
 	}
 }
@@ -24,8 +28,7 @@ void Graph::reset_nodes(){
 
 void Graph::print_nodes(){
 	cout << "Nodes info: " << endl;
-	for (int i = 0; i < nodes.size(); ++i)
-	{
+	for (int i = 0; i < nodes.size(); i++){
 		nodes.at(i)->print_info();
 	}
 }
@@ -33,16 +36,14 @@ void Graph::print_nodes(){
 
 void Graph::print_edges(){
 	cout << "Edges info: " << endl;
-	for (int i = 0; i < edges.size(); ++i)
-	{
+	for (int i = 0; i < edges.size(); i++){
 		edges.at(i)->print_info();
 	}
 }
 
 
 Node* Graph::find_node(string node_id){
-	for (int i = 0; i < nodes.size(); ++i)
-	{
+	for (int i = 0; i < nodes.size(); i++){
 		if (nodes.at(i)->id ==	node_id) return nodes.at(i);
 	}
 	return NULL;
@@ -52,8 +53,7 @@ Node* Graph::find_node(string node_id){
 Edge* Graph::find_edge(Node* node_start, Node* node_end){
 	//cout << "find_edge..." << endl;
 	Edge* edge;
-	for (int i = 0; i < edges.size(); ++i)
-	{
+	for (int i = 0; i < edges.size(); i++){
 		edge = edges.at(i);
 		if (edge->Connects(node_start, node_end)) break;
 	}
