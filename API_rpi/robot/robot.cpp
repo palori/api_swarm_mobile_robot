@@ -4,6 +4,8 @@
 Robot::Robot(){
 	//params.hostname.set("localhost");
 
+	this->hostname_master.set("localhost");
+
 	Robot_params rp("test",1,2,3,4,5,10);
 	this->params = rp;
 
@@ -45,8 +47,10 @@ Robot::Robot(string hostname){ // params from other 2 robots (port and hostname)
 }*/
 
 // always use this one
-Robot::Robot(string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
+Robot::Robot(string hostname_master, string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
 	//cout << "start robot constructor" << endl;
+	this->hostname_master.set(hostname_master);
+
 	Robot_params rp(hostname, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b,max_len);
 	this->params = rp;
 	//cout << "this params done" << endl;
@@ -197,11 +201,12 @@ void Robot::listen_robot_b(){
 }
 
 void Robot::listen_master(){
-	Subscriber subs_master(8000, "ginger");
+	string master = this->hostname_master.get();
+	Subscriber subs_master(8001, master);
 	string msg;
 	int action;
 	float fwd, vel;
-	cout << "listenning to master " << "(ginger)" << "..." << endl;
+	cout << "listenning to master '" << master << "'..." << endl;
 	while(true){
 		msg = subs_master.listen();		// blocking call
 
