@@ -61,7 +61,7 @@ public:
 
 
 	void get_new_task();	// thread that subscribe to task_planner for ever
-	void send_data();		//publish to the topic
+	//void send_data();		//publish to the topic
 	void take_picture();	// in charge of taking puctures
 
 

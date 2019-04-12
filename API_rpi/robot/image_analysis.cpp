@@ -64,12 +64,13 @@ void Image_analysis::get_new_task(){
 	}
 }
 
-
+/*
 void Image_analysis::send_data(){
 	//message.set("Can I publish now???");// data should be encoded somewhere else (delete this line)
 	
 	pub_image.publish(this->message.get()); 
 }
+*/
 
 
 void Image_analysis::take_picture(){
@@ -162,7 +163,7 @@ void Image_analysis::run(){
 	while(true){
 		// if or switch to run the according task
 
-		cout << "    Task: " << task << endl;
+		//cout << "    Task: " << task << endl;
 		task = tasks.get_last_item();
 
 		if (task == LINE) data = follow_line(picture.get(),MIDDLE);
@@ -179,13 +180,15 @@ void Image_analysis::run(){
 		//theta++;
 		//data = encode_image_params(10, 1, 0.67, theta, 3);
 		//data = "@of_i=1,cr=2,tht=40,od_i=0.23$";
-		this->message.set(data);
+		//this->message.set(data);
+
+		// at the end send the data to the robot
+		//send_data();
+		//pub_image.publish(this->message.get());
+		pub_image.publish(data);
 
 		//int millis_sleep = 5000;
 		//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-
-		// at the end send the data to the robot
-		send_data();
 	}
 
 }

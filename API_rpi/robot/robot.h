@@ -54,12 +54,10 @@ public:
 
 
 	Item<string> image_data;
-	Item<string> image_data2tsy;
+	//Item<string> image_data2tsy;
 	Item<string> master_data;
 	Item<bool> run_mission;
 
-
-	int count=0; // only to test (delete after)
 
 
 	/////////////
@@ -74,7 +72,7 @@ public:
 	void listen_robot_b();
 	void listen_master();
 
-	void send_task();
+	//void send_task();
 
 	void run();						// start the threads and while true loop
 	
