@@ -93,6 +93,7 @@ void Robot::serial(){
 	// params like: wheel diameter, dist btw wheels, gearbox ratio...
 
 	string msg = "", old_msg = "1", data = "";
+	string msg_master = "", old_msg_master = "1";
 	//msg = "@a=15,b=1,fwd=5,v=0.6$";				// delete after testing
 
 	serial_comm.serial_open();
@@ -100,10 +101,13 @@ void Robot::serial(){
 
 		if(run_mission.get()){
 
-			int millis_sleep = 2000;
-			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			//int millis_sleep = 2000;
+			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 
-			cout << endl << "### new task to Teensy: " << image_data.get() << " ###" << endl << endl;
+			// update msg
+			msg = image_data.get();		// probably there are other cases, now we want to test this
+
+			cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
 			sensors.print_info();
 
 
@@ -117,14 +121,19 @@ void Robot::serial(){
 			// then update 'robot_params'
 			*/
 			
-			// update msg
-			msg = image_data.get();		// probably there are other cases, now we want to test this
+			
 			
 			if (msg != old_msg) {
-				cout << "writing serial..." << endl;
+				//cout << "writing serial..." << endl;
 				serial_comm.serial_write(msg);
 				old_msg = msg;
-				cout << "serial message: " << msg << endl;
+				//cout << "serial message: " << msg << endl;
+			}
+
+			msg_master = master_data.get();
+			if (msg_master != old_msg_master) {
+				serial_comm.serial_write(msg_master);
+				old_msg_master = msg_master;
 			}
 		}
 		else{
@@ -146,9 +155,11 @@ void Robot::listen_image_process(){
 	while(true){
 		cout << "listenning to image processing..." << endl;
 		data = subs_image_data.listen();	// blocking call
+		image_data.set(data);
+		cout << "image data to decode: " << data << endl;
 		// decode data into params to use for localization and send to TSY
 		decode_image(data, sensors, new_target);
-		image_data.set(new_target);
+		//image_data.set(new_target);
 	}
 }
 
@@ -196,7 +207,7 @@ void Robot::listen_master(){
 		vel = NULL;
 		decode_master_commands(msg, params.hostname.get(), action, fwd, vel);
 
-		if (action != NULL || fwd != NULL || vel != NULL) image_data.set(msg);		// maybe need to change the name to the param (image_data)
+		if (action != NULL || fwd != NULL || vel != NULL) master_data.set(msg);		// maybe need to change the name to the param (image_data)
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
@@ -207,7 +218,8 @@ void Robot::listen_master(){
 
 
 void Robot::send_task(){//Publisher pub_image_task){
-	count++; // only to test (delete after)
+	//count++; // only to test (delete after)
+	count = 21; //to test follow line all the time!
 	this->params.tasks.add_item(count);
 	string msg = encode_task(this->params.tasks.get_last_item());
 	pub_image_task.publish(msg);
@@ -234,8 +246,8 @@ void Robot::run(){
 			// task planner
 			// path planning -> if there is one
 			
-			int millis_sleep = 5000;
-			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			//int millis_sleep = 5000;
+			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
 			send_task();
 		}

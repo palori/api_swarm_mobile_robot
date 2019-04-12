@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line
+CMAKE_SOURCE_DIR = /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line
+CMAKE_BINARY_DIR = /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/CMakeFiles /home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/CMakeFiles /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/local/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -150,59 +150,59 @@ detect_line.cpp.s:
 	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/detect_line.cpp.s
 .PHONY : detect_line.cpp.s
 
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o: home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o: home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
 
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o
-
-# target to build an object file
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o:
-	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
-
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i: home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
-
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i
-
-# target to preprocess a source file
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i:
-	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
-
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s: home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
-
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s
-
-# target to generate assembly for a file
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s:
-	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
-
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.o: home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o
-
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.o
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o
 
 # target to build an object file
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o:
-	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.o
 
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.i: home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i: home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
 
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.i
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i
 
 # target to preprocess a source file
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i:
-	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.i
 
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.s: home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s: home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
 
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.s
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s
 
 # target to generate assembly for a file
-home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s:
-	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s
-.PHONY : home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.cpp.s
+
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.o: home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o
+
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.o
+
+# target to build an object file
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.o
+
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.i: home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.i
+
+# target to preprocess a source file
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.i
+
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.s: home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s
+
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.s
+
+# target to generate assembly for a file
+home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s:
+	$(MAKE) -f CMakeFiles/find_line.dir/build.make CMakeFiles/find_line.dir/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s
+.PHONY : home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.cpp.s
 
 # Help Target
 help:
@@ -216,12 +216,12 @@ help:
 	@echo "... detect_line.o"
 	@echo "... detect_line.i"
 	@echo "... detect_line.s"
-	@echo "... home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o"
-	@echo "... home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i"
-	@echo "... home/local/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s"
-	@echo "... home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.o"
-	@echo "... home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.i"
-	@echo "... home/local/git_repos/api_swarm_mobile_robot/API_rpi/utils.s"
+	@echo "... home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.o"
+	@echo "... home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.i"
+	@echo "... home/pi/git_repos/api_swarm_mobile_robot/API_rpi/comm_rpi_1.s"
+	@echo "... home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.o"
+	@echo "... home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.i"
+	@echo "... home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.s"
 .PHONY : help
 
 

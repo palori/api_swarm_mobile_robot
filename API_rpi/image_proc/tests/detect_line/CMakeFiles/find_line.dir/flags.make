@@ -6,5 +6,5 @@ CXX_FLAGS =
 
 CXX_DEFINES = -Draspicam_CV_LIBS
 
-CXX_INCLUDES = -I/usr/local/include -I/usr/include/opencv 
+CXX_INCLUDES = -isystem /usr/local/include -isystem /usr/local/include/opencv 
 

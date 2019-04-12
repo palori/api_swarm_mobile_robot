@@ -54,6 +54,8 @@ public:
 
 
 	Item<string> image_data;
+	Item<string> image_data2tsy;
+	Item<string> master_data;
 	Item<bool> run_mission;
 
 

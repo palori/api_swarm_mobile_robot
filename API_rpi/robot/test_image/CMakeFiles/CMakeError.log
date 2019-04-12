@@ -1,24 +1,24 @@
 Determining if the pthread_create exist failed with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_55642/fast"
-/usr/bin/make -f CMakeFiles/cmTC_55642.dir/build.make CMakeFiles/cmTC_55642.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_55642.dir/CheckSymbolExists.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_55642.dir/CheckSymbolExists.c.o   -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTC_55642
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_55642.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_55642.dir/CheckSymbolExists.c.o  -o cmTC_55642 -rdynamic 
-CMakeFiles/cmTC_55642.dir/CheckSymbolExists.c.o: In function `main':
+Run Build Command:"/usr/bin/make" "cmTC_7e4c8/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7e4c8.dir/build.make CMakeFiles/cmTC_7e4c8.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7e4c8.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_7e4c8.dir/CheckSymbolExists.c.o   -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_7e4c8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7e4c8.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_7e4c8.dir/CheckSymbolExists.c.o  -o cmTC_7e4c8 -rdynamic 
+CMakeFiles/cmTC_7e4c8.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x38): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_55642.dir/build.make:97: recipe for target 'cmTC_55642' failed
-make[1]: *** [cmTC_55642] Error 1
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_55642/fast' failed
-make: *** [cmTC_55642/fast] Error 2
+CMakeFiles/cmTC_7e4c8.dir/build.make:97: recipe for target 'cmTC_7e4c8' failed
+make[1]: *** [cmTC_7e4c8] Error 1
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_7e4c8/fast' failed
+make: *** [cmTC_7e4c8/fast] Error 2
 
-File /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+File /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
 #include <pthread.h>
 
@@ -34,22 +34,22 @@ int main(int argc, char** argv)
 }
 
 Determining if the function pthread_create exists in the pthreads failed with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_c6349/fast"
-/usr/bin/make -f CMakeFiles/cmTC_c6349.dir/build.make CMakeFiles/cmTC_c6349.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_c6349.dir/CheckFunctionExists.c.o
-/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_c6349.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
-Linking C executable cmTC_c6349
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c6349.dir/link.txt --verbose=1
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_c6349.dir/CheckFunctionExists.c.o  -o cmTC_c6349 -rdynamic -lpthreads 
+Run Build Command:"/usr/bin/make" "cmTC_c52e1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c52e1.dir/build.make CMakeFiles/cmTC_c52e1.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c52e1.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_c52e1.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c52e1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c52e1.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_c52e1.dir/CheckFunctionExists.c.o  -o cmTC_c52e1 -rdynamic -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_c6349.dir/build.make:97: recipe for target 'cmTC_c6349' failed
-make[1]: *** [cmTC_c6349] Error 1
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_c6349/fast' failed
-make: *** [cmTC_c6349/fast] Error 2
+CMakeFiles/cmTC_c52e1.dir/build.make:97: recipe for target 'cmTC_c52e1' failed
+make[1]: *** [cmTC_c52e1] Error 1
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_c52e1/fast' failed
+make: *** [cmTC_c52e1/fast] Error 2
 
 

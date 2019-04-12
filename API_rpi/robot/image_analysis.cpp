@@ -181,8 +181,8 @@ void Image_analysis::run(){
 		//data = "@of_i=1,cr=2,tht=40,od_i=0.23$";
 		this->message.set(data);
 
-		int millis_sleep = 5000;
-		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+		//int millis_sleep = 5000;
+		//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 
 		// at the end send the data to the robot
 		send_data();

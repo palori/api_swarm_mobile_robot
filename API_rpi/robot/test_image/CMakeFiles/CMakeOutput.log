@@ -1,4 +1,4 @@
-The system is: Linux - 4.14.71-v7+ - armv7l
+The system is: Linux - 4.19.34-v7+ - armv7l
 Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
 Compiler: /usr/bin/cc 
 Build flags: 
@@ -10,7 +10,7 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
 
-The C compiler identification is GNU, found in "/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/3.7.2/CompilerIdC/a.out"
+The C compiler identification is GNU, found in "/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/3.7.2/CompilerIdC/a.out"
 
 Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
 Compiler: /usr/bin/c++ 
@@ -23,33 +23,33 @@ The output was:
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
 
-The CXX compiler identification is GNU, found in "/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/3.7.2/CompilerIdCXX/a.out"
+The CXX compiler identification is GNU, found in "/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/3.7.2/CompilerIdCXX/a.out"
 
 Determining if the C compiler works passed with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_beb96/fast"
-/usr/bin/make -f CMakeFiles/cmTC_beb96.dir/build.make CMakeFiles/cmTC_beb96.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_beb96.dir/testCCompiler.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_beb96.dir/testCCompiler.c.o   -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_beb96
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_beb96.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_beb96.dir/testCCompiler.c.o  -o cmTC_beb96 -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_e0dd9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_e0dd9.dir/build.make CMakeFiles/cmTC_e0dd9.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e0dd9.dir/testCCompiler.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_e0dd9.dir/testCCompiler.c.o   -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_e0dd9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e0dd9.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_e0dd9.dir/testCCompiler.c.o  -o cmTC_e0dd9 -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_c93fd/fast"
-/usr/bin/make -f CMakeFiles/cmTC_c93fd.dir/build.make CMakeFiles/cmTC_c93fd.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.7/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_c93fd
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c93fd.dir/link.txt --verbose=1
-/usr/bin/cc      -v CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o  -o cmTC_c93fd -rdynamic  
+Run Build Command:"/usr/bin/make" "cmTC_48a7c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_48a7c.dir/build.make CMakeFiles/cmTC_48a7c.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.7/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_48a7c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_48a7c.dir/link.txt --verbose=1
+/usr/bin/cc      -v CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o  -o cmTC_48a7c -rdynamic  
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper
@@ -59,24 +59,24 @@ Thread model: posix
 gcc version 6.3.0 20170516 (Raspbian 6.3.0-18+rpi1+deb9u1) 
 COMPILER_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/
 LIBRARY_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../:/lib/arm-linux-gnueabihf/:/lib/:/usr/lib/arm-linux-gnueabihf/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_c93fd' '-rdynamic' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
- /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqb486F.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_c93fd /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_c93fd' '-rdynamic' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_48a7c' '-rdynamic' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
+ /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccC2YpUE.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_48a7c /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_48a7c' '-rdynamic' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_c93fd/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_c93fd.dir/build.make CMakeFiles/cmTC_c93fd.dir/build]
-  ignore line: [make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc     -o CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.7/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_c93fd]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c93fd.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc      -v CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o  -o cmTC_c93fd -rdynamic  ]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_48a7c/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_48a7c.dir/build.make CMakeFiles/cmTC_48a7c.dir/build]
+  ignore line: [make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc     -o CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.7/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_48a7c]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_48a7c.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc      -v CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o  -o cmTC_48a7c -rdynamic  ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper]
@@ -86,13 +86,13 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 6.3.0 20170516 (Raspbian 6.3.0-18+rpi1+deb9u1) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../:/lib/arm-linux-gnueabihf/:/lib/:/usr/lib/arm-linux-gnueabihf/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_c93fd' '-rdynamic' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu']
-  link line: [ /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqb486F.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_c93fd /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_48a7c' '-rdynamic' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu']
+  link line: [ /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccC2YpUE.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_48a7c /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o]
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccqb486F.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccC2YpUE.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -109,7 +109,7 @@ Parsed C implicit link information from above output:
     arg [-m] ==> ignore
     arg [armelf_linux_eabi] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_c93fd] ==> ignore
+    arg [cmTC_48a7c] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o] ==> ignore
@@ -118,7 +118,7 @@ Parsed C implicit link information from above output:
     arg [-L/usr/lib/gcc/arm-linux-gnueabihf/6/../../..] ==> dir [/usr/lib/gcc/arm-linux-gnueabihf/6/../../..]
     arg [-L/lib/arm-linux-gnueabihf] ==> dir [/lib/arm-linux-gnueabihf]
     arg [-L/usr/lib/arm-linux-gnueabihf] ==> dir [/usr/lib/arm-linux-gnueabihf]
-    arg [CMakeFiles/cmTC_c93fd.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_48a7c.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -147,17 +147,17 @@ Parsed C implicit link information from above output:
 
 
 Detecting C [-std=c11] compiler features compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_51f53/fast"
-/usr/bin/make -f CMakeFiles/cmTC_51f53.dir/build.make CMakeFiles/cmTC_51f53.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_51f53.dir/feature_tests.c.o
-/usr/bin/cc    -std=c11 -o CMakeFiles/cmTC_51f53.dir/feature_tests.c.o   -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.c
-Linking C executable cmTC_51f53
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_51f53.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_51f53.dir/feature_tests.c.o  -o cmTC_51f53 -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_0a516/fast"
+/usr/bin/make -f CMakeFiles/cmTC_0a516.dir/build.make CMakeFiles/cmTC_0a516.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0a516.dir/feature_tests.c.o
+/usr/bin/cc    -std=c11 -o CMakeFiles/cmTC_0a516.dir/feature_tests.c.o   -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.c
+Linking C executable cmTC_0a516
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0a516.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_0a516.dir/feature_tests.c.o  -o cmTC_0a516 -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -167,17 +167,17 @@ make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi
 
 
 Detecting C [-std=c99] compiler features compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_1a1ca/fast"
-/usr/bin/make -f CMakeFiles/cmTC_1a1ca.dir/build.make CMakeFiles/cmTC_1a1ca.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_1a1ca.dir/feature_tests.c.o
-/usr/bin/cc    -std=c99 -o CMakeFiles/cmTC_1a1ca.dir/feature_tests.c.o   -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.c
-Linking C executable cmTC_1a1ca
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1a1ca.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_1a1ca.dir/feature_tests.c.o  -o cmTC_1a1ca -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_f272f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f272f.dir/build.make CMakeFiles/cmTC_f272f.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f272f.dir/feature_tests.c.o
+/usr/bin/cc    -std=c99 -o CMakeFiles/cmTC_f272f.dir/feature_tests.c.o   -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.c
+Linking C executable cmTC_f272f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f272f.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_f272f.dir/feature_tests.c.o  -o cmTC_f272f -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -187,17 +187,17 @@ make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi
 
 
 Detecting C [-std=c90] compiler features compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_988d5/fast"
-/usr/bin/make -f CMakeFiles/cmTC_988d5.dir/build.make CMakeFiles/cmTC_988d5.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_988d5.dir/feature_tests.c.o
-/usr/bin/cc    -std=c90 -o CMakeFiles/cmTC_988d5.dir/feature_tests.c.o   -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.c
-Linking C executable cmTC_988d5
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_988d5.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_988d5.dir/feature_tests.c.o  -o cmTC_988d5 -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_54e5a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_54e5a.dir/build.make CMakeFiles/cmTC_54e5a.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_54e5a.dir/feature_tests.c.o
+/usr/bin/cc    -std=c90 -o CMakeFiles/cmTC_54e5a.dir/feature_tests.c.o   -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.c
+Linking C executable cmTC_54e5a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_54e5a.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_54e5a.dir/feature_tests.c.o  -o cmTC_54e5a -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -205,30 +205,30 @@ make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi
     Feature record: C_FEATURE:0c_static_assert
     Feature record: C_FEATURE:0c_variadic_macros
 Determining if the CXX compiler works passed with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_0f05b/fast"
-/usr/bin/make -f CMakeFiles/cmTC_0f05b.dir/build.make CMakeFiles/cmTC_0f05b.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_0f05b.dir/testCXXCompiler.cxx.o
-/usr/bin/c++      -o CMakeFiles/cmTC_0f05b.dir/testCXXCompiler.cxx.o -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_0f05b
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0f05b.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_0f05b.dir/testCXXCompiler.cxx.o  -o cmTC_0f05b -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_203b2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_203b2.dir/build.make CMakeFiles/cmTC_203b2.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_203b2.dir/testCXXCompiler.cxx.o
+/usr/bin/c++      -o CMakeFiles/cmTC_203b2.dir/testCXXCompiler.cxx.o -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_203b2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_203b2.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_203b2.dir/testCXXCompiler.cxx.o  -o cmTC_203b2 -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_10023/fast"
-/usr/bin/make -f CMakeFiles/cmTC_10023.dir/build.make CMakeFiles/cmTC_10023.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++      -o CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.7/Modules/CMakeCXXCompilerABI.cpp
-Linking CXX executable cmTC_10023
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_10023.dir/link.txt --verbose=1
-/usr/bin/c++       -v CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_10023 -rdynamic  
+Run Build Command:"/usr/bin/make" "cmTC_96260/fast"
+/usr/bin/make -f CMakeFiles/cmTC_96260.dir/build.make CMakeFiles/cmTC_96260.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++      -o CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.7/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_96260
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_96260.dir/link.txt --verbose=1
+/usr/bin/c++       -v CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_96260 -rdynamic  
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper
@@ -238,24 +238,24 @@ Thread model: posix
 gcc version 6.3.0 20170516 (Raspbian 6.3.0-18+rpi1+deb9u1) 
 COMPILER_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/
 LIBRARY_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../:/lib/arm-linux-gnueabihf/:/lib/:/usr/lib/arm-linux-gnueabihf/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_10023' '-rdynamic' '-shared-libgcc' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
- /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccbA1F4Z.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_10023 /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_10023' '-rdynamic' '-shared-libgcc' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_96260' '-rdynamic' '-shared-libgcc' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
+ /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/cc1lKeb3.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_96260 /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_96260' '-rdynamic' '-shared-libgcc' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu'
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
 Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_10023/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_10023.dir/build.make CMakeFiles/cmTC_10023.dir/build]
-  ignore line: [make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++      -o CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.7/Modules/CMakeCXXCompilerABI.cpp]
-  ignore line: [Linking CXX executable cmTC_10023]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_10023.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++       -v CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_10023 -rdynamic  ]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_96260/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_96260.dir/build.make CMakeFiles/cmTC_96260.dir/build]
+  ignore line: [make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++      -o CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.7/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_96260]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_96260.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++       -v CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_96260 -rdynamic  ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper]
@@ -265,13 +265,13 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 6.3.0 20170516 (Raspbian 6.3.0-18+rpi1+deb9u1) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/arm-linux-gnueabihf/6/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/:/usr/lib/gcc/arm-linux-gnueabihf/6/../../../:/lib/arm-linux-gnueabihf/:/lib/:/usr/lib/arm-linux-gnueabihf/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_10023' '-rdynamic' '-shared-libgcc' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu']
-  link line: [ /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccbA1F4Z.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_10023 /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_96260' '-rdynamic' '-shared-libgcc' '-march=armv6' '-mfloat-abi=hard' '-mfpu=vfp' '-mtls-dialect=gnu']
+  link line: [ /usr/lib/gcc/arm-linux-gnueabihf/6/collect2 -plugin /usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper -plugin-opt=-fresolution=/tmp/cc1lKeb3.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -export-dynamic -dynamic-linker /lib/ld-linux-armhf.so.3 -X --hash-style=gnu -m armelf_linux_eabi -o cmTC_96260 /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o /usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o -L/usr/lib/gcc/arm-linux-gnueabihf/6 -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf -L/usr/lib/gcc/arm-linux-gnueabihf/6/../../.. -L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/arm-linux-gnueabihf/6/crtend.o /usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crtn.o]
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/arm-linux-gnueabihf/6/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccbA1F4Z.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/cc1lKeb3.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -288,7 +288,7 @@ Parsed CXX implicit link information from above output:
     arg [-m] ==> ignore
     arg [armelf_linux_eabi] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_10023] ==> ignore
+    arg [cmTC_96260] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crt1.o] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/../../../arm-linux-gnueabihf/crti.o] ==> ignore
     arg [/usr/lib/gcc/arm-linux-gnueabihf/6/crtbegin.o] ==> ignore
@@ -297,7 +297,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/usr/lib/gcc/arm-linux-gnueabihf/6/../../..] ==> dir [/usr/lib/gcc/arm-linux-gnueabihf/6/../../..]
     arg [-L/lib/arm-linux-gnueabihf] ==> dir [/lib/arm-linux-gnueabihf]
     arg [-L/usr/lib/arm-linux-gnueabihf] ==> dir [/usr/lib/arm-linux-gnueabihf]
-    arg [CMakeFiles/cmTC_10023.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_96260.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -324,17 +324,17 @@ Parsed CXX implicit link information from above output:
 
 
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_0bf6a/fast"
-/usr/bin/make -f CMakeFiles/cmTC_0bf6a.dir/build.make CMakeFiles/cmTC_0bf6a.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_0bf6a.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++14 -o CMakeFiles/cmTC_0bf6a.dir/feature_tests.cxx.o -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_0bf6a
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0bf6a.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_0bf6a.dir/feature_tests.cxx.o  -o cmTC_0bf6a -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_35586/fast"
+/usr/bin/make -f CMakeFiles/cmTC_35586.dir/build.make CMakeFiles/cmTC_35586.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_35586.dir/feature_tests.cxx.o
+/usr/bin/c++     -std=c++14 -o CMakeFiles/cmTC_35586.dir/feature_tests.cxx.o -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_35586
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_35586.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_35586.dir/feature_tests.cxx.o  -o cmTC_35586 -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
@@ -397,17 +397,17 @@ make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi
 
 
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_b8648/fast"
-/usr/bin/make -f CMakeFiles/cmTC_b8648.dir/build.make CMakeFiles/cmTC_b8648.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_b8648.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++11 -o CMakeFiles/cmTC_b8648.dir/feature_tests.cxx.o -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_b8648
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b8648.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_b8648.dir/feature_tests.cxx.o  -o cmTC_b8648 -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_2a54a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2a54a.dir/build.make CMakeFiles/cmTC_2a54a.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_2a54a.dir/feature_tests.cxx.o
+/usr/bin/c++     -std=c++11 -o CMakeFiles/cmTC_2a54a.dir/feature_tests.cxx.o -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_2a54a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2a54a.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_2a54a.dir/feature_tests.cxx.o  -o cmTC_2a54a -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -470,17 +470,17 @@ make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi
 
 
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_48b26/fast"
-/usr/bin/make -f CMakeFiles/cmTC_48b26.dir/build.make CMakeFiles/cmTC_48b26.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_48b26.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++98 -o CMakeFiles/cmTC_48b26.dir/feature_tests.cxx.o -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_48b26
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_48b26.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_48b26.dir/feature_tests.cxx.o  -o cmTC_48b26 -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_01e4e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_01e4e.dir/build.make CMakeFiles/cmTC_01e4e.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_01e4e.dir/feature_tests.cxx.o
+/usr/bin/c++     -std=c++98 -o CMakeFiles/cmTC_01e4e.dir/feature_tests.cxx.o -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_01e4e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_01e4e.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_01e4e.dir/feature_tests.cxx.o  -o cmTC_01e4e -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -541,30 +541,30 @@ make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi
     Feature record: CXX_FEATURE:0cxx_variadic_macros
     Feature record: CXX_FEATURE:0cxx_variadic_templates
 Determining if the include file pthread.h exists passed with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_bba4c/fast"
-/usr/bin/make -f CMakeFiles/cmTC_bba4c.dir/build.make CMakeFiles/cmTC_bba4c.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_bba4c.dir/CheckIncludeFile.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_bba4c.dir/CheckIncludeFile.c.o   -c /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_bba4c
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bba4c.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_bba4c.dir/CheckIncludeFile.c.o  -o cmTC_bba4c -rdynamic 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_7b944/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7b944.dir/build.make CMakeFiles/cmTC_7b944.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7b944.dir/CheckIncludeFile.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_7b944.dir/CheckIncludeFile.c.o   -c /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_7b944
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7b944.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_7b944.dir/CheckIncludeFile.c.o  -o cmTC_7b944 -rdynamic 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
 Determining if the function pthread_create exists in the pthread passed with the following output:
-Change Dir: /home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
+Change Dir: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_e178c/fast"
-/usr/bin/make -f CMakeFiles/cmTC_e178c.dir/build.make CMakeFiles/cmTC_e178c.dir/build
-make[1]: Entering directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_e178c.dir/CheckFunctionExists.c.o
-/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_e178c.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
-Linking C executable cmTC_e178c
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e178c.dir/link.txt --verbose=1
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_e178c.dir/CheckFunctionExists.c.o  -o cmTC_e178c -rdynamic -lpthread 
-make[1]: Leaving directory '/home/local/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_6be16/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6be16.dir/build.make CMakeFiles/cmTC_6be16.dir/build
+make[1]: Entering directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6be16.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_6be16.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_6be16
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6be16.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_6be16.dir/CheckFunctionExists.c.o  -o cmTC_6be16 -rdynamic -lpthread 
+make[1]: Leaving directory '/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_image/CMakeFiles/CMakeTmp'
 
 
