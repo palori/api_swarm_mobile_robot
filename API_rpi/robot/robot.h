@@ -28,7 +28,7 @@ public:
 	~Robot();
 
 	//Robot(string hostname);
-	Robot(string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b);
+	Robot(string hostname_master, string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b);
 
 	////////////////
 	// Attributes //
@@ -38,6 +38,7 @@ public:
 								// Using mutex to prevent that ;)
 	Robot_params robot_a;		// Save info from the other robots
 	Robot_params robot_b;
+	Item<string> hostname_master;
 
 	Sensors sensors;			// Store last sensor data read from serial
 								// and image data from the image process
