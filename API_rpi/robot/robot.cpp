@@ -93,18 +93,26 @@ void Robot::serial(){
 	// params like: wheel diameter, dist btw wheels, gearbox ratio...
 
 	string msg = "", old_msg = "1", data = "";
+	string msg_master = "", old_msg_master = "1";
 	//msg = "@a=15,b=1,fwd=5,v=0.6$";				// delete after testing
 
 	serial_comm.serial_open();
+	int count = 0;
 	while(true){
 
 		if(run_mission.get()){
+			count ++;
+			//int millis_sleep = 2000;
+			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 
-			int millis_sleep = 2000;
-			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			// update msg
+			msg = image_data.get();		// probably there are other cases, now we want to test this
 
-			cout << endl << "### new task to Teensy: " << image_data.get() << " ###" << endl << endl;
-			sensors.print_info();
+			if (count>= 1000){
+				cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
+				//sensors.print_info();
+				count = 0;
+			}
 
 
 			/* Commented for testing in Pau's pc
@@ -117,14 +125,19 @@ void Robot::serial(){
 			// then update 'robot_params'
 			*/
 			
-			// update msg
-			msg = image_data.get();		// probably there are other cases, now we want to test this
+			
 			
 			if (msg != old_msg) {
-				cout << "writing serial..." << endl;
+				//cout << "writing serial..." << endl;
 				serial_comm.serial_write(msg);
 				old_msg = msg;
-				cout << "serial message: " << msg << endl;
+				//cout << "serial message: " << msg << endl;
+			}
+
+			msg_master = master_data.get();
+			if (msg_master != old_msg_master) {
+				serial_comm.serial_write(msg_master);
+				old_msg_master = msg_master;
 			}
 		}
 		else{
@@ -144,19 +157,21 @@ void Robot::listen_image_process(){
 	Subscriber subs_image_data(params.port_image.get(), "localhost");//params.hostname.get());
 	string data = "", new_target;
 	while(true){
-		cout << "listenning to image processing..." << endl;
+		//cout << "listenning to image processing..." << endl;
 		data = subs_image_data.listen();	// blocking call
+		image_data.set(data);
+		//cout << "image data to decode: " << data << endl;
 		// decode data into params to use for localization and send to TSY
 		decode_image(data, sensors, new_target);
-		image_data.set(new_target);
+		//image_data.set(new_target);
 	}
 }
 
 void Robot::listen_robot_a(){
 	Subscriber subs_robot_a(robot_a.port_info.get(), robot_a.hostname.get());
 	string info;
+	cout << "listenning to robot " << robot_a.hostname.get() << "..." << endl;
 	while(true){
-		cout << "listenning to robot " << robot_a.hostname.get() << "..." << endl;
 		info = subs_robot_a.listen();		// blocking call
 		// decode info message
 
@@ -170,8 +185,8 @@ void Robot::listen_robot_a(){
 void Robot::listen_robot_b(){
 	Subscriber subs_robot_b(robot_b.port_info.get(), robot_b.hostname.get());
 	string info;
+	cout << "listenning to robot " << robot_b.hostname.get() << "..." << endl;
 	while(true){
-		cout << "listenning to robot " << robot_b.hostname.get() << "..." << endl;
 		info = subs_robot_b.listen();		// blocking call
 		// decode info message
 
@@ -186,8 +201,8 @@ void Robot::listen_master(){
 	string msg;
 	int action;
 	float fwd, vel;
+	cout << "listenning to master " << "(ginger)" << "..." << endl;
 	while(true){
-		cout << "listenning to master " << "(ginger)" << "..." << endl;
 		msg = subs_master.listen();		// blocking call
 
 		// decode info message
@@ -196,7 +211,7 @@ void Robot::listen_master(){
 		vel = NULL;
 		decode_master_commands(msg, params.hostname.get(), action, fwd, vel);
 
-		if (action != NULL || fwd != NULL || vel != NULL) image_data.set(msg);		// maybe need to change the name to the param (image_data)
+		if (action != NULL || fwd != NULL || vel != NULL) master_data.set(msg);		// maybe need to change the name to the param (image_data)
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
@@ -206,13 +221,14 @@ void Robot::listen_master(){
 }
 
 
+/*
 void Robot::send_task(){//Publisher pub_image_task){
-	count++; // only to test (delete after)
-	this->params.tasks.add_item(count);
-	string msg = encode_task(this->params.tasks.get_last_item());
+	int task = this->params.tasks.get_last_item();
+	// maybe only send if it is different than the previous one
+	string msg = encode_task();
 	pub_image_task.publish(msg);
 }
-
+*/
 
 
 
@@ -227,6 +243,14 @@ void Robot::run(){
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 	thread thread_master(&Robot::listen_master, this);
 
+
+
+	// only for testing -> always follow line
+	this->params.tasks.add_item(LINE);			// could be also added if master sends @a=19,b=1$
+	int task = -1, old_task = -1;
+	string msg_task = "";
+	//send_task();
+
 	while(true){
 
 		if(run_mission.get()){
@@ -237,7 +261,12 @@ void Robot::run(){
 			int millis_sleep = 5000;
 			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
-			send_task();
+			//send_task();
+			task = this->params.tasks.get_last_item();
+			if(task != old_task){
+				msg_task = encode_task(task);
+				pub_image_task.publish(msg_task);
+			}
 		}
 
 	}

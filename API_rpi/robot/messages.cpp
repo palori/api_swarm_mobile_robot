@@ -40,12 +40,12 @@ string encode_task(int task){
 string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing){
 	Command command;
 
-	string msg = "@" + command.A + "=" + to_string(task);
+	string msg = "@";// + command.A + "=" + to_string(task);
 	
 	// if what you were looking for is found in the image (line, ball...)
 	msg += "," + command.OF_i + "=" + to_string(obst_found);
 
-	if (obst_found){
+	//if (obst_found){
 
 		if (task != ARUCO){
 			// distance to the obstacle
@@ -63,7 +63,7 @@ string encode_image_params(int task, bool obst_found, float obst_dist, float the
 			// decide which data to share!!!
 			msg += "";
 		}
-	}
+	//}
 	msg += "$";
 	return msg;
 	

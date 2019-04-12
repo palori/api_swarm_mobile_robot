@@ -599,21 +599,21 @@ float take_pic_get_cm(int i, Side side){
 void pic_cm_comm1(){
 
 	camera_init();
-	bool followline = false;
-	bool pictures = true;
+	bool followline = true;
+	bool pictures = false;
 	if (camera_start() >= 0){
 		
 		if (followline) {
 			cr.serial_open();
 		    int i=0;
 		    float y=0.0;
-		    string msg = "@a=19,b=1,v=0.3,fwd=5$";
+		    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
 		    cr.serial_write(msg);
 		    usleep(10000);
 		    while (i<300){
 		    		//camera_start();
 
-					y = take_pic_get_cm(i,MIDDLE);
+					y = take_pic_get_cm(i,LEFT);
 					printf("Y: %f\n",y);
 
 					if (feature != NOTHING) {

@@ -38,7 +38,7 @@ public:
 	void setup();
 	void set_publish_endpoint();
 
-	bool debug = true;
+	bool debug = false;
 	const string ENDPOINT = "tcp://*:"; //always stays the same
 	int port = 6000; // default port
 	string topic = "";
