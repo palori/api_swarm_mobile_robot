@@ -69,6 +69,10 @@ public:
 	float get_y_t() {return y_t;}
 	float get_th_t() {return th_t;}
 
+	float get_x_0() {return x_0;}		// update odomotery values
+	float get_y_0() {return y_0;}
+	float get_th_0() {return th_0;}
+
 
 	// setters if params is not a struct
 	void set_action(int i) {action = i;}
@@ -111,6 +115,10 @@ public:
 	void set_x_t(float f) {x_t = f;}
 	void set_y_t(float f) {y_t = f;}
 	void set_th_t(float f) {th_t = f;}
+
+	void set_x_0(float f) {x_0 = f;}
+	void set_y_0(float f) {y_0 = f;}
+	void set_th_0(float f) {th_0 = f;}
 
 	// other methods
 	String to_string();
@@ -161,6 +169,10 @@ public:
 	float x_t = 0.0;				// target position in Robot coord. syst.
 	float y_t = 0.0;
 	float th_t = 0.0;
+
+	float x_0 = 0.0;
+	float y_0 = 0.0;
+	float th_0 = 0.0;
 
 	constexpr static int BUF_LEN = 100;
 	char buf[BUF_LEN];
@@ -218,6 +230,9 @@ public:
 		String X_t = "xt";				// X  coord. of target pose (in robot coord. syst.)
 		String Y_t = "yt";				// Y  coord. of target pose (in robot coord. syst.)
 		String TH_t = "tht";			// Th coord. of target pose (in robot coord. syst.)
+		String X_0 = "x0";				// updated odomotery value X
+		String Y_0 = "y0";				// updated odomotery value Y
+		String TH_0 = "th0";			// updated odomotery value TH
 
 		String X_w = "xw";				// X  coord. of robot pose (in world coord. syst.)
 		String Y_w = "yw";				// Y  coord. of robot pose (in world coord. syst.)

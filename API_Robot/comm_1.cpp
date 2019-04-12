@@ -362,6 +362,18 @@ void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 			if (val != BIG_FLOAT) {set_th_t(val);}
 		}
 
+		else if (words[i] == command.X_0){
+			val = words[i+1].toFloat();
+			if (val != BIG_FLOAT) {set_x_0(val);}
+		}
+		else if (words[i] == command.Y_0){
+			val = words[i+1].toFloat();
+			if (val != BIG_FLOAT) {set_y_0(val);}
+		}
+		else if (words[i] == command.TH_0){
+			val = words[i+1].toFloat();
+			if (val != BIG_FLOAT) {set_th_0(val);}
+		}
 
 		// The following commands need to follow the action of setting a PID
 		else if (words[i] == command.KP){
