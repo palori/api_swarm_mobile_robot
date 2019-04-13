@@ -135,6 +135,7 @@ void straight_messages(){
 	string msg = "";
 
 	cout << stars << "\n Welcome MASTER\n\n";
+	cout << "\n\n start = " << START << endl;
 	help2();
 
 	int count = 0;

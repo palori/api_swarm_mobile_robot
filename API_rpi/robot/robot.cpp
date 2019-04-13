@@ -137,11 +137,12 @@ void Robot::serial(){
 			//cout << "\n*******\nserial data: " << data << "\n*******\n";
 			decode_sensors(data, sensors);
 			
-			if (count>= 1000){		// DELETE! only for debuging
+			/*if (count>= 1000){		// DELETE! only for debuging
 				cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
 				sensors.print_info();
 				count = 0;
-			}
+			}*/
+			sensors.print_info();
 			// save data
 			// need to be decoded to be used (can be done here or in localization...)
 			// maybe easier to modify 'comm_rpi_1.cpp' and do it there
@@ -219,6 +220,7 @@ void Robot::listen_master(){
 
 		// decode info message
 		action = decode_master_commands(msg, params.hostname.get());
+		cout << "action = " << action << endl;
 
 		master_data.set(msg);		// maybe need to change the name to the param (image_data)
 
