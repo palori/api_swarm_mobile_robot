@@ -552,6 +552,13 @@ void decode_sensors(string msg, Sensors & sens){
 					i++;
 				}
 			}
+			else if(words.at(i) == command.BATT){
+				float val = str2float(words.at(i+1));
+				if (val != BIG_FLOAT) {
+					sens.battery.add_item(val);
+					i++;
+				}
+			}
 		}
 	}
 
