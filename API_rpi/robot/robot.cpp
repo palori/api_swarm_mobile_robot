@@ -222,7 +222,7 @@ void Robot::listen_master(){
 		action = decode_master_commands(msg, params.hostname.get());
 		cout << "action = " << action << endl;
 
-		master_data.set(msg);		// maybe need to change the name to the param (image_data)
+		if (action != -1) master_data.set(msg);		// maybe need to change the name to the param (image_data)
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
