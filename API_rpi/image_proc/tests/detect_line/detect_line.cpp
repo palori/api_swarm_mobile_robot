@@ -607,7 +607,7 @@ void pic_cm_comm1(){
 	bool pictures = true;
 	if (followline) camera_init();
 	if (pictures) camera_init_color();
-	
+
 	if (camera_start() >= 0){
 		
 		if (followline) {
@@ -643,6 +643,8 @@ void pic_cm_comm1(){
 				cout<<"Capturing "+to_string(j)+"..."<<endl;
 				Camera.grab();
 				Camera.retrieve (pic);
+				Mat pic_color;
+				cvtColor(pic,pic_color,COLOR_RGB2BGR);
 				string pic_name = "pics/pic_"+to_string(j)+".png";
 				imwrite(pic_name,pic);
 				j++;

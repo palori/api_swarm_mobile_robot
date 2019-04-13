@@ -55,6 +55,7 @@ enum Actions {
 	DRIVE,				// drive to a target point (not really good)
 	FOLLOW,				// follow a line (heading control, theta)
 	RACE,
+	STAIRS,
 	//STOP,				// already included in the top	
 	//WAIT				// may include waiting for other robots??
 
