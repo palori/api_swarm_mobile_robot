@@ -1,3 +1,5 @@
+#include <Servo.h>
+
 #include <motor.h>
 #include <pins.h>
 #include <utils.h>
@@ -6,7 +8,6 @@
 #include "imu.h"
 #include <ir.h>
 #include "comm_1.h"
-#include <Servo.h>
 
 IntervalTimer myTimer;
 IntervalTimer reading;

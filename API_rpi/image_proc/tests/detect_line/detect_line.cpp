@@ -89,6 +89,12 @@ int camera_init(){
 	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
 }
 
+int camera_init_color(){
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
+	Camera.set(CV_CAP_PROP_FRAME_WIDTH, CAM_W);
+	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, CAM_H);
+}
+
 int camera_start(){
 	//Open camera
 	cout<<"Opening Camera..."<<endl;
@@ -597,10 +603,11 @@ float take_pic_get_cm(int i, Side side){
 
 
 void pic_cm_comm1(){
-
-	camera_init();
-	bool followline = true;
-	bool pictures = false;
+	bool followline = false;
+	bool pictures = true;
+	if (followline) camera_init();
+	if (pictures) camera_init_color();
+	
 	if (camera_start() >= 0){
 		
 		if (followline) {

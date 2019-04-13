@@ -114,7 +114,7 @@ public:
 	void set_drive(bool b) {drive = b;}
 	void set_followline(bool b) {followline = b;}
 	void set_race(bool b) {race = b;}
-	void set_stairs(bool b) {stairs = b};
+	void set_stairs(bool b) {stairs = b;}
 
 	void set_x_t(float f) {x_t = f;}
 	void set_y_t(float f) {y_t = f;}
