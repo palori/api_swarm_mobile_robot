@@ -603,7 +603,7 @@ float take_pic_get_cm(int i, Side side){
 
 int shape_color (){
 
-	Mat img = imread("../take_pic/crossings/pic_0.png",CV_LOAD_IMAGE_COLOR);
+	Mat img = imread("pics/pic_7.png",CV_LOAD_IMAGE_COLOR);
 	
 	//convert to HSV
 	Mat img_hsv;
@@ -611,7 +611,7 @@ int shape_color (){
 	
 	//threshold for green
 	Mat img_green;
-	inRange(img_hsv,Scalar(0,0,0),Scalar(75,255,255),img_green);
+	inRange(img_hsv,Scalar(38,0,0),Scalar(75,255,255),img_green);
 
 	//threshold for orange
 	Mat img_orange;
@@ -621,7 +621,7 @@ int shape_color (){
 	string name = "pics/green.png";
 	imwrite(name,img_green);
 
-	string name = "pics/orange.png";
+	name = "pics/orange.png";
 	imwrite(name,img_orange);
 
 
