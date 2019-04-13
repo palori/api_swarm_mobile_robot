@@ -625,8 +625,8 @@ void setup()
   myTimer.priority(0);
   //reading.begin(reading100ms,100000);
   //reading.priority(1);
-  //writing.begin(read_sensors,1000000);
-  //writing.priority(2);
+  writing.begin(read_sensors,100000);
+  writing.priority(1);
   //myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
    
 } 
@@ -650,7 +650,7 @@ void loop() // @,a=15,b=1,fwd=2,$
 
 void read_sensors(){
 
-  double _odo[3] = {odoX, odoY, odoTh};
+  double _odo[3] = {odoX, odoY, WrapTo2PI(odoTh)};
   float _ir[2] = {0.0,0.0};
   int _imu_cmps[3] = {0,0,0};
   int _imu_gyro[3] = {0,0,0};
@@ -677,6 +677,7 @@ void read_sensors(){
   } 
  
   comm_tsy.write_serial(_odo,_ir,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+  Serial.println("");
 }
 
 void update10ms(){
@@ -687,8 +688,8 @@ void update10ms(){
     velocity2 = getVelocity(RIGHT_MOTOR , millis());
     updatePosition((double)encoder1.read() , (double)encoder2.read());   //check overflow, it should overflow when int/double overflows
 
-    Serial.println("velocity1: "+String(velocity1));
-    Serial.println("velocity2: "+String(velocity2));
+    //Serial.println("velocity1: "+String(velocity1));
+    //Serial.println("velocity2: "+String(velocity2));
     //Serial.println("odoX: "+String(odoX));
     //Serial.println("odoY: "+String(odoY));
     //Serial.println("odoTh: "+String(odoTh));

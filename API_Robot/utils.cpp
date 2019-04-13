@@ -27,7 +27,7 @@ bool checkBattery(){
 		digitalWrite(PIN_LED_STATUS, LOW);
 		return false;
 	}
-	else if (batt<10.5){
+	else if (batt<11.5){
 		digitalWrite(PIN_POWER_ROBOT, HIGH);
 		digitalWrite(PIN_LED_STATUS, LOW);
 		return true;
