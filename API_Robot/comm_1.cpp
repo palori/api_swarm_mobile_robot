@@ -308,6 +308,8 @@ void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 					case TRNR: set_trnr(i_val); break;
 					case DRIVE: set_drive(i_val); break;
 					case FOLLOW: set_followline(i_val); break;
+					case RACE: set_race(i_val); break;
+					case STAIRS: set_stairs(i_val); break;
 
 					default: if(get_debug()){Serial.println("Incorrect action.");} break;
 						

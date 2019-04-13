@@ -98,7 +98,7 @@ double dist_error = 0.0;
 double dist_curr = 0.0;
 double angle_ref_abs = 0.0;
 double angle_error = 0.0;
-enum Command {TRN, FWD, TRNR};
+enum Command {TRN, FWD, TRNR,};
 bool newCommand = true;
 
 
@@ -310,16 +310,28 @@ void forward(double dist_ref){
   
     x_0 = odoX;
     y_0 = odoY;
-    Th_0 = odoTh;  
-    
     dist_curr = sign(dist_ref) * sqrt(pow(odoX - x_0 , 2.0) + pow(odoY - y_0 , 2.0)); 
     dist_error = dist_ref - dist_curr;
     
     enableMotors();
 
-    initializePID(VEL1,Kp,Ki,0.01);
-    initializePID(VEL2,Kp,Ki,0.01);
-    initializePID(THETA,Kp_Th,Ki_Th,0.01);
+    if (comm_tsy.get_race()) {
+        Th_0 = 0;    //Th_0 has to be 0 for race
+        initializePID(VEL1,2*Kp,Ki,0.01);
+        initializePID(VEL2,2*Kp,Ki,0.01);
+        initializePID(THETA,Kp_Th,Ki_Th,0.01);
+    } else if (comm_tsy.get_stairs()){
+        Th_0 = 0;
+        initializePID(VEL1,2*Kp,Ki,0.01);
+        initializePID(VEL2,2*Kp,Ki,0.01);
+        initializePID(THETA,0,0,0.01);  //theta control has to be 0 for stairs       
+    
+    } else {
+        Th_0 = odoTh;
+        initializePID(VEL1,Kp,Ki,0.01);
+        initializePID(VEL2,Kp,Ki,0.01);
+        initializePID(THETA,Kp_Th,Ki_Th,0.01); 
+    }
     
 }
 
@@ -397,6 +409,8 @@ void emergency_stop(){   //shouldnt wait until new command = true
     comm_tsy.set_trnr(false);
     comm_tsy.set_drive(false); 
     comm_tsy.set_followline(false);
+    comm_tsy.set_race(false);
+    comm_tsy.set_stairs(false);
     
     
     initializePID(VEL1,Kp,Ki,0.01);
@@ -510,6 +524,8 @@ void update_velocity(int drive_command){
                 disableMotors();  
                 newCommand = true;    
                 comm_tsy.set_fwd(false); 
+                comm_tsy.set_race(false);
+                comm_tsy.set_stairs(false);
             }
           break;
 
@@ -594,11 +610,12 @@ void update_velocity(int drive_command){
                   
             } else {
                 Serial.println("Follow line STOP!!!");
-                vel1 = 0.001;
-                vel2 = 0.001;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;    
                 comm_tsy.set_followline(false); 
+                
             }
           break;
   }
@@ -701,9 +718,9 @@ void update10ms(){
     if (comm_tsy.get_stop()) drive_command = comm_tsy.STOP;
       else if (comm_tsy.get_followline()) drive_command = comm_tsy.FOLLOW;
       else if (comm_tsy.get_drive()) drive_command = comm_tsy.DRIVE;
-      else if (comm_tsy.get_fwd()) drive_command = comm_tsy.FWD;
+      else if (comm_tsy.get_fwd() || comm_tsy.get_race() || comm_tsy.get_stairs()) drive_command = comm_tsy.FWD;
       else if (comm_tsy.get_trn()) drive_command = comm_tsy.TRN;
-      else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR; 
+      else if (comm_tsy.get_trnr()) drive_command = comm_tsy.TRNR;    
       else {
         drive_command=-1;
         newCommand=true;
@@ -739,8 +756,9 @@ void update10ms(){
         case comm_tsy.DRIVE:
           drive(double(comm_tsy.get_x_t()),double(comm_tsy.get_y_t()),double(comm_tsy.get_th_t()));
           newCommand=false;
-          
           break;
+        
+          
       }
       //newCommand = false;
     } 
