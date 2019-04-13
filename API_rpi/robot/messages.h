@@ -163,7 +163,7 @@ enum obstacle{
 		BALL_2,
 		//...
 
-		RACE,
+		//RACE,
 		SHAPES,				// maybe expand: CROSS, CIRCLE, TRIANGLE and SQUARE
 		AX_GATE,
 		TUNNEL,

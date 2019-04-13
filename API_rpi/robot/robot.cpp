@@ -218,9 +218,6 @@ void Robot::listen_master(){
 		msg = subs_master.listen();		// blocking call
 
 		// decode info message
-		action = NULL;
-		fwd = NULL;
-		vel = NULL;
 		action = decode_master_commands(msg, params.hostname.get());
 
 		master_data.set(msg);		// maybe need to change the name to the param (image_data)

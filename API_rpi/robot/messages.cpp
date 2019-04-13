@@ -566,6 +566,7 @@ void decode_sensors(string msg, Sensors & sens){
 int decode_master_commands(string msg, string hostname){
 	// detect if the message is 
 	bool message_to_this_robot = false;
+	int action = -1;
 	msg = detect_message(msg);
 	if (msg != ""){
 		// split the message
