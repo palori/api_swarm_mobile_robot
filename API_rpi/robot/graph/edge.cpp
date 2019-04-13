@@ -3,7 +3,7 @@
 
 Edge::Edge(){}
 
-Edge::Edge(Node* node1, Node* node2, bool line, bool bidirectional, float th_w_node_1, float th_w_node_2)
+Edge::Edge(Node* node1, Node* node2, bool bidirectional, bool line, float th_w_node_1, float th_w_node_2)
 	//: node1(node1), node2(node2)
 {
 	this->node1 = node1;
@@ -16,12 +16,9 @@ Edge::Edge(Node* node1, Node* node2, bool line, bool bidirectional, float th_w_n
 	if (this->line){
 		this->th_w_node_1 = th_w_node_1;
 		if (this->bidirectional) this->th_w_node_2 = th_w_node_2;
-		else this->th_w_node_1 = NULL;
+		else this->th_w_node_2 = NULL;
 	}
-	else{
-		this->th_w_node_1 = NULL;
-		this->th_w_node_2 = NULL;
-	}
+	// else -> set in 'compute_distance()'
 	
 	compute_distance();
 }
@@ -46,10 +43,11 @@ void Edge::print_info(){
 	cout << "Edge:";
 	cout << "\n  node1_id =      " << this->node1->id;
 	cout << "\n  node2_id =      " << this->node2->id;
-	cout << "\n  line =          " << this->line;
 	cout << "\n  bidirectional = " << this->bidirectional;
+	cout << "\n  line =          " << this->line;
 	cout << "\n  th_w_node_1 =   " << this->th_w_node_1;
 	cout << "\n  th_w_node_2 =   " << this->th_w_node_2;
+	cout << "\n  distance =      " << this->distance;
 	cout << endl;
 }
 
@@ -62,4 +60,15 @@ void Edge::compute_distance(){
 	distance = sqrt(delta_x*delta_x + delta_y*delta_y);
 
 	if (line) distance = k*distance;
+	else{
+		// calculate the orientations to face the opposite node
+		this->th_w_node_1 = atan2(delta_y, delta_x);
+
+		if (this->bidirectional){
+			delta_x = node1->x - node2->x;
+			delta_y = node1->y - node2->y;
+			this->th_w_node_2 = atan2(delta_y, delta_x);
+		}
+		else this->th_w_node_2 = NULL;
+	}
 }
