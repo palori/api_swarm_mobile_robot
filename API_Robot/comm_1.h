@@ -7,6 +7,9 @@
 #include <string.h> // I think we only use String lib from Arduino
 #include <errno.h>  /* ERROR Number Definitions */ //Might not be used any more
 
+#define SERVO_ON 125
+#define SERVO_OFF 30
+
 using namespace std;
 
 /*
@@ -24,7 +27,7 @@ class COMM_TSY
 public:
 	COMM_TSY();
 	~COMM_TSY();
-	void write_serial(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
+	void write_serial(double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
 	void read_serial();
 
 	// getters if params is not a struct
@@ -55,7 +58,7 @@ public:
 	float get_fwd_dist() {return fwd_dist;}
 	float get_trn_deg() {return trn_deg;}
 	float get_trn_r() {return trn_r;}
-	float get_servo() {return servo;}
+	int get_servo() {return servo;}
 
 	bool get_debug() {return debug;}
 
@@ -104,7 +107,7 @@ public:
 	void set_fwd_dist(float f) {fwd_dist = f;}
 	void set_trn_deg(float f) {trn_deg = f;}
 	void set_trn_r(float f) {trn_r = f;}
-	void set_servo(float f) {servo = f;}
+	void set_servo(int i) {servo = i;}
 
 	void set_debug(bool b) {debug = b;}
 
@@ -160,7 +163,8 @@ public:
 	float fwd_dist = 0.0;			// [mm]
 	float trn_deg = 0.0;			// [ª]
 	float trn_r = 0.0;				// [mm] turning radius
-	float servo = 0.0;
+	
+	int servo = 30;
 
 	bool debug = false;				// useful now to debug on the TSY, but need to send essential info (params...) to the RPI to debug from there
 	
@@ -241,7 +245,7 @@ public:
 		String X_0 = "x0";				// updated odomotery value X
 		String Y_0 = "y0";				// updated odomotery value Y
 		String TH_0 = "th0";			// updated odomotery value TH
-
+		String BATT = "batt";
 		String X_w = "xw";				// X  coord. of robot pose (in world coord. syst.)
 		String Y_w = "yw";				// Y  coord. of robot pose (in world coord. syst.)
 		String TH_w = "thw";			// Th coord. of robot pose (in world coord. syst.)
@@ -265,7 +269,7 @@ public:
 	void msg2params(); // OLD WAY: (String msg);
 
 	// encode the target to send the message
-	String sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
+	String sensorData2msg(double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
 
 
 };

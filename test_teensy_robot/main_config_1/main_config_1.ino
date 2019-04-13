@@ -1,5 +1,4 @@
 #include <Servo.h>
-
 #include <motor.h>
 #include <pins.h>
 #include <utils.h>
@@ -29,6 +28,7 @@ COMM_TSY comm_tsy;
 //motor and encoder constants
 double pulses_per_rotation = 48.0; //encoder give 48 pulses per revolution
 double gear_ratio = 9.68; //gearing ratio between shaft and encoder is 1:9.68
+float battery_voltage = 0.0;
 
 //PID values
 double vel1 = 0.0;
@@ -645,24 +645,26 @@ void setup()
   //reading.priority(1);
   writing.begin(read_sensors,100000);
   writing.priority(1);
-  //myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
+  myServo.attach(PIN_SERVO2);    //write as:  myServo.write(position)  position = [0,180]
+  
+  
    
+  
+  
+
 } 
 
 Command RPI_command = TRNR;
 double RPI_value = PI;
 
 int drive_command=-1;
-int pos=0;
+int servo_pos = comm_tsy.get_servo();
 
 void loop() // @,a=15,b=1,fwd=2,$
 { 
-   
-
    reading100ms();
    //Serial.println("****************************************");
-   checkBattery();
-
+   battery_voltage = checkBattery();
 }
 
 
@@ -674,6 +676,7 @@ void read_sensors(){
   int _imu_gyro[3] = {0,0,0};
   int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
+  float _batt = battery_voltage;
   
 
   if (comm_tsy.get_ir_on()){
@@ -694,7 +697,7 @@ void read_sensors(){
     int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
   } 
  
-  comm_tsy.write_serial(_odo,_ir,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+  comm_tsy.write_serial(_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
 }
 
@@ -772,10 +775,12 @@ void update10ms(){
       
     //delay(10);
 
-   
-    
-    
-  
+    //update servo position;
+
+    if (myServo.read() < comm_tsy.get_servo() ) servo_pos++;
+    else if (myServo.read() > comm_tsy.get_servo()) servo_pos--;
+
+    myServo.write(servo_pos);  //update servo pos every 10ms
 }
 
 void reading100ms (){

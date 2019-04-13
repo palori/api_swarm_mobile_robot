@@ -12,15 +12,16 @@ string detect_message(string msg);
 
 string encode_task(int task);
 string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing);
+string encode_master_commands(string msg, int i);
 //string encode_init(string you_are, string robot_a, string robot_b, int max_len);
 //void params2msg(string & msg);
 
 void decode_task(string msg, Items<int> & tasks);
 void decode_ctrl(string msg, Controllers & ctrl);	// NOT fully tested, but the important ones yes
 void decode_robot_params(string msg, Robot_params & rob);
-void decode_image(string msg, Sensors & sens, string & new_target);
+void decode_image(string msg, Sensors & sens);
 void decode_sensors(string msg, Sensors & sens);
-void decode_master_commands(string msg, string hostname, int & action, float & fwd, float & vel);
+int decode_master_commands(string msg, string hostname);
 
 
 enum Actions {
@@ -108,7 +109,7 @@ struct Command {
 	string X_t = "xt";				// X  coord. of target pose (in robot coord. syst.)
 	string Y_t = "yt";				// Y  coord. of target pose (in robot coord. syst.)
 	string TH_t = "tht";			// Th coord. of target pose (in robot coord. syst.)
-
+	string BATT = "batt";
 	// sensor data
 	string X_w = "xw";				// X  coord. of robot pose (in world coord. syst.)
 	string Y_w = "yw";				// Y  coord. of robot pose (in world coord. syst.)
@@ -134,6 +135,7 @@ struct Command {
 
 	// robot
 	string ROB = "rob";				// in case the message is sent to a specific robot (hostname)
+	string I = "i";					// counter to know if you got a new message
 };
 
 
@@ -161,7 +163,7 @@ enum obstacle{
 		BALL_2,
 		//...
 
-		RACE,
+		//RACE,
 		SHAPES,				// maybe expand: CROSS, CIRCLE, TRIANGLE and SQUARE
 		AX_GATE,
 		TUNNEL,

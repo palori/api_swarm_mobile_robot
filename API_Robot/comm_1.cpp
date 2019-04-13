@@ -25,9 +25,9 @@ COMM_TSY::~COMM_TSY(){
 		c_msg[i] = '0';
 	}
 }*/
-void COMM_TSY::write_serial(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){ //params might change, maybe add last sensors data
+void COMM_TSY::write_serial(double _odo[3], float _ir[2], float battery ,int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){ //params might change, maybe add last sensors data
 	// modify to add this
-	String msg = sensorData2msg(_odo, _ir, _imu_cmps, _imu_gyro, _imu_accel, _obstacle_found);
+	String msg = sensorData2msg(_odo, _ir, battery, _imu_cmps, _imu_gyro, _imu_accel, _obstacle_found);
 
 
 	// String 2 char[]
@@ -340,8 +340,11 @@ void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 			if (val != BIG_FLOAT) {set_vel(val);}
 		}
 		else if (words[i] == command.S){
-			val = words[i+1].toFloat();
-			if (val != BIG_FLOAT) {set_servo(val);}
+			val = words[i+1].toInt();
+			if (val != BIG_FLOAT) {
+				if (val) set_servo(SERVO_ON);
+				else set_servo(SERVO_OFF);
+			}
 
 		}
 		else if (words[i] == command.OD){
@@ -415,7 +418,7 @@ void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 
 
 // encode the mesage --> old version, need to be updated
-String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){
+String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], float battery,int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){
 	Command command;
 
 	/*
@@ -435,6 +438,8 @@ String COMM_TSY::sensorData2msg(double _odo[3], float _ir[2], int _imu_cmps[3], 
 		new_msg += ","+command.IR1+"=" + String(_ir[0]);
 		new_msg += ","+command.IR2+"=" + String(_ir[1]);
 	}
+
+	new_msg += ","+command.BATT + "=" +String(battery);
 
 	if (get_avoid_obst()){
 		new_msg += ","+command.OD+"=" + String(get_obst_dist());

@@ -125,7 +125,8 @@ void help2(){
 	cout << "    h\t\thelp\n";
 	cout << "    q\t\tquit\n";
 	cout << "    command\twithout '@' and '$'\n";
-	cout << "    \t\tE.g: a=15,b=1,fwd=1,v=0.3\n";
+	cout << "    \t\tE.g: rob=all,a=15,b=1,fwd=1,v=0.3\n";
+	cout << "    \t\trob\tall or hostname1-hostname2-hostnameN\n";
 	cout << line << endl;
 }
 
@@ -134,6 +135,7 @@ void straight_messages(){
 	string msg = "";
 
 	cout << stars << "\n Welcome MASTER\n\n";
+	cout << "\n\n start = " << START << endl;
 	help2();
 
 	int count = 0;
@@ -144,8 +146,8 @@ void straight_messages(){
 		cin >> msg;
 		if (msg == "q") quit = true;
 		else if (msg == "h") help2();
-		else{								// test: a=15,b=1,fwd=1,v=0.3
-			msg = "@i=" + to_string(count) + "," + msg + "$";
+		else{								// test: rob=all,a=15,b=1,fwd=1,v=0.3
+			msg = encode_master_commands(msg, count);
 			pub.publish(msg);
 			cout <<     "     sent:  " << msg;
 			count++;

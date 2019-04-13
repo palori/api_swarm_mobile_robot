@@ -113,13 +113,6 @@ void Robot::serial(){
 
 			// update msg
 			msg = image_data.get();		// probably there are other cases, now we want to test this
-
-			if (count>= 1000){
-				cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
-				//sensors.print_info();
-				count = 0;
-			}
-
 			if (msg != old_msg) {
 				//cout << "writing serial..." << endl;
 				serial_comm.serial_write(msg);
@@ -143,6 +136,12 @@ void Robot::serial(){
 			data = serial_comm.serial_read();
 			//cout << "\n*******\nserial data: " << data << "\n*******\n";
 			decode_sensors(data, sensors);
+			
+			/*if (count>= 1000){		// DELETE! only for debuging
+				cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
+				sensors.print_info();
+				count = 0;
+			}*/
 			sensors.print_info();
 			// save data
 			// need to be decoded to be used (can be done here or in localization...)
@@ -177,8 +176,7 @@ void Robot::listen_image_process(){
 		image_data.set(data);
 		//cout << "image data to decode: " << data << endl;
 		// decode data into params to use for localization and send to TSY
-		decode_image(data, sensors, new_target);
-		//image_data.set(new_target);
+		decode_image(data, sensors);
 	}
 }
 
@@ -215,23 +213,20 @@ void Robot::listen_master(){
 	string master = this->hostname_master.get();
 	Subscriber subs_master(8001, master);
 	string msg;
-	int action;
-	float fwd, vel;
+	int action = -1;
 	cout << "listenning to master '" << master << "'..." << endl;
 	while(true){
 		msg = subs_master.listen();		// blocking call
 
 		// decode info message
-		action = NULL;
-		fwd = NULL;
-		vel = NULL;
-		decode_master_commands(msg, params.hostname.get(), action, fwd, vel);
+		action = decode_master_commands(msg, params.hostname.get());
+		cout << "action = " << action << endl;
 
-		if (action != NULL || fwd != NULL || vel != NULL) master_data.set(msg);		// maybe need to change the name to the param (image_data)
+		master_data.set(msg);		// maybe need to change the name to the param (image_data)
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
-
+		action = -1;
 	}
 
 }

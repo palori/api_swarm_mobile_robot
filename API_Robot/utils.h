@@ -6,7 +6,7 @@
 
 
 void setUpPowerPins();
-bool checkBattery();
+float checkBattery();
 
 
 void enableMotors();

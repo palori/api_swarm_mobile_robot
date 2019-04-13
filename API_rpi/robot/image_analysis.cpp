@@ -53,14 +53,11 @@ Image_analysis::Image_analysis(int port_image, int port_task){		// add other inp
 
 void Image_analysis::get_new_task(){
 	Subscriber subs(port_task.get(), "localhost");
-	string new_task;
+	string new_task="", old_task="1";
 	int tsk;
 	while(true){
-		new_task = subs.listen();
-		// some decoding ??
-		//tsk = str2int(new_task);
-		//this->tasks.add_item(tsk);
-		decode_task(new_task,this->tasks);
+		new_task = subs.listen();	// bloking call
+		if (new_task != old_task) decode_task(new_task,this->tasks);
 	}
 }
 
