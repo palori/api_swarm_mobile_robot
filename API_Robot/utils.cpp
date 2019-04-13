@@ -14,7 +14,7 @@ void setUpPowerPins(){
   	digitalWrite(PIN_POWER_IR, HIGH);
 }
 
-bool checkBattery(){
+float checkBattery(){
 	// Check if battery voltage is low, if true, power robot off
 	float batt=analogRead(PIN_BATTERY_VOLTAGE);
 	batt = batt*16.2/1.2/1024*3.3;// /1024*12;
@@ -25,18 +25,19 @@ bool checkBattery(){
 		//Serial.println("Low battery!");
 		digitalWrite(PIN_POWER_ROBOT, LOW);
 		digitalWrite(PIN_LED_STATUS, LOW);
-		return false;
+		
 	}
 	else if (batt<11.5){
 		digitalWrite(PIN_POWER_ROBOT, HIGH);
 		digitalWrite(PIN_LED_STATUS, LOW);
-		return true;
+		
 	}
 	else { //if(batt > 12){ // Maybe just else, but be careful!!!!
 		digitalWrite(PIN_POWER_ROBOT, HIGH);
 		digitalWrite(PIN_LED_STATUS, HIGH);
-		return true;
+		
 	}
+	return batt;
 }
 
 void enableMotors(){
