@@ -601,10 +601,38 @@ float take_pic_get_cm(int i, Side side){
 
 }
 
+int shape_color (){
+
+	Mat img = imread("../take_pic/crossings/pic_0.png",CV_LOAD_IMAGE_COLOR);
+	
+	//convert to HSV
+	Mat img_hsv;
+	cvtColor(img, img_hsv, COLOR_BGR2HSV);
+	
+	//threshold for green
+	Mat img_green;
+	inRange(img_hsv,Scalar(0,0,0),Scalar(75,255,255),img_green);
+
+	//threshold for orange
+	Mat img_orange;
+	inRange(img_hsv,Scalar(0,0,0),Scalar(22,255,255),img_orange);
+
+
+	string name = "pics/green.png";
+	imwrite(name,img_green);
+
+	string name = "pics/orange.png";
+	imwrite(name,img_orange);
+
+
+	return 1;
+}
 
 void pic_cm_comm1(){
 	bool followline = false;
-	bool pictures = true;
+	bool pictures = false;
+	bool shapes = true;
+
 	if (followline) camera_init();
 	if (pictures) camera_init_color();
 
@@ -652,6 +680,8 @@ void pic_cm_comm1(){
 			}
 
 		}
+
+		if (shapes) int j = shape_color();
 	    
 	}
 
