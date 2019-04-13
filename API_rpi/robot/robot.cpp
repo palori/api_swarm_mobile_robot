@@ -105,6 +105,8 @@ void Robot::serial(){
 	while(true){
 
 		if(run_mission.get()){
+
+			//---------------WRITING SERIAL---------------//
 			count ++;
 			//int millis_sleep = 2000;
 			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
@@ -118,19 +120,6 @@ void Robot::serial(){
 				count = 0;
 			}
 
-
-			/* Commented for testing in Pau's pc
-			cout << "reading serial..." << endl;
-			data = serial_comm.serial_read();
-			decode_sensors(data, sensors);
-			// save data
-			// need to be decoded to be used (can be done here or in localization...)
-			// maybe easier to modify 'comm_rpi_1.cpp' and do it there
-			// then update 'robot_params'
-			*/
-			
-			
-			
 			if (msg != old_msg) {
 				//cout << "writing serial..." << endl;
 				serial_comm.serial_write(msg);
@@ -143,6 +132,28 @@ void Robot::serial(){
 				serial_comm.serial_write(msg_master);
 				old_msg_master = msg_master;
 			}
+			
+			//int millis_sleep = 50;
+			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+
+
+			//---------------READING SERIAL---------------//
+			// Commented for testing in Pau's pc
+			cout << "reading serial..." << endl;
+			data = serial_comm.serial_read();
+			//cout << "\n*******\nserial data: " << data << "\n*******\n";
+			decode_sensors(data, sensors);
+			sensors.print_info();
+			// save data
+			// need to be decoded to be used (can be done here or in localization...)
+			// maybe easier to modify 'comm_rpi_1.cpp' and do it there
+			// then update 'robot_params'
+			//
+			int millis_sleep = 10;
+			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			
+			
+			
 		}
 		else{
 			if (msg != old_msg) {

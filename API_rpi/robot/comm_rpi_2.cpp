@@ -95,7 +95,7 @@ string COMM_RPI::serial_read(){ //read_char_by_char
                         msg = "";
                         store = true;
                     }
-                    if(store && c[0]=='$'){
+                    else if(store && c[0]=='$'){
                         keep_reading=false; // == break;
                         store = false;
                     }

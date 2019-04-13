@@ -419,7 +419,7 @@ void decode_image(string msg, Sensors & sens, string & new_target){
  */
 void decode_sensors(string msg, Sensors & sens){
 
-	msg = detect_message(msg);
+	//msg = detect_message(msg);  // done while reading serial
 	if (msg != ""){
 		// split the message
 		vector<string> words = split_str(msg, "=,");    // utils
