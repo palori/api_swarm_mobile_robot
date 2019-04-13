@@ -43,6 +43,9 @@ string follow_line(Mat img,Side side){
 	vector<Vec4i> hierarchy;
 	bool bad_threshold = true;
 
+	// count to know that the message is different!
+	int count = 0;
+
 	while (bad_threshold){
 		good_contours.clear();
 		contours.clear();
@@ -205,8 +208,12 @@ string follow_line(Mat img,Side side){
 	old_right = right_cm;
 	bool obstacle = false;
 	if (feature != NO_CROSS) obstacle = true;
+
+	count++;	// count to know that the message is different!
+	if (count >= 10) count = 0;
+
 	//return string composed of feature and theta for line following
-	return encode_image_params(LINE,obstacle, 0.0, cm, feature);
+	return encode_image_params(LINE,obstacle, 0.0, cm, feature, count);
 }
 
 

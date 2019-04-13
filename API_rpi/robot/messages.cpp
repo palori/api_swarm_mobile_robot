@@ -37,10 +37,10 @@ string encode_task(int task){
 
 
 
-string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing){
+string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing, int i){
 	Command command;
 
-	string msg = "@";// + command.A + "=" + to_string(task);
+	string msg = "@" + command.I + to_string(i);// + command.A + "=" + to_string(task);
 	
 	// if what you were looking for is found in the image (line, ball...)
 	msg += "," + command.OF_i + "=" + to_string(obst_found);
@@ -67,6 +67,12 @@ string encode_image_params(int task, bool obst_found, float obst_dist, float the
 	msg += "$";
 	return msg;
 	
+}
+
+
+string encode_master_commands(string msg, int i){
+	Command command;
+	return "@" + command.I + "=" + to_string(i) + "," + msg + "$";
 }
 
 
@@ -352,7 +358,7 @@ void decode_robot_params(string msg, Robot_params & rob){
 
 
 
-void decode_image(string msg, Sensors & sens, string & new_target){
+void decode_image(string msg, Sensors & sens){
 	// detect if the message is 
 	msg = detect_message(msg);
 	if (msg != ""){
@@ -391,7 +397,6 @@ void decode_image(string msg, Sensors & sens, string & new_target){
 				float val = str2float(words.at(i+1));
 				if (val != BIG_FLOAT) {
 					sens.th_t.add_item(val);
-					new_target = "@" + command.TH_t + "=" + words.at(i+1) + "$"; 		// just send this to TSY, the rest for localization
 					i++;
 				}
 			}
@@ -558,7 +563,7 @@ void decode_sensors(string msg, Sensors & sens){
 
 
 
-void decode_master_commands(string msg, string hostname, int & action, float & fwd, float & vel){
+int decode_master_commands(string msg, string hostname){
 	// detect if the message is 
 	bool message_to_this_robot = false;
 	msg = detect_message(msg);
@@ -589,6 +594,7 @@ void decode_master_commands(string msg, string hostname, int & action, float & f
 					i++;
 				}
 			}
+			/*
 			else if(words.at(i) == command.FWD){
 				float val = str2float(words.at(i+1));
 				if (val != BIG_FLOAT) {
@@ -603,15 +609,14 @@ void decode_master_commands(string msg, string hostname, int & action, float & f
 					i++;
 				}
 			}
-
+			*/
 		}
 
 
 		if (!message_to_this_robot){
-			action = NULL;
-			fwd == NULL;
-			vel == NULL;
+			return -1;
 		}
+		return action;
 	}
 
 }
