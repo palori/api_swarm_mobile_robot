@@ -26,6 +26,8 @@ void Sensors::set_MAX_LEN(int i){
 	this->obst_dist.set_MAX_LEN(i);
 	this->obst_found.set_MAX_LEN(i);
 
+	this->battery.set_MAX_LEN(i);
+
 	gyro_x.set_MAX_LEN(i);
 	gyro_y.set_MAX_LEN(i);
 	gyro_z.set_MAX_LEN(i);
@@ -59,6 +61,8 @@ void Sensors::print_info(){
 	cout << "  IR2:    " << ir2.get_last_item_noMutex() << endl;
 	cout << "  OD:     " << obst_dist.get_last_item_noMutex() << endl;
 	cout << "  OF:     " << obst_found.get_last_item_noMutex() << endl;
+	cout << endl;
+	cout << "  BATT:   " << battery.get_last_item_noMutex() << endl;
 	cout << endl;
 	cout << "  Gyro_x: " << gyro_x.get_last_item_noMutex() << endl;
 	cout << "  Gyro_y: " << gyro_y.get_last_item_noMutex() << endl;
@@ -94,6 +98,8 @@ void Sensors::init_items(){
 	this->obst_dist.set_name("obst_dist");
 	this->obst_found.set_name("obst_found");
 
+	this->battery.set_name("battery");
+
 	this->gyro_x.set_name("gyro_x");
 	this->gyro_y.set_name("gyro_y");
 	this->gyro_z.set_name("gyro_z");
@@ -122,6 +128,8 @@ void Sensors::init_items(){
 	this->ir2.add_item_noMutex(0.0);
 	this->obst_dist.add_item_noMutex(0.0);
 	this->obst_found.add_item_noMutex(false);
+
+	this->battery.add_item_noMutex(0.0);
 
 	this->gyro_x.add_item_noMutex(0.0);
 	this->gyro_y.add_item_noMutex(0.0);
@@ -155,6 +163,8 @@ Sensors & Sensors::operator=(Sensors & sens){
 	this->ir2 = sens.ir2;
 	this->obst_dist = sens.obst_dist;
 	this->obst_found = sens.obst_found;
+
+	this->battery = sens.battery;
 
 	this->gyro_x = sens.gyro_x;
 	this->gyro_y = sens.gyro_y;

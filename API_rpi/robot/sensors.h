@@ -26,6 +26,8 @@ public:
 	Items<float> x;
 	Items<float> y;
 	Items<float> th;
+
+	Items<float> battery;
 	
 	Items<float> ir1;
 	Items<float> ir2;
