@@ -1,5 +1,4 @@
 #include <Servo.h>
-
 #include <motor.h>
 #include <pins.h>
 #include <utils.h>
@@ -645,24 +644,26 @@ void setup()
   //reading.priority(1);
   writing.begin(read_sensors,100000);
   writing.priority(1);
-  //myServo.attach(PIN_SERVO1);    //write as:  myServo.write(position)  position = [0,180]
+  myServo.attach(PIN_SERVO2);    //write as:  myServo.write(position)  position = [0,180]
+  
+  
    
+  
+  
+
 } 
 
 Command RPI_command = TRNR;
 double RPI_value = PI;
 
 int drive_command=-1;
-int pos=0;
+int servo_pos = comm_tsy.get_servo();
 
 void loop() // @,a=15,b=1,fwd=2,$
 { 
-   
-
    reading100ms();
    //Serial.println("****************************************");
    checkBattery();
-
 }
 
 
@@ -772,10 +773,12 @@ void update10ms(){
       
     //delay(10);
 
-   
-    
-    
-  
+    //update servo position;
+
+    if (myServo.read() < comm_tsy.get_servo() ) servo_pos++;
+    else if (myServo.read() > comm_tsy.get_servo()) servo_pos--;
+
+    myServo.write(servo_pos);  //update servo pos every 10ms
 }
 
 void reading100ms (){

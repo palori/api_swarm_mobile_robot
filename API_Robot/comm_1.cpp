@@ -340,8 +340,11 @@ void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 			if (val != BIG_FLOAT) {set_vel(val);}
 		}
 		else if (words[i] == command.S){
-			val = words[i+1].toFloat();
-			if (val != BIG_FLOAT) {set_servo(val);}
+			val = words[i+1].toInt();
+			if (val != BIG_FLOAT) {
+				if (val) set_servo(SERVO_ON);
+				else set_servo(SERVO_OFF);
+			}
 
 		}
 		else if (words[i] == command.OD){
