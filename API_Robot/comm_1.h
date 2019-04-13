@@ -64,6 +64,8 @@ public:
 	bool get_trnr() {return trnr;}
 	bool get_drive() {return drive;}	// drive to target position
 	bool get_followline() {return followline;}
+	bool get_race() {return race;}
+	bool get_stairs() {return stairs;}
 
 	float get_x_t() {return x_t;}		// target position in Robot coord. syst.
 	float get_y_t() {return y_t;}
@@ -111,6 +113,8 @@ public:
 	void set_trnr(bool b) {trnr = b;}
 	void set_drive(bool b) {drive = b;}
 	void set_followline(bool b) {followline = b;}
+	void set_race(bool b) {race = b;}
+	void set_stairs(bool b) {stairs = b;}
 
 	void set_x_t(float f) {x_t = f;}
 	void set_y_t(float f) {y_t = f;}
@@ -165,6 +169,8 @@ public:
 	bool trnr = false;				// turn with radius mode
 	bool drive = false;				// drive to target mode
 	bool followline = false; 		// followline mode
+	bool race = false;
+	bool stairs = false;
 
 	float x_t = 0.0;				// target position in Robot coord. syst.
 	float y_t = 0.0;
@@ -212,7 +218,9 @@ public:
 		TRN,
 		TRNR,
 		DRIVE,
-		FOLLOW
+		FOLLOW,
+		RACE,
+		STAIRS
 	};
 
 

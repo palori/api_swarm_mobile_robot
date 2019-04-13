@@ -54,6 +54,7 @@ enum Actions {
 	TRNR,				// turning with a radius (not working)
 	DRIVE,				// drive to a target point (not really good)
 	FOLLOW,				// follow a line (heading control, theta)
+	RACE,
 	//STOP,				// already included in the top	
 	//WAIT				// may include waiting for other robots??
 
