@@ -28,6 +28,7 @@ COMM_TSY comm_tsy;
 //motor and encoder constants
 double pulses_per_rotation = 48.0; //encoder give 48 pulses per revolution
 double gear_ratio = 9.68; //gearing ratio between shaft and encoder is 1:9.68
+float battery_voltage = 0.0;
 
 //PID values
 double vel1 = 0.0;
@@ -663,7 +664,7 @@ void loop() // @,a=15,b=1,fwd=2,$
 { 
    reading100ms();
    //Serial.println("****************************************");
-   checkBattery();
+   battery_voltage = checkBattery();
 }
 
 
@@ -675,6 +676,7 @@ void read_sensors(){
   int _imu_gyro[3] = {0,0,0};
   int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
+  float _batt = battery_voltage;
   
 
   if (comm_tsy.get_ir_on()){
@@ -695,7 +697,7 @@ void read_sensors(){
     int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
   } 
  
-  comm_tsy.write_serial(_odo,_ir,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+  comm_tsy.write_serial(_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
 }
 
