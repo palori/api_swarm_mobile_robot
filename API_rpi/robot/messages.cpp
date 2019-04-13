@@ -560,7 +560,7 @@ void decode_sensors(string msg, Sensors & sens){
 
 void decode_master_commands(string msg, string hostname, int & action, float & fwd, float & vel){
 	// detect if the message is 
-	bool message_to_this_robot = true;
+	bool message_to_this_robot = false;
 	msg = detect_message(msg);
 	if (msg != ""){
 		// split the message
@@ -570,11 +570,16 @@ void decode_master_commands(string msg, string hostname, int & action, float & f
 		// save it as new target pose
 		for (uint i=0; i<words.size(); i++){
 			if(words.at(i) == command.ROB){
-				//int val = str2int();
-				if (!(words.at(i+1) == hostname || words.at(i+1) == "all")) {
-					message_to_this_robot = false;
-					break;
+				if (words.at(i+1) == "all") message_to_this_robot = true;
+				else{
+					vector<string> hosts = split_str(words.at(i+1), "-");
+					//cout << "Who gets the message:";
+					for (uint h = 0; h < hosts.size(); h++){
+						//cout << "\n  host " << h << ": " << hosts.at(h);
+						if (hosts.at(h) == hostname) {message_to_this_robot = true; break;}
+					}
 				}
+				if (message_to_this_robot) i++;
 			}
 
 			else if(words.at(i) == command.A){

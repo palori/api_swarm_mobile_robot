@@ -35,8 +35,10 @@ vector<string> split_str(string msg, string delimiters){
 	for(unsigned int i=0; i< msg.length(); i++){
 		str[i] = msg[i];
 	}
+	//cout << "\ndelimiters:\n";
 	for(unsigned int i=0; i< delimiters.length(); i++){
 		delim[i] = delimiters[i];
+		//cout << "  delim " << i << ": " << delim[i] << endl;
 	}
 	char * pch;
 	vector<string> words;
@@ -45,7 +47,7 @@ vector<string> split_str(string msg, string delimiters){
 	//cout << "words: " << words.size() << endl;
 	//cout << "pch:" << endl;
 	while (pch != NULL && keep_reading){
-		cout << pch << endl;
+		//cout << pch << endl;
 		words.push_back(pch);
 		pch = strtok (NULL, delim); //" ,.-"
 	}

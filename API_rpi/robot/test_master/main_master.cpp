@@ -11,6 +11,13 @@ using namespace std;
 Publisher pub(8001);
 
 
+void send_msg(string target_robot, string msg){
+	// publihser send
+	pub.publish(msg);
+	cout << "Robots:    " << target_robot << endl;
+	cout << "Message: " << msg << endl << endl;
+}
+
 
 void display_help(){
 	string line = "------------------------------------------------";
@@ -34,24 +41,8 @@ void display_help(){
 	cout << line << endl << endl;
 }
 
-void send_msg(string target_robot, string msg){
-	// publihser send
-	cout << "Robot:    " << target_robot << endl;
-	cout << "Message:  " << msg << endl << endl;
 
-	pub.publish(msg);
-
-	cout << endl << "# Message sent! #" << endl;
-}
-
-
-
-
-int main(int argc, char const *argv[])
-{	
-	// read YAML file with params to define the robot
-	// can start by getting them as arguments
-
+void ui_style(){
 	// default params
 	string command = "";
 	float value = NULL;
@@ -61,22 +52,8 @@ int main(int argc, char const *argv[])
 
 	string msg = "";
 
-	struct target_robots{
-		string ALL = "all";
-		string R1 = "cucumber";
-		string R2 = "potato";
-		string R3 = "broccoli";
-	};
-
-
-
-	
-
-	//Robot robot;
-
 	cout << "**************************************** " << endl;
 	cout << " Welcome MASTER" << endl << endl;
-
 
 	while (true){
 
@@ -139,7 +116,53 @@ int main(int argc, char const *argv[])
 	}
 
 	cout << "**************************************** " << endl;
+}
 
+
+void help2(){
+	string line = "-------------------------------------------";
+	cout << "\n\n" << line << "\n  HELP:\n";
+	cout << "    h\t\thelp\n";
+	cout << "    q\t\tquit\n";
+	cout << "    command\twithout '@' and '$'\n";
+	cout << "    \t\tE.g: a=15,b=1,fwd=1,v=0.3\n";
+	cout << line << endl;
+}
+
+void straight_messages(){
+	string stars = "****************************************";
+	string msg = "";
+
+	cout << stars << "\n Welcome MASTER\n\n";
+	help2();
+
+	int count = 0;
+	bool quit = false;
+	while (!quit){
+
+		cout << "\n\n- new_msg:       ";
+		cin >> msg;
+		if (msg == "q") quit = true;
+		else if (msg == "h") help2();
+		else{								// test: a=15,b=1,fwd=1,v=0.3
+			msg = "@i=" + to_string(count) + "," + msg + "$";
+			pub.publish(msg);
+			cout <<     "     sent:  " << msg;
+			count++;
+			if (count >= 10) count = 0;
+		}
+	}
+	cout << "\n Good bye!" << endl << stars << endl;
+}
+
+
+int main(int argc, char const *argv[])
+{	
+	// read YAML file with params to define the robot
+	// can start by getting them as arguments
+
+	//ui_style();			// nice but tedious for testing
+	straight_messages();	// optimised for fast testing
 	
 	return 0;
 }

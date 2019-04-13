@@ -201,5 +201,18 @@ sshfs local@cucumber:/home/local/api_swarm_mobile_robot /tmp/robot_mount
 sshfs local@broccoli:/home/local/git_repos/api_swarm_mobile_robot /tmp/robot_mount
 sshfs local@potato:/home/local/git_repos/api_swarm_mobile_robot /tmp/robot_mount
 
+sshfs pi@pumpkin:/home/pi/git_repos/api_swarm_mobile_robot /tmp/robot_mount
+sshfs pi@asparagus:/home/pi/git_repos/api_swarm_mobile_robot /tmp/robot_mount
+
+sshfs local@192.168.43.38:/home/local/git_repos/api_swarm_mobile_robot /tmp/robot_mount
+sshfs pi@192.168.43.38:/home/pi/git_repos/api_swarm_mobile_robot /tmp/robot_mount
+
 # to unmount:
 umount /tmp/robot_mount
+
+### SSH robots
+ss -X local@
+ss -X pi@
+
+ss -X local@192.168.43.
+ss -X pi@192.168.43.
