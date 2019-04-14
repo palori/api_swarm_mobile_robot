@@ -9,6 +9,7 @@ using namespace std;
 class Node
 {
 public:
+	Node();
 	Node(string id, float x, float y, int type, bool line, int crossing);
 	void print_info();
 	void reset();
