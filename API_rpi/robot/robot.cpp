@@ -315,7 +315,7 @@ void Robot::navigate_test(){//Graph* map){
 		//if (th_w != NULL){
 			//set msg to send to tsy
 			sensors.print_info();
-			image_data.set("@i=20,x0=0.0,y0=0.0,th0=0.0");
+			image_data.set("@i=20,x0=0.0,y0=0.0,th0=0.0$");
 			this_thread::sleep_for(chrono::milliseconds(500));
 			sensors.print_info();
 			cout << "-------------turn\n";
