@@ -217,7 +217,37 @@ string follow_line(Mat img,Side side){
 }
 
 
-string ball(Mat img){return "";}
+string track_ball(Mat img){
+
+	//convert to hsv
+	Mat img_hsv;
+	cvtColor(img, img_hsv, COLOR_BGR2HSV);
+	int CAM_W = 320;
+
+	//threshold for red/orange color
+	Mat mask1,mask2,gray;
+	inRange(img_hsv,Scalar(0,70,50),Scalar(10,255,255),mask1);
+	inRange(img_hsv,Scalar(170,70,50),Scalar(180,255,255),mask2);
+	gray = mask1 | mask2;
+
+	//blurring
+	GaussianBlur(gray,gray, Size(9,9),2,2);
+
+	//find circles
+	vector<Vec3f> circles;
+	HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 30, 30, 15, 10, 50 );  // ... canny edge parameter, number of points needed, min radius, max radius 
+
+	sort(circles.begin(),circles.end(),compareCircles);
+
+	if (circles.size() == 0 ) 
+		return encode_image_params(BALL, false, 0.0, 0.0, 0);
+	else {
+		Vec3f ball = circles[0];
+		float theta = ball[0] - CAM_W / 2; 
+		return encode_image_params(BALL, true, 0.0, theta, 0) 
+	}
+
+}
 string hole(Mat img){return "";}
 string shape(Mat img){return "";}
 string ArUco(Mat img){return "";}
@@ -268,6 +298,10 @@ bool compareContoursHeight(vector<Point> contour1, vector<Point> contour2){
 	Rect rect1 = boundingRect(contour1);
 	Rect rect2 = boundingRect(contour2);
 	return (rect1.height > rect2.height);
+}
+
+bool compareCircles(Vec3f circle1, Vec3f circle2){
+	return (circle1[1]>circle2[1]);   //the one with largest y-coordinate is the lowest in the picture and most likely to be a ball
 }
 
 

@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/cv2.dir/opencv_pc.cpp.o  -o cv2 

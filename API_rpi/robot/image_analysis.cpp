@@ -164,7 +164,7 @@ void Image_analysis::run(){
 		task = tasks.get_last_item();
 
 		if (task == LINE) data = follow_line(picture.get(),MIDDLE);
-		else if (task == BALL) data = ball(picture.get());
+		else if (task == BALL) data = track_ball(picture.get());
 		else if (task == HOLE) data = hole(picture.get());
 		else if (task == SHAPE) data = shape(picture.get());
 		else if (task == ARUCO) data = ArUco(picture.get());
