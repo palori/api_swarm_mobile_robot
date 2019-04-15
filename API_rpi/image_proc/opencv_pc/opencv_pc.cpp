@@ -562,7 +562,9 @@ float take_pic_get_cm(int i, Side side){
 
 int shape_color (){
 
-	Mat img = imread("pics/pic_7.png",CV_LOAD_IMAGE_COLOR);
+	for (int i=0; i<10 ; i++) {
+	string path = "pics/pic_1"+to_string(i)+".png";
+	Mat img = imread(path, 1);
 	
 	//convert to HSV
 	Mat img_hsv;
@@ -574,15 +576,21 @@ int shape_color (){
 
 	//threshold for orange
 	Mat img_orange;
-	inRange(img_hsv,Scalar(0,0,0),Scalar(22,255,255),img_orange);
+	inRange(img_hsv,Scalar(0,0,0),Scalar(22,255,255),img_orange);	
 
 
-	string name = "pics/green.png";
-	imwrite(name,img_green);
+	int orange_count = countNonZero (img_orange);
+	int green_count = countNonZero (img_green);
 
-	name = "pics/orange.png";
-	imwrite(name,img_orange);
+	//string window_name = "green "+to_string(i);
+	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+	//imshow( window_name , img_green);
 
+	
+	if (orange_count > 30000 && orange_count > green_count) cout << "shape " << i << " is orange: " << orange_count <<  endl;
+	else if (green_count > 30000 && green_count > orange_count) cout << "shape " << i << " is green: " << green_count << endl;
+	else cout << "there is no shape! " << endl;
+	}
 
 	return 1;
 }
@@ -590,20 +598,34 @@ int shape_color (){
 void detect_ball(){
 
 	cout << "BALL 1: " << endl;
-	for (int i=0; i<1 ; i++) {
+	for (int i=0; i<10 ; i++) {
 
-		string path = "pics/ball_"+to_string(i)+".png";
+		double function_time = (double)getTickCount();
+
+		string path = "pics/ball2_"+to_string(i)+".png";
 
 		Mat img = imread(path, 1);
-		Mat gray;
-		cvtColor(img, gray, CV_BGR2GRAY);
+		
+		//convert to HSV
+		Mat img_hsv;
+		cvtColor(img, img_hsv, COLOR_BGR2HSV);
+		
+		//convert to gray
+		//cvtColor(img, gray, CV_BGR2GRAY);
 
-		GaussianBlur(gray,gray, Size(5,5),2,2);
+		Mat gray,mask1,mask2;
+		inRange(img_hsv,Scalar(0,70,50),Scalar(10,255,255),mask1);
+		inRange(img_hsv,Scalar(170,70,50),Scalar(180,255,255),mask2);
+
+		gray = mask1 | mask2;
+
+		GaussianBlur(gray,gray, Size(9,9),2,2);
 
 		vector<Vec3f> circles;
 
-		HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 0, 0 );
+		HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 30, 30, 15, 10, 50 );
  
+ 		cout << "number of circles: " << circles.size() << endl;
   		// Draw the circles detected
   		for( size_t i = 0; i < circles.size(); i++ )
   		{
@@ -613,10 +635,15 @@ void detect_ball(){
 		    circle( img, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
 		    cout << "center : " << center << "\nradius : " << radius << endl;
 		}
+
+		function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+		cout << "Function time: " << function_time << endl;
+
  
   	// Show your results
-  	namedWindow( "Hough Circle Transform Demo", CV_WINDOW_AUTOSIZE );
-  	imshow( "Hough Circle Transform Demo", img );
+	string window_name = "Hough Circle Transform Demo "+to_string(i);
+  	namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+  	imshow( window_name , img);
  
   	waitKey(0);
   
@@ -629,8 +656,10 @@ void detect_ball(){
 
 int main(){
 
-	//cout << "shape_color: " << shape_color() << endl;
-	cout << "detect_ball: "  << endl;
-	detect_ball();	
+	cout << "shape_color: " << endl << shape_color() << endl;
+	//cout << "detect_ball: "  << endl;
+	//detect_ball();
+
+
 	return 0;
 }

@@ -31,7 +31,7 @@ using namespace cv;
  */
 void idle();
 string follow_line(Mat img, Side side);
-string ball(Mat img);
+string track_ball(Mat img);
 string hole(Mat img);
 string shape(Mat img);
 //string obstacle(Mat img);		// ?? maybe not needed
@@ -40,5 +40,6 @@ string ArUco(Mat img);
 void GammaMapping(Mat& src, Mat& dst, float fGamma);
 void HistStretch(Mat& src, Mat& dst);
 bool compareContoursHeight(vector<Point> contour1, vector<Point> contour2);
+bool compareCircles(Vec3f circle1, Vec3f circle2);
 
 #endif
