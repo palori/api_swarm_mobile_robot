@@ -295,7 +295,11 @@ void Robot::run(){
 				pub_image_task.publish(msg_task);
 			}
 
-			if (test_nav) {navigate_test(); test_nav=false;}
+			if (test_nav) {
+				cout << "navigate test" << endl;
+				navigate_test();
+				test_nav=false;
+			}
 		}
 
 	}
