@@ -298,7 +298,8 @@ void Robot::navigate_test(){//Graph* map){
 	dijkstra.find_route("a", "b");
 
 	Edge* edge;
-	Node* start, end;
+	Node* start;
+	Node* end;
 	float th_w;
 	bool wait;
 

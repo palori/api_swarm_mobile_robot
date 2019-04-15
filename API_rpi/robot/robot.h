@@ -18,7 +18,7 @@
 //#include "task_planner.h"
 #include "utils.h"
 
-#include "maps.h"
+#include "maps/maps.h"
 
 using namespace std;
 
