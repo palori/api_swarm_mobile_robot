@@ -6,19 +6,19 @@
 #include <mutex>
 #include <chrono>		// only for sleeping the threads while testing
 
-#include "item.h"
-#include "robot_params.h"
-#include "sensors.h"
-//#include "controllers.h"
-#include "messages.h"
-#include "comm_rpi_2.h"
-#include "../publisher.h"
-#include "../subscriber.h"
+#include "../item.h"
+#include "../robot_params.h"
+#include "../sensors.h"
+//#include "../controllers.h"
+#include "../messages.h"
+#include "../comm_rpi_2.h"
+#include "../../publisher.h"
+#include "../../subscriber.h"
 //#include "localization.h"
 //#include "task_planner.h"
-#include "utils.h"
+#include "../utils.h"
 
-#include "maps/maps.h"
+//#include "maps/maps.h"
 
 using namespace std;
 
@@ -79,7 +79,7 @@ public:
 
 	void run();						// start the threads and while true loop
 	
-	void navigate_test();
+	//void navigate_test();
 };
 
 #endif

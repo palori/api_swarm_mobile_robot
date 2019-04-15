@@ -283,8 +283,8 @@ void Robot::run(){
 			// task planner
 			// path planning -> if there is one
 			
-			
-			int millis_sleep = 5000;
+			sensors.print_info();
+			int millis_sleep = 500;
 			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
 			//send_task();
@@ -294,7 +294,7 @@ void Robot::run(){
 				pub_image_task.publish(msg_task);
 			}
 
-			navigate_test();
+			//navigate_test();
 		}
 
 	}
@@ -307,7 +307,7 @@ void Robot::run(){
 }
 
 
-
+/*
 void Robot::navigate_test(){//Graph* map){
 	sensors.print_info();
 	init_pose.set("@i=20,x0=0.0,y0=0.0,th0=0.0$");
@@ -366,9 +366,9 @@ void Robot::navigate_test(){//Graph* map){
 					cout << "reach target position" << endl;
 				}
 				
-			}*/
+			}
 		//}
 		//else cout << "could not find the th_w" << endl;
 	}
 	
-}
+}*/
