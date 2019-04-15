@@ -13,6 +13,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/feature_tests.c"
   "CMakeFiles/feature_tests.cxx"
   "CMakeLists.txt"
+  "/usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake"
   "/usr/local/lib/cmake/raspicamConfig.cmake"
   "/usr/local/share/OpenCV/OpenCVConfig-version.cmake"
   "/usr/local/share/OpenCV/OpenCVConfig.cmake"

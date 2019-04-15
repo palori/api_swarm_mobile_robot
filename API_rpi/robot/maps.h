@@ -1,6 +1,8 @@
 #ifndef maps_h
 #define maps_h
 
+#include "graph/dijkstra.h"
+
 enum node_type{		// see how to use it
 	TRANSITION,		// maybe goes in 'messages.h'
 	TASK,
@@ -23,4 +25,11 @@ Graph* map_test(){
 	graph->add_edge(e1);
 
 	return graph;
+}
+
+void navigate_test(Graph* map, Sensors sens){
+	map.reset_nodes();
+	Dijkstra dijkstra(map);
+	dijkstra.find_route("a", "b");
+
 }
