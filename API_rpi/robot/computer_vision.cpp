@@ -240,11 +240,11 @@ string track_ball(Mat img){
 	sort(circles.begin(),circles.end(),compareCircles);
 
 	if (circles.size() == 0 ) 
-		return encode_image_params(BALL, false, 0.0, 0.0, 0);
+		return encode_image_params(BALL, false, 0.0, 0.0, 0,1);
 	else {
 		Vec3f ball = circles[0];
 		float theta = ball[0] - CAM_W / 2; 
-		return encode_image_params(BALL, true, 0.0, theta, 0) 
+		return encode_image_params(BALL, true, 0.0, theta, 0,1); 
 	}
 
 }
