@@ -18,6 +18,8 @@
 //#include "task_planner.h"
 #include "utils.h"
 
+#include "maps/maps.h"
+
 using namespace std;
 
 
@@ -77,6 +79,7 @@ public:
 
 	void run();						// start the threads and while true loop
 	
+	void navigate_test();
 };
 
 #endif
