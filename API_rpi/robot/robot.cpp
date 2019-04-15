@@ -113,8 +113,10 @@ void Robot::serial(){
 
 			// update msg
 			msg = image_data.get();		// probably there are other cases, now we want to test this
+			//cout << "(abans if msg =" << msg << endl;
 			if (msg != old_msg) {
 				//cout << "writing serial..." << endl;
+				cout << "msg =" << msg << endl;
 				serial_comm.serial_write(msg);
 				old_msg = msg;
 				//cout << "serial message: " << msg << endl;
@@ -269,6 +271,7 @@ void Robot::run(){
 			// task planner
 			// path planning -> if there is one
 			
+			
 			int millis_sleep = 5000;
 			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
@@ -278,6 +281,7 @@ void Robot::run(){
 				msg_task = encode_task(task);
 				pub_image_task.publish(msg_task);
 			}
+
 			navigate_test();
 		}
 
@@ -293,6 +297,12 @@ void Robot::run(){
 
 
 void Robot::navigate_test(){//Graph* map){
+	sensors.print_info();
+	image_data.set("@i=20,x0=1.0,y0=0.0,th0=0.0$");
+	this_thread::sleep_for(chrono::milliseconds(500));
+	sensors.print_info();
+
+	/*
 	Graph* map = map_test();
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
@@ -314,10 +324,7 @@ void Robot::navigate_test(){//Graph* map){
 		th_w = edge->get_th_w(start);
 		//if (th_w != NULL){
 			//set msg to send to tsy
-			sensors.print_info();
-			image_data.set("@i=20,x0=0.0,y0=0.0,th0=0.0$");
-			this_thread::sleep_for(chrono::milliseconds(500));
-			sensors.print_info();
+			
 			cout << "-------------turn\n";
 			float trn = th_w - sensors.th.get_last_item();
 			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
@@ -347,8 +354,9 @@ void Robot::navigate_test(){//Graph* map){
 					cout << "reach target position" << endl;
 				}
 				
-			}*/
+			}
 		//}
 		//else cout << "could not find the th_w" << endl;
 	}
+	*/
 }
