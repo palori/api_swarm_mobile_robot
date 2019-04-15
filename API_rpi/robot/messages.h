@@ -109,6 +109,9 @@ struct Command {
 	string X_t = "xt";				// X  coord. of target pose (in robot coord. syst.)
 	string Y_t = "yt";				// Y  coord. of target pose (in robot coord. syst.)
 	string TH_t = "tht";			// Th coord. of target pose (in robot coord. syst.)
+	string X_0 = "x0";				// updated odomotery value X
+	string Y_0 = "y0";				// updated odomotery value Y
+	string TH_0 = "th0";			// updated odomotery value TH
 	string BATT = "batt";
 	// sensor data
 	string X_w = "xw";				// X  coord. of robot pose (in world coord. syst.)

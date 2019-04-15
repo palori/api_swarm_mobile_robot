@@ -125,7 +125,10 @@ void help2(){
 	cout << "    h\t\thelp\n";
 	cout << "    q\t\tquit\n";
 	cout << "    command\twithout '@' and '$'\n";
-	cout << "    \t\tE.g: rob=all,a=15,b=1,fwd=1,v=0.3\n";
+	cout << "    \t\tE.g: rob=all,a=15,b=1,v=0.3,fwd=1\n";
+	cout << "    \t\t     rob=all,a=16,b=1,v=0.3,trn=1.75\n";
+	cout << "    \t\t     rob=all,a=2,b=1\n";
+	cout << "    \t\t     rob=all,a=28\n";
 	cout << "    \t\trob\tall or hostname1-hostname2-hostnameN\n";
 	cout << line << endl;
 }
