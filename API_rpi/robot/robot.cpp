@@ -121,25 +121,25 @@ void Robot::serial(){
 				serial_comm.serial_write(msg_master);
 				cout << "master msg: " << msg_master << endl;
 				old_msg_master = msg_master;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (update_pose != old_update_pose) {
 				serial_comm.serial_write(update_pose);
 				cout << "init_pose: " << update_pose << endl;
 				old_update_pose = update_pose;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (msg_image != old_msg_image) {
 				serial_comm.serial_write(msg_image);
 				cout << "image msg: " << msg_image << endl;
 				old_msg_image = msg_image;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (msg_drive != old_msg_drive) {
 				serial_comm.serial_write(msg_drive);
 				cout << "drive msg: " << msg_drive << endl;
 				old_msg_drive = msg_drive;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			
 			
@@ -173,7 +173,7 @@ void Robot::serial(){
 		// then update 'robot_params'
 		//
 		int millis_sleep = 10;
-		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+		//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 		
 	}
 	serial_comm.serial_close();
@@ -230,7 +230,7 @@ void Robot::listen_master(){
 	cout << "listenning to master '" << master << "'..." << endl;
 	while(true){
 		msg = subs_master.listen();		// blocking call
-
+		cout << "Master says: " << msg << endl;
 		// decode info message
 		action = decode_master_commands(msg, params.hostname.get());
 		cout << "action = " << action << endl;
@@ -267,7 +267,7 @@ void Robot::run(){
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 	thread thread_master(&Robot::listen_master, this);
 
-	this_thread::sleep_for(chrono::milliseconds(100));
+	//this_thread::sleep_for(chrono::milliseconds(100));
 	sensors.print_info();
 
 	// only for testing -> always follow line
@@ -286,7 +286,7 @@ void Robot::run(){
 			
 			
 			int millis_sleep = 500;
-			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
 			//send_task();
 			task = this->params.tasks.get_last_item();
@@ -314,9 +314,9 @@ void Robot::run(){
 
 
 void Robot::navigate_test(){//Graph* map){
-	sensors.print_info();
+	//sensors.print_info();
 	init_pose.set("@i=20,x0=0.0,y0=0.0,th0=0.0$");
-	this_thread::sleep_for(chrono::milliseconds(2000));
+	//this_thread::sleep_for(chrono::milliseconds(2000));
 	sensors.print_info();
 
 	
@@ -346,19 +346,20 @@ void Robot::navigate_test(){//Graph* map){
 			float trn = th_w - sensors.th.get_last_item();
 			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
-			this_thread::sleep_for(chrono::milliseconds(5000));
+			//this_thread::sleep_for(chrono::milliseconds(5000));
 			cout << "-------------fwd\n";
 			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
-			drive_command.set(msg); 
-			this_thread::sleep_for(chrono::milliseconds(10000));
+			//drive_command.set(msg); 
+			//this_thread::sleep_for(chrono::milliseconds(10000));
 			sensors.print_info();
-			cout << "-------------wait\n";this_thread::sleep_for(chrono::milliseconds(10000));
+			cout << "-------------wait\n";
+			//this_thread::sleep_for(chrono::milliseconds(10000));
 			/* still to test
 			wait = true;
 			while (wait){
 				cout << "sleep" << endl;
 				//int millis_sleep = 500;
-				this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+				//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 
 				
 				if(

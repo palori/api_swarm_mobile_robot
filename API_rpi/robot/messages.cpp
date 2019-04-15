@@ -586,11 +586,12 @@ int decode_master_commands(string msg, string hostname){
 				if (words.at(i+1) == "all") message_to_this_robot = true;
 				else{
 					vector<string> hosts = split_str(words.at(i+1), "-");
-					//cout << "Who gets the message:";
+					cout << "Who gets the message:";
 					for (uint h = 0; h < hosts.size(); h++){
-						//cout << "\n  host " << h << ": " << hosts.at(h);
+						cout << "\n  host " << h << ": " << hosts.at(h);
 						if (hosts.at(h) == hostname) {message_to_this_robot = true; break;}
 					}
+					cout << endl;
 				}
 				if (message_to_this_robot) i++;
 			}
@@ -622,7 +623,7 @@ int decode_master_commands(string msg, string hostname){
 
 
 		if (!message_to_this_robot){
-			return -1;
+			return -2;
 		}
 		return action;
 	}
