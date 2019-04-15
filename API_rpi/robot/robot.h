@@ -56,9 +56,10 @@ public:
 	// Task_planner task_planner;
 
 
-	Item<string> image_data;
-	Item<string> init_pose;
 	Item<string> master_data;
+	Item<string> init_pose;
+	Item<string> image_data;
+	Item<string> drive_command;
 	Item<bool> run_mission;
 
 

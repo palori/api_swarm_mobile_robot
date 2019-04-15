@@ -96,48 +96,51 @@ void Robot::serial(){
 	// may want to send some initialization
 	// params like: wheel diameter, dist btw wheels, gearbox ratio...
 
-	string msg = "", old_msg = "1", data = "";
 	string msg_master = "", old_msg_master = "1";
-	string update_pose = "", old_update_pose = "1";
-	//msg = "@a=15,b=1,fwd=5,v=0.6$";				// delete after testing
+	string update_pose = "", old_update_pose = "";
+	string msg_image = "", old_msg_image = "";
+	string msg_drive = "", old_msg_drive = "";
+	string data = "";
 
 	serial_comm.serial_open();
-	int count = 0;
+	int count = 0, millis = 50;
 	while(true){
 
 		if(run_mission.get()){
 
 			//---------------WRITING SERIAL---------------//
 			count ++;
-			//int millis_sleep = 2000;
-			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-
+			
 			// update msg
-			msg = image_data.get();		// probably there are other cases, now we want to test this
-			//cout << "(abans if msg =" << msg << endl;
-			if (msg != old_msg) {
-				//cout << "writing serial..." << endl;
-				//cout << "msg =" << msg << endl;
-				serial_comm.serial_write(msg);
-				old_msg = msg;
-				//cout << "serial message: " << msg << endl;
-			}
-
 			msg_master = master_data.get();
+			update_pose = init_pose.get();
+			msg_image = image_data.get();
+			msg_drive = drive_command.get();
+
 			if (msg_master != old_msg_master) {
 				serial_comm.serial_write(msg_master);
+				cout << "master msg: " << msg_master << endl;
 				old_msg_master = msg_master;
-				this_thread::sleep_for(chrono::milliseconds(500));
+				this_thread::sleep_for(chrono::milliseconds(millis));
 			}
-
-			update_pose = init_pose.get();
-			if (update_pose != old_update_pose) {
-				cout << "init_pose = " << update_pose << endl;
+			else if (update_pose != old_update_pose) {
 				serial_comm.serial_write(update_pose);
+				cout << "init_pose: " << update_pose << endl;
 				old_update_pose = update_pose;
-				this_thread::sleep_for(chrono::milliseconds(500));
+				this_thread::sleep_for(chrono::milliseconds(millis));
 			}
-
+			else if (msg_image != old_msg_image) {
+				serial_comm.serial_write(msg_image);
+				cout << "image msg: " << msg_image << endl;
+				old_msg_image = msg_image;
+				this_thread::sleep_for(chrono::milliseconds(millis));
+			}
+			else if (msg_drive != old_msg_drive) {
+				serial_comm.serial_write(msg_drive);
+				cout << "drive msg: " << msg_drive << endl;
+				old_msg_drive = msg_drive;
+				this_thread::sleep_for(chrono::milliseconds(millis));
+			}
 			
 			
 			//int millis_sleep = 50;
@@ -169,10 +172,10 @@ void Robot::serial(){
 			
 		}
 		else{
-			if (msg != old_msg) {
+			if (msg_master != old_msg_master) {
 				// Maybe send to stop --> ask Andrija
 				cout << "Should send STOP to Teensy, but not implemented yet!" << endl;
-				old_msg = msg;
+				old_msg_master = msg_master;
 			}
 		}
 		
@@ -275,6 +278,7 @@ void Robot::run(){
 	int task = -1, old_task = -1;
 	string msg_task = "";
 	//send_task();
+	bool test_nav = true;
 
 	while(true){
 
@@ -294,7 +298,7 @@ void Robot::run(){
 				pub_image_task.publish(msg_task);
 			}
 
-			navigate_test();
+			if (test_nav) {navigate_test(); test_nav=false;}
 		}
 
 	}
@@ -340,11 +344,11 @@ void Robot::navigate_test(){//Graph* map){
 			cout << "-------------turn\n";
 			float trn = th_w - sensors.th.get_last_item();
 			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
-			init_pose.set(msg); 
+			drive_command.set(msg); 
 			this_thread::sleep_for(chrono::milliseconds(5000));
 			cout << "-------------fwd\n";
 			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
-			init_pose.set(msg); 
+			drive_command.set(msg); 
 			this_thread::sleep_for(chrono::milliseconds(10000));
 			sensors.print_info();
 			cout << "-------------wait\n";this_thread::sleep_for(chrono::milliseconds(10000));
