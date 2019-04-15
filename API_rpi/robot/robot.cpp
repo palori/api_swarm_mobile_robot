@@ -121,25 +121,25 @@ void Robot::serial(){
 				serial_comm.serial_write(msg_master);
 				cout << "master msg: " << msg_master << endl;
 				old_msg_master = msg_master;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
+				this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (update_pose != old_update_pose) {
 				serial_comm.serial_write(update_pose);
 				cout << "init_pose: " << update_pose << endl;
 				old_update_pose = update_pose;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
+				this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (msg_image != old_msg_image) {
 				serial_comm.serial_write(msg_image);
 				cout << "image msg: " << msg_image << endl;
 				old_msg_image = msg_image;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
+				this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (msg_drive != old_msg_drive) {
 				serial_comm.serial_write(msg_drive);
 				cout << "drive msg: " << msg_drive << endl;
 				old_msg_drive = msg_drive;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
+				this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			
 			
@@ -331,7 +331,7 @@ void Robot::navigate_test(){//Graph* map){
 	float th_w;
 	bool wait;
 
-	float threshold = 0.1; // to say that the robot got to the final place
+	float threshold_xy = 0.1, threshold_th; // to say that the robot got to the final place
 
 	for (int i = 1; i < dijkstra.route.size(); ++i)
 	{

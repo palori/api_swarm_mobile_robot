@@ -583,9 +583,13 @@ int decode_master_commands(string msg, string hostname){
 		// save it as new target pose
 		for (uint i=0; i<words.size(); i++){
 			if(words.at(i) == command.ROB){
-				if (words.at(i+1) == "all") message_to_this_robot = true;
+				string possible_hosts = words.at(i+1);
+				if (possible_hosts == "all") {
+					message_to_this_robot = true;
+					cout << "all i oli\n";
+				}
 				else{
-					vector<string> hosts = split_str(words.at(i+1), "-");
+					vector<string> hosts = split_str(possible_hosts, "-");
 					cout << "Who gets the message:";
 					for (uint h = 0; h < hosts.size(); h++){
 						cout << "\n  host " << h << ": " << hosts.at(h);
