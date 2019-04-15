@@ -146,6 +146,13 @@ void Robot::serial(){
 			//int millis_sleep = 50;
 			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 		}
+		else{
+			if (msg_master != old_msg_master) {
+				// Maybe send to stop --> ask Andrija
+				cout << "Should send STOP to Teensy, but not implemented yet!" << endl;
+				old_msg_master = msg_master;
+			}
+		}
 
 		//---------------READING SERIAL---------------//
 		// Commented for testing in Pau's pc
@@ -167,17 +174,6 @@ void Robot::serial(){
 		//
 		int millis_sleep = 10;
 		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-			
-			
-			
-		
-		else{
-			if (msg_master != old_msg_master) {
-				// Maybe send to stop --> ask Andrija
-				cout << "Should send STOP to Teensy, but not implemented yet!" << endl;
-				old_msg_master = msg_master;
-			}
-		}
 		
 	}
 	serial_comm.serial_close();
