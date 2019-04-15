@@ -145,32 +145,32 @@ void Robot::serial(){
 			
 			//int millis_sleep = 50;
 			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-
-
-			//---------------READING SERIAL---------------//
-			// Commented for testing in Pau's pc
-			//cout << "reading serial..." << endl;
-			data = serial_comm.serial_read();
-			//cout << "\n*******\nserial data: " << data << "\n*******\n";
-			decode_sensors(data, sensors);
-			
-			/*if (count>= 1000){		// DELETE! only for debuging
-				cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
-				sensors.print_info();
-				count = 0;
-			}*/
-			//sensors.print_info();
-			// save data
-			// need to be decoded to be used (can be done here or in localization...)
-			// maybe easier to modify 'comm_rpi_1.cpp' and do it there
-			// then update 'robot_params'
-			//
-			int millis_sleep = 10;
-			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-			
-			
-			
 		}
+
+		//---------------READING SERIAL---------------//
+		// Commented for testing in Pau's pc
+		//cout << "reading serial..." << endl;
+		data = serial_comm.serial_read();
+		//cout << "\n*******\nserial data: " << data << "\n*******\n";
+		decode_sensors(data, sensors);
+		
+		/*if (count>= 1000){		// DELETE! only for debuging
+			cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
+			sensors.print_info();
+			count = 0;
+		}*/
+		//sensors.print_info();
+		// save data
+		// need to be decoded to be used (can be done here or in localization...)
+		// maybe easier to modify 'comm_rpi_1.cpp' and do it there
+		// then update 'robot_params'
+		//
+		int millis_sleep = 10;
+		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			
+			
+			
+		
 		else{
 			if (msg_master != old_msg_master) {
 				// Maybe send to stop --> ask Andrija
@@ -271,7 +271,8 @@ void Robot::run(){
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 	thread thread_master(&Robot::listen_master, this);
 
-
+	this_thread::sleep_for(chrono::milliseconds(100));
+	sensors.print_info();
 
 	// only for testing -> always follow line
 	this->params.tasks.add_item(LINE);			// could be also added if master sends @a=19,b=1$
@@ -288,7 +289,7 @@ void Robot::run(){
 			// path planning -> if there is one
 			
 			
-			int millis_sleep = 5000;
+			int millis_sleep = 500;
 			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
 			//send_task();
