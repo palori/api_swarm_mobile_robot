@@ -630,8 +630,8 @@ int shape_color (){
 
 void pic_cm_comm1(){
 	bool followline = false;
-	bool pictures = false;
-	bool shapes = true;
+	bool pictures = true;
+	bool shapes = false;
 
 	if (followline) camera_init();
 	if (pictures) camera_init_color();
@@ -642,13 +642,15 @@ void pic_cm_comm1(){
 			cr.serial_open();
 		    int i=0;
 		    float y=0.0;
-		    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
+		    string msg = "@a=15,b=1,v=0.3,fwd=0.5$";
 		    cr.serial_write(msg);
-		    usleep(10000);
-		    while (i<300){
+		    msg="@s=0$";
+		    cr.serial_write(msg);
+			usleep(5000000);
+		    while (i<1){
 		    		//camera_start();
 
-					y = take_pic_get_cm(i,LEFT);
+					y = take_pic_get_cm(i,MIDDLE);
 					printf("Y: %f\n",y);
 
 					if (feature != NOTHING) {
@@ -660,7 +662,12 @@ void pic_cm_comm1(){
 					//camera_stop();
 				
 		    }
-		    cr.serial_close();
+		    msg = "@s=1$";
+	            cr.serial_write(msg);
+		    usleep(100000);
+		    msg = "@a=15,b=1,v=0.2,fwd=1$";
+		    cr.serial_write(msg);
+			cr.serial_close();
 		    camera_stop();	
 		}
 		if (pictures) {
@@ -673,7 +680,7 @@ void pic_cm_comm1(){
 				Camera.retrieve (pic);
 				Mat pic_color;
 				cvtColor(pic,pic_color,COLOR_RGB2BGR);
-				string pic_name = "pics/pic_"+to_string(j)+".png";
+				string pic_name = "pics/ball2_"+to_string(j)+".png";
 				imwrite(pic_name,pic);
 				j++;
 				usleep(1000000);

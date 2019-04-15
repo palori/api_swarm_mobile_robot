@@ -132,7 +132,7 @@ void Robot::serial(){
 
 			//---------------READING SERIAL---------------//
 			// Commented for testing in Pau's pc
-			cout << "reading serial..." << endl;
+			//cout << "reading serial..." << endl;
 			data = serial_comm.serial_read();
 			//cout << "\n*******\nserial data: " << data << "\n*******\n";
 			decode_sensors(data, sensors);
@@ -142,7 +142,7 @@ void Robot::serial(){
 				sensors.print_info();
 				count = 0;
 			}*/
-			sensors.print_info();
+			//sensors.print_info();
 			// save data
 			// need to be decoded to be used (can be done here or in localization...)
 			// maybe easier to modify 'comm_rpi_1.cpp' and do it there
@@ -278,6 +278,7 @@ void Robot::run(){
 				msg_task = encode_task(task);
 				pub_image_task.publish(msg_task);
 			}
+			navigate_test();
 		}
 
 	}
@@ -298,7 +299,8 @@ void Robot::navigate_test(){//Graph* map){
 	dijkstra.find_route("a", "b");
 
 	Edge* edge;
-	Node* start, end;
+	Node* start;
+	Node* end;
 	float th_w;
 	bool wait;
 
@@ -310,18 +312,23 @@ void Robot::navigate_test(){//Graph* map){
 		end = dijkstra.route.at(i);
 		edge = map->find_edge(start, end);
 		th_w = edge->get_th_w(start);
-		if (th_w != NULL){
+		//if (th_w != NULL){
 			//set msg to send to tsy
+			sensors.print_info();
+			image_data.set("@i=20,x0=0.0,y0=0.0,th0=0.0$");
+			this_thread::sleep_for(chrono::milliseconds(500));
+			sensors.print_info();
+			cout << "-------------turn\n";
 			float trn = th_w - sensors.th.get_last_item();
-			string msg = "@i=20,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
+			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
 			image_data.set(msg); 
 			this_thread::sleep_for(chrono::milliseconds(5000));
-
-			msg = "@i=21,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
+			cout << "-------------fwd\n";
+			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
 			image_data.set(msg); 
 			this_thread::sleep_for(chrono::milliseconds(10000));
-
-
+			sensors.print_info();
+			cout << "-------------wait\n";this_thread::sleep_for(chrono::milliseconds(10000));
 			/* still to test
 			wait = true;
 			while (wait){
@@ -341,7 +348,7 @@ void Robot::navigate_test(){//Graph* map){
 				}
 				
 			}*/
-		}
-		else cout << "could not find the th_w" << endl;
+		//}
+		//else cout << "could not find the th_w" << endl;
 	}
 }
