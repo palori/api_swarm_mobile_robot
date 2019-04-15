@@ -315,13 +315,16 @@ void Robot::navigate_test(){//Graph* map){
 		//if (th_w != NULL){
 			//set msg to send to tsy
 			sensors.print_info();
+			image_data.set("@i=20,x0=0.0,y0=0.0,th0=0.0");
+			this_thread::sleep_for(chrono::milliseconds(500));
+			sensors.print_info();
 			cout << "-------------turn\n";
 			float trn = th_w - sensors.th.get_last_item();
-			string msg = "@i=20,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
+			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
 			image_data.set(msg); 
 			this_thread::sleep_for(chrono::milliseconds(5000));
 			cout << "-------------fwd\n";
-			msg = "@i=21,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
+			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
 			image_data.set(msg); 
 			this_thread::sleep_for(chrono::milliseconds(10000));
 			sensors.print_info();
