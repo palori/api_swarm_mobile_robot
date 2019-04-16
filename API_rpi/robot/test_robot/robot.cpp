@@ -127,15 +127,7 @@ void Robot::serial(){
 			if (msg_master != old_msg_master) {
 				serial_comm.serial_write(msg_master);
 				old_msg_master = msg_master;
-				this_thread::sleep_for(chrono::milliseconds(500));
-			}
-
-			update_pose = init_pose.get();
-			if (update_pose != old_update_pose) {
-				cout << "init_pose = " << update_pose << endl;
-				serial_comm.serial_write(update_pose);
-				old_update_pose = update_pose;
-				this_thread::sleep_for(chrono::milliseconds(500));
+				//this_thread::sleep_for(chrono::milliseconds(500));
 			}
 
 			
@@ -151,11 +143,6 @@ void Robot::serial(){
 			//cout << "\n*******\nserial data: " << data << "\n*******\n";
 			decode_sensors(data, sensors);
 			
-			/*if (count>= 1000){		// DELETE! only for debuging
-				cout << endl << "### new task to Teensy: " << msg << " ###" << endl << endl;
-				sensors.print_info();
-				count = 0;
-			}*/
 			//sensors.print_info();
 			// save data
 			// need to be decoded to be used (can be done here or in localization...)
@@ -164,6 +151,7 @@ void Robot::serial(){
 			//
 			int millis_sleep = 10;
 			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			//cout << "serial------------\n";
 			
 			
 			
@@ -240,20 +228,14 @@ void Robot::listen_master(){
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
+		else if (action >= IDLE && action <= ARUCO) this->params.tasks.add_item(action);
 		action = -1;
 	}
 
 }
 
 
-/*
-void Robot::send_task(){//Publisher pub_image_task){
-	int task = this->params.tasks.get_last_item();
-	// maybe only send if it is different than the previous one
-	string msg = encode_task();
-	pub_image_task.publish(msg);
-}
-*/
+
 
 
 
@@ -282,9 +264,9 @@ void Robot::run(){
 			// localization
 			// task planner
 			// path planning -> if there is one
-			
+			//cout << "----------run\n";
 			sensors.print_info();
-			int millis_sleep = 500;
+			int millis_sleep = 100;
 			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
 			//send_task();
@@ -294,7 +276,6 @@ void Robot::run(){
 				pub_image_task.publish(msg_task);
 			}
 
-			//navigate_test();
 		}
 
 	}
@@ -306,69 +287,3 @@ void Robot::run(){
 	thread_master.join();
 }
 
-
-/*
-void Robot::navigate_test(){//Graph* map){
-	sensors.print_info();
-	init_pose.set("@i=20,x0=0.0,y0=0.0,th0=0.0$");
-	this_thread::sleep_for(chrono::milliseconds(2000));
-	sensors.print_info();
-
-	
-	Graph* map = map_test();
-	map->reset_nodes();
-	Dijkstra dijkstra(map);
-	dijkstra.find_route("a", "b");
-
-	Edge* edge;
-	Node* start;
-	Node* end;
-	float th_w;
-	bool wait;
-
-	float threshold = 0.1; // to say that the robot got to the final place
-
-	for (int i = 1; i < dijkstra.route.size(); ++i)
-	{
-		start = dijkstra.route.at(i-1);
-		end = dijkstra.route.at(i);
-		edge = map->find_edge(start, end);
-		th_w = edge->get_th_w(start);
-		//if (th_w != NULL){
-			//set msg to send to tsy
-			
-			cout << "-------------turn\n";
-			float trn = th_w - sensors.th.get_last_item();
-			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
-			init_pose.set(msg); 
-			this_thread::sleep_for(chrono::milliseconds(5000));
-			cout << "-------------fwd\n";
-			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
-			init_pose.set(msg); 
-			this_thread::sleep_for(chrono::milliseconds(10000));
-			sensors.print_info();
-			cout << "-------------wait\n";this_thread::sleep_for(chrono::milliseconds(10000));
-			/* still to test
-			wait = true;
-			while (wait){
-				cout << "sleep" << endl;
-				//int millis_sleep = 500;
-				this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-
-				
-				if(
-					(sensors.x.get_last_item() > (end->x - threshold) ||
-						sensors.x.get_last_item() < (end->x + threshold)) &&
-					(sensors.y.get_last_item() > (end->y - threshold) ||
-						sensors.y.get_last_item() < (end->y + threshold))
-					){
-					wait = false:
-					cout << "reach target position" << endl;
-				}
-				
-			}
-		//}
-		//else cout << "could not find the th_w" << endl;
-	}
-	
-}*/
