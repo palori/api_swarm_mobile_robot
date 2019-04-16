@@ -47,7 +47,7 @@ int vel2pwm(double vel){
   if (vel<0){
     vel=-vel;
   }
-  double result=4096*(1-(double)(vel/MAX_VELOCITY));
+  double result=4095*(1-(double)(vel/MAX_VELOCITY));
   int pwm_result=(int)result;
 
   return pwm_result;
