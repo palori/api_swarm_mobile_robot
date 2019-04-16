@@ -602,7 +602,7 @@ void detect_ball(){
 
 		double function_time = (double)getTickCount();
 
-		string path = "pics/ball2_"+to_string(i)+".png";
+		string path = "pics/ball_cm_"+to_string(i)+".png";
 
 		Mat img = imread(path, 1);
 		
@@ -656,9 +656,9 @@ void detect_ball(){
 
 int main(){
 
-	cout << "shape_color: " << endl << shape_color() << endl;
-	//cout << "detect_ball: "  << endl;
-	//detect_ball();
+	//cout << "shape_color: " << endl << shape_color() << endl;
+	cout << "detect_ball: "  << endl;
+	detect_ball();
 
 
 	return 0;
