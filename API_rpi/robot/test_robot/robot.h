@@ -57,7 +57,7 @@ public:
 
 
 	Item<string> image_data;
-	Item<string> init_pose;
+	//Item<string> init_pose;
 	Item<string> master_data;
 	Item<bool> run_mission;
 
@@ -75,11 +75,8 @@ public:
 	void listen_robot_b();
 	void listen_master();
 
-	//void send_task();
-
 	void run();						// start the threads and while true loop
-	
-	//void navigate_test();
+
 };
 
 #endif
