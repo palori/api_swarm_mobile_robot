@@ -629,8 +629,8 @@ int shape_color (){
 }
 
 void pic_cm_comm1(){
-	bool followline = true;
-	bool pictures = false;
+	bool followline = false;
+	bool pictures = true;
 	bool shapes = false;
 
 	if (followline) camera_init();
@@ -668,16 +668,16 @@ void pic_cm_comm1(){
 
 			int j=0;
 			Mat pic;
-			while(j<20){
+			while(j<10){
 				cout<<"Capturing "+to_string(j)+"..."<<endl;
 				Camera.grab();
 				Camera.retrieve (pic);
 				Mat pic_color;
 				cvtColor(pic,pic_color,COLOR_RGB2BGR);
-				string pic_name = "pics/ball2_"+to_string(j)+".png";
+				string pic_name = "pics/ball_cm_"+to_string(j)+".png";
 				imwrite(pic_name,pic);
 				j++;
-				usleep(1000000);
+				usleep(5000000);
 			}
 
 		}

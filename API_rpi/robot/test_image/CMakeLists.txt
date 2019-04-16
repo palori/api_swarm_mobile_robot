@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (main_image_project)
 
 find_package(raspicam REQUIRED)
-find_package(OpenCV 3.4)
+find_package(OpenCV )
 find_package(Threads)
 
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-lpthread -lzmqpp -lzmq -lsodium -Wl,--no-as-needed")
