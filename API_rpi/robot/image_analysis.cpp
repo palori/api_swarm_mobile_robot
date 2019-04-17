@@ -84,7 +84,7 @@ void Image_analysis::take_picture(){
 		if (old_task != task){
 			cam.stop();
 			if (task == LINE){
-				cam.set_image_format(CV_8UC1);
+				cam.set_image_format(CV_8UC3);   //changed
 				cam.set_image_height(240);
 				cam.set_image_width(320);
 			}
