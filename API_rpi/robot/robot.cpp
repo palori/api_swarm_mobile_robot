@@ -313,9 +313,10 @@ void Robot::run(){
 }
 
 void Robot::wait2drive(){
-	this_thread::sleep_for(chrono::milliseconds(1000));
-			
+	this_thread::sleep_for(chrono::milliseconds(5000));
+	cout << "nc" << sensors.newCommand.get_last_item() << endl;			
 	while(!sensors.newCommand.get_last_item()){
+		cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
 		this_thread::sleep_for(chrono::milliseconds(100));
 	}
 }
