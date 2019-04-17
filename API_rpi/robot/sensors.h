@@ -52,6 +52,8 @@ public:
 	Items<float> obst_dist_img;
 	// may need more for the data of the ArUco codes!!!
 
+	Items<bool> newCommand;
+
 
 	int get_MAX_LEN();
 	void set_MAX_LEN(int i);

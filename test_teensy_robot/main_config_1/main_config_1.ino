@@ -454,8 +454,8 @@ void update_velocity(int drive_command){
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.001;
-                vel2 = 0.001;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;
                 comm_tsy.set_trn(false);       
@@ -677,6 +677,7 @@ void read_sensors(){
   int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
+  bool _newCommand=newCommand;
   
 
   if (comm_tsy.get_ir_on()){
@@ -697,7 +698,7 @@ void read_sensors(){
     int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
   } 
  
-  comm_tsy.write_serial(_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+  comm_tsy.write_serial(_newCommand,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
 }
 

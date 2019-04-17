@@ -343,13 +343,20 @@ void Robot::navigate_test(){//Graph* map){
 			//set msg to send to tsy
 			
 			cout << "-------------turn\n";
+			while(!sensors.newCommand.get_last_item()){
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 			float trn = th_w - sensors.th.get_last_item();
 			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
 			//this_thread::sleep_for(chrono::milliseconds(5000));
+			
 			cout << "-------------fwd\n";
+			while(!sensors.newCommand.get_last_item()){
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
-			//drive_command.set(msg); 
+			drive_command.set(msg); 
 			//this_thread::sleep_for(chrono::milliseconds(10000));
 			sensors.print_info();
 			cout << "-------------wait\n";

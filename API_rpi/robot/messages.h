@@ -129,6 +129,7 @@ struct Command {
 	string COMP2 = "c2";			// compass 2, sensor value
 	string COMP3 = "c3";			// compass 3, sensor value
 	string OF = "of";				// obstacle found
+	string NC = "nc";				// new command
 
 	// image
 	string OF_i = "of_i";			// obstacle found in the image
@@ -139,6 +140,8 @@ struct Command {
 	// robot
 	string ROB = "rob";				// in case the message is sent to a specific robot (hostname)
 	string I = "i";					// counter to know if you got a new message
+
+
 };
 
 
