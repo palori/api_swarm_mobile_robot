@@ -183,7 +183,7 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   dTravel += dCenter; 
   double phi = (dRight - dLeft) / wheels_distance;
 
-  Serial.println("x0:"+String(comm_tsy.get_x_0()));
+  //Serial.println("x0:"+String(comm_tsy.get_x_0()));
 
   double x0_temp = (double) comm_tsy.get_x_0();
   double y0_temp = (double) comm_tsy.get_y_0();
@@ -681,7 +681,7 @@ void loop() // @,a=15,b=1,fwd=2,$
 
 void read_sensors(){
 
-  double _odo[3] = {odoX, odoY, WrapTo2PI(odoTh)};
+  double _odo[3] = {odoX, odoY, odoTh};
   float _ir[2] = {0.0,0.0};
   int _imu_cmps[3] = {0,0,0};
   int _imu_gyro[3] = {0,0,0};
