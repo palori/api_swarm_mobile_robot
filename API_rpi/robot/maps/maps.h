@@ -2,6 +2,7 @@
 #define maps_h
 
 #include "../graph/dijkstra.h"
+#include "../messages.h"
 
 enum node_type{		// see how to use it
 	TRANSITION,		// maybe goes in 'messages.h'
@@ -13,7 +14,7 @@ enum node_type{		// see how to use it
 
 // create a test map!
 Graph* map_test();
-
+Graph* map_mission0();
 
 
 

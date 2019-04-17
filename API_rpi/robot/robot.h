@@ -5,6 +5,7 @@
 #include <thread>
 #include <mutex>
 #include <chrono>		// only for sleeping the threads while testing
+#include <math.h>
 
 #include "item.h"
 #include "robot_params.h"

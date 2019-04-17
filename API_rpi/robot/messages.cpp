@@ -16,7 +16,7 @@ string detect_message(string msg){
 			end = true;
 			store = false;
 			break;
-		}
+		}msg_task
 		else if(store){
 			msg_out += msg[i];
 		}
@@ -30,9 +30,9 @@ string detect_message(string msg){
 
 
 // mainly use this, it's easier
-string encode_task(int task){
+string encode_task(int task, int side){
 	Command command;
-	return "@" + command.A + "=" + to_string(task) + "$";
+	return "@" + command.A + "=" + to_string(task) +","+ command.SIDE +"="+ to_string(side)+ "$";
 }
 
 
@@ -105,7 +105,7 @@ string encode_master_commands(string msg, int i){
 
 
 
-void decode_task(string msg, Items<int> & tasks){
+void decode_task(string msg, Items<int> & tasks, Item<int> & side){
 	// detect if the message is 
 	msg = detect_message(msg);
 	if (msg != ""){
@@ -119,6 +119,13 @@ void decode_task(string msg, Items<int> & tasks){
 				int val = str2int(words.at(i+1));
 				if (val != BIG_INT) {
 					tasks.add_item(val);
+					i++;
+				}
+			}
+			if(words.at(i) == command.SIDE){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					side.set(val);
 					i++;
 				}
 			}

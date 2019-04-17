@@ -292,7 +292,7 @@ void Robot::run(){
 			task = this->params.tasks.get_last_item();
 			if(task != old_task){
 				msg_task = encode_task(task);
-				pub_image_task.publish(msg_task);
+				pub_image_task.publish(msg_task,1);
 			}
 
 			if (test_nav) {
@@ -311,7 +311,13 @@ void Robot::run(){
 	thread_master.join();
 }
 
-
+void Robot::wait2drive(){
+	this_thread::sleep_for(chrono::milliseconds(1000));
+			
+	while(!sensors.newCommand.get_last_item()){
+		this_thread::sleep_for(chrono::milliseconds(100));
+	}
+}
 
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
@@ -320,7 +326,7 @@ void Robot::navigate_test(){//Graph* map){
 	sensors.print_info();
 
 	
-	Graph* map = map_test();
+	Graph* map = //map_test();
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
 	dijkstra.find_route("a", "b");
@@ -342,28 +348,45 @@ void Robot::navigate_test(){//Graph* map){
 		//if (th_w != NULL){
 			//set msg to send to tsy
 			
-			cout << "-------------turn\n";
-			while(!sensors.newCommand.get_last_item()){
-				this_thread::sleep_for(chrono::milliseconds(100));
-			}
-			float trn = th_w - sensors.th.get_last_item();
-			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
-			drive_command.set(msg); 
-			this_thread::sleep_for(chrono::milliseconds(1000));
 			
-			cout << "-------------fwd\n";
 			while(!sensors.newCommand.get_last_item()){
 				this_thread::sleep_for(chrono::milliseconds(100));
 			}
-			sensors.print_info();
-			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
+			cout << "-------------turn\n";
+			float trn = th_w - sensors.th.get_last_item();
+			string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
-			this_thread::sleep_for(chrono::milliseconds(1000));
-			while(!sensors.newCommand.get_last_item()){
-			 	this_thread::sleep_for(chrono::milliseconds(100));
-			}
+			wait2drive();
+
+			cout << "-------------fwd\n";
 			sensors.print_info();
-			cout << "-------------wait\n";
+			msg = "@i=22,a=";
+			if (edge->line == 0) msg += to_string(FWD);
+			else {
+				string msg_task = encode_task(task,edge->line);
+				pub_image_task.publish(msg_task);
+
+				msg += to_string(FOLLOW);
+			}
+			msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
+			drive_command.set(msg); 
+			wait2drive();
+			sensors.print_info();
+			cout << "-------------recovery\n";
+
+			float delta_x = end->x - sensors.x.get_last_item();
+			float delta_y = end->y - sensors.y.get_last_item();
+			float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
+			trn = atan2(delta_y, delta_x);
+
+			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+			drive_command.set(msg); 
+			wait2drive();
+
+			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(distance) + "$";
+			drive_command.set(msg); 
+			wait2drive();
+
 			//this_thread::sleep_for(chrono::milliseconds(10000));
 			/* still to test
 			wait = true;
