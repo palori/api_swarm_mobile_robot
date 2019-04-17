@@ -86,7 +86,7 @@ enum crossing{
 };
 
 enum Side {  // on which side to follow the line 
-	NO_LINE
+	NO_LINE,
 	LEFT, 
 	MIDDLE, 
 	RIGHT 
@@ -131,7 +131,7 @@ struct Command {
 	string COMP3 = "c3";			// compass 3, sensor value
 	string OF = "of";				// obstacle found
 	string NC = "nc";				// new command
-	string SIDE = "side"
+	string SIDE = "side";			//follow line side
 
 	// image
 	string OF_i = "of_i";			// obstacle found in the image

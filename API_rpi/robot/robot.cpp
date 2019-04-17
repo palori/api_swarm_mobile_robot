@@ -271,9 +271,9 @@ void Robot::run(){
 	sensors.print_info();
 
 	// only for testing -> always follow line
-	this->params.tasks.add_item(LINE);			// could be also added if master sends @a=19,b=1$
-	int task = -1, old_task = -1;
-	string msg_task = "";
+	//this->params.tasks.add_item(LINE);			// could be also added if master sends @a=19,b=1$
+	//int task = -1, old_task = -1;
+	//string msg_task = "";
 	//send_task();
 	bool test_nav = true;
 
@@ -289,11 +289,12 @@ void Robot::run(){
 			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
 			//send_task();
+			/*
 			task = this->params.tasks.get_last_item();
 			if(task != old_task){
 				msg_task = encode_task(task);
-				pub_image_task.publish(msg_task,1);
-			}
+				pub_image_task.publish(msg_task,MIDDLE);
+			}*/
 
 			if (test_nav) {
 				cout << "navigate test" << endl;
@@ -321,12 +322,12 @@ void Robot::wait2drive(){
 
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
-	init_pose.set("@i=20,x0=1.0,y0=1.0,th0=0.0$");
+	init_pose.set("@i=20,x0=0.0,y0=3.0,th0=0.0$");
 	this_thread::sleep_for(chrono::milliseconds(1000));
 	sensors.print_info();
 
 	
-	Graph* map = //map_test();
+	Graph* map = map_mission0();//map_test();
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
 	dijkstra.find_route("a", "b");
@@ -354,6 +355,8 @@ void Robot::navigate_test(){//Graph* map){
 			}
 			cout << "-------------turn\n";
 			float trn = th_w - sensors.th.get_last_item();
+			string msg_task = encode_task(IDLE,NO_LINE);
+			pub_image_task.publish(msg_task);
 			string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
 			wait2drive();
@@ -363,7 +366,7 @@ void Robot::navigate_test(){//Graph* map){
 			msg = "@i=22,a=";
 			if (edge->line == 0) msg += to_string(FWD);
 			else {
-				string msg_task = encode_task(task,edge->line);
+				msg_task = encode_task(LINE,edge->line);
 				pub_image_task.publish(msg_task);
 
 				msg += to_string(FOLLOW);
@@ -373,6 +376,9 @@ void Robot::navigate_test(){//Graph* map){
 			wait2drive();
 			sensors.print_info();
 			cout << "-------------recovery\n";
+
+			msg_task = encode_task(IDLE,NO_LINE);
+			pub_image_task.publish(msg_task);
 
 			float delta_x = end->x - sensors.x.get_last_item();
 			float delta_y = end->y - sensors.y.get_last_item();

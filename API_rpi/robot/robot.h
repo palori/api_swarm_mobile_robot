@@ -81,6 +81,7 @@ public:
 
 	void run();						// start the threads and while true loop
 	
+	void wait2drive();
 	void navigate_test();
 };
 

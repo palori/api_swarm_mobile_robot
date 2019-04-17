@@ -3,7 +3,7 @@
 
 
 // create a test map!
-Graph* map_test(){
+/*Graph* map_test(){
 	
 	Node* a = new Node("a", 0, 0, TRANSITION, false, 0);
 	Node* b = new Node("b", 1, 1, TRANSITION, false, 0);
@@ -16,13 +16,13 @@ Graph* map_test(){
 	graph->add_edge(e1);
 
 	return graph;
-}
+}*/
 
 
 Graph* map_mission0(){
 	
-	Node* a = new Node("a", 0, 2.3, TASK_START, false, 0);
-	Node* b = new Node("b", 1, 0, TRANSITION, false, 0);
+	Node* a = new Node("a", 0.0, 3.0, TASK_START, false, 0);
+	Node* b = new Node("b", 1.0, 0.0, TRANSITION, false, 0);
 	//Node* c = new Node("c", 6.3, 0.5, TRANSITION, false, 0);
 	//Node* d = new Node("d", 7.5, 3.2, TRANSITION, false, 0);
 

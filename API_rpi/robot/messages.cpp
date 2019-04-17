@@ -16,7 +16,7 @@ string detect_message(string msg){
 			end = true;
 			store = false;
 			break;
-		}msg_task
+		}
 		else if(store){
 			msg_out += msg[i];
 		}
