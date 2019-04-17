@@ -26,7 +26,7 @@ Graph* map_mission0(){
 	//Node* c = new Node("c", 6.3, 0.5, TRANSITION, false, 0);
 	//Node* d = new Node("d", 7.5, 3.2, TRANSITION, false, 0);
 
-	Edge* e1 = new Edge(a, b, false, LEFT, 0, 0, 5, 0.3);
+	Edge* e1 = new Edge(a, b, false, NO_LINE, 0, 0, 5, 0.3);
 	//Edge* e2 = new Edge(b, c, false, RIGHT, 0, 0, );
 	//Edge* e3 = new Edge(c, d, false, RIGHT, 1.57, 0);
 

@@ -322,6 +322,8 @@ void Robot::wait2drive(){
 
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
+	init_pose.set("@i=19,x0=99.0,y0=99.0,th0=99.0$");
+	this_thread::sleep_for(chrono::milliseconds(1000));
 	init_pose.set("@i=20,x0=0.0,y0=3.0,th0=0.0$");
 	this_thread::sleep_for(chrono::milliseconds(1000));
 	sensors.print_info();
