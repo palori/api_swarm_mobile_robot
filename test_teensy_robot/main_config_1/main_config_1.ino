@@ -78,9 +78,9 @@ double wheels_distance = 0.156;  // change into actual number
 double odoTh = 0.0;
 double odoX = 0.0;
 double odoY = 0.0;
-double x0 = 0.0;
-double y0_ = 0.0;
-double th0 = 0.0;
+double x0 = 100.0;
+double y0_ = 100.0;
+double th0 = 100.0;
 double left_wheel_pos_old = 0.0;
 double right_wheel_pos_old = 0.0;
 double dTravel = 0.0;
@@ -183,14 +183,25 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   dTravel += dCenter; 
   double phi = (dRight - dLeft) / wheels_distance;
 
-  if (x0 != comm_tsy.get_x_0() || y0_ != comm_tsy.get_y_0() || th0 != comm_tsy.get_th_0()){
-        odoX = comm_tsy.get_x_0();
-        odoY = comm_tsy.get_y_0();
-        odoTh = comm_tsy.get_th_0();
-        x0 = odoX;
-        y0_ = odoY;
-        th0 = odoTh;
-  }  
+  Serial.println("x0:"+String(comm_tsy.get_x_0()));
+
+  double x0_temp = (double) comm_tsy.get_x_0();
+  double y0_temp = (double) comm_tsy.get_y_0();
+  double th0_temp = (double) comm_tsy.get_th_0();
+  
+  if (x0 != x0_temp){
+       odoX = x0_temp;
+       x0 = x0_temp;
+  }
+  if (y0_ != y0_temp){
+       odoY = y0_temp;
+       y0_ = y0_temp;
+  }
+  if (th0 != th0_temp){
+       odoTh = th0_temp;
+       th0 = th0_temp;
+  }
+  
 
   odoTh += phi;
   odoX += dCenter*cos(odoTh);

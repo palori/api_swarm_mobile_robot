@@ -184,9 +184,9 @@ public:
 	float y_t = 0.0;
 	float th_t = 0.0;
 
-	float x_0 = 0.0;
-	float y_0 = 0.0;
-	float th_0 = 0.0;
+	float x_0 = 100.0;
+	float y_0 = 100.0;
+	float th_0 = 100.0;
 
 	bool newCommand = true;
 
