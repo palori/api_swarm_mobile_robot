@@ -22,7 +22,7 @@ public:
 
 private:
 	raspicam::RaspiCam_Cv camera;
-	double image_format = CV_8UC1;			// OpenCV param: CV_8UC1 (gray), CV_8UC3 (RGB)
+	double image_format = CV_8UC3;			// OpenCV param: CV_8UC1 (gray), CV_8UC3 (RGB)
 	int image_height = 240;
 	int image_width = 320;
 	int focal_length;

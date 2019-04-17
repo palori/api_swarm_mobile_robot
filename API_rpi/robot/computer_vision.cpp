@@ -15,8 +15,11 @@ bool cross_candidate = false;
 void idle(){}
  
 
-string follow_line(Mat img,Side side){
+string follow_line(Mat img1,Side side){
 
+	Mat img;
+	cvtColor(img1,img,CV_BGR2GRAY);
+		
 	int lowThreshold=170; //% = 40;
 	const int thres_ratio = 4;
 	const int kernel_size = 3;
@@ -243,7 +246,8 @@ string track_ball(Mat img){
 		return encode_image_params(BALL, false, 0.0, 0.0, 0,1);
 	else {
 		Vec3f ball = circles[0];
-		float theta = ball[0] - CAM_W / 2; 
+		float theta = ball[0] - CAM_W / 2;
+		cout << "theta: " << theta << endl; 
 		return encode_image_params(BALL, true, 0.0, theta, 0,1); 
 	}
 
