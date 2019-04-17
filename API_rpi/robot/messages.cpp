@@ -559,6 +559,13 @@ void decode_sensors(string msg, Sensors & sens){
 					i++;
 				}
 			}
+			else if(words.at(i) == command.NC){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					sens.newCommand.add_item(val);
+					i++;
+				}
+			}
 		}
 	}
 

@@ -44,6 +44,8 @@ void Sensors::set_MAX_LEN(int i){
 	cross.set_MAX_LEN(i);
 	th_t.set_MAX_LEN(i);
 	obst_dist_img.set_MAX_LEN(i);
+
+	newCommand.set_MAX_LEN(i);
 }
 
 
@@ -52,6 +54,8 @@ void Sensors::print_info(){
 	cout << endl << endl << STAR_LINE << endl << endl;
 	cout << "Sensors data (last)" << endl << endl;
 
+	cout << "  NC:     " << newCommand.get_last_item_noMutex() << endl;
+	cout << endl;
 	cout << "  Xw:     " << x.get_last_item_noMutex() << endl;
 	cout << "  Yw:     " << y.get_last_item_noMutex() << endl;
 	cout << "  Thw:    " << th.get_last_item_noMutex() << endl;
@@ -88,6 +92,8 @@ void Sensors::print_info(){
 void Sensors::init_items(){
 	
 	// set name
+	this->newCommand.set_name("New command");
+
 	this->s.set_name("S");
 	this->x.set_name("Xw");
 	this->y.set_name("Yw");
@@ -119,6 +125,8 @@ void Sensors::init_items(){
 
 
 	// initialize with one item
+	this->newCommand.add_item_noMutex(1);
+
 	this->s.add_item_noMutex(0.0);
 	this->x.add_item_noMutex(0.0);
 	this->y.add_item_noMutex(0.0);
@@ -154,6 +162,8 @@ void Sensors::init_items(){
 
 Sensors & Sensors::operator=(Sensors & sens){
 	set_MAX_LEN(sens.get_MAX_LEN());
+	this->newCommand = sens.newCommand;
+
 	this->s = sens.s;
 	this->x = sens.x;
 	this->y = sens.y;

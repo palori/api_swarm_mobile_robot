@@ -106,7 +106,7 @@ void Robot::serial(){
 	int count = 0, millis = 50;
 	while(true){
 
-		if(run_mission.get()){
+		//if(run_mission.get()){
 
 			//---------------WRITING SERIAL---------------//
 			count ++;
@@ -145,14 +145,14 @@ void Robot::serial(){
 			
 			//int millis_sleep = 50;
 			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-		}
+		/*}
 		else{
 			if (msg_master != old_msg_master) {
 				// Maybe send to stop --> ask Andrija
 				cout << "Should send STOP to Teensy, but not implemented yet!" << endl;
 				old_msg_master = msg_master;
 			}
-		}
+		}*/
 
 		//---------------READING SERIAL---------------//
 		// Commented for testing in Pau's pc
@@ -315,8 +315,8 @@ void Robot::run(){
 
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
-	init_pose.set("@i=20,x0=0.0,y0=0.0,th0=0.0$");
-	//this_thread::sleep_for(chrono::milliseconds(2000));
+	init_pose.set("@i=20,x0=1.0,y0=1.0,th0=0.0$");
+	this_thread::sleep_for(chrono::milliseconds(1000));
 	sensors.print_info();
 
 	
@@ -343,14 +343,25 @@ void Robot::navigate_test(){//Graph* map){
 			//set msg to send to tsy
 			
 			cout << "-------------turn\n";
+			while(!sensors.newCommand.get_last_item()){
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 			float trn = th_w - sensors.th.get_last_item();
 			string msg = "@i=21,a=16,b=1,v=0.4,trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
-			//this_thread::sleep_for(chrono::milliseconds(5000));
+			this_thread::sleep_for(chrono::milliseconds(1000));
+			
 			cout << "-------------fwd\n";
+			while(!sensors.newCommand.get_last_item()){
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
+			sensors.print_info();
 			msg = "@i=22,a=15,b=1,v=0.4,fwd=" + to_string(edge->distance) + "$";
-			//drive_command.set(msg); 
-			//this_thread::sleep_for(chrono::milliseconds(10000));
+			drive_command.set(msg); 
+			this_thread::sleep_for(chrono::milliseconds(1000));
+			while(!sensors.newCommand.get_last_item()){
+			 	this_thread::sleep_for(chrono::milliseconds(100));
+			}
 			sensors.print_info();
 			cout << "-------------wait\n";
 			//this_thread::sleep_for(chrono::milliseconds(10000));
