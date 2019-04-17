@@ -352,6 +352,7 @@ void Robot::navigate_test(){//Graph* map){
 			//set msg to send to tsy
 			
 			
+			
 			while(!sensors.newCommand.get_last_item()){
 				this_thread::sleep_for(chrono::milliseconds(100));
 			}
