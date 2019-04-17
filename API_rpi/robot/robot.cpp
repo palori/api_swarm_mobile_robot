@@ -369,9 +369,9 @@ void Robot::navigate_test(){//Graph* map){
 			msg = "@i=22,a=";
 			if (edge->line == 0) msg += to_string(FWD);
 			else {
-				msg_task = encode_task(LINE,edge->line);
-				pub_image_task.publish(msg_task);
-
+				string msg_ = encode_task(LINE,edge->line);
+				pub_image_task.publish(msg_);
+				cout << "image task: " << LINE << ", edge: " << edge->line << endl;
 				msg += to_string(FOLLOW);
 			}
 			msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
