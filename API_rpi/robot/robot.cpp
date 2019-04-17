@@ -312,14 +312,7 @@ void Robot::run(){
 	thread_master.join();
 }
 
-void Robot::wait2drive(){
-	this_thread::sleep_for(chrono::milliseconds(5000));
-	cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-	while(!sensors.newCommand.get_last_item()){
-		cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-		this_thread::sleep_for(chrono::milliseconds(100));
-	}
-}
+
 
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
@@ -363,7 +356,13 @@ void Robot::navigate_test(){//Graph* map){
 			pub_image_task.publish(msg_task);
 			string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
-			wait2drive();
+			
+			this_thread::sleep_for(chrono::milliseconds(5000));
+			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(!sensors.newCommand.get_last_item()){
+				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 
 			cout << "-------------fwd\n";
 			sensors.print_info();
@@ -377,7 +376,13 @@ void Robot::navigate_test(){//Graph* map){
 			}
 			msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
 			drive_command.set(msg); 
-			wait2drive();
+			
+			this_thread::sleep_for(chrono::milliseconds(5000));
+			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(!sensors.newCommand.get_last_item()){
+				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 			sensors.print_info();
 			cout << "-------------recovery\n";
 
@@ -391,11 +396,23 @@ void Robot::navigate_test(){//Graph* map){
 
 			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
-			wait2drive();
+			
+			this_thread::sleep_for(chrono::milliseconds(5000));
+			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(!sensors.newCommand.get_last_item()){
+				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 
 			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(distance) + "$";
 			drive_command.set(msg); 
-			wait2drive();
+			
+			this_thread::sleep_for(chrono::milliseconds(5000));
+			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(!sensors.newCommand.get_last_item()){
+				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 
 			//this_thread::sleep_for(chrono::milliseconds(10000));
 			/* still to test
