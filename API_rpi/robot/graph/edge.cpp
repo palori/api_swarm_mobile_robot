@@ -21,7 +21,7 @@ Edge::Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_no
 	// else -> set in 'compute_distance()'
 
 	this->vel = vel;
-	
+	this->distance = distance;
 	compute_distance();
 }
 
@@ -61,7 +61,7 @@ void Edge::compute_distance(){
 		float delta_x = node2->x - node1->x;
 		float delta_y = node2->y - node1->y;
 
-		distance = sqrt(delta_x*delta_x + delta_y*delta_y);
+		this->distance = sqrt(delta_x*delta_x + delta_y*delta_y);
 
 		// calculate the orientations to face the opposite node
 		this->th_w_node_1 = atan2(delta_y, delta_x);

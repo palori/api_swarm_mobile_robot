@@ -15,7 +15,7 @@ bool cross_candidate = false;
 void idle(){}
  
 
-string follow_line(Mat img1,Side side){
+string follow_line(Mat img1, int side){
 
 	Mat img;
 	cvtColor(img1,img,CV_BGR2GRAY);
@@ -192,13 +192,13 @@ string follow_line(Mat img1,Side side){
 
 	switch(side){
 
-		case LEFT:
+		case 1:
 			cm = left_cm;  
 			break;
-		case MIDDLE:
+		case 2:
 			cm = (left_cm + right_cm)/2;
 			break;
-		case RIGHT:
+		case 3:
 			cm = right_cm;
 			break;
 	}

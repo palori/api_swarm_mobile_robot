@@ -30,7 +30,7 @@ using namespace cv;
  * - find ArUco code
  */
 void idle();
-string follow_line(Mat img, Side side);
+string follow_line(Mat img, int side);
 string track_ball(Mat img);
 string hole(Mat img);
 string shape(Mat img);

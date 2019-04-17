@@ -57,7 +57,7 @@ void Image_analysis::get_new_task(){
 	int tsk;
 	while(true){
 		new_task = subs.listen();	// bloking call
-		if (new_task != old_task) decode_task(new_task,this->tasks);
+		if (new_task != old_task) decode_task(new_task,this->tasks,this->side);
 	}
 }
 
@@ -162,7 +162,7 @@ void Image_analysis::run(){
 
 		//cout << "    Task: " << task << endl;
 		task = tasks.get_last_item();
-
+		
 		if (task == LINE) data = follow_line(picture.get(),side.get());
 		else if (task == BALL) data = track_ball(picture.get());
 		else if (task == HOLE) data = hole(picture.get());
