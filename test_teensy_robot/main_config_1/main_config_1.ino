@@ -122,6 +122,10 @@ double delta_vel = 0.0;
 int count10=1;
 double int_action[10]={0,0,0,0,0,0,0,0,0,0};
 
+//counter for synchronizing with rpi
+int count_drive = 1;
+
+
 
 
 double sign(double in){
@@ -469,6 +473,7 @@ void update_velocity(int drive_command){
                 vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;
+                count_drive++;
                 comm_tsy.set_trn(false);       
             }
           
@@ -504,6 +509,7 @@ void update_velocity(int drive_command){
                 vel2 = 0.001;
                 //disableMotors();
                 newCommand = true;  
+                count_drive++;
                 comm_tsy.set_trnr(false);       
             }
           
@@ -534,7 +540,8 @@ void update_velocity(int drive_command){
                 vel1 = 0.001;
                 vel2 = 0.001;
                 disableMotors();  
-                newCommand = true;    
+                newCommand = true; 
+                count_drive++;   
                 comm_tsy.set_fwd(false); 
                 comm_tsy.set_race(false);
                 comm_tsy.set_stairs(false);
@@ -579,7 +586,8 @@ void update_velocity(int drive_command){
               vel1 = 0.001;
               vel2 = 0.001;
               disableMotors(); 
-              newCommand = true;    
+              newCommand = true;
+              count_drive++;    
               comm_tsy.set_drive(false); 
            }
 
@@ -625,7 +633,8 @@ void update_velocity(int drive_command){
                 vel1 = 0.0001;
                 vel2 = 0.0001;
                 //disableMotors();  
-                newCommand = true;    
+                newCommand = true;   
+                count_drive++;
                 comm_tsy.set_followline(false); 
                 
             }
@@ -688,7 +697,7 @@ void read_sensors(){
   int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
-  bool _newCommand=newCommand;
+  int _count_drive=count_drive;
   
 
   if (comm_tsy.get_ir_on()){
@@ -709,7 +718,7 @@ void read_sensors(){
     int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
   } 
  
-  comm_tsy.write_serial(_newCommand,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+  comm_tsy.write_serial(_count_drive,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
 }
 
