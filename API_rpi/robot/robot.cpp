@@ -364,7 +364,7 @@ void Robot::navigate_test(){//Graph* map){
 				this_thread::sleep_for(chrono::milliseconds(100));
 			}
 
-			cout << "-------------fwd\n";
+			cout << "-------------fwd\n"; 
 			sensors.print_info();
 			msg = "@i=22,a=";
 			if (edge->line == 0) msg += to_string(FWD);
