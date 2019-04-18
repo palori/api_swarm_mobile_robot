@@ -370,8 +370,8 @@ void Robot::navigate_test(){//Graph* map){
 			if (edge->line == 0) msg += to_string(FWD);
 			else {
 				string msg_ = encode_task(LINE,edge->line);
-				pub_image_task.publish(msg_);
-				cout << "image task: " << LINE << ", edge: " << edge->line << endl;
+				pub_image_task.publish(msg_ );
+				cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
 				msg += to_string(FOLLOW);
 			}
 			msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
