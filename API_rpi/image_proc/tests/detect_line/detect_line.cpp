@@ -629,8 +629,8 @@ int shape_color (){
 }
 
 void pic_cm_comm1(){
-	bool followline = false;
-	bool pictures = true;
+	bool followline = true;
+	bool pictures = false;
 	bool shapes = false;
 
 	if (followline) camera_init();
@@ -642,14 +642,14 @@ void pic_cm_comm1(){
 			cr.serial_open();
 		    int i=0;
 		    float y=0.0;
-		    string msg = "@a=19,b=1,v=0.3,fwd=1.4$";
+		    string msg = "@a=19,b=1,v=0.3,fwd=6$";
 		    cr.serial_write(msg);
 		   
 			usleep(10000);
-		    while (i<300){
+		    while (i<500){
 		    		//camera_start();
 
-					y = take_pic_get_cm(i,MIDDLE);
+					y = take_pic_get_cm(i,RIGHT);
 					printf("Y: %f\n",y);
 
 					if (feature != NOTHING) {

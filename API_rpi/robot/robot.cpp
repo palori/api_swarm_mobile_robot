@@ -121,25 +121,25 @@ void Robot::serial(){
 				serial_comm.serial_write(msg_master);
 				cout << "master msg: " << msg_master << endl;
 				old_msg_master = msg_master;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (update_pose != old_update_pose) {
 				serial_comm.serial_write(update_pose);
 				cout << "init_pose: " << update_pose << endl;
 				old_update_pose = update_pose;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (msg_image != old_msg_image) {
 				serial_comm.serial_write(msg_image);
 				cout << "image msg: " << msg_image << endl;
 				old_msg_image = msg_image;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			else if (msg_drive != old_msg_drive) {
 				serial_comm.serial_write(msg_drive);
 				cout << "drive msg: " << msg_drive << endl;
 				old_msg_drive = msg_drive;
-				this_thread::sleep_for(chrono::milliseconds(millis));
+				//this_thread::sleep_for(chrono::milliseconds(millis));
 			}
 			
 			
@@ -318,7 +318,7 @@ void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
 	init_pose.set("@i=19,x0=99.0,y0=99.0,th0=99.0$");
 	this_thread::sleep_for(chrono::milliseconds(1000));
-	init_pose.set("@i=20,x0=0.0,y0=3.0,th0=0.0$");
+	init_pose.set("@i=20,x0=0.0,y0=2.9,th0=0.0$");
 	this_thread::sleep_for(chrono::milliseconds(1000));
 	sensors.print_info();
 
@@ -392,7 +392,7 @@ void Robot::navigate_test(){//Graph* map){
 			float delta_x = end->x - sensors.x.get_last_item();
 			float delta_y = end->y - sensors.y.get_last_item();
 			float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
-			trn = atan2(delta_y, delta_x);
+			trn = atan2(delta_y, delta_x) - sensors.th.get_last_item();
 
 			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
