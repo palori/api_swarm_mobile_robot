@@ -11,6 +11,8 @@ enum node_type{		// see how to use it
 	TASK_END
 };
 
+#define PI 3.14159
+
 
 // create a test map!
 //Graph* map_test();

@@ -316,17 +316,17 @@ void Robot::run(){
 
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
-	init_pose.set("@i=19,x0=99.0,y0=99.0,th0=99.0$");
+	init_pose.set("@i=19,x0=0.01,y0=0.01,th0=0.01$");
 	this_thread::sleep_for(chrono::milliseconds(1000));
 	init_pose.set("@i=20,x0=0.0,y0=2.9,th0=0.0$");
 	this_thread::sleep_for(chrono::milliseconds(1000));
 	sensors.print_info();
 
 	
-	Graph* map = map_mission0();//map_test();
+	Graph* map = map_mission0();
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
-	dijkstra.find_route("a", "b");
+	dijkstra.find_route("a", "i");
 
 	Edge* edge;
 	Node* start;
@@ -334,7 +334,7 @@ void Robot::navigate_test(){//Graph* map){
 	float th_w;
 	bool wait;
 
-	float threshold_xy = 0.1, threshold_th; // to say that the robot got to the final place
+	float threshold_xy = 0.1; // to say that the robot got to the final place
 
 	for (int i = 1; i < dijkstra.route.size(); ++i)
 	{
@@ -342,48 +342,54 @@ void Robot::navigate_test(){//Graph* map){
 		end = dijkstra.route.at(i);
 		edge = map->find_edge(start, end);
 		th_w = edge->get_th_w(start);
-		//if (th_w != NULL){
-			//set msg to send to tsy
 			
 			
 			
-			while(!sensors.newCommand.get_last_item()){
-				this_thread::sleep_for(chrono::milliseconds(100));
-			}
-			cout << "-------------turn\n";
-			float trn = th_w - sensors.th.get_last_item();
-			string msg_task = encode_task(IDLE,NO_LINE);
-			pub_image_task.publish(msg_task);
-			string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
-			drive_command.set(msg); 
-			
-			this_thread::sleep_for(chrono::milliseconds(5000));
-			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(!sensors.newCommand.get_last_item()){
-				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				this_thread::sleep_for(chrono::milliseconds(100));
-			}
+		while(!sensors.newCommand.get_last_item()){
+			this_thread::sleep_for(chrono::milliseconds(100));
+		}
+		cout << "-------------turn\n";
+		float trn = th_w - sensors.th.get_last_item();
+		string msg_task = encode_task(IDLE,NO_LINE);
+		pub_image_task.publish(msg_task);
+		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+		drive_command.set(msg); 
+		
+		this_thread::sleep_for(chrono::milliseconds(1000));
+		cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+		while(!sensors.newCommand.get_last_item()){
+			cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+			this_thread::sleep_for(chrono::milliseconds(100));
+		}
 
-			cout << "-------------fwd\n"; 
-			sensors.print_info();
-			msg = "@i=22,a=";
-			if (edge->line == 0) msg += to_string(FWD);
-			else {
-				string msg_ = encode_task(LINE,edge->line);
-				pub_image_task.publish(msg_ );
-				cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
-				msg += to_string(FOLLOW);
-			}
-			msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
-			drive_command.set(msg); 
-			
-			this_thread::sleep_for(chrono::milliseconds(5000));
-			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(!sensors.newCommand.get_last_item()){
-				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				this_thread::sleep_for(chrono::milliseconds(100));
-			}
-			sensors.print_info();
+		cout << "-------------fwd\n"; 
+		sensors.print_info();
+		msg = "@i=22,a=";
+		if (edge->line == 0) msg += to_string(FWD);
+		else {
+			string msg_ = encode_task(LINE,edge->line);
+			pub_image_task.publish(msg_ );
+			cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
+			msg += to_string(FOLLOW);
+		}
+		msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
+		drive_command.set(msg); 
+		
+		this_thread::sleep_for(chrono::milliseconds(1000));
+		cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+		while(!sensors.newCommand.get_last_item()){
+			cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+			this_thread::sleep_for(chrono::milliseconds(100));
+		}
+		sensors.print_info();
+
+
+
+		float x = sensors.x.get_last_item();
+		float y = sensors.y.get_last_item();
+
+		if( x < (end->x - threshold_xy) || y < (end->y - threshold_xy) || (x > (end->x + threshold_xy) || y > (end->y + threshold_xy)) ){
+
 			cout << "-------------recovery\n";
 
 			msg_task = encode_task(IDLE,NO_LINE);
@@ -397,7 +403,7 @@ void Robot::navigate_test(){//Graph* map){
 			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			drive_command.set(msg); 
 			
-			this_thread::sleep_for(chrono::milliseconds(5000));
+			this_thread::sleep_for(chrono::milliseconds(1000));
 			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
 			while(!sensors.newCommand.get_last_item()){
 				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
@@ -407,35 +413,19 @@ void Robot::navigate_test(){//Graph* map){
 			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(distance) + "$";
 			drive_command.set(msg); 
 			
-			this_thread::sleep_for(chrono::milliseconds(5000));
+			this_thread::sleep_for(chrono::milliseconds(1000));
 			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
 			while(!sensors.newCommand.get_last_item()){
 				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
 				this_thread::sleep_for(chrono::milliseconds(100));
 			}
+		}
+		else cout << "-------------recovery---NO\n";
 
-			//this_thread::sleep_for(chrono::milliseconds(10000));
-			/* still to test
-			wait = true;
-			while (wait){
-				cout << "sleep" << endl;
-				//int millis_sleep = 500;
-				//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+			
 
 				
-				if(
-					(sensors.x.get_last_item() > (end->x - threshold) ||
-						sensors.x.get_last_item() < (end->x + threshold)) &&
-					(sensors.y.get_last_item() > (end->y - threshold) ||
-						sensors.y.get_last_item() < (end->y + threshold))
-					){
-					wait = false:
-					cout << "reach target position" << endl;
-				}
 				
-			}*/
-		//}
-		//else cout << "could not find the th_w" << endl;
 	}
 	
 }

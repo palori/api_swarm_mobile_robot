@@ -58,10 +58,10 @@ void Image_analysis::get_new_task(){
 	while(true){
 		new_task = subs.listen();	// bloking call
 		//if (new_task != old_task) 
-		//decode_task(new_task,this->tasks,this->side);
-		//cout << "Task: " << this->tasks.get_last_item() << ", side: " << this->side.get() << endl;
-		this->tasks.add_item(LINE);
-		this->side.set(LEFT);
+		decode_task(new_task,this->tasks,this->side);
+		cout << "Task: " << this->tasks.get_last_item() << ", side: " << this->side.get() << endl;
+		//this->tasks.add_item(LINE);
+		//this->side.set(LEFT);
 	}
 }
 
