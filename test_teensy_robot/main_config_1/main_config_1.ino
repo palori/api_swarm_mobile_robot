@@ -186,9 +186,15 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   double dCenter = (dLeft + dRight) / 2.0;
   dTravel += dCenter; 
   double phi = (dRight - dLeft) / wheels_distance;
+  
+  odoTh += phi;
+  odoX += dCenter*cos(odoTh);
+  odoY += dCenter*sin(odoTh);  
 
-  //Serial.println("x0:"+String(comm_tsy.get_x_0()));
+  left_wheel_pos_old = left_wheel_pos;
+  right_wheel_pos_old = right_wheel_pos; 
 
+  /*
   double x0_temp = (double) comm_tsy.get_x_0();
   double y0_temp = (double) comm_tsy.get_y_0();
   double th0_temp = (double) comm_tsy.get_th_0();
@@ -204,15 +210,23 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   if (th0 != th0_temp){
        odoTh = th0_temp;
        th0 = th0_temp;
+  }*/
+  float x0_temp = comm_tsy.get_x_0();
+  float y0_temp = comm_tsy.get_y_0();
+  float th0_temp = comm_tsy.get_th_0();
+  float QWERT = -100.0;
+  if (x0_temp != QWERT){
+       odoX = (double) x0_temp;
+       comm_tsy.set_x_0(QWERT);
   }
-  
-
-  odoTh += phi;
-  odoX += dCenter*cos(odoTh);
-  odoY += dCenter*sin(odoTh);  
-
-  left_wheel_pos_old = left_wheel_pos;
-  right_wheel_pos_old = right_wheel_pos; 
+  if (y0_temp != QWERT){
+       odoY = (double) y0_temp;
+       comm_tsy.set_y_0(QWERT);
+  }
+  if (th0_temp != QWERT){
+       odoTh = (double) th0_temp;
+       comm_tsy.set_th_0(QWERT);
+  }
 }
 
 void initializePID(int index, double K_P, double K_I, double time_period){
@@ -344,8 +358,8 @@ void forward(double dist_ref){
     
     } else {
         Th_0 = odoTh;
-        initializePID(VEL1,Kp,Ki,0.01);
-        initializePID(VEL2,Kp,Ki,0.01);
+        initializePID(VEL1,2*Kp,Ki,0.01);
+        initializePID(VEL2,2*Kp,Ki,0.01);
         initializePID(THETA,Kp_Th,Ki_Th,0.01); 
     }
     
