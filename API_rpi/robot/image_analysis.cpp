@@ -44,7 +44,6 @@ Image_analysis::Image_analysis(int port_image, int port_task){		// add other inp
 // Setters
 //void Image_analysis::set_message(string s){message = s;}		// might not need to be an attr
 
-v
 
 
 
@@ -58,8 +57,8 @@ void Image_analysis::get_new_task(){
 	while(true){
 		new_task = subs.listen();	// bloking call
 		//if (new_task != old_task) 
-		//decode_task(new_task,this->tasks,this->side);
-		//cout << "Task: " << this->tasks.get_last_item() << ", side: " << this->side.get() << endl;
+		decode_task(new_task,this->tasks,this->side);
+		cout << "Task: " << this->tasks.get_last_item() << ", side: " << this->side.get() << endl;
 		this->tasks.add_item(LINE);
 		this->side.set(RIGHT);
 	}
