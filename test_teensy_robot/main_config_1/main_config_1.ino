@@ -8,6 +8,10 @@
 #include <ir.h>
 #include "comm_1.h"
 
+#define CPU_RESTART_ADDR (uint32_t *)0xE000ED0C
+#define CPU_RESTART_VAL 0x5FA0004
+#define CPU_RESTART (*CPU_RESTART_ADDR = CPU_RESTART_VAL);
+
 IntervalTimer myTimer;
 IntervalTimer reading;
 IntervalTimer writing;
@@ -126,6 +130,10 @@ double int_action[10]={0,0,0,0,0,0,0,0,0,0};
 int count_drive = 1;
 
 
+void force_restart(){
+  CPU_RESTART
+  
+}
 
 
 double sign(double in){
@@ -208,25 +216,32 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
        y0_ = y0_temp;
   }
   if (th0 != th0_temp){
-       odoTh = th0_temp;
+       odoTh = th0_temyp;
        th0 = th0_temp;
   }*/
   float x0_temp = comm_tsy.get_x_0();
   float y0_temp = comm_tsy.get_y_0();
   float th0_temp = comm_tsy.get_th_0();
   float QWERT = -100.0;
-  if (x0_temp != QWERT){
+  if (x0_temp != QWERT || y0_temp != QWERT || th0_temp != QWERT){
+       //CPU_RESTART;
        odoX = (double) x0_temp;
        comm_tsy.set_x_0(QWERT);
-  }
+       odoY = (double) y0_temp;
+       comm_tsy.set_y_0(QWERT);
+       odoTh = (double) th0_temp;
+       comm_tsy.set_th_0(QWERT);
+  }/*
   if (y0_temp != QWERT){
+       CPU_RESTART;
        odoY = (double) y0_temp;
        comm_tsy.set_y_0(QWERT);
   }
   if (th0_temp != QWERT){
+       CPU_RESTART;
        odoTh = (double) th0_temp;
        comm_tsy.set_th_0(QWERT);
-  }
+  }*/
 }
 
 void initializePID(int index, double K_P, double K_I, double time_period){
