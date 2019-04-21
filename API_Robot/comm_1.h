@@ -27,7 +27,7 @@ class COMM_TSY
 public:
 	COMM_TSY();
 	~COMM_TSY();
-	void write_serial(bool newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
+	void write_serial(int newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
 	void read_serial();
 
 	// getters if params is not a struct
@@ -78,7 +78,7 @@ public:
 	float get_y_0() {return y_0;}
 	float get_th_0() {return th_0;}
 
-	bool get_nc() {return newCommand;}
+	int get_nc() {return newCommand;}
 
 
 	// setters if params is not a struct
@@ -129,7 +129,7 @@ public:
 	void set_y_0(float f) {y_0 = f;}
 	void set_th_0(float f) {th_0 = f;}
 
-	void set_nc(bool b) {newCommand =b;}
+	void set_nc(int i) {newCommand =i;}
 
 	// other methods
 	String to_string();
@@ -184,11 +184,11 @@ public:
 	float y_t = 0.0;
 	float th_t = 0.0;
 
-	float x_0 = 100.0;
-	float y_0 = 100.0;
-	float th_0 = 100.0;
+	float x_0 = -100.0;
+	float y_0 = -100.0;
+	float th_0 = -100.0;
 
-	bool newCommand = true;
+	int newCommand = 1;
 
 	constexpr static int BUF_LEN = 100;
 	char buf[BUF_LEN];
@@ -276,7 +276,7 @@ public:
 	void msg2params(); // OLD WAY: (String msg);
 
 	// encode the target to send the message
-	String sensorData2msg(bool newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
+	String sensorData2msg(int newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
 
 
 };

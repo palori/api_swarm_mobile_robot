@@ -228,7 +228,7 @@ void Robot::listen_master(){
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
-		else if (action >= IDLE && action <= ARUCO) this->params.tasks.add_item(action);
+		else if (action >= IDLE && action <= ARUCO) pub_image_task.publish(msg);//this->params.tasks.add_item(action);
 		action = -1;
 	}
 
@@ -253,8 +253,8 @@ void Robot::run(){
 
 
 	// only for testing -> always follow line
-	this->params.tasks.add_item(LINE);			// could be also added if master sends @a=19,b=1$
-	int task = -1, old_task = -1;
+	//this->params.tasks.add_item(LINE);			// could be also added if master sends @a=19,b=1$
+	//int task = -1, old_task = -1;
 	string msg_task = "";
 	//send_task();
 
@@ -270,11 +270,11 @@ void Robot::run(){
 			this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 			
 			//send_task();
-			task = this->params.tasks.get_last_item();
+			/*task = this->params.tasks.get_last_item();
 			if(task != old_task){
 				msg_task = encode_task(task);
 				pub_image_task.publish(msg_task);
-			}
+			}*/
 
 		}
 

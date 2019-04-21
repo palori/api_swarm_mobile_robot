@@ -122,6 +122,10 @@ double delta_vel = 0.0;
 int count10=1;
 double int_action[10]={0,0,0,0,0,0,0,0,0,0};
 
+//counter for synchronizing with rpi
+int count_drive = 1;
+
+
 
 
 double sign(double in){
@@ -182,9 +186,15 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   double dCenter = (dLeft + dRight) / 2.0;
   dTravel += dCenter; 
   double phi = (dRight - dLeft) / wheels_distance;
+  
+  odoTh += phi;
+  odoX += dCenter*cos(odoTh);
+  odoY += dCenter*sin(odoTh);  
 
-  //Serial.println("x0:"+String(comm_tsy.get_x_0()));
+  left_wheel_pos_old = left_wheel_pos;
+  right_wheel_pos_old = right_wheel_pos; 
 
+  /*
   double x0_temp = (double) comm_tsy.get_x_0();
   double y0_temp = (double) comm_tsy.get_y_0();
   double th0_temp = (double) comm_tsy.get_th_0();
@@ -200,15 +210,23 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   if (th0 != th0_temp){
        odoTh = th0_temp;
        th0 = th0_temp;
+  }*/
+  float x0_temp = comm_tsy.get_x_0();
+  float y0_temp = comm_tsy.get_y_0();
+  float th0_temp = comm_tsy.get_th_0();
+  float QWERT = -100.0;
+  if (x0_temp != QWERT){
+       odoX = (double) x0_temp;
+       comm_tsy.set_x_0(QWERT);
   }
-  
-
-  odoTh += phi;
-  odoX += dCenter*cos(odoTh);
-  odoY += dCenter*sin(odoTh);  
-
-  left_wheel_pos_old = left_wheel_pos;
-  right_wheel_pos_old = right_wheel_pos; 
+  if (y0_temp != QWERT){
+       odoY = (double) y0_temp;
+       comm_tsy.set_y_0(QWERT);
+  }
+  if (th0_temp != QWERT){
+       odoTh = (double) th0_temp;
+       comm_tsy.set_th_0(QWERT);
+  }
 }
 
 void initializePID(int index, double K_P, double K_I, double time_period){
@@ -340,8 +358,8 @@ void forward(double dist_ref){
     
     } else {
         Th_0 = odoTh;
-        initializePID(VEL1,Kp,Ki,0.01);
-        initializePID(VEL2,Kp,Ki,0.01);
+        initializePID(VEL1,2*Kp,Ki,0.01);
+        initializePID(VEL2,2*Kp,Ki,0.01);
         initializePID(THETA,Kp_Th,Ki_Th,0.01); 
     }
     
@@ -469,6 +487,7 @@ void update_velocity(int drive_command){
                 vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;
+                count_drive++;
                 comm_tsy.set_trn(false);       
             }
           
@@ -504,6 +523,7 @@ void update_velocity(int drive_command){
                 vel2 = 0.001;
                 //disableMotors();
                 newCommand = true;  
+                count_drive++;
                 comm_tsy.set_trnr(false);       
             }
           
@@ -534,7 +554,8 @@ void update_velocity(int drive_command){
                 vel1 = 0.001;
                 vel2 = 0.001;
                 disableMotors();  
-                newCommand = true;    
+                newCommand = true; 
+                count_drive++;   
                 comm_tsy.set_fwd(false); 
                 comm_tsy.set_race(false);
                 comm_tsy.set_stairs(false);
@@ -579,7 +600,8 @@ void update_velocity(int drive_command){
               vel1 = 0.001;
               vel2 = 0.001;
               disableMotors(); 
-              newCommand = true;    
+              newCommand = true;
+              count_drive++;    
               comm_tsy.set_drive(false); 
            }
 
@@ -625,7 +647,8 @@ void update_velocity(int drive_command){
                 vel1 = 0.0001;
                 vel2 = 0.0001;
                 //disableMotors();  
-                newCommand = true;    
+                newCommand = true;   
+                count_drive++;
                 comm_tsy.set_followline(false); 
                 
             }
@@ -688,7 +711,7 @@ void read_sensors(){
   int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
-  bool _newCommand=newCommand;
+  int _count_drive=count_drive;
   
 
   if (comm_tsy.get_ir_on()){
@@ -709,7 +732,7 @@ void read_sensors(){
     int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
   } 
  
-  comm_tsy.write_serial(_newCommand,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+  comm_tsy.write_serial(_count_drive,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
 }
 
