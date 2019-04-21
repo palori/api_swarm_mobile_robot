@@ -52,7 +52,7 @@ Graph* map_mission0(){
 	Node* c = new Node("c", 1.65, 1.8, TRANSITION, false, 0);
 	Node* d = new Node("d", 0.7, 0.0, TRANSITION, false, 0);
 	Node* e = new Node("e", 3.9, 0.0, TRANSITION, false, 0);
-	Node* f = new Node("f", 4.7, -0.1, TRANSITION, false, 0);
+	Node* f = new Node("f", 4.8, -0.1, TRANSITION, false, 0);
 	Node* g = new Node("g", 5.7, 0.65, TRANSITION, false, 0);
 	Node* h = new Node("h", 5.7, 3.05, TRANSITION, false, 0);
 	Node* i = new Node("i", 6.7, 3.55, TASK_END, false, 0);
@@ -64,9 +64,9 @@ Graph* map_mission0(){
 	Edge* e2 = new Edge(b, c, false, NO_LINE, 0, 0, 0, 0.6);
 	angle = -3 * PI / 4;
 	Edge* e3 = new Edge(c, d, false, LEFT, angle, 0, 2.75, 0.3);
-	Edge* e4 = new Edge(d, f, false, RIGHT, 0, 0, 4, 0.3);
+	Edge* e4 = new Edge(d, f, false, RIGHT, 0, 0, 4.1, 0.3);
 	//Edge* e5 = new Edge(e, f, false, RIGHT, 0, 0, 0.8, 0.3);
-	Edge* e6 = new Edge(f, g, false, RIGHT, 0, 0, 1.5, 0.3);
+	Edge* e6 = new Edge(f, g, false, RIGHT, 0, 0, 1.4, 0.3);
 	angle = PI / 2;
 	Edge* e7 = new Edge(g, h, false, RIGHT, angle, 0, 2.4, 0.3);
 	Edge* e8 = new Edge(h, i, false, RIGHT, angle, 0, 1.3, 0.3);
