@@ -102,6 +102,12 @@ void Robot::serial(){
 	string msg_drive = "", old_msg_drive = "";
 	string data = "";
 
+	string QWERT = "qwert";
+	master_data.set(QWERT);
+	init_pose.set(QWERT);
+	drive_command.set(QWERT);
+	image_data.set(QWERT);
+
 	serial_comm.serial_open();
 	int count = 0, millis = 50;
 	while(true){
@@ -114,32 +120,28 @@ void Robot::serial(){
 			// update msg
 			msg_master = master_data.get();
 			update_pose = init_pose.get();
-			msg_image = image_data.get();
 			msg_drive = drive_command.get();
+			msg_image = image_data.get();
 
-			if (msg_master != old_msg_master) {
+			if (msg_master != QWERT) {
 				serial_comm.serial_write(msg_master);
-				cout << "master msg: " << msg_master << endl;
-				old_msg_master = msg_master;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
+				//cout << "master msg: " << msg_master << endl;
+				master_data.set(QWERT);
 			}
-			else if (update_pose != old_update_pose) {
+			else if (update_pose != QWERT) {
 				serial_comm.serial_write(update_pose);
 				cout << "init_pose: " << update_pose << endl;
-				old_update_pose = update_pose;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
+				init_pose.set(QWERT);
 			}
-			else if (msg_image != old_msg_image) {
-				serial_comm.serial_write(msg_image);
-				cout << "image msg: " << msg_image << endl;
-				old_msg_image = msg_image;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
-			}
-			else if (msg_drive != old_msg_drive) {
+			else if (msg_drive != QWERT) {
 				serial_comm.serial_write(msg_drive);
-				cout << "drive msg: " << msg_drive << endl;
-				old_msg_drive = msg_drive;
-				//this_thread::sleep_for(chrono::milliseconds(millis));
+				//cout << "drive msg: " << msg_drive << endl;
+				drive_command.set(QWERT);
+			}
+			else if (msg_image != QWERT) {
+				serial_comm.serial_write(msg_image);
+				//cout << "image msg: " << msg_image << endl;
+				image_data.set(QWERT);
 			}
 			
 			
@@ -312,18 +314,37 @@ void Robot::run(){
 	thread_master.join();
 }
 
+void Robot::update_pose(float x0, float y0, float th0){
+	string msg = "@x0=" + to_string(x0) + ",y0=" + to_string(y0) + ",th0=" + to_string(th0) + "$";
+	auto route_start = chrono::system_clock::now();
+	float tol = 0.02;
+	while (true){
+		init_pose.set(msg);
+		this_thread::sleep_for(chrono::milliseconds(100));
 
+		float x0_s = sensors.x.get();
+		float y0_s = sensors.y.get_last_item();
+		float th0_s = sensors.th.get_last_item();
+		cout << "\nx0_s: " << x0_s;
+		cout << "\ny0_s: " << y0_s;
+		cout << "\nth0_s: " << th0_s;
+		if(x0_s > x0-tol && x0_s < x0+tol && y0_s > y0-tol && y0_s < y0+tol && th0_s > th0-tol && th0_s < th0+tol ) break;
+
+		auto route_end = chrono::system_clock::now();
+		chrono::duration<double> route_elapsed = route_end - route_start;
+		if (route_elapsed.count() > 10) break;
+
+	}
+	sensors.print_info();
+}
 
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
-	init_pose.set("@i=19,x0=0.01,y0=0.01,th0=0.01$");
-	this_thread::sleep_for(chrono::milliseconds(1000));
-	init_pose.set("@i=20,x0=0.0,y0=2.9,th0=0.0$");
-	this_thread::sleep_for(chrono::milliseconds(1000));
-	sensors.print_info();
+	//update_pose(1.0, 1.0, 1.0);
+	update_pose(0.0, 2.9, 0.0);
 
 	
-	Graph* map = map_mission0();
+	Graph* map = map_mission007();
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
 	dijkstra.find_route("a", "i");
@@ -335,6 +356,9 @@ void Robot::navigate_test(){//Graph* map){
 	bool wait;
 
 	float threshold_xy = 0.1; // to say that the robot got to the final place
+	int count_drive = sensors.newCommand.get_last_item() - 1;
+	//cout << "count_drive: " << count_drive << endl;
+	
 
 	for (int i = 1; i < dijkstra.route.size(); ++i)
 	{
@@ -345,23 +369,26 @@ void Robot::navigate_test(){//Graph* map){
 			
 			
 			
-		while(!sensors.newCommand.get_last_item()){
-			this_thread::sleep_for(chrono::milliseconds(100));
-		}
+		//while(!sensors.newCommand.get_last_item()){
+		//	this_thread::sleep_for(chrono::milliseconds(100));
+		//}
+		cout << "Node: " << start->id << endl;
 		cout << "-------------turn\n";
 		float trn = th_w - sensors.th.get_last_item();
 		string msg_task = encode_task(IDLE,NO_LINE);
 		pub_image_task.publish(msg_task);
 		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+		count_drive++;
 		drive_command.set(msg); 
 		
-		this_thread::sleep_for(chrono::milliseconds(1000));
-		cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-		while(!sensors.newCommand.get_last_item()){
-			cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-			this_thread::sleep_for(chrono::milliseconds(100));
+			//this_thread::sleep_for(chrono::milliseconds(5000));
+		//cout << "count_drive: " << count_drive << ", nc: " <<  sensors.newCommand.get_last_item() << endl;			
+		while(count_drive == sensors.newCommand.get_last_item()){
+			//cout << "nc: " << sensors.newCommand.get_last_item() << endl;
+			//cout << "th: " << sensors.th.get_last_item() << endl;
+			//this_thread::sleep_for(chrono::milliseconds(10));
 		}
-
+		//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
 		cout << "-------------fwd\n"; 
 		sensors.print_info();
 		msg = "@i=22,a=";
@@ -373,54 +400,57 @@ void Robot::navigate_test(){//Graph* map){
 			msg += to_string(FOLLOW);
 		}
 		msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
+		count_drive++;
 		drive_command.set(msg); 
 		
-		this_thread::sleep_for(chrono::milliseconds(1000));
-		cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-		while(!sensors.newCommand.get_last_item()){
-			cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-			this_thread::sleep_for(chrono::milliseconds(100));
+		//this_thread::sleep_for(chrono::milliseconds(5000));
+		//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+		while(count_drive == sensors.newCommand.get_last_item()){
+			//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+			//this_thread::sleep_for(chrono::milliseconds(100));
 		}
 		sensors.print_info();
 
 
 
-		float x = sensors.x.get_last_item();
+		float x = sensors.x.get();
 		float y = sensors.y.get_last_item();
+		float delta_x = end->x - x;
+		float delta_y = end->y - y;
+		float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
 
-		if( x < (end->x - threshold_xy) || y < (end->y - threshold_xy) || (x > (end->x + threshold_xy) || y > (end->y + threshold_xy)) ){
+		if( distance >= threshold_xy){
 
-			cout << "-------------recovery\n";
+			cout << "-------------recovery-- dist:" + to_string(distance) + "\n";
 
 			msg_task = encode_task(IDLE,NO_LINE);
 			pub_image_task.publish(msg_task);
 
-			float delta_x = end->x - sensors.x.get_last_item();
-			float delta_y = end->y - sensors.y.get_last_item();
-			float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
 			trn = atan2(delta_y, delta_x) - sensors.th.get_last_item();
 
 			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+			count_drive++;
 			drive_command.set(msg); 
 			
-			this_thread::sleep_for(chrono::milliseconds(1000));
-			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(!sensors.newCommand.get_last_item()){
-				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				this_thread::sleep_for(chrono::milliseconds(100));
+			//this_thread::sleep_for(chrono::milliseconds(5000));
+			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(count_drive == sensors.newCommand.get_last_item()){
+				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				//this_thread::sleep_for(chrono::milliseconds(100));
 			}
 
 			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(distance) + "$";
+			count_drive++;
 			drive_command.set(msg); 
 			
-			this_thread::sleep_for(chrono::milliseconds(1000));
-			cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(!sensors.newCommand.get_last_item()){
-				cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				this_thread::sleep_for(chrono::milliseconds(100));
+			//this_thread::sleep_for(chrono::milliseconds(5000));
+			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(count_drive == sensors.newCommand.get_last_item()){
+				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				//this_thread::sleep_for(chrono::milliseconds(100));
 			}
 		}
-		else cout << "-------------recovery---NO\n";
+		else cout << "-------------recovery-- dist:" + to_string(distance) + " --------NO\n";
 
 			
 

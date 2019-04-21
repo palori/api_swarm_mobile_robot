@@ -450,7 +450,7 @@ void decode_sensors(string msg, Sensors & sens){
 			else if(words.at(i) == command.X_w){
 				float val = str2float(words.at(i+1));
 				if (val != BIG_FLOAT) {
-					sens.x.add_item(val);
+					sens.x.set(val);
 					i++;
 				}
 			}
