@@ -282,7 +282,7 @@ void Robot::run(){
 
 	while(true){
 
-		//if(run_mission.get()){
+		if(run_mission.get()){
 			// localization
 			// task planner
 			// path planning -> if there is one
@@ -304,7 +304,7 @@ void Robot::run(){
 				navigate_test();
 				test_nav=false;
 			}
-		//}
+		}
 
 	}
 
@@ -342,29 +342,21 @@ void Robot::update_pose(float x0, float y0, float th0){
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
 	//update_pose(1.0, 1.0, 1.0);
-	//update_pose(-0.05, 2.9, 0.0);
+	update_pose(0.0, 2.9, 0.0);
 
-	string hn = params.hostname.get();
-	Graph* map;
-	if (hn == "192.168.43.38") {
-		update_pose(-0.05, 2.9, 0.0);
-		map = map_mission0();
-	}
-	else if (hn == "192.168.43.138") {
-		update_pose(-0.2, 2.9, 0.0);
-		map = map_mission1();
-	}
+	
+	Graph* map = map_mission0();
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
-	if (hn == "192.168.43.38")      {dijkstra.find_route("a", "i");}
-	else if (hn == "192.168.43.38") {dijkstra.find_route("a", "p");}
+	dijkstra.find_route("a", "i");
+
 	Edge* edge;
 	Node* start;
 	Node* end;
 	float th_w;
 	bool wait;
 
-	float threshold_xy = 0.05; // to say that the robot got to the final place
+	float threshold_xy = 0.1; // to say that the robot got to the final place
 	int count_drive = sensors.newCommand.get_last_item() - 1;
 	//cout << "count_drive: " << count_drive << endl;
 	
@@ -384,8 +376,8 @@ void Robot::navigate_test(){//Graph* map){
 		cout << "Node: " << start->id << endl;
 		cout << "-------------turn\n";
 		float trn = th_w - sensors.th.get_last_item();
-		//string msg_task = encode_task(IDLE,NO_LINE);
-		//pub_image_task.publish(msg_task);
+		string msg_task = encode_task(IDLE,NO_LINE);
+		pub_image_task.publish(msg_task);
 		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 		count_drive++;
 		drive_command.set(msg); 
@@ -418,9 +410,6 @@ void Robot::navigate_test(){//Graph* map){
 			//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
 			//this_thread::sleep_for(chrono::milliseconds(100));
 		}
-
-		//if (end->id == "f") {update_pose(sensors.x.get(),0.0,sensors.th.get_last_item());}
-		//if (end->id == "h") {update_pose(start->x,sensors.y.get_last_item(),sensors.th.get_last_item());}
 		sensors.print_info();
 
 
@@ -431,14 +420,12 @@ void Robot::navigate_test(){//Graph* map){
 		float delta_y = end->y - y;
 		float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
 
-		if (end->id == "g") {distance = 0;}
-
 		if( distance >= threshold_xy){
 
 			cout << "-------------recovery-- dist:" + to_string(distance) + "\n";
 
-			//msg_task = encode_task(IDLE,NO_LINE);
-			//pub_image_task.publish(msg_task);
+			msg_task = encode_task(IDLE,NO_LINE);
+			pub_image_task.publish(msg_task);
 
 			trn = atan2(delta_y, delta_x) - sensors.th.get_last_item();
 

@@ -17,7 +17,7 @@ int Sensors::get_MAX_LEN(){return MAX_LEN;}
 void Sensors::set_MAX_LEN(int i){
 	MAX_LEN = i;
 	this->s.set_MAX_LEN(i);
-	this->x.set_MAX_LEN(i);
+	//this->x.set_MAX_LEN(i);
 	this->y.set_MAX_LEN(i);
 	this->th.set_MAX_LEN(i);
 
@@ -56,7 +56,7 @@ void Sensors::print_info(){
 
 	cout << "  NC:     " << newCommand.get_last_item_noMutex() << endl;
 	cout << endl;
-	cout << "  Xw:     " << x.get_last_item_noMutex() << endl;
+	cout << "  Xw:     " << x.get() << endl;
 	cout << "  Yw:     " << y.get_last_item_noMutex() << endl;
 	cout << "  Thw:    " << th.get_last_item_noMutex() << endl;
 	cout << "  S:      " << s.get_last_item_noMutex() << endl;
@@ -95,7 +95,7 @@ void Sensors::init_items(){
 	this->newCommand.set_name("New command");
 
 	this->s.set_name("S");
-	this->x.set_name("Xw");
+	//this->x.set_name("Xw");
 	this->y.set_name("Yw");
 	this->th.set_name("Thw");
 
@@ -128,7 +128,7 @@ void Sensors::init_items(){
 	this->newCommand.add_item_noMutex(1);
 
 	this->s.add_item_noMutex(0.0);
-	this->x.add_item_noMutex(0.0);
+	this->x.set(0.0);
 	this->y.add_item_noMutex(0.0);
 	this->th.add_item_noMutex(0.0);
 

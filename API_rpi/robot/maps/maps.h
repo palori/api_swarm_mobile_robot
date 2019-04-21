@@ -17,6 +17,8 @@ enum node_type{		// see how to use it
 // create a test map!
 //Graph* map_test();
 Graph* map_mission0();
+Graph* map_mission007();
+Graph* map_mission1();
 
 
 

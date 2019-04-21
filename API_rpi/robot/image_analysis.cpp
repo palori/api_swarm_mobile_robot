@@ -50,7 +50,6 @@ Image_analysis::Image_analysis(int port_image, int port_task){		// add other inp
 
 
 
-
 void Image_analysis::get_new_task(){
 	Subscriber subs(port_task.get(), "localhost");
 	string new_task="", old_task="1";
@@ -60,8 +59,8 @@ void Image_analysis::get_new_task(){
 		//if (new_task != old_task) 
 		decode_task(new_task,this->tasks,this->side);
 		cout << "Task: " << this->tasks.get_last_item() << ", side: " << this->side.get() << endl;
-		//this->tasks.add_item(LINE);
-		//this->side.set(LEFT);
+		this->tasks.add_item(LINE);
+		this->side.set(RIGHT);
 	}
 }
 

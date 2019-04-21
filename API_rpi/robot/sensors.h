@@ -23,7 +23,7 @@ public:
 	// we can use historical data to compute stuff like
 	// good localization :)
 	Items<float> s;
-	Items<float> x;
+	Item<float> x;
 	Items<float> y;
 	Items<float> th;
 

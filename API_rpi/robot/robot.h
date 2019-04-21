@@ -81,6 +81,7 @@ public:
 
 	void run();						// start the threads and while true loop
 	
+	void update_pose(float x0, float y0, float th0);
 	void navigate_test();
 };
 
