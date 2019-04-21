@@ -155,14 +155,14 @@ public:
 	bool motors_on = false;
 	float vel = false;
 
-	float m1_kp = 1.0;
+	float m1_kp = 3.0;
 	float m1_ki = 1.0;
 
 	float m2_kp = 1.0;
 	float m2_ki = 1.0;
 
-	float th_kp = 1.0;
-	float th_ki = 1.0;
+	float th_kp = 0.0025;
+	float th_ki = 0.01;
 
 	float fwd_dist = 0.0;			// [mm]
 	float trn_deg = 0.0;			// [ª]
