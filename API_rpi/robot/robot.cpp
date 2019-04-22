@@ -305,6 +305,7 @@ void Robot::run(){
 				cout << "navigate test" << endl;
 				navigate_test();
 				test_nav=false;
+				//update_pose(-0.05, 2.9, 0.0);
 			}
 		//}
 
@@ -374,7 +375,9 @@ void Robot::navigate_test(){//Graph* map){
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
 	if (hn == "192.168.43.38")      {dijkstra.find_route("a", "i");}
-	else if (hn == "192.168.43.138") {dijkstra.find_route("a", "r");}
+	else if (hn == "192.168.43.138") {
+		dijkstra.find_route("a", "r");
+		}
 	else if (hn == "192.168.43.174") {dijkstra.find_route("a", "a9");}
 	Edge* edge;
 	Node* start;
@@ -398,9 +401,7 @@ void Robot::navigate_test(){//Graph* map){
 		d_w = edge->distance;
 		th_w = edge->get_th_w(start);
 
-		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);
-		
-		if (edge->vel < 0) th_w += PI;			
+		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);			
 			
 			
 		//while(!sensors.newCommand.get_last_item()){
@@ -409,6 +410,9 @@ void Robot::navigate_test(){//Graph* map){
 		cout << "Node: " << start->id << endl;
 		cout << "-------------turn\n";
 		float trn = th_w - sensors.th.get_last_item();
+
+		if (edge->vel < 0) trn = 0.0;//th_w += PI;
+
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);
 		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
@@ -446,15 +450,55 @@ void Robot::navigate_test(){//Graph* map){
 
 		//if (end->id == "f") {update_pose(sensors.x.get(),0.0,sensors.th.get_last_item());}
 		//if (end->id == "h") {update_pose(start->x,sensors.y.get_last_item(),sensors.th.get_last_item());}
+
+		if (end->id == "l") {
+			float angle;
+			angle = -PI/2;
+			msg = "@i=25,a=16,b=1,v=0.4,trn="+to_string(angle)+"$";
+			count_drive++;
+			drive_command.set(msg); 
+			while(count_drive == sensors.newCommand.get_last_item()){}
+			
+			msg = "@i=25,a=15,b=1,v=0.4,fwd=0.6$";
+			count_drive++;
+			drive_command.set(msg); 
+			while(count_drive == sensors.newCommand.get_last_item()){}
+
+			update_pose(2.08,0.35,angle);
+			this_thread::sleep_for(chrono::milliseconds(1000));
+
+			msg = "@i=25,a=15,b=1,fwd=0.2,v=-0.4$";
+			count_drive++;
+			drive_command.set(msg); 
+			while(count_drive == sensors.newCommand.get_last_item()){}
+		}
+
+		if (end->id == "m") {
+			float angle;
+			msg = "@i=25,a=15,b=1,fwd=0.4,v=0.4$";			
+			count_drive++;
+			drive_command.set(msg); 
+			while(count_drive == sensors.newCommand.get_last_item()){}
+			
+			angle = PI/2;
+			update_pose(sensors.x.get(),4.35,angle);
+			this_thread::sleep_for(chrono::milliseconds(1000));
+			
+			msg = "@i=25,a=15,b=1,fwd=0.2,v=-0.4$";
+			count_drive++;
+			drive_command.set(msg); 
+			while(count_drive == sensors.newCommand.get_last_item()){}
+		}
+
 		sensors.print_info();
 
 
 
-		float x = sensors.x.get();
-		float y = sensors.y.get_last_item();
-		float delta_x = end->x - x;
-		float delta_y = end->y - y;
-		float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
+		//float x = sensors.x.get();
+		//float y = sensors.y.get_last_item();
+		//float delta_x = end->x - x;
+		//float delta_y = end->y - y;
+		//float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
 
 		compute_distance(end->x,end->y, &d_w, &th_w);
 
@@ -494,7 +538,12 @@ void Robot::navigate_test(){//Graph* map){
 		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
 
 			
-
+		if (end->id == "p") {
+			msg = "@i=25,a=15,b=1,fwd=0.2,v=-0.4$";
+			count_drive++;
+			drive_command.set(msg); 
+			while(count_drive == sensors.newCommand.get_last_item()){}
+		}
 				
 				
 	}

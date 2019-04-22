@@ -123,6 +123,7 @@ Graph* map_mission007(){
 
 
 Graph* map_mission1(){
+	float angle;
 	
 	//Node(string id, float x, float y, int type, bool line, int crossing);
 	Node* a = new Node("a", -0.2, 2.9, TASK_START, false, 0);
@@ -131,18 +132,20 @@ Graph* map_mission1(){
 	Node* cd = new Node("cd", 0.6, 0.8, TRANSITION, false, 0);
 
 	//new nodes
-	Node* l = new Node("l", 1.8, 0.8, TRANSITION, false, 0);
-
+	//Node* l = new Node("l", 1.8, 0.8, TRANSITION, false, 0);
+	Node* l = new Node("l", 2.0, 0.6, TRANSITION, false, 0);
+	//Node* l4 = new Node("l4", 1.5, 2.2, TRANSITION, false, 0);
 	Node* l1 = new Node("l1", 1.8, 1.8, TRANSITION, false, 0);
 	Node* l2 = new Node("l2", 1.8, 2.8, TRANSITION, false, 0);
 	Node* l3 = new Node("l3", 1.7, 3.8, TRANSITION, false, 0);
+	
 
 	Node* m = new Node("m", 1.7, 4.15, TRANSITION, false, 0);
 	Node* n = new Node("n", 2.3, 4.15, TRANSITION, false, 0);
 	Node* o = new Node("o", 2.3, 4.6, TRANSITION, false, 0);
 	Node* p = new Node("p", 0.45, 4.6, TRANSITION, false, 0);
 
-	Node* pq = new Node("pq", 0.65, 4.6, TRANSITION, false, 0);	// backwards
+	//Node* pq = new Node("pq", 0.65, 4.6, TRANSITION, false, 0);	// backwards
 
 	Node* q = new Node("q", 0.4, 5.1, TRANSITION, false, 0);
 	Node* r = new Node("r", 0.85, 5.85, TRANSITION, false, 0);
@@ -154,20 +157,27 @@ Graph* map_mission1(){
 	Edge* e2 = new Edge(b, c, false, NO_LINE, 0, 0, 0, 0.6);
 	Edge* e23 = new Edge(c, cd, false, NO_LINE, 0, 0, 0, 0.6);
 
-	Edge* e3 = new Edge(cd, l, false, NO_LINE, 0, 0, 0, 0.6);
+	Edge* e3 = new Edge(cd, l, false, NO_LINE, 0, 0, 0, 0.4);
+
 	Edge* e3l1 = new Edge(l, l1, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e3l2 = new Edge(l1, l2, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e3l3 = new Edge(l2, l3, false, NO_LINE, 0, 0, 0, 0.4);
-
+	//Edge* e3l4 = new Edge(l, l4, false, NO_LINE, 0, 0, 0, 0.4);
 
 	Edge* e4 = new Edge(l3, m, false, NO_LINE, 0, 0, 0, 0.4);
+	
+	angle = PI/2;
+	//Edge* e4 = new Edge(l4, m, false, MIDDLE, angle, 0, 2.5, 0.3);
+
 	Edge* e5 = new Edge(m, n, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e6 = new Edge(n, o, false, NO_LINE, 0, 0, 0, 0.4);
-	Edge* e7 = new Edge(o, p, false, NO_LINE, 0, 0, 0, 0.4);
+	Edge* e7 = new Edge(o, p, false, NO_LINE, 0, 0, 0, 0.6);
 
-	Edge* e8 = new Edge(p, pq, false, NO_LINE, 0, 0, 0, -0.4);	//backwards
+	//Edge* e8 = new Edge(p, pq, false, NO_LINE, 0, 0, 0, -0.4);	//backwards
+	//Edge* e9 = new Edge(pq, q, false, NO_LINE, 0, 0, 0, 0.4);
 
-	Edge* e9 = new Edge(pq, q, false, NO_LINE, 0, 0, 0, 0.4);
+	Edge* e8 = new Edge(p, q, false, NO_LINE, 0, 0, 0, 0.4);
+
 	Edge* e10 = new Edge(q, r, false, NO_LINE, 0, 0, 0, 0.4);
 
 	Graph* graph = new Graph();
@@ -181,13 +191,14 @@ Graph* map_mission1(){
 	graph->add_node(l1);
 	graph->add_node(l2);
 	graph->add_node(l3);
+	//graph->add_node(l4);
 
 	graph->add_node(m);
 	graph->add_node(n);
 	graph->add_node(o);
 	graph->add_node(p);
 
-	graph->add_node(pq);
+	//graph->add_node(pq);
 
 	graph->add_node(q);
 	graph->add_node(r);
@@ -201,6 +212,7 @@ Graph* map_mission1(){
 	graph->add_edge(e3l1);
 	graph->add_edge(e3l2);
 	graph->add_edge(e3l3);
+	//graph->add_edge(e3l4);
 
 	graph->add_edge(e4);
 	graph->add_edge(e5);
@@ -208,7 +220,7 @@ Graph* map_mission1(){
 	graph->add_edge(e7);
 
 	graph->add_edge(e8);
-	graph->add_edge(e9);
+	//graph->add_edge(e9);
 	graph->add_edge(e10);
 
 	return graph;
