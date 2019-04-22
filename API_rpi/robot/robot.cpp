@@ -367,10 +367,15 @@ void Robot::navigate_test(){//Graph* map){
 		update_pose(-0.2, 2.9, 0.0);
 		map = map_mission1();
 	}
+	else if (hn == "192.168.43.174") {
+		update_pose(-0.35, 2.9, 0.0);
+		map = map_mission2();
+	}
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
 	if (hn == "192.168.43.38")      {dijkstra.find_route("a", "i");}
-	else if (hn == "192.168.43.38") {dijkstra.find_route("a", "p");}
+	else if (hn == "192.168.43.138") {dijkstra.find_route("a", "r");}
+	else if (hn == "192.168.43.174") {dijkstra.find_route("a", "a9");}
 	Edge* edge;
 	Node* start;
 	Node* end;
