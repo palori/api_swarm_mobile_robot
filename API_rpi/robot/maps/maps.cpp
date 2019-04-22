@@ -50,7 +50,7 @@ Graph* map_mission0(){
 	Node* a = new Node("a", -0.05, 2.9, TASK_START, false, 0); 
 	Node* b = new Node("b", 0.5, 2.9, TRANSITION, false, 0);
 	Node* c = new Node("c", 1.65, 1.8, TRANSITION, false, 0);
-	Node* cd = new Node("cd", 0.8, 0.8, TRANSITION, false, 0);
+	Node* cd = new Node("cd", 0.6, 0.8, TRANSITION, false, 0);
 	Node* d = new Node("d", 0.7, 0.0, TRANSITION, false, 0);
 	Node* e = new Node("e", 3.9, 0.0, TRANSITION, false, 0);
 	Node* f = new Node("f", 4.8, 0.0, TRANSITION, false, 0);
@@ -128,7 +128,7 @@ Graph* map_mission1(){
 	Node* a = new Node("a", -0.2, 2.9, TASK_START, false, 0);
 	Node* b = new Node("b", 0.5, 2.9, TRANSITION, false, 0);
 	Node* c = new Node("c", 1.65, 1.8, TRANSITION, false, 0);
-	Node* cd = new Node("cd", 0.8, 0.8, TRANSITION, false, 0);
+	Node* cd = new Node("cd", 0.6, 0.8, TRANSITION, false, 0);
 
 	//new nodes
 	Node* l = new Node("l", 1.8, 0.8, TRANSITION, false, 0);
@@ -221,7 +221,7 @@ Graph* map_mission2(){
 	Node* a = new Node("a", -0.35, 2.9, TASK_START, false, 0);
 	Node* b = new Node("b", 0.5, 2.9, TRANSITION, false, 0);
 	Node* c = new Node("c", 1.65, 1.8, TRANSITION, false, 0);
-	Node* cd = new Node("cd", 0.8, 0.8, TRANSITION, false, 0);
+	Node* cd = new Node("cd", 0.6, 0.8, TRANSITION, false, 0);
 
 	//new nodes
 	Node* l = new Node("l", 1.8, 0.8, TRANSITION, false, 0);
@@ -232,12 +232,12 @@ Graph* map_mission2(){
 
 	Node* m = new Node("m", 1.7, 4.15, TRANSITION, false, 0);
 
-	Node* a1 = new Node("a1", 1.2, 4.15, TRANSITION, false, 0);
-	Node* a2 = new Node("a2", 1.2, 4.6, TRANSITION, false, 0);
+	Node* a1 = new Node("a1", 1.1, 4.15, TRANSITION, false, 0);
+	Node* a2 = new Node("a2", 1.1, 4.6, TRANSITION, false, 0);
 	Node* a3 = new Node("a3", 1.3, 4.6, TRANSITION, false, 0);
-	Node* a4 = new Node("a4", 1.2, 5.1, TRANSITION, false, 0);
-	Node* a5 = new Node("a5", 2.1, 5.1, TRANSITION, false, 0);
-	Node* a6 = new Node("a6", 2.1, 4.6, TRANSITION, false, 0);
+	Node* a4 = new Node("a4", 1.1, 5.1, TRANSITION, false, 0);
+	Node* a5 = new Node("a5", 2.2, 5.1, TRANSITION, false, 0);
+	Node* a6 = new Node("a6", 2.2, 4.6, TRANSITION, false, 0);
 	Node* a7 = new Node("a7", 2.0, 4.6, TRANSITION, false, 0);
 	Node* a8 = new Node("a8", 2.7, 4.6, TRANSITION, false, 0);
 	Node* a81 = new Node("a81", 3.65, 4.6, TRANSITION, false, 0);
@@ -274,7 +274,7 @@ Graph* map_mission2(){
 
 	Edge* e14 = new Edge(a6, a8, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e15 = new Edge(a8, a81, false, NO_LINE, 0, 0, 0, 0.4);
-	Edge* e16 = new Edge(a1, a82, false, NO_LINE, 0, 0, 0, 0.4);
+	Edge* e16 = new Edge(a81, a82, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e17 = new Edge(a82, a9, false, NO_LINE, 0, 0, 0, 0.4);
 
 	Graph* graph = new Graph();

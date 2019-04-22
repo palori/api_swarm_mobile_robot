@@ -399,7 +399,8 @@ void Robot::navigate_test(){//Graph* map){
 		th_w = edge->get_th_w(start);
 
 		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);
-			
+		
+		if (edge->vel < 0) th_w += PI;			
 			
 			
 		//while(!sensors.newCommand.get_last_item()){
