@@ -493,7 +493,7 @@ void Robot::navigate_test(){//Graph* map){
 		}
 		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
 
-			
+		if (end->id == "a1") {this_thread::sleep_for(chrono::milliseconds(5000));} // should be wait until potato communicates box finished
 
 				
 				
