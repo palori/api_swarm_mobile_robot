@@ -544,6 +544,9 @@ void Robot::navigate_test(){//Graph* map){
 			drive_command.set(msg); 
 			while(count_drive == sensors.newCommand.get_last_item()){}
 		}
+
+		if (end->id == "a1") {this_thread::sleep_for(chrono::milliseconds(5000));} // should be wait until potato communicates box finished
+
 				
 				
 	}

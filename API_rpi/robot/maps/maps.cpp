@@ -152,7 +152,7 @@ Graph* map_mission1(){
 	
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
-	//float angle;
+	float angle;
 	Edge* e1 = new Edge(a, b, false, NO_LINE, 0, 0, 0, 0.6);
 	Edge* e2 = new Edge(b, c, false, NO_LINE, 0, 0, 0, 0.6);
 	Edge* e23 = new Edge(c, cd, false, NO_LINE, 0, 0, 0, 0.6);
@@ -179,6 +179,7 @@ Graph* map_mission1(){
 	Edge* e8 = new Edge(p, q, false, NO_LINE, 0, 0, 0, 0.4);
 
 	Edge* e10 = new Edge(q, r, false, NO_LINE, 0, 0, 0, 0.4);
+
 
 	Graph* graph = new Graph();
 	graph->add_node(a);
@@ -246,10 +247,12 @@ Graph* map_mission2(){
 
 	Node* a1 = new Node("a1", 1.1, 4.15, TRANSITION, false, 0);
 	Node* a2 = new Node("a2", 1.1, 4.6, TRANSITION, false, 0);
+	Node* a2c = new Node("a2c", 1.1, 4.6, TRANSITION, false, 0);
 	Node* a3 = new Node("a3", 1.3, 4.6, TRANSITION, false, 0);
 	Node* a4 = new Node("a4", 1.1, 5.1, TRANSITION, false, 0);
 	Node* a5 = new Node("a5", 2.2, 5.1, TRANSITION, false, 0);
 	Node* a6 = new Node("a6", 2.2, 4.6, TRANSITION, false, 0);
+	Node* a6c = new Node("a6c", 2.2, 4.6, TRANSITION, false, 0);
 	Node* a7 = new Node("a7", 2.0, 4.6, TRANSITION, false, 0);
 	Node* a8 = new Node("a8", 2.7, 4.6, TRANSITION, false, 0);
 	Node* a81 = new Node("a81", 3.65, 4.6, TRANSITION, false, 0);
@@ -276,15 +279,15 @@ Graph* map_mission2(){
 	Edge* e5 = new Edge(m, a1, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e6 = new Edge(a1, a2, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e7 = new Edge(a2, a3, false, NO_LINE, 0, 0, 0, 0.4);
-	Edge* e8 = new Edge(a3, a2, false, NO_LINE, 0, 0, 0, -0.4);	//backwards
+	Edge* e8 = new Edge(a3, a2c, false, NO_LINE, 0, 0, 0, -0.4);	//backwards
 
-	Edge* e9 = new Edge(a2, a4, false, NO_LINE, 0, 0, 0, 0.4);
+	Edge* e9 = new Edge(a2c, a4, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e10 = new Edge(a4, a5, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e11 = new Edge(a5, a6, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e12 = new Edge(a6, a7, false, NO_LINE, 0, 0, 0, 0.4);
-	Edge* e13 = new Edge(a7, a6, false, NO_LINE, 0, 0, 0, -0.4); // backwards
+	Edge* e13 = new Edge(a7, a6c, false, NO_LINE, 0, 0, 0, -0.4); // backwards
 
-	Edge* e14 = new Edge(a6, a8, false, NO_LINE, 0, 0, 0, 0.4);
+	Edge* e14 = new Edge(a6c, a8, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e15 = new Edge(a8, a81, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e16 = new Edge(a81, a82, false, NO_LINE, 0, 0, 0, 0.4);
 	Edge* e17 = new Edge(a82, a9, false, NO_LINE, 0, 0, 0, 0.4);
@@ -304,10 +307,12 @@ Graph* map_mission2(){
 	graph->add_node(m);
 	graph->add_node(a1);
 	graph->add_node(a2);
+	graph->add_node(a2c);
 	graph->add_node(a3);
 	graph->add_node(a4);
 	graph->add_node(a5);
 	graph->add_node(a6);
+	graph->add_node(a6c);
 	graph->add_node(a7);
 	graph->add_node(a8);
 	graph->add_node(a81);
