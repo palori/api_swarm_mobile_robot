@@ -442,10 +442,9 @@ void followline (double dist) {
     
     enableMotors();
 
-    initializePID(VEL1,comm_tsy.get_m1_kp(),comm_tsy.get_m1_ki(),0.01);  //3 1
-    initializePID(VEL2,comm_tsy.get_m1_kp(),comm_tsy.get_m1_ki(),0.01);  //3 1 
-    initializePID(FOLLOW,comm_tsy.get_th_kp(),comm_tsy.get_th_ki(),0.01); //0.0025 0.01
-
+    initializePID(VEL1,3*Kp,1*Ki,0.01);
+    initializePID(VEL2,3*Kp,1*Ki,0.01);
+    initializePID(FOLLOW,0.0025,0.01,0.01); //0.0025
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -478,8 +477,8 @@ void update_velocity(int drive_command){
               newCommand = true;
               comm_tsy.set_stop(false);     
             } else {
-              vel1=0.0;
-              vel2=0.0; 
+              vel1=0.0001;
+              vel2=0.0001; 
             }
         case comm_tsy.TRN:
             if (fabs(angle_error)>0.01){
@@ -488,7 +487,7 @@ void update_velocity(int drive_command){
                 vel1 = - sign(angle_error) * comm_tsy.get_vel();
                 vel2 = sign(angle_error) * comm_tsy.get_vel();
                 
-                v_max = sqrt(fabs(angle_error) * wheels_distance / 2.0); 
+                v_max = sqrt(4*fabs(angle_error) * wheels_distance / 2.0); 
                 vel1 = Saturate(vel1 , v_max);   
                 vel2 = Saturate(vel2 , v_max);
 
@@ -499,8 +498,8 @@ void update_velocity(int drive_command){
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.0;
-                vel2 = 0.0;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;
                 count_drive++;
@@ -535,8 +534,8 @@ void update_velocity(int drive_command){
                 //Serial.println("vel2:"+String(vel2));
                 
             } else {
-                vel1 = 0.0;
-                vel2 = 0.0;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();
                 newCommand = true;  
                 count_drive++;
@@ -567,8 +566,8 @@ void update_velocity(int drive_command){
                 dist_error = comm_tsy.get_fwd_dist() - dist_curr;
             
             } else {
-                vel1 = 0.0;
-                vel2 = 0.0;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 disableMotors();  
                 newCommand = true; 
                 count_drive++;   
@@ -613,8 +612,8 @@ void update_velocity(int drive_command){
               
            }  else {
             
-              vel1 = 0.0;
-              vel2 = 0.0;
+              vel1 = 0.0001;
+              vel2 = 0.0001;
               disableMotors(); 
               newCommand = true;
               count_drive++;    
@@ -641,7 +640,7 @@ void update_velocity(int drive_command){
                   vel1=comm_tsy.get_vel();// - delta_vel;
                   vel2=comm_tsy.get_vel() + delta_vel;
                 }
-                
+
                 if (vel1 < 0) vel1 = 0;
                 if (vel2 < 0) vel2 = 0;
                     
@@ -660,8 +659,8 @@ void update_velocity(int drive_command){
                   
             } else {
                 Serial.println("Follow line STOP!!!");
-                vel1 = 0.0;
-                vel2 = 0.0;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;   
                 count_drive++;
