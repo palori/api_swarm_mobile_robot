@@ -117,7 +117,7 @@ void decode_task(string msg, Items<int> & tasks, Item<int> & side){
 		for (uint i=0; i<words.size(); i++){
 			if(words.at(i) == command.A){
 				int val = str2int(words.at(i+1));
-				if (val != BIG_INT) {
+				if (val != BIG_INT && val >= IDLE && val <= ARUCO) {
 					tasks.add_item(val);
 					i++;
 				}

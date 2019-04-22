@@ -235,10 +235,12 @@ void Robot::listen_master(){
 		msg = subs_master.listen();		// blocking call
 		cout << "Master says: " << msg << endl;
 		// decode info message
-		action = decode_master_commands(msg, params.hostname.get());
-		cout << "action = " << action << endl;
+		//action = decode_master_commands(msg, params.hostname.get());
+		//cout << "action = " << action << endl;
 
-		if (action != -1) master_data.set(msg);		// maybe need to change the name to the param (image_data)
+		//if (action != -1)
+		master_data.set(msg);		// maybe need to change the name to the param (image_data)
+		pub_image_task.publish(msg);
 
 		if (action == START) run_mission.set(true);
 		else if (action == PAUSE) run_mission.set(false);
