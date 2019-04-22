@@ -83,6 +83,7 @@ public:
 	
 	void update_pose(float x0, float y0, float th0);
 	void navigate_test();
+	void compute_distance(float x, float y, float *d_w, float *th_w);
 };
 
 #endif

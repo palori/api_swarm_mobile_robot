@@ -341,6 +341,17 @@ void Robot::update_pose(float x0, float y0, float th0){
 	sensors.print_info();
 }
 
+void Robot::compute_distance(float x, float y, float *d_w, float *th_w){
+	
+	float delta_x = x - sensors.x.get();
+	float delta_y = y - sensors.y.get_last_item();
+	
+
+	*d_w = sqrt(delta_x*delta_x + delta_y*delta_y);
+	*th_w = atan2(delta_y, delta_x);
+}
+
+
 void Robot::navigate_test(){//Graph* map){
 	//sensors.print_info();
 	//update_pose(1.0, 1.0, 1.0);
@@ -364,6 +375,8 @@ void Robot::navigate_test(){//Graph* map){
 	Node* start;
 	Node* end;
 	float th_w;
+	float d_w;
+
 	bool wait;
 
 	float threshold_xy = 0.05; // to say that the robot got to the final place
@@ -376,7 +389,11 @@ void Robot::navigate_test(){//Graph* map){
 		start = dijkstra.route.at(i-1);
 		end = dijkstra.route.at(i);
 		edge = map->find_edge(start, end);
+		
+		d_w = edge->distance;
 		th_w = edge->get_th_w(start);
+
+		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);
 			
 			
 			
@@ -410,7 +427,7 @@ void Robot::navigate_test(){//Graph* map){
 			cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
 			msg += to_string(FOLLOW);
 		}
-		msg += ",b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(edge->distance) + "$";
+		msg += ",b=1,fwd=" + to_string(d_w) + ",v=" + to_string(edge->vel) + "$";
 		count_drive++;
 		drive_command.set(msg); 
 		
@@ -433,16 +450,18 @@ void Robot::navigate_test(){//Graph* map){
 		float delta_y = end->y - y;
 		float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
 
-		if (end->id == "g") {distance = 0;}
+		compute_distance(end->x,end->y, &d_w, &th_w);
 
-		if( distance >= threshold_xy){
+		if (end->id == "g") {d_w = 0;}
 
-			cout << "-------------recovery-- dist:" + to_string(distance) + "\n";
+		if( d_w >= threshold_xy){
+
+			cout << "-------------recovery-- dist:" + to_string(d_w) + "\n";
 
 			//msg_task = encode_task(IDLE,NO_LINE);
 			//pub_image_task.publish(msg_task);
 
-			trn = atan2(delta_y, delta_x) - sensors.th.get_last_item();
+			trn = th_w - sensors.th.get_last_item();
 
 			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			count_drive++;
@@ -455,7 +474,7 @@ void Robot::navigate_test(){//Graph* map){
 				//this_thread::sleep_for(chrono::milliseconds(100));
 			}
 
-			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(distance) + "$";
+			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(d_w) + "$";
 			count_drive++;
 			drive_command.set(msg); 
 			
@@ -466,7 +485,7 @@ void Robot::navigate_test(){//Graph* map){
 				//this_thread::sleep_for(chrono::milliseconds(100));
 			}
 		}
-		else cout << "-------------recovery-- dist:" + to_string(distance) + " --------NO\n";
+		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
 
 			
 
