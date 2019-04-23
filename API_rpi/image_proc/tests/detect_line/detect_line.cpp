@@ -5,6 +5,7 @@
 
 #include "opencv2/core/core.hpp"
 
+
 //#include "opencv2/core/utility.hpp"
 //#include "opencv2/imgcodecs.hpp"
 
@@ -629,8 +630,8 @@ int shape_color (){
 }
 
 void pic_cm_comm1(){
-	bool followline = true;
-	bool pictures = false;
+	bool followline = false;
+	bool pictures = true;
 	bool shapes = false;
 
 	if (followline) camera_init();
@@ -674,7 +675,8 @@ void pic_cm_comm1(){
 				Camera.retrieve (pic);
 				Mat pic_color;
 				cvtColor(pic,pic_color,COLOR_RGB2BGR);
-				string pic_name = "pics/ball_cm_"+to_string(j)+".png";
+				//string pic_name = "pics/ball_cm_"+to_string(j)+".png";
+				string pic_name = "pics/aruco_1_"+to_string(j)+".png";
 				imwrite(pic_name,pic);
 				j++;
 				usleep(5000000);
