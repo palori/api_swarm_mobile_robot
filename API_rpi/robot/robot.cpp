@@ -299,6 +299,8 @@ void Robot::run(){
 		update_pose(-0.35, 2.9, 0.0);
 		map = map_mission_easy("easy");
 		maps.push_back(map);
+		map = map_mission_ax("ax");
+		maps.push_back(map);
 	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
@@ -315,7 +317,7 @@ void Robot::run(){
 			this_thread::sleep_for(chrono::milliseconds(100));
 		}
 	}
-
+	string start_id, end_id;
 	for (int i = 0; i < maps.size(); ++i){
 
 		//if(run_mission.get()){
@@ -325,7 +327,15 @@ void Robot::run(){
 			map = maps.at(i);
 			
 			cout << "Map '" << map->id << "' (" << i+1 << "/" << maps.size() << ")" << endl;
-			navigate_0(maps.at(i), "a", "h");
+			if (map->id == "easy"){
+				start_id = "a";
+				end_id = "h";
+			}
+			else if (map->id == "ax"){
+				start_id = "h";
+				end_id = "j";
+			}
+			navigate_0(maps.at(i), start_id, end_id);
 		//}
 
 	}
@@ -435,6 +445,20 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			pub_robot_info.publish(robot_info);
 		}
 
+		if (start->id == "h") {
+
+			string msg_h = "@a=5,b=1$";
+			drive_command.set(msg_h);
+			this_thread::sleep_for(chrono::milliseconds(500));
+
+			msg_h = "@a=3,b=1,od=0.2$";
+			drive_command.set(msg_h);
+			this_thread::sleep_for(chrono::milliseconds(500));
+
+			sensors.print_info();
+			d_w = edge->distance;
+		}
+
 			
 		//while(!sensors.newCommand.get_last_item()){
 		//	this_thread::sleep_for(chrono::milliseconds(100));
@@ -504,26 +528,6 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 
 		sensors.print_info();		
-
-		if (end->id == "h") {
-
-			msg = "@a=5,b=1$";
-			drive_command.set(msg);
-			this_thread::sleep_for(chrono::milliseconds(500));
-
-			msg = "@a=3,b=1,od=0.2$";
-			drive_command.set(msg);
-			this_thread::sleep_for(chrono::milliseconds(500));
-
-			msg = "@a=15,b=1,v=0.15,fwd=1.5$";
-			//msg = "@a=5,b=1,a=3,b=1,od=0.2,a=15,b=1,v=0.15,fwd=1.5$";
-			//sensors.print_info();
-			count_drive++;
-			drive_command.set(msg);
-			cout << "Node 'h' now: " << msg << "+++++++++++++++++++++" << endl;
-			while(count_drive == sensors.newCommand.get_last_item()){}
-			cout << "end forward" << "+++++++++++++++++++++" << end;
-		}
 
 		compute_distance(end->x,end->y, &d_w, &th_w);
 		string host_name = params.hostname.get();
