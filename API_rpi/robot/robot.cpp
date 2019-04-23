@@ -217,10 +217,7 @@ void Robot::listen_robot_b(){
 	cout << "listenning to robot " << robot_b.hostname.get() << "..." << endl;
 	while(true){
 		info = subs_robot_b.listen();		// blocking call
-		// decode info message
-
-		// save data in 'robot_b'
-
+		decode_robot_params(info, robot_b);
 	}
 
 }
@@ -281,6 +278,26 @@ void Robot::run(){
 	//string msg_task = "";
 	//send_task();
 	bool test_nav = true;
+
+	cout << "Update init pose" << endl;
+	string hn = params.hostname.get();
+	if (hn == "192.168.43.38") {update_pose(-0.05, 2.9, 0.0);}
+	else if (hn == "192.168.43.138") {update_pose(-0.2, 2.9, 0.0);}
+	else if (hn == "192.168.43.174") {update_pose(-0.35, 2.9, 0.0);}
+
+	cout << "Waiting for a message from the previous robot" << endl;
+	robot_b.tasks.add_item(-1);
+	string prev_robot_task;
+
+	if (hn != "192.168.43.38"){
+		// pumpkin run straight away, the rest wait for the
+		// previous to send a message when it is at node 'b'
+		while(true){
+			prev_robot_task = robot_b.tasks.get_last_item();
+			if (prev_robot_task == 0) {break;}
+			this_thread::sleep_for(chrono::milliseconds(100));
+		}
+	}
 
 	while(true){
 
@@ -360,18 +377,9 @@ void Robot::navigate_test(){//Graph* map){
 
 	string hn = params.hostname.get();
 	Graph* map;
-	if (hn == "192.168.43.38") {
-		update_pose(-0.05, 2.9, 0.0);
-		map = map_mission0();
-	}
-	else if (hn == "192.168.43.138") {
-		update_pose(-0.2, 2.9, 0.0);
-		map = map_mission1();
-	}
-	else if (hn == "192.168.43.174") {
-		update_pose(-0.35, 2.9, 0.0);
-		map = map_mission2();
-	}
+	if (hn == "192.168.43.38") {map = map_mission0();}
+	else if (hn == "192.168.43.138") {map = map_mission1();}
+	else if (hn == "192.168.43.174") {map = map_mission2();}
 	map->reset_nodes();
 	Dijkstra dijkstra(map);
 	if (hn == "192.168.43.38")      {dijkstra.find_route("a", "i");}
@@ -401,8 +409,14 @@ void Robot::navigate_test(){//Graph* map){
 		d_w = edge->distance;
 		th_w = edge->get_th_w(start);
 
-		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);			
-			
+		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);	
+		
+		if (start->id == "b") {
+			// send info to the other robots so the next one can start its mission
+			params.tasks.add_item(0);
+			string robot_info = encode_robot_params(params);
+			pub_robot_info.publish(robot_info);
+		}
 			
 		//while(!sensors.newCommand.get_last_item()){
 		//	this_thread::sleep_for(chrono::milliseconds(100));

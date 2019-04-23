@@ -76,6 +76,18 @@ string encode_master_commands(string msg, int i){
 }
 
 
+string encode_robot_params(Robot_params rob){
+	Command command;
+	string msg = "@" + command.A + "=" + to_string(rob.tasks.get_last_item());
+	msg += "," + command.X_w + "=" + to_string(rob.x.get_last_item());
+	msg += "," + command.Y_w + "=" + to_string(rob.y.get_last_item());
+	msg += "," + command.TH_w + "=" + to_string(rob.th.get_last_item());
+	msg += "$";
+	return msg;
+}
+
+
+
 /*
  * params2msg
  * 
