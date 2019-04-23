@@ -6,6 +6,11 @@ Graph::Graph(){
 	/*Node* a = new Node("default", -1, -1, 0, true, 0);
 	add_node(a);
 	print_nodes();*/
+	this->id = "";
+}
+
+Graph::Graph(string id){
+	this->id = id;
 }
 
 

@@ -277,14 +277,29 @@ void Robot::run(){
 	//int task = -1, old_task = -1;
 	//string msg_task = "";
 	//send_task();
-	bool test_nav = true;
+	
 	bool run_all = false;
 
 	cout << "Update init pose" << endl;
 	string hn = params.hostname.get();
-	if (hn == "192.168.43.38") {update_pose(-0.05, 2.9, 0.0);}
-	else if (hn == "192.168.43.138") {update_pose(-0.2, 2.9, 0.0);}
-	else if (hn == "192.168.43.174") {update_pose(-0.35, 2.9, 0.0);}
+
+	vector<Graph*> maps;
+	Graph* map;
+	if (hn == "192.168.43.38") {
+		update_pose(-0.05, 2.9, 0.0);
+		map = map_mission_easy("easy");
+		maps.push_back(map);
+	}
+	else if (hn == "192.168.43.138") {
+		update_pose(-0.2, 2.9, 0.0);
+		map = map_mission_easy("easy");
+		maps.push_back(map);
+	}
+	else if (hn == "192.168.43.174") {
+		update_pose(-0.35, 2.9, 0.0);
+		map = map_mission_easy("easy");
+		maps.push_back(map);
+	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
 	robot_b.tasks.add_item(-1);
@@ -301,31 +316,16 @@ void Robot::run(){
 		}
 	}
 
-	while(true){
+	for (int i = 0; i < maps.size(); ++i){
 
 		//if(run_mission.get()){
 			// localization
 			// task planner
 			// path planning -> if there is one
+			map = maps.at(i);
 			
-			
-			int millis_sleep = 500;
-			//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-			
-			//send_task();
-			/*
-			task = this->params.tasks.get_last_item();
-			if(task != old_task){
-				msg_task = encode_task(task);
-				pub_image_task.publish(msg_task,MIDDLE);
-			}*/
-
-			if (test_nav) {
-				cout << "navigate test" << endl;
-				navigate_test();
-				test_nav=false;
-				//update_pose(-0.05, 2.9, 0.0);
-			}
+			cout << "Map '" << map->id << "' (" << i+1 << "/" << maps.size() << ")" << endl;
+			navigate_0(maps.at(i), "a", "h");
 		//}
 
 	}
@@ -336,6 +336,7 @@ void Robot::run(){
 	thread_robot_b.join();
 	thread_master.join();
 }
+
 
 void Robot::update_pose(float x0, float y0, float th0){
 	string msg = "@x0=" + to_string(x0) + ",y0=" + to_string(y0) + ",th0=" + to_string(th0) + "$";
@@ -361,6 +362,7 @@ void Robot::update_pose(float x0, float y0, float th0){
 	sensors.print_info();
 }
 
+
 void Robot::compute_distance(float x, float y, float *d_w, float *th_w){
 	
 	float delta_x = x - sensors.x.get();
@@ -370,6 +372,200 @@ void Robot::compute_distance(float x, float y, float *d_w, float *th_w){
 	*d_w = sqrt(delta_x*delta_x + delta_y*delta_y);
 	*th_w = atan2(delta_y, delta_x);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Robot::navigate_0(Graph* map, string start_id, string end_id){
+	//sensors.print_info();
+	//update_pose(1.0, 1.0, 1.0);
+	//update_pose(-0.05, 2.9, 0.0);
+
+	string hn = params.hostname.get();
+	
+	map->reset_nodes();
+	Dijkstra dijkstra(map);
+	/*if (hn == "192.168.43.38")      {dijkstra.find_route("a", "i");}
+	else if (hn == "192.168.43.138") {dijkstra.find_route("a", "r");}
+	else if (hn == "192.168.43.174") {dijkstra.find_route("a", "a9");}
+	*/
+	dijkstra.find_route(start_id, end_id);
+	Edge* edge;
+	Node* start;
+	Node* end;
+	float th_w;
+	float d_w;
+
+	float threshold_xy = 0.05; // to say that the robot got to the final place
+	int count_drive = sensors.newCommand.get_last_item() - 1;
+	//cout << "count_drive: " << count_drive << endl;
+	
+
+	for (int i = 1; i < dijkstra.route.size(); ++i)
+	{
+		start = dijkstra.route.at(i-1);
+		end = dijkstra.route.at(i);
+		edge = map->find_edge(start, end);
+		
+		d_w = edge->distance;
+		th_w = edge->get_th_w(start);
+
+		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);	
+		
+		if (start->id == "b") {
+			// send info to the other robots so the next one can start its mission
+			params.tasks.add_item(0);
+			params.x.add_item(start->x);
+			params.y.add_item(start->y);
+			params.th.add_item(th_w);
+
+			string robot_info = encode_robot_params(params);
+			pub_robot_info.publish(robot_info);
+		}
+
+			
+		//while(!sensors.newCommand.get_last_item()){
+		//	this_thread::sleep_for(chrono::milliseconds(100));
+		//}
+		cout << "Node: " << start->id << endl;
+		cout << "-------------turn\n";
+		float trn = th_w - sensors.th.get_last_item();
+
+		if (start->id == "g" || start->id == "h") trn = 0.0;//th_w += PI;
+
+		//string msg_task = encode_task(IDLE,NO_LINE);
+		//pub_image_task.publish(msg_task);
+		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+		count_drive++;
+		drive_command.set(msg); 
+		
+			//this_thread::sleep_for(chrono::milliseconds(5000));
+		//cout << "count_drive: " << count_drive << ", nc: " <<  sensors.newCommand.get_last_item() << endl;			
+		while(count_drive == sensors.newCommand.get_last_item()){
+			//cout << "nc: " << sensors.newCommand.get_last_item() << endl;
+			//cout << "th: " << sensors.th.get_last_item() << endl;
+			//this_thread::sleep_for(chrono::milliseconds(10));
+		}
+		//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
+		cout << "-------------fwd\n"; 
+		sensors.print_info();
+		msg = "@i=22,a=";
+		/*
+		if (start->id == "d") {
+			msg += to_string(RACE);
+		} 
+		else
+		*/
+		 if (edge->line == 0){
+			 msg += to_string(FWD);
+		}
+		else {
+			string _msg = "";
+			if (start->id == "f") {
+				_msg = encode_task(BALL,edge->line);
+				pub_image_task.publish(_msg);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				d_w = sensors.obst_dist.get_last_item() ; 
+				if (d_w == 0.0) d_w = 0.45;
+				d_w -= 0.05; //we want to stop 5cm in front of the ball
+				cout << "distance to BALL: " << to_string(d_w) << endl;
+			}
+			else{
+				_msg = encode_task(LINE,edge->line);
+				pub_image_task.publish(_msg);
+			}
+			//pub_image_task.publish(_msg);
+			//cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
+			cout << "image task msg: " << _msg << endl;
+			msg += to_string(FOLLOW);
+		}
+		msg += ",b=1,fwd=" + to_string(d_w) + ",v=" + to_string(edge->vel) + "$";
+		count_drive++;
+		drive_command.set(msg); 
+		
+		//this_thread::sleep_for(chrono::milliseconds(5000));
+		//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+		while(count_drive == sensors.newCommand.get_last_item()){
+			//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+			//this_thread::sleep_for(chrono::milliseconds(100));
+		}
+
+
+		sensors.print_info();		
+
+		if (end->id == "h") {
+			msg = "@a=5,b=1,a=3,b=1,od=0.2,a=15,b=1,v=0.15,fwd=1.5$";
+			count_drive++;
+			drive_command.set(msg); 
+			while(count_drive == sensors.newCommand.get_last_item()){}
+		}
+
+		compute_distance(end->x,end->y, &d_w, &th_w);
+		string host_name = params.hostname.get();
+		//if (host_name == "192.168.43.38") {d_w = 0;}
+		d_w = 0; // NO RECOVERY!!!
+		
+		if( d_w >= threshold_xy){
+
+			cout << "-------------recovery-- dist:" + to_string(d_w) + "\n";
+
+			//msg_task = encode_task(IDLE,NO_LINE);
+			//pub_image_task.publish(msg_task);
+
+			trn = th_w - sensors.th.get_last_item();
+
+			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+			count_drive++;
+			drive_command.set(msg); 
+			
+			//this_thread::sleep_for(chrono::milliseconds(5000));
+			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(count_drive == sensors.newCommand.get_last_item()){
+				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				//this_thread::sleep_for(chrono::milliseconds(100));
+			}
+
+			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(d_w) + "$";
+			count_drive++;
+			drive_command.set(msg); 
+			
+			//this_thread::sleep_for(chrono::milliseconds(5000));
+			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
+			while(count_drive == sensors.newCommand.get_last_item()){
+				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
+				//this_thread::sleep_for(chrono::milliseconds(100));
+			}
+		}
+		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
+		
+		
+				
+				
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
 
 
 void Robot::navigate_test(){//Graph* map){
