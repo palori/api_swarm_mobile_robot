@@ -76,7 +76,7 @@ string encode_master_commands(string msg, int i){
 }
 
 
-string encode_robot_params(Robot_params rob){
+string encode_robot_params(Robot_params & rob){
 	Command command;
 	string msg = "@" + command.A + "=" + to_string(rob.tasks.get_last_item());
 	msg += "," + command.X_w + "=" + to_string(rob.x.get_last_item());

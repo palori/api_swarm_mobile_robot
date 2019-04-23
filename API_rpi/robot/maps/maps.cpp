@@ -130,7 +130,6 @@ Graph* map_mission007(){
 
 
 Graph* map_mission1(){
-	float angle;
 	
 	//Node(string id, float x, float y, int type, bool line, int crossing);
 	Node* a = new Node("a", -0.2, 2.9, TASK_START, false, 0);

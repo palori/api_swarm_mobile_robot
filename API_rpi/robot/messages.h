@@ -13,7 +13,7 @@ string detect_message(string msg);
 string encode_task(int task, int side);
 string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing, int i);
 string encode_master_commands(string msg, int i);
-string encode_robot_params(Robot_params rob);
+string encode_robot_params(Robot_params & rob);
 //string encode_init(string you_are, string robot_a, string robot_b, int max_len);
 //void params2msg(string & msg);
 

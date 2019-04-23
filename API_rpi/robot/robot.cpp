@@ -292,6 +292,7 @@ void Robot::run(){
 	if (hn != "192.168.43.38"){
 		// pumpkin run straight away, the rest wait for the
 		// previous to send a message when it is at node 'b'
+		int prev_robot_task;
 		while(true){
 			prev_robot_task = robot_b.tasks.get_last_item();
 			if (prev_robot_task == 0) {break;}
@@ -414,6 +415,10 @@ void Robot::navigate_test(){//Graph* map){
 		if (start->id == "b") {
 			// send info to the other robots so the next one can start its mission
 			params.tasks.add_item(0);
+			params.x.add_item(start->x);
+			params.y.add_item(start->y);
+			params.th.add_item(th_w);
+
 			string robot_info = encode_robot_params(params);
 			pub_robot_info.publish(robot_info);
 		}
