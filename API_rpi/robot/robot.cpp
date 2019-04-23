@@ -430,11 +430,30 @@ void Robot::navigate_test(){//Graph* map){
 		cout << "-------------fwd\n"; 
 		sensors.print_info();
 		msg = "@i=22,a=";
-		if (edge->line == 0) msg += to_string(FWD);
+		if (start->id == "d") {
+			msg += to_string(RACE);
+		} 
+		else if (edge->line == 0){
+			 msg += to_string(FWD);
+		}
 		else {
-			string msg_ = encode_task(LINE,edge->line);
-			pub_image_task.publish(msg_ );
-			cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
+			string _msg = "";
+			if (start->id == "f") {
+				_msg = encode_task(BALL,edge->line);
+				pub_image_task.publish(_msg);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				d_w = sensors.obst_dist.get_last_item() ; 
+				if (d_w == 0.0) d_w = 0.45;
+				d_w -= 0.05; //we want to stop 5cm in front of the ball
+				cout << "distance to BALL: " << to_string(d_w) << endl;
+			}
+			else{
+				_msg = encode_task(LINE,edge->line);
+				pub_image_task.publish(_msg);
+			}
+			//pub_image_task.publish(_msg);
+			//cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
+			cout << "image task msg: " << _msg << endl;
 			msg += to_string(FOLLOW);
 		}
 		msg += ",b=1,fwd=" + to_string(d_w) + ",v=" + to_string(edge->vel) + "$";
@@ -492,17 +511,17 @@ void Robot::navigate_test(){//Graph* map){
 
 		sensors.print_info();
 
-
-
-		//float x = sensors.x.get();
-		//float y = sensors.y.get_last_item();
-		//float delta_x = end->x - x;
-		//float delta_y = end->y - y;
-		//float distance = sqrt(delta_x*delta_x + delta_y*delta_y);
+		string msg_servo;
+		if (end->id == "f1") {
+			cout << "CLOSING SERVO!" << endl;
+			msg_servo = "@s=1$";
+			master_data.set(msg_servo);
+		}
+		
 
 		compute_distance(end->x,end->y, &d_w, &th_w);
 
-		if (end->id == "g") {d_w = 0;}
+		if (end->id == "g" || end->id =="f1") {d_w = 0;}
 
 		if( d_w >= threshold_xy){
 
@@ -536,7 +555,12 @@ void Robot::navigate_test(){//Graph* map){
 			}
 		}
 		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
-
+		
+		if (start->id == "f1") {
+			cout << "OPENING SERVO" << endl;
+			msg_servo = "@s=0$";
+			master_data.set(msg_servo);
+		}
 			
 		if (end->id == "p") {
 			msg = "@i=25,a=15,b=1,fwd=0.2,v=-0.4$";

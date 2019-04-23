@@ -108,7 +108,8 @@ string encode_master_commands(string msg, int i){
 void decode_task(string msg, Items<int> & tasks, Item<int> & side){
 	// detect if the message is 
 	msg = detect_message(msg);
-	if (msg != ""){
+	cout << "INSIDE DECODE TASK !!! msg:" << msg <<  endl;
+	//if (msg != ""){
 		// split the message
 		vector<string> words = split_str(msg, "=,");    // utils
 		Command command;
@@ -118,6 +119,7 @@ void decode_task(string msg, Items<int> & tasks, Item<int> & side){
 			if(words.at(i) == command.A){
 				int val = str2int(words.at(i+1));
 				if (val != BIG_INT && val >= IDLE && val <= ARUCO) {
+					cout << "SETTING NEW VALUE - ADD ITEM: " << to_string(val) << endl;
 					tasks.add_item(val);
 					i++;
 				}
@@ -130,7 +132,7 @@ void decode_task(string msg, Items<int> & tasks, Item<int> & side){
 				}
 			}
 		}
-	}
+	//}
 }
 
 

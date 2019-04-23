@@ -247,8 +247,10 @@ string track_ball(Mat img){
 	else {
 		Vec3f ball = circles[0];
 		float theta = ball[0] - CAM_W / 2;
-		cout << "theta: " << theta << endl; 
-		return encode_image_params(BALL, true, 0.0, theta, 0,1); 
+		cout << "theta: " << theta << endl;
+		float r = ball[2]; 
+		float distance = 0.0006 * r * r - 0.0432 * r + 0.9201; 
+		return encode_image_params(BALL, true, distance, theta, 0,1); 
 	}
 
 }
