@@ -506,10 +506,23 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		sensors.print_info();		
 
 		if (end->id == "h") {
-			msg = "@a=5,b=1,a=3,b=1,od=0.2,a=15,b=1,v=0.15,fwd=1.5$";
+
+			msg = "@a=5,b=1$";
+			drive_command.set(msg);
+			this_thread::sleep_for(chrono::milliseconds(500));
+
+			msg = "@a=3,b=1,od=0.2$";
+			drive_command.set(msg);
+			this_thread::sleep_for(chrono::milliseconds(500));
+
+			msg = "@a=15,b=1,v=0.15,fwd=1.5$";
+			//msg = "@a=5,b=1,a=3,b=1,od=0.2,a=15,b=1,v=0.15,fwd=1.5$";
+			//sensors.print_info();
 			count_drive++;
-			drive_command.set(msg); 
+			drive_command.set(msg);
+			cout << "Node 'h' now: " << msg << "+++++++++++++++++++++" << endl;
 			while(count_drive == sensors.newCommand.get_last_item()){}
+			cout << "end forward" << "+++++++++++++++++++++" << end;
 		}
 
 		compute_distance(end->x,end->y, &d_w, &th_w);
