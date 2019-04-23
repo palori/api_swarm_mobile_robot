@@ -82,8 +82,10 @@ public:
 	void run();						// start the threads and while true loop
 	
 	void update_pose(float x0, float y0, float th0);
-	void navigate_test();
 	void compute_distance(float x, float y, float *d_w, float *th_w);
+
+	void navigate_0(Graph* map, string start_id, string end_id);
+	void navigate_test();
 };
 
 #endif

@@ -22,6 +22,10 @@ Graph* map_mission1();
 Graph* map_mission2();
 
 
+Graph* map_mission_easy(string id);
+Graph* map_mission_ax(string id);
+
+
 
 #endif
 

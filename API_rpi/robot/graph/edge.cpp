@@ -22,7 +22,7 @@ Edge::Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_no
 
 	this->vel = vel;
 	this->distance = distance;
-	compute_distance();
+	//compute_distance();
 }
 
 

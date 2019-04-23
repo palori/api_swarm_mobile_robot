@@ -1,0 +1,3 @@
+/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco/CMakeFiles/rebuild_cache.dir
+/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco/CMakeFiles/edit_cache.dir
+/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco/CMakeFiles/aruco.dir

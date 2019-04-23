@@ -14,6 +14,8 @@ class Graph
 {
 public:
 	Graph();
+	Graph(string id);
+
 	void add_node(Node* node);
 	void add_edge(Edge* edge);
 
@@ -28,6 +30,7 @@ public:
 public:
 	vector<Node*> nodes;
 	vector<Edge*> edges;
+	string id;
 };
 
 #endif
