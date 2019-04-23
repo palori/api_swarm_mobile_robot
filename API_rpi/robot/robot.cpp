@@ -278,6 +278,7 @@ void Robot::run(){
 	//string msg_task = "";
 	//send_task();
 	bool test_nav = true;
+	bool run_all = false;
 
 	cout << "Update init pose" << endl;
 	string hn = params.hostname.get();
@@ -289,7 +290,7 @@ void Robot::run(){
 	robot_b.tasks.add_item(-1);
 	string prev_robot_task;
 
-	if (hn != "192.168.43.38"){
+	if (hn != "192.168.43.38" && run_all){
 		// pumpkin run straight away, the rest wait for the
 		// previous to send a message when it is at node 'b'
 		int prev_robot_task;
