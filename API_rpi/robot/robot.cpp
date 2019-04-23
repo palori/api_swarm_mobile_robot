@@ -480,7 +480,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		cout << "-------------turn\n";
 		float trn = th_w - sensors.th.get_last_item();
 
-		if (start->id == "g" || start->id == "h" || start->id=="g1" || start->id =="i") trn = 0.0;//th_w += PI;
+		if (start->id == "g" || start->id == "h" || start->id=="g1" || start->id =="i" || start->id=="i1") trn = 0.0;//th_w += PI;
 
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);
