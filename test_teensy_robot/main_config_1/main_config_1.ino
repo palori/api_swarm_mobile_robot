@@ -270,10 +270,22 @@ double update_PID_follow(double referent_value, double current_value, int index)
         e_i[index] += int_action[i];
     }
     e_i[index] *= T[index];
+    //adding derivative part:
+    double e_d;
+    if (count10>1) e_d = int_action[count10-1] - int_action[count10-2];
+    else e_d = int_action[0] - int_action[9];
+    e_d /= T[index];
+    double KD = 0.002;
     count10++;
     if (count10 == 10) count10 = 1;
+
+   
     double KV = (velocity1 + velocity2) / (2 * 0.3); 
-    return KV * KP[index] * e[index] + KV * KI[index] * e_i[index];
+
+    
+
+    
+    return KV * KP[index] * e[index] + KV * KI[index] * e_i[index] + KD * KV * e_d;
   
 }
 
@@ -442,9 +454,9 @@ void followline (double dist) {
     
     enableMotors();
 
-    initializePID(VEL1,3*Kp,1*Ki,0.01);
-    initializePID(VEL2,3*Kp,1*Ki,0.01);
-    initializePID(FOLLOW,0.0025,0.01,0.01); //0.0025
+    initializePID(VEL1,4*Kp,1*Ki,0.01);
+    initializePID(VEL2,4*Kp,1*Ki,0.01);
+    initializePID(FOLLOW,0.005,0.005,0.01); //0.0025
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -491,8 +503,8 @@ void update_velocity(int drive_command){
                 vel1 = Saturate(vel1 , v_max);   
                 vel2 = Saturate(vel2 , v_max);
 
-                //vel1 = Saturate(vel1 , 0.5);   
-                //vel2 = Saturate(vel2 , 0.5);
+                vel1 = Saturate(vel1 , 0.2);   
+                vel2 = Saturate(vel2 , 0.2);
                 
                 angle_error = angle_ref_abs - odoTh;
                 //Serial.println("angle error:                                "+String(angle_error));
@@ -644,7 +656,7 @@ void update_velocity(int drive_command){
                 if (vel1 < 0) vel1 = 0;
                 if (vel2 < 0) vel2 = 0;
                     
-                v_max = sqrt(1.0 * fabs(final_dist - dTravel));
+                v_max = sqrt(2.0 * fabs(final_dist - dTravel));
                 
                 vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
                 vel2 = Saturate(vel2 , v_max);
