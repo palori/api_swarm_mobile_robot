@@ -449,10 +449,13 @@ void Robot::navigate_test(){//Graph* map){
 		cout << "-------------fwd\n"; 
 		sensors.print_info();
 		msg = "@i=22,a=";
+		/*
 		if (start->id == "d") {
 			msg += to_string(RACE);
 		} 
-		else if (edge->line == 0){
+		else
+		*/
+		 if (edge->line == 0){
 			 msg += to_string(FWD);
 		}
 		else {
@@ -539,9 +542,10 @@ void Robot::navigate_test(){//Graph* map){
 		
 
 		compute_distance(end->x,end->y, &d_w, &th_w);
-
-		if (end->id == "g" || end->id =="f1") {d_w = 0;}
-
+		string host_name = params.hostname.get();
+		if (host_name == "192.168.43.38") {d_w = 0;}
+		
+		
 		if( d_w >= threshold_xy){
 
 			cout << "-------------recovery-- dist:" + to_string(d_w) + "\n";
@@ -575,7 +579,7 @@ void Robot::navigate_test(){//Graph* map){
 		}
 		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
 		
-		if (start->id == "f1") {
+		if (start->id == "f3") {
 			cout << "OPENING SERVO" << endl;
 			msg_servo = "@s=0$";
 			master_data.set(msg_servo);
