@@ -50,10 +50,12 @@ Graph* map_mission0(){
 	Node* a = new Node("a", -0.05, 2.9, TASK_START, false, 0); 
 	Node* b = new Node("b", 0.5, 2.9, TRANSITION, false, 0);
 	Node* c = new Node("c", 1.65, 1.8, TRANSITION, false, 0);
-	Node* cd = new Node("cd", 0.6, 0.8, TRANSITION, false, 0);
+	Node* cd = new Node("cd", 0.6, 1.0, TRANSITION, false, 0);
 	Node* d = new Node("d", 0.7, 0.0, TRANSITION, false, 0);
 	Node* e = new Node("e", 3.9, 0.0, TRANSITION, false, 0);
 	Node* f = new Node("f", 4.8, 0.0, TRANSITION, false, 0);
+	Node* f1 = new Node("f1",4.8,0.45,TRANSITION, false, 0);
+	Node* f2 = new Node("f2",6.05, -0.1, TRANSITION, false, 0);
 	Node* g = new Node("g", 5.7, 0.65, TRANSITION, false, 0);
 	Node* h = new Node("h", 5.7, 3.05, TRANSITION, false, 0);
 	Node* i = new Node("i", 6.7, 3.55, TASK_END, false, 0);
@@ -67,10 +69,12 @@ Graph* map_mission0(){
 	Edge* e23 = new Edge(c, cd, false, NO_LINE, angle, 0, 3.55, 0.6);
 	angle = -PI / 2;
 	Edge* e3 = new Edge(cd, d, false, NO_LINE, angle, 0, 0, 0.3);
-	Edge* e4 = new Edge(d, g, false, RIGHT, 0, 0, 5, 0.3);
-	//Edge* e5 = new Edge(e, f, false, RIGHT, 0, 0, 0.8, 0.3);
-	//Edge* e6 = new Edge(f, g, false, NO_LINE, 0, 0, 1.4, 0.3);
+	Edge* e4 = new Edge(d, f, false, NO_LINE, 0, 0, 4.1, 0.4);
 	angle = PI / 2;
+	Edge* e5 = new Edge(f, f1, false, MIDDLE, angle, 0 , 0.45 , 0.15);
+	Edge* e51 = new Edge(f1, f2, false, NO_LINE, 0, 0, 0, 0.2);
+	//Edge* e5 = new Edge(e, f, false, RIGHT, 0, 0, 0.8, 0.3);
+	Edge* e6 = new Edge(f2, g, false, NO_LINE, 0, 0, 0, 0.3);
 	Edge* e7 = new Edge(g, i, false, RIGHT, angle, 0, 3.7, 0.15);
 	//Edge* e8 = new Edge(h, i, false, NO_LINE, angle, 0, 1.3, 0.3);
 
@@ -82,6 +86,8 @@ Graph* map_mission0(){
 	graph->add_node(d);
 	//graph->add_node(e);
 	graph->add_node(f);
+	graph->add_node(f1);
+	graph->add_node(f2);
 	graph->add_node(g);
 	graph->add_node(h);
 	graph->add_node(i);
@@ -90,8 +96,9 @@ Graph* map_mission0(){
 	graph->add_edge(e23);
 	graph->add_edge(e3);
 	graph->add_edge(e4);
-	//graph->add_edge(e5);
-	//graph->add_edge(e6);
+	graph->add_edge(e5);
+	graph->add_edge(e51);
+	graph->add_edge(e6);
 	graph->add_edge(e7);
 	//graph->add_edge(e8);
 
