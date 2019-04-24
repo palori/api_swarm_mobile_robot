@@ -292,15 +292,15 @@ void Robot::run(){
 	}
 	else if (hn == "192.168.43.138") {
 		update_pose(-0.2, 2.9, 0.0);
-		//maps.push_back(map_mission_easy("easy"););
+		maps.push_back(map_mission_easy("easy"););
 		maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_ro("ro"));
+		maps.push_back(map_mission_tunnel("tunnel"));
 	}
 	else if (hn == "192.168.43.174") {
 		update_pose(-0.35, 2.9, 0.0);
-		//maps.push_back(map_mission_easy("easy"));
-		//maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_tunnel("tunnel"));
+		maps.push_back(map_mission_easy("easy"));
+		maps.push_back(map_mission_ax("ax"));
+		maps.push_back(map_mission_race("race"));
 	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
@@ -342,6 +342,9 @@ void Robot::run(){
 			else if (map->id == "ro"){
 				start_id = "ro1";
 				end_id = "ro4";
+			} else if (map->id == "race"){
+				start_id = "r1";
+				end_id = "r4";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
 			//pub_image_task.publish(encode_task(LINE,RIGHT));
@@ -499,16 +502,8 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			d_w = edge->distance + ir1;
 		}
 
-		if (end->id == "t5") {
-
-			string msg_h = "@a=5,b=1$";
-			drive_command.set(msg_h);
-			this_thread::sleep_for(chrono::milliseconds(500));
-
-			msg_h = "@a=3,b=1,od=0.15$";
-			drive_command.set(msg_h);
-			this_thread::sleep_for(chrono::milliseconds(500));
-		}
+		if (start->id == "r2") d_w = edge->distance;
+		
 
 		if (start->id == "t4"){
 			params.tasks.add_item(5);
@@ -576,7 +571,8 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		else if (start->id == "t4") trn = 3.14;
 		else if (map->id == "tunnel") trn = 0.0;	
 
-
+		if (start->id == "r2") trn = -1.57;
+		else if (map->id == "race") trn = 0;
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);
 		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
@@ -588,7 +584,8 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		while(count_drive == sensors.newCommand.get_last_item()){
 			//cout << "nc: " << sensors.newCommand.get_last_item() << endl;
 			//cout << "th: " << sensors.th.get_last_item() << endl;
-			//this_thread::sleep_for(chrono::milliseconds(10));
+			this_thread::sleep_for(chrono::milliseconds(10));
+			cout << "turning!" << endl;
 		}
 		//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
 		
