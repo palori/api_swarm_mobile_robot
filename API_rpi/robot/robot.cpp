@@ -202,10 +202,7 @@ void Robot::listen_robot_a(){
 	cout << "listenning to robot " << robot_a.hostname.get() << "..." << endl;
 	while(true){
 		info = subs_robot_a.listen();		// blocking call
-		// decode info message
-
-		// save data in 'robot_a'
-
+		decode_robot_params(info, robot_a);
 	}
 
 }
@@ -447,7 +444,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);	
 		
-		if (start->id == "b") {
+		if (start->id == "c") {
 			// send info to the other robots so the next one can start its mission
 			params.tasks.add_item(0);
 			params.x.add_item(start->x);
@@ -456,6 +453,26 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 			string robot_info = encode_robot_params(params);
 			pub_robot_info.publish(robot_info);
+		}
+
+		if (start->id == "i1"){
+			// one robot waits before the end until the other two
+			// do other tasks (ax-gate, race...) and waits until
+			// they send an end task, or by timeout (set manually)
+			cout << "wait to end ********************************************\n";
+			auto end_wait_start = chrono::system_clock::now();
+			while(true){
+				// end by finishing tasks
+				if (robot_a.tasks.get_last_item() >= 10 || robot_b.tasks.get_last_item() >= 10) {break;}
+				this_thread::sleep_for(chrono::milliseconds(100));
+
+				// end by timeout
+				auto end_wait_end = chrono::system_clock::now();
+				chrono::duration<double> end_wait_elapsed = end_wait_end - end_wait_start;
+				if (end_wait_elapsed.count() > 120) break;
+			}
+			cout << "end now ********************************************\n";
+			//this_thread::sleep_for(chrono::milliseconds(2000));
 		}
 
 		if (start->id == "ax1") {
@@ -493,6 +510,35 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
 
+		if (start->id == "t4"){
+			params.tasks.add_item(5);
+			params.x.add_item(start->x);
+			params.y.add_item(start->y);
+			params.th.add_item(th_w);
+
+			string robot_info = encode_robot_params(params);
+			pub_robot_info.publish(robot_info);
+		}
+
+		if (start->id == "r3"){
+			// one robot waits the other to finish the race
+			cout << "wait to end ********************************************\n";
+			//auto end_wait_start = chrono::system_clock::now();
+			while(true){
+				// end by finishing tasks
+				if (robot_a.tasks.get_last_item() == 5 || robot_b.tasks.get_last_item() == 5) {break;}
+				this_thread::sleep_for(chrono::milliseconds(100));
+
+				// end by timeout
+				/*auto end_wait_end = chrono::system_clock::now();
+				chrono::duration<double> end_wait_elapsed = end_wait_end - end_wait_start;
+				if (end_wait_elapsed.count() > 120) break;*/
+			}
+			cout << "end now ********************************************\n";
+			//this_thread::sleep_for(chrono::milliseconds(2000));
+		}
+
+
 		// CONFIGURATION MAP ROBOT
 		if (map->id == "ro") {
 			edge->compute_distance();
@@ -527,6 +573,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0; //th_w += PI;
 		if (start->id == "g1" || start->id == "i" || start->id=="i1") trn = 0.0;
 		if (start->id == "t2") trn = 1.57;
+		else if (start->id == "t4") trn = 3.14;
 		else if (map->id == "tunnel") trn = 0.0;	
 
 
@@ -595,6 +642,21 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			}
 			//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
 			//this_thread::sleep_for(chrono::milliseconds(100));
+		}
+
+
+
+		if (end->id == "t5" || end->id == "r4") {
+			// send info to the other robots so the next one can start its mission
+			//this_thread::sleep_for(chrono::milliseconds(1000));
+
+			params.tasks.add_item(10);
+			params.x.add_item(end->x);
+			params.y.add_item(end->y);
+			params.th.add_item(th_w);
+
+			string robot_info = encode_robot_params(params);
+			pub_robot_info.publish(robot_info);
 		}
 
 
