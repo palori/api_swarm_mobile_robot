@@ -539,7 +539,8 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		while(count_drive == sensors.newCommand.get_last_item()){
 			//cout << "nc: " << sensors.newCommand.get_last_item() << endl;
 			//cout << "th: " << sensors.th.get_last_item() << endl;
-			//this_thread::sleep_for(chrono::milliseconds(10));
+			this_thread::sleep_for(chrono::milliseconds(10));
+			cout << "turning!" << endl;
 		}
 		//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
 		
