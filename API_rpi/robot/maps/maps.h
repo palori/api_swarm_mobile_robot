@@ -24,12 +24,8 @@ Graph* map_mission2();
 
 Graph* map_mission_easy(string id);
 Graph* map_mission_ax(string id);
-<<<<<<< HEAD
 Graph* map_mission_ro(string id);
-
-=======
 Graph* map_mission_tunnel(string id);
->>>>>>> 89ee77423b62a38b3b8a73a3a312c3f0a37ad6f9
 
 
 #endif
