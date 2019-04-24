@@ -106,6 +106,32 @@ Graph* map_mission_ro(string id){
 	return graph;
 }
 
+Graph* map_mission_tunnel(string id){
+	//Node(string id, float x, float y, int type, bool line, int crossing);
+	Node* t1 = new Node("t1", 0.0, 0.0, TRANSITION, false, 0);
+	Node* t2 = new Node("t2", 0.0 , 0.0 , TRANSITION, false, 0);
+	Node* t3 = new Node("t3", 0.0 , 0.0 , TRANSITION, false, 0);
+	Node* t4 = new Node("t4", 0.0 , 0.0 , TRANSITION, false, 0);
+	
+
+	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
+	float angle;
+	Edge* et1 = new Edge(t1, t2, false, RIGHT, 0, 0, 1.6, 0.25);
+	Edge* et2 = new Edge(t2, t3, false, RIGHT, 0, 0, 0.5, 0.25);
+	Edge* et3 = new Edge(t3, t4, false, MIDDLE, 0, 0, 9, 0.25);
+	
+	Graph* graph = new Graph(id);
+	graph->add_node(t1);
+	graph->add_node(t2);
+	graph->add_node(t3);
+	graph->add_node(t4);
+	
+	graph->add_edge(et1);
+	graph->add_edge(et2);
+	graph->add_edge(et3);
+	return graph;
+}
+
 
 Graph* map_mission0_test(){
 	
