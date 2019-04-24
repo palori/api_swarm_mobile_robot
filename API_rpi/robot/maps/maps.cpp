@@ -16,7 +16,7 @@ Graph* map_mission_easy(string id){
 	Node* h = new Node("h", 5.7, 3.05, TRANSITION, false, 0);
 	Node* i = new Node("i", 6.7, 3.55, TRANSITION, false, 0);		// will wait in here
 	Node* i1 = new Node("i1", 6.7,3.55, TRANSITION, false, 0);
-	Node* j = new Node("j", 6.9, 3.55, TASK_END, false, 0);			// siren
+	Node* i2 = new Node("i2", 6.9, 3.55, TASK_END, false, 0);			// siren
 	
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
@@ -33,7 +33,7 @@ Graph* map_mission_easy(string id){
 	Edge* e7 = new Edge(g1, h, false, LEFT, angle, 0, 3.3, 0.15);
 	Edge* e8 = new Edge(g1, i, false, RIGHT, angle, 0, 3.3, 0.15);
 	Edge* e81 = new Edge(i, i1, false, RIGHT, angle, 0, 1.0, 0.2);
-	Edge* e9 = new Edge(i1, j, false, MIDDLE, angle, 0, 0.3, 0.3);
+	Edge* e9 = new Edge(i1, i2, false, MIDDLE, angle, 0, 0.3, 0.3);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(a);
@@ -48,7 +48,7 @@ Graph* map_mission_easy(string id){
 	graph->add_node(h);
 	graph->add_node(i);
 	graph->add_node(i1);
-	graph->add_node(j);
+	graph->add_node(i2);
 	graph->add_edge(e1);
 	graph->add_edge(e2);
 	graph->add_edge(e23);
