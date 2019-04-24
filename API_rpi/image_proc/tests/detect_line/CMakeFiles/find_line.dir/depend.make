@@ -5,8 +5,6 @@ CMakeFiles/find_line.dir/detect_line.cpp.o: /home/pi/git_repos/api_swarm_mobile_
 CMakeFiles/find_line.dir/detect_line.cpp.o: detect_line.cpp
 CMakeFiles/find_line.dir/detect_line.cpp.o: /home/pi/git_repos/api_swarm_mobile_robot/API_rpi/utils.h
 CMakeFiles/find_line.dir/detect_line.cpp.o: /usr/local/include/opencv/cxcore.h
-CMakeFiles/find_line.dir/detect_line.cpp.o: /usr/local/include/opencv2/aruco.hpp
-CMakeFiles/find_line.dir/detect_line.cpp.o: /usr/local/include/opencv2/aruco/dictionary.hpp
 CMakeFiles/find_line.dir/detect_line.cpp.o: /usr/local/include/opencv2/calib3d.hpp
 CMakeFiles/find_line.dir/detect_line.cpp.o: /usr/local/include/opencv2/calib3d/calib3d_c.h
 CMakeFiles/find_line.dir/detect_line.cpp.o: /usr/local/include/opencv2/core.hpp
