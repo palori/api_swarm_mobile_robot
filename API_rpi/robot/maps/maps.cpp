@@ -75,7 +75,7 @@ Graph* map_mission_ax(string id){
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
 	float angle;
 	Edge* e1 = new Edge(ax1, ax2, false, NO_LINE, 0, 0, 1.5, 0.1);
-	Edge* e2 = new Edge(ax2, ax3, false, NO_LINE, 0, 0, 0.85, 0.6);
+	Edge* e2 = new Edge(ax2, ax3, false, NO_LINE, 0, 0, 0.4, 0.6);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(ax1); // h

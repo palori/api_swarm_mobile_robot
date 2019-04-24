@@ -295,9 +295,9 @@ void Robot::run(){
 	}
 	else if (hn == "192.168.43.138") {
 		update_pose(-0.2, 2.9, 0.0);
-		//maps.push_back(map_mission_easy("easy"););
+		//maps.push_back(map_mission_easy("easy"));
 		maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_ro("ro"));
+		//maps.push_back(map_mission_ro("ro"));
 	}
 	else if (hn == "192.168.43.174") {
 		update_pose(-0.35, 2.9, 0.0);
