@@ -298,8 +298,9 @@ void Robot::run(){
 		if (maps.front()->id == "easy") update_pose(-0.2, 2.9, 0.0);
 	}
 	else if (hn == "192.168.43.174") {
-		maps.push_back(map_mission_easy("easy"));
-		maps.push_back(map_mission_ax("ax"));
+		//maps.push_back(map_mission_easy("easy"));
+		//maps.push_back(map_mission_ax("ax"));
+		maps.push_back(map_mission_tunnel("tunnel"));
 		if (maps.front()->id == "easy") update_pose(-0.35, 2.9, 0.0);
 	}
 
@@ -335,6 +336,9 @@ void Robot::run(){
 			else if (map->id == "ax"){
 				start_id = "ax1";
 				end_id = "ax3";
+			} else if (map->id == "tunnel"){
+				start_id = "t1";
+				end_id = "t4";
 			}
 			else if (map->id == "ro"){
 				start_id = "ro1";
@@ -476,13 +480,13 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			d_w = edge->distance + ir1;
 		}
 
-		if (end->id == "i1") {
+		if (end->id == "i1" || end->id == "") {
 
 			string msg_h = "@a=5,b=1$";
 			drive_command.set(msg_h);
 			this_thread::sleep_for(chrono::milliseconds(500));
 
-			msg_h = "@a=3,b=1,od=0.2$";
+			msg_h = "@a=3,b=1,od=0.15$";
 			drive_command.set(msg_h);
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
@@ -519,7 +523,9 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 
 		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0; //th_w += PI;
-		if (start->id == "g1" || start->id == "i" || start->id=="i1") trn = 0.0;	
+		if (start->id == "g1" || start->id == "i" || start->id=="i1") trn = 0.0;
+		if (start->id == "t2") trn = 1.57;
+		else if (map->id == "tunnel") trn = 0.0;	
 
 
 		//string msg_task = encode_task(IDLE,NO_LINE);
