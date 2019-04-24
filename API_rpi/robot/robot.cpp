@@ -329,7 +329,8 @@ void Robot::run(){
 			cout << "Map '" << map->id << "' (" << i+1 << "/" << maps.size() << ")" << endl;
 			if (map->id == "easy"){
 				start_id = "a";
-				end_id = "h";
+				if (hn == "192.168.43.38") end_id = "j";
+				else end_id = "h";
 			}
 			else if (map->id == "ax"){
 				start_id = "h";
@@ -461,6 +462,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			d_w = edge->distance;
 		}
 
+
 		if (start->id == "j") {
 			while(true){
 				// waiting to cross the AX-gate
@@ -468,6 +470,19 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			}
 			d_w = edge->distance;
 		}
+
+		if (end->id == "i1") {
+
+			string msg_h = "@a=5,b=1$";
+			drive_command.set(msg_h);
+			this_thread::sleep_for(chrono::milliseconds(500));
+
+			msg_h = "@a=3,b=1,od=0.2$";
+			drive_command.set(msg_h);
+			this_thread::sleep_for(chrono::milliseconds(500));
+		}
+
+
 
 			
 		//while(!sensors.newCommand.get_last_item()){
@@ -477,7 +492,10 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		cout << "-------------turn\n";
 		float trn = th_w - sensors.th.get_last_item();
 
-		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0;//th_w += PI;
+
+		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0; //th_w += PI;
+		if (start->id == "g1" || start->id == "i" || start->id=="i1") trn = 0.0;	
+
 
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);

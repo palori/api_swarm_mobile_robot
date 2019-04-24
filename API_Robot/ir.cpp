@@ -31,7 +31,7 @@ float IR::getDistance(){
 
 	// conditions to set max value and others...
 	
-	if (_dist < 0) _dist = 0;
+	if (_dist < 0.04) _dist = 1;
 	else if (_dist > 1) _dist = 1;
 	
 

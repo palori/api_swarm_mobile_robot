@@ -118,7 +118,7 @@ string follow_line(Mat img1, int side){
 			if (new_rect.height < (img_cont.rows / 4) && new_rect.width > (3 * img_cont.cols / 4)) {
 				if (t_main_candidate == true) {
 					feature = T_MIDDLE;
-					t_main_candidate = false;
+					//t_main_candidate = false;
 				} else t_main_candidate = true;	
 			} else t_main_candidate = false;
 
@@ -159,7 +159,7 @@ string follow_line(Mat img1, int side){
 		if (left_rect.height < img_cont.rows / 2 && left_rect.width > img_cont.cols / 4 && right_rect.height > img_cont.rows / 2 && right_rect.width < img_cont.cols/4) {
 			if (t_left_candidate == true){
 				feature = T_LEFT;
-				t_left_candidate = false;
+				//t_left_candidate = false;
 			} else t_left_candidate = true;
 		} else t_left_candidate = false;
 
@@ -167,7 +167,7 @@ string follow_line(Mat img1, int side){
 		if (left_rect.height > img_cont.rows / 2 && left_rect.width < img_cont.cols / 4 && right_rect.height < img_cont.rows / 2 && right_rect.width > img_cont.cols/4) {
 			if (t_right_candidate == true){
 				feature = T_RIGHT;
-				t_right_candidate = false;
+				//t_right_candidate = false;
 			} else t_right_candidate = true;
 		} else t_right_candidate = false;
 
@@ -175,7 +175,7 @@ string follow_line(Mat img1, int side){
 		if ( right_rect.x + right_rect.width - left_rect.x > img_cont.cols / 2) {
 			if (y_split_candidate == true){
 				feature = Y;
-				y_split_candidate = false;
+				//y_split_candidate = false;
 			} else y_split_candidate = true;
 		} else y_split_candidate = false;
 

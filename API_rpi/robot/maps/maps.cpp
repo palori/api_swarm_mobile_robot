@@ -11,10 +11,12 @@ Graph* map_mission_easy(string id){
 	Node* d = new Node("d", 0.7, 0.0, TRANSITION, false, 0);
 	Node* e = new Node("e", 3.9, 0.0, TRANSITION, false, 0);
 	Node* f = new Node("f", 4.8, 0.0, TRANSITION, false, 0);
-	Node* g = new Node("g", 5.7, 0.65, TRANSITION, false, 0);
+	Node* g = new Node("g", 5.4, 0.4, TRANSITION, false, 0);
+	Node* g1 = new Node("g1", 5.7, 0.65, TRANSITION, false, 0);
 	Node* h = new Node("h", 5.7, 3.05, TRANSITION, false, 0);
 	Node* i = new Node("i", 6.7, 3.55, TRANSITION, false, 0);		// will wait in here
-	//Node* j = new Node("j", 6.7, 3.55, TASK_END, false, 0);			// siren
+	Node* i1 = new Node("i1", 6.7,3.55, TRANSITION, false, 0);
+	Node* i2 = new Node("i2", 6.9, 3.55, TASK_END, false, 0);			// siren
 	
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
@@ -27,9 +29,11 @@ Graph* map_mission_easy(string id){
 	Edge* e3 = new Edge(cd, d, false, NO_LINE, angle, 0, 0, 0.3);
 	Edge* e4 = new Edge(d, g, false, RIGHT, 0, 0, 4.5, 0.3);
 	angle = PI /2;
-	Edge* e7 = new Edge(g, h, false, RIGHT, angle, 0, 4.0, 0.15);
-	//Edge* e8 = new Edge(h, i, false, RIGHT, angle, 0, 1.3, 0.3);
-	//Edge* e9 = new Edge(i, j, false, RIGHT, angle, 0, 1.3, 0.3);
+	Edge* e5 = new Edge(g, g1, false, RIGHT, 0, 0, 1.0, 0.2);
+	Edge* e7 = new Edge(g1, h, false, LEFT, angle, 0, 3.3, 0.15);
+	Edge* e8 = new Edge(g1, i, false, RIGHT, angle, 0, 3.3, 0.15);
+	Edge* e81 = new Edge(i, i1, false, RIGHT, angle, 0, 1.0, 0.2);
+	Edge* e9 = new Edge(i1, i2, false, MIDDLE, angle, 0, 0.3, 0.3);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(a);
@@ -40,18 +44,22 @@ Graph* map_mission_easy(string id){
 	//graph->add_node(e);
 	graph->add_node(f);
 	graph->add_node(g);
+	graph->add_node(g1);
 	graph->add_node(h);
 	graph->add_node(i);
+	graph->add_node(i1);
+	graph->add_node(i2);
 	graph->add_edge(e1);
 	graph->add_edge(e2);
 	graph->add_edge(e23);
 	graph->add_edge(e3);
 	graph->add_edge(e4);
-	//graph->add_edge(e5);
+	graph->add_edge(e5);
 	//graph->add_edge(e6);
 	graph->add_edge(e7);
-	//graph->add_edge(e8);
-	//graph->add_edge(e9);
+	graph->add_edge(e8);
+	graph->add_edge(e81);
+	graph->add_edge(e9);
 
 	return graph;
 }

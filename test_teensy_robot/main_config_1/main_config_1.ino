@@ -275,7 +275,7 @@ double update_PID_follow(double referent_value, double current_value, int index)
     if (count10>1) e_d = int_action[count10-1] - int_action[count10-2];
     else e_d = int_action[0] - int_action[9];
     e_d /= T[index];
-    double KD = 0.002;
+    double KD = 0.005;
     count10++;
     if (count10 == 10) count10 = 1;
 
@@ -456,7 +456,7 @@ void followline (double dist) {
 
     initializePID(VEL1,4*Kp,1*Ki,0.01);
     initializePID(VEL2,4*Kp,1*Ki,0.01);
-    initializePID(FOLLOW,0.005,0.005,0.01); //0.0025
+    initializePID(FOLLOW,0.005,0.00,0.01); //0.0025
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -487,11 +487,16 @@ void update_velocity(int drive_command){
             if (fabs(velocity1)<0.05 && fabs(velocity2)<0.05) {
               //disableMotors(); 
               newCommand = true;
+              count_drive++;
+              Serial.println("STOPPED !!!!!!!");
               comm_tsy.set_stop(false);     
             } else {
+              Serial.println("STOPPING !!!!!!!");
               vel1=0.0001;
-              vel2=0.0001; 
+              vel2=0.0001;
+               
             }
+        break;
         case comm_tsy.TRN:
             if (fabs(angle_error)>0.01){
       
@@ -738,7 +743,7 @@ void read_sensors(){
   int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
-  int _count_drive=count_drive;
+  
   
 
   if (comm_tsy.get_ir_on()){
@@ -747,11 +752,16 @@ void read_sensors(){
     
     if (comm_tsy.get_avoid_obst() && (_ir[0]<comm_tsy.get_obst_dist() || _ir[1]<comm_tsy.get_obst_dist())){
       // obstacle closer than a certain distance
-      //emergency_stop();                               // work on that
+      //emergency_stop(); // work on that
+
+      //Serial.println("OBSTACLE FOUND!!!!!");
       comm_tsy.set_stop(true);
       _obstacle_found = true;
-    }
+      //count_drive++;
+      comm_tsy.set_avoid_obst(false);
+    } 
   }
+  int _count_drive=count_drive;
 
   if (comm_tsy.get_imu_on()){
     int _imu_cmps[3] = {IMU_cmps('X'), IMU_cmps('Y'), IMU_cmps('Z')};
