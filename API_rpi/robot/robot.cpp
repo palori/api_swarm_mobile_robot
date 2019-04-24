@@ -473,10 +473,10 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 				// end by timeout
 				auto end_wait_end = chrono::system_clock::now();
 				chrono::duration<double> end_wait_elapsed = end_wait_end - end_wait_start;
-				if (end_wait_elapsed.count() > 300) break;
+				if (end_wait_elapsed.count() > 180) break;
 			}
 			cout << "end now ********************************************\n";
-			//this_thread::sleep_for(chrono::milliseconds(2000));
+			this_thread::sleep_for(chrono::milliseconds(2000));
 		}
 
 		if (start->id == "ax1") {
@@ -642,7 +642,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 			string robot_info = encode_robot_params(params);
 			pub_robot_info.publish(robot_info);
-			this_thread::sleep_for(chrono::milliseconds(1000));
+			this_thread::sleep_for(chrono::milliseconds(3000));
 		}
 
 		if (end->id == "t5" || end->id == "r5") {
@@ -663,6 +663,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 				turn = -turn;
 				msg = "@i=" + to_string(i) + ",a=16,b=1,v=0.3,trn=" + to_string(turn) + "$";
 				drive_command.set(msg);
+				count_drive++;
 				while(count_drive == sensors.newCommand.get_last_item()){}
 			}
 
