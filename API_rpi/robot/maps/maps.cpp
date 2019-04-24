@@ -75,7 +75,7 @@ Graph* map_mission_ax(string id){
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
 	float angle;
 	Edge* e1 = new Edge(ax1, ax2, false, NO_LINE, 0, 0, 1.5, 0.1);
-	Edge* e2 = new Edge(ax2, ax3, false, NO_LINE, 0, 0, 0.35, 0.6);
+	Edge* e2 = new Edge(ax2, ax3, false, NO_LINE, 0, 0, 0.85, 0.6);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(ax1); // h
@@ -90,19 +90,28 @@ Graph* map_mission_ax(string id){
 
 Graph* map_mission_ro(string id){
 	//Node(string id, float x, float y, int type, bool line, int crossing);
-	Node* ro1 = new Node("ro1", 5.7, 4.95, TRANSITION, false, 0);
-	Node* ro2 = new Node("ro2", 6.35 , 4.95 , TRANSITION, false, 0);
-	
+	Node* ro1 = new Node("ro1", 0, 0, TRANSITION, false, 0);
+	Node* ro2 = new Node("ro2", -0.65 , 0 , TRANSITION, false, 0);
+	Node* ro3 = new Node("ro3", -1 , 0 , TRANSITION, false, 0);
+	Node* ro4 = new Node("ro4", -2.7 , -0.5 , TRANSITION, false, 0);
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
 	float angle;
-	Edge* e1 = new Edge(ro1, ro2, false, NO_LINE, 0, 0, 0.65, 0.25);
+	Edge* e1 = new Edge(ro1, ro2, false, NO_LINE, 0, 0, 0.65, 0.4);
+	Edge* e2 = new Edge(ro2, ro3, false, NO_LINE, 0, 0, 0.35, 0.4);
+	angle = -PI/2;
+	Edge* e3 = new Edge(ro3, ro4, false, RIGHT, angle , 0, 4, 0.4);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(ro1);
 	graph->add_node(ro2);
-	
+	graph->add_node(ro3);
+	graph->add_node(ro4);
+
 	graph->add_edge(e1);
+	graph->add_edge(e2);
+	graph->add_edge(e3);
+
 	return graph;
 }
 

@@ -286,21 +286,21 @@ void Robot::run(){
 	vector<Graph*> maps;
 	Graph* map;
 	if (hn == "192.168.43.38") {
-		update_pose(-0.05, 2.9, 0.0);
-		map = map_mission_easy("easy");
-		maps.push_back(map);
-	}
-	else if (hn == "192.168.43.138") {
-		update_pose(-0.2, 2.9, 0.0);
 		//maps.push_back(map_mission_easy("easy"););
 		maps.push_back(map_mission_ax("ax"));
+		maps.push_back(map_mission_ro("ro"));
+		if (maps.front()->id == "easy") update_pose(-0.05, 2.9, 0.0);
+	}
+	else if (hn == "192.168.43.138") {
+		//maps.push_back(map_mission_easy("easy"););
+		maps.push_back(map_mission_ax("ax"));
+		maps.push_back(map_mission_ro("ro"));
+		if (maps.front()->id == "easy") update_pose(-0.2, 2.9, 0.0);
 	}
 	else if (hn == "192.168.43.174") {
-		update_pose(-0.35, 2.9, 0.0);
-		map = map_mission_easy("easy");
-		maps.push_back(map);
-		map = map_mission_ax("ax");
-		maps.push_back(map);
+		maps.push_back(map_mission_easy("easy"));
+		maps.push_back(map_mission_ax("ax"));
+		if (maps.front()->id == "easy") update_pose(-0.35, 2.9, 0.0);
 	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
@@ -335,6 +335,10 @@ void Robot::run(){
 			else if (map->id == "ax"){
 				start_id = "ax1";
 				end_id = "ax3";
+			}
+			else if (map->id == "ro"){
+				start_id = "ro1";
+				end_id = "ro4";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
 			//pub_image_task.publish(encode_task(LINE,RIGHT));
@@ -483,7 +487,27 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
 
+		// CONFIGURATION MAP ROBOT
+		if (map->id == "ro") {
+			edge->compute_distance();
+			d_w = edge->distance;
+			th_w = edge->th_w_node_1;
+		}
 
+		if (start->id == "ro1" ){
+			float angle = PI/2;
+			update_pose (0,0,angle);
+		} 		
+
+		if (start->id == "ro2") {
+			while(true){
+				// waiting to cross the robot
+				if(sensors.ir2.get_last_item() <= 0.5) 	break;
+			}
+			while(true){
+				if(sensors.ir2.get_last_item() >= 0.5) break;								
+			}
+		}
 
 			
 		//while(!sensors.newCommand.get_last_item()){
@@ -512,6 +536,9 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			//this_thread::sleep_for(chrono::milliseconds(10));
 		}
 		//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
+		
+
+
 		cout << "-------------fwd\n"; 
 		sensors.print_info();
 		msg = "@i=22,a=";
@@ -551,6 +578,13 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		//this_thread::sleep_for(chrono::milliseconds(5000));
 		//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
 		while(count_drive == sensors.newCommand.get_last_item()){
+			// CONFIGURATION MAP ROBOT
+			if (start->id == "ro3") {
+				if (sensors.cross.get_last_item() > 0 && sensors.x.get() < 1.85){
+					msg += "@a=" + to_string(STOP) +",b=1$";
+					drive_command.set(msg);
+				}
+			}
 			//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
 			//this_thread::sleep_for(chrono::milliseconds(100));
 		}

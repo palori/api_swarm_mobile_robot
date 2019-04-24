@@ -18,6 +18,7 @@ public:
 	//bool get_line();
 	float get_th_w(Node* node);
 	void print_info();
+	void compute_distance();
 public:
 	Node* node1;
 	Node* node2;
@@ -27,8 +28,6 @@ public:
 	float th_w_node_2;
 	float distance;
 	float vel;
-private:
-	void compute_distance();
 
 };
 
