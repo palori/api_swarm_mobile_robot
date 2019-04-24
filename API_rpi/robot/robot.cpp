@@ -290,18 +290,21 @@ void Robot::run(){
 		maps.push_back(map_mission_ax("ax"));
 		maps.push_back(map_mission_ro("ro"));
 		if (maps.front()->id == "easy") update_pose(-0.05, 2.9, 0.0);
+		else update_pose(0.0, 0.0, 0.0);
 	}
 	else if (hn == "192.168.43.138") {
 		//maps.push_back(map_mission_easy("easy"););
 		maps.push_back(map_mission_ax("ax"));
 		maps.push_back(map_mission_ro("ro"));
 		if (maps.front()->id == "easy") update_pose(-0.2, 2.9, 0.0);
+		else update_pose(0.0, 0.0, 0.0);
 	}
 	else if (hn == "192.168.43.174") {
 		//maps.push_back(map_mission_easy("easy"));
 		//maps.push_back(map_mission_ax("ax"));
 		maps.push_back(map_mission_tunnel("tunnel"));
 		if (maps.front()->id == "easy") update_pose(-0.35, 2.9, 0.0);
+		else update_pose(0.0, 0.0, 0.0);
 	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
