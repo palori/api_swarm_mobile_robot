@@ -508,8 +508,8 @@ void update_velocity(int drive_command){
                 vel1 = Saturate(vel1 , v_max);   
                 vel2 = Saturate(vel2 , v_max);
 
-                vel1 = Saturate(vel1 , 0.2);   
-                vel2 = Saturate(vel2 , 0.2);
+                vel1 = Saturate(vel1 , 0.4);   
+                vel2 = Saturate(vel2 , 0.4);
                 
                 angle_error = angle_ref_abs - odoTh;
                 //Serial.println("angle error:                                "+String(angle_error));
