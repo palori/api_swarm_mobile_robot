@@ -32,8 +32,8 @@ Graph* map_mission_easy(string id){
 	Edge* e5 = new Edge(g, g1, false, RIGHT, 0, 0, 1.0, 0.2);
 	Edge* e7 = new Edge(g1, h, false, LEFT, angle, 0, 3.3, 0.15);
 	Edge* e8 = new Edge(g1, i, false, RIGHT, angle, 0, 3.3, 0.15);
-	Edge* e81 = new Edge(i, i1, false, RIGHT, angle, 0, 1.0, 0.2);
-	Edge* e9 = new Edge(i1, i2, false, MIDDLE, angle, 0, 0.3, 0.3);
+	Edge* e81 = new Edge(i, i1, false, RIGHT, angle, 0, 0.6, 0.2);
+	Edge* e9 = new Edge(i1, i2, false, MIDDLE, angle, 0, 1.0, 0.2);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(a);
@@ -126,10 +126,10 @@ Graph* map_mission_tunnel(string id){
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
 	float angle;
-	Edge* et1 = new Edge(t1, t2, false, RIGHT, 0, 0, 1.6, 0.25);
+	Edge* et1 = new Edge(t1, t2, false, RIGHT, 0, 0, 1.5, 0.25);
 	Edge* et2 = new Edge(t2, t3, false, RIGHT, 0, 0, 0.5, 0.25);
-	Edge* et3 = new Edge(t3, t4, false, MIDDLE, 0, 0, 5, 0.3);
-	Edge* et4 = new Edge(t4, t5, false, LEFT, 0, 0, 2, 0.2);
+	Edge* et3 = new Edge(t3, t4, false, MIDDLE, 0, 0, 4.5, 0.3);
+	Edge* et4 = new Edge(t4, t5, false, MIDDLE, 0, 0, 1, 0.2);
 	
 	Graph* graph = new Graph(id);
 	graph->add_node(t1);
@@ -144,6 +144,37 @@ Graph* map_mission_tunnel(string id){
 	graph->add_edge(et4);
 	return graph;
 }
+
+Graph* map_mission_race(string id){
+	//Node(string id, float x, float y, int type, bool line, int crossing);
+	Node* r1 = new Node("r1", 0.0, 0.0, TRANSITION, false, 0);
+	Node* r2 = new Node("r2", 0.0 , 0.0 , TRANSITION, false, 0);
+	Node* r3 = new Node("r3", 0.0 , 0.0 , TRANSITION, false, 0);
+	Node* r4 = new Node("r4", 0.0 , 0.0 , TRANSITION, false, 0);
+	//Node* r5 = new Node("r5", 0.0 , 0.0 , TRANSITION, false, 0);
+		
+
+	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
+	float angle;
+	Edge* er1 = new Edge(r1, r2, false, RIGHT, 0, 0, 1.65, 0.25);
+	Edge* er2 = new Edge(r2, r3, false, NO_LINE, 0, 0, 0.7, 0.25);
+	Edge* er3 = new Edge(r3, r4, false, LEFT, 0, 0, 3, 0.3);
+	//Edge* er4 = new Edge(r4, r5, false, LEFT, 0, 0, 2, 0.2);
+	
+	Graph* graph = new Graph(id);
+	graph->add_node(r1);
+	graph->add_node(r2);
+	graph->add_node(r3);
+	graph->add_node(r4);
+	//graph->add_node(r5);
+	
+	graph->add_edge(er1);
+	graph->add_edge(er2);
+	graph->add_edge(er3);
+	//graph->add_edge(er4);
+	return graph;
+}
+
 
 
 Graph* map_mission0_test(){

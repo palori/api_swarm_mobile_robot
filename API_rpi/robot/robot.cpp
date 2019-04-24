@@ -286,22 +286,24 @@ void Robot::run(){
 	vector<Graph*> maps;
 	Graph* map;
 	if (hn == "192.168.43.38") {
-		//maps.push_back(map_mission_easy("easy"););
-		maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_ro("ro"));
-		if (maps.front()->id == "easy") update_pose(-0.05, 2.9, 0.0);
+		update_pose(-0.05, 2.9, 0.0);
+		maps.push_back(map_mission_easy("easy"));
+		//maps.push_back(map_mission_ax("ax"));
+		//maps.push_back(map_mission_ro("ro"));
+		/*if (maps.front()->id == "easy") update_pose(-0.05, 2.9, 0.0);
+		else update_pose(0.0, 0.0, 0.0);*/
 	}
 	else if (hn == "192.168.43.138") {
-		//maps.push_back(map_mission_easy("easy"););
+		update_pose(-0.2, 2.9, 0.0);
+		maps.push_back(map_mission_easy("easy"););
 		maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_ro("ro"));
-		if (maps.front()->id == "easy") update_pose(-0.2, 2.9, 0.0);
+		maps.push_back(map_mission_tunnel("tunnel"));
 	}
 	else if (hn == "192.168.43.174") {
-		//maps.push_back(map_mission_easy("easy"));
-		//maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_tunnel("tunnel"));
-		if (maps.front()->id == "easy") update_pose(-0.35, 2.9, 0.0);
+		update_pose(-0.35, 2.9, 0.0);
+		maps.push_back(map_mission_easy("easy"));
+		maps.push_back(map_mission_ax("ax"));
+		maps.push_back(map_mission_race("race"));
 	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
@@ -330,7 +332,7 @@ void Robot::run(){
 			cout << "Map '" << map->id << "' (" << i+1 << "/" << maps.size() << ")" << endl;
 			if (map->id == "easy"){
 				start_id = "a";
-				if (hn == "192.168.43.38") end_id = "j";
+				if (hn == "192.168.43.38") end_id = "i2";
 				else end_id = "h";
 			}
 			else if (map->id == "ax"){
@@ -343,6 +345,9 @@ void Robot::run(){
 			else if (map->id == "ro"){
 				start_id = "ro1";
 				end_id = "ro4";
+			} else if (map->id == "race"){
+				start_id = "r1";
+				end_id = "r4";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
 			//pub_image_task.publish(encode_task(LINE,RIGHT));
@@ -480,16 +485,8 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			d_w = edge->distance + ir1;
 		}
 
-		if (end->id == "i1" || end->id == "t5") {
-
-			string msg_h = "@a=5,b=1$";
-			drive_command.set(msg_h);
-			this_thread::sleep_for(chrono::milliseconds(500));
-
-			msg_h = "@a=3,b=1,od=0.15$";
-			drive_command.set(msg_h);
-			this_thread::sleep_for(chrono::milliseconds(500));
-		}
+		if (start->id == "r2") d_w = edge->distance;
+		
 
 		// CONFIGURATION MAP ROBOT
 		if (map->id == "ro") {
@@ -525,9 +522,10 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0; //th_w += PI;
 		if (start->id == "g1" || start->id == "i" || start->id=="i1") trn = 0.0;
 		if (start->id == "t2") trn = 1.57;
-		else if (map->id == "tunnel") trn = 0.0;	
+		else if (map->id == "tunnel") trn = 0.0;
 
-
+		if (start->id == "r2") trn = -1.57;
+		else if (map->id == "race") trn = 0;
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);
 		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
