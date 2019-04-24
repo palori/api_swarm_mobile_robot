@@ -333,8 +333,8 @@ void Robot::run(){
 				else end_id = "h";
 			}
 			else if (map->id == "ax"){
-				start_id = "h";
-				end_id = "l";
+				start_id = "ax1";
+				end_id = "ax3";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
 			//pub_image_task.publish(encode_task(LINE,RIGHT));
@@ -448,7 +448,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			pub_robot_info.publish(robot_info);
 		}
 
-		if (start->id == "h") {
+		if (start->id == "ax1") {
 
 			string msg_h = "@a=5,b=1$";
 			drive_command.set(msg_h);
@@ -463,12 +463,13 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		}
 
 
-		if (start->id == "j") {
+		if (start->id == "ax2") {
+			float ir1 = sensors.ir1.get_last_item() ;
 			while(true){
 				// waiting to cross the AX-gate
 				if(sensors.ir1.get_last_item() >= 0.5) break;
 			}
-			d_w = edge->distance;
+			d_w = edge->distance + ir1;
 		}
 
 		if (end->id == "i1") {
