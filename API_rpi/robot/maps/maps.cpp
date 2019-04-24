@@ -32,8 +32,8 @@ Graph* map_mission_easy(string id){
 	Edge* e5 = new Edge(g, g1, false, RIGHT, 0, 0, 1.0, 0.2);
 	Edge* e7 = new Edge(g1, h, false, LEFT, angle, 0, 3.3, 0.15);
 	Edge* e8 = new Edge(g1, i, false, RIGHT, angle, 0, 3.3, 0.15);
-	Edge* e81 = new Edge(i, i1, false, RIGHT, angle, 0, 1.0, 0.2);
-	Edge* e9 = new Edge(i1, i2, false, MIDDLE, angle, 0, 0.3, 0.3);
+	Edge* e81 = new Edge(i, i1, false, RIGHT, angle, 0, 0.6, 0.2);
+	Edge* e9 = new Edge(i1, i2, false, MIDDLE, angle, 0, 1.0, 0.2);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(a);
