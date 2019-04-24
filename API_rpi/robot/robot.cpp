@@ -299,8 +299,8 @@ void Robot::run(){
 		update_pose(-0.35, 2.9, 0.0);
 		//map = map_mission_easy("easy");
 		//maps.push_back(map);
-		map = map_mission_ax("ax");
-		maps.push_back(map);
+		//map = map_mission_ax("ax");
+		//maps.push_back(map);
 		map = map_mission_tunnel("tunnel");
 		maps.push_back(map);
 	}
@@ -501,7 +501,8 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0; //th_w += PI;
 		if (start->id == "g1" || start->id == "i" || start->id=="i1") trn = 0.0;
-		if (start->id == "t1") trn = 1.57;	
+		if (start->id == "t2") trn = 1.57;
+		else if (map->id == "tunnel") trn = 0.0;	
 
 
 		//string msg_task = encode_task(IDLE,NO_LINE);
