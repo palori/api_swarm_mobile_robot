@@ -126,9 +126,9 @@ Graph* map_mission_tunnel(string id){
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
 	float angle;
-	Edge* et1 = new Edge(t1, t2, false, RIGHT, 0, 0, 1.5, 0.25);
+	Edge* et1 = new Edge(t1, t2, false, RIGHT, 0, 0, 1.65, 0.25);
 	Edge* et2 = new Edge(t2, t3, false, RIGHT, 0, 0, 0.5, 0.25);
-	Edge* et3 = new Edge(t3, t4, false, MIDDLE, 0, 0, 4.5, 0.3);
+	Edge* et3 = new Edge(t3, t4, false, MIDDLE, 0, 0, 5.0, 0.25);
 	Edge* et4 = new Edge(t4, t5, false, MIDDLE, 0, 0, 1, 0.2);
 	
 	Graph* graph = new Graph(id);

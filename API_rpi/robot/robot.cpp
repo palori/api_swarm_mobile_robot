@@ -294,7 +294,8 @@ void Robot::run(){
 		update_pose(-0.2, 2.9, 0.0);
 		//maps.push_back(map_mission_easy("easy"));
 		//maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_ro("ro"));
+		//maps.push_back(map_mission_ro("ro"));
+		maps.push_back(map_mission_tunnel("tunnel"));
 	}
 	else if (hn == "192.168.43.174") {
 		update_pose(-0.35, 2.9, 0.0);
@@ -344,7 +345,7 @@ void Robot::run(){
 				end_id = "ro4";
 			} else if (map->id == "race"){
 				start_id = "r1";
-				end_id = "r4";
+				end_id = "r5";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
 			//pub_image_task.publish(encode_task(LINE,RIGHT));
@@ -472,7 +473,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 				// end by timeout
 				auto end_wait_end = chrono::system_clock::now();
 				chrono::duration<double> end_wait_elapsed = end_wait_end - end_wait_start;
-				if (end_wait_elapsed.count() > 120) break;
+				if (end_wait_elapsed.count() > 300) break;
 			}
 			cout << "end now ********************************************\n";
 			//this_thread::sleep_for(chrono::milliseconds(2000));
@@ -633,6 +634,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 
 		if (start->id == "t4"){
+			cout << "the other robot can now finish the race******************\n";
 			params.tasks.add_item(5);
 			params.x.add_item(start->x);
 			params.y.add_item(start->y);
@@ -646,7 +648,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		if (end->id == "t5" || end->id == "r5") {
 			// send info to the other robots so the next one can start its mission
 			//this_thread::sleep_for(chrono::milliseconds(1000));
-
+			cout << "finish & celebration!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
 			params.tasks.add_item(10);
 			params.x.add_item(end->x);
 			params.y.add_item(end->y);
@@ -657,8 +659,10 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 			float turn = 60;
 			for (int i = 0; i < 10; ++i){
+				cout << "celebration turn " << i << "++++++++++++++++++\n";
 				turn = -turn;
 				msg = "@i=" + to_string(i) + ",a=16,b=1,v=0.3,trn=" + to_string(turn) + "$";
+				drive_command.set(msg);
 				while(count_drive == sensors.newCommand.get_last_item()){}
 			}
 
