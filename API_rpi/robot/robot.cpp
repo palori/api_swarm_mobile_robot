@@ -338,7 +338,7 @@ void Robot::run(){
 				end_id = "ax3";
 			} else if (map->id == "tunnel"){
 				start_id = "t1";
-				end_id = "t4";
+				end_id = "t5";
 			}
 			else if (map->id == "ro"){
 				start_id = "ro1";
@@ -480,7 +480,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			d_w = edge->distance + ir1;
 		}
 
-		if (end->id == "i1" || end->id == "") {
+		if (end->id == "i1" || end->id == "t5") {
 
 			string msg_h = "@a=5,b=1$";
 			drive_command.set(msg_h);

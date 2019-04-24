@@ -630,8 +630,8 @@ int shape_color (){
 }
 
 void pic_cm_comm1(){
-	bool followline = false;
-	bool pictures = true;
+	bool followline = true;
+	bool pictures = false;
 	bool shapes = false;
 
 	if (followline) camera_init();
