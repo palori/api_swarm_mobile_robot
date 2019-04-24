@@ -292,8 +292,8 @@ void Robot::run(){
 	}
 	else if (hn == "192.168.43.138") {
 		update_pose(-0.2, 2.9, 0.0);
-		map = map_mission_easy("easy");
-		maps.push_back(map);
+		//maps.push_back(map_mission_easy("easy"););
+		maps.push_back(map_mission_ax("ax"));
 	}
 	else if (hn == "192.168.43.174") {
 		update_pose(-0.35, 2.9, 0.0);
@@ -333,9 +333,11 @@ void Robot::run(){
 			}
 			else if (map->id == "ax"){
 				start_id = "h";
-				end_id = "j";
+				end_id = "l";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
+			//pub_image_task.publish(encode_task(LINE,RIGHT));
+			//while(true){}
 		//}
 
 	}
@@ -459,6 +461,14 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 			d_w = edge->distance;
 		}
 
+		if (start->id == "j") {
+			while(true){
+				// waiting to cross the AX-gate
+				if(sensors.ir1.get_last_item() >= 0.5) break;
+			}
+			d_w = edge->distance;
+		}
+
 			
 		//while(!sensors.newCommand.get_last_item()){
 		//	this_thread::sleep_for(chrono::milliseconds(100));
@@ -467,7 +477,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		cout << "-------------turn\n";
 		float trn = th_w - sensors.th.get_last_item();
 
-		if (start->id == "g" || start->id == "h") trn = 0.0;//th_w += PI;
+		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0;//th_w += PI;
 
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);

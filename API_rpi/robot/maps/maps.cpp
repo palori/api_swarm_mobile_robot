@@ -61,17 +61,25 @@ Graph* map_mission_ax(string id){
 	//Node(string id, float x, float y, int type, bool line, int crossing);
 	Node* h = new Node("h", 5.7, 3.05, TRANSITION, false, 0);
 	Node* j = new Node("j", 5.7, 4.4, TRANSITION, false, 0);
+	Node* k = new Node("k", 5.7, 5.2, TRANSITION, false, 0);
+	Node* l = new Node("l", 5.7, 7.4, TRANSITION, false, 0);
 	
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
 	float angle;
-	Edge* e1 = new Edge(h, j, false, NO_LINE, 0, 0, 1.5, 0.15);
+	Edge* e1 = new Edge(h, j, false, NO_LINE, 0, 0, 1.5, 0.1);
+	Edge* e2 = new Edge(j, k, false, NO_LINE, 0, 0, 0.8, 0.6);
+	Edge* e3 = new Edge(k, l, false, RIGHT, 0, 0, 2.2, 0.25);
 
 	Graph* graph = new Graph(id);
 	graph->add_node(h);
 	graph->add_node(j);
+	graph->add_node(k);
+	graph->add_node(l);
 	
 	graph->add_edge(e1);
+	graph->add_edge(e2);
+	graph->add_edge(e3);
 
 	return graph;
 }
