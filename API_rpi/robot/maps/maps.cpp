@@ -151,6 +151,7 @@ Graph* map_mission_race(string id){
 	Node* r2 = new Node("r2", 0.0 , 0.0 , TRANSITION, false, 0);
 	Node* r3 = new Node("r3", 0.0 , 0.0 , TRANSITION, false, 0);
 	Node* r4 = new Node("r4", 0.0 , 0.0 , TRANSITION, false, 0);
+	Node* r5 = new Node("r5", 0.0 , 0.0 , TRANSITION, false, 0);
 	//Node* r5 = new Node("r5", 0.0 , 0.0 , TRANSITION, false, 0);
 		
 
@@ -158,7 +159,8 @@ Graph* map_mission_race(string id){
 	float angle;
 	Edge* er1 = new Edge(r1, r2, false, RIGHT, 0, 0, 1.65, 0.25);
 	Edge* er2 = new Edge(r2, r3, false, NO_LINE, 0, 0, 0.7, 0.25);
-	Edge* er3 = new Edge(r3, r4, false, LEFT, 0, 0, 3, 0.3);
+	Edge* er3 = new Edge(r3, r4, false, LEFT, 0, 0, 2, 0.3);
+	Edge* er4 = new Edge(r4, r5, false, LEFT, 0, 0, 1, 0.3);
 	//Edge* er4 = new Edge(r4, r5, false, LEFT, 0, 0, 2, 0.2);
 	
 	Graph* graph = new Graph(id);
@@ -166,12 +168,12 @@ Graph* map_mission_race(string id){
 	graph->add_node(r2);
 	graph->add_node(r3);
 	graph->add_node(r4);
-	//graph->add_node(r5);
+	graph->add_node(r5);
 	
 	graph->add_edge(er1);
 	graph->add_edge(er2);
 	graph->add_edge(er3);
-	//graph->add_edge(er4);
+	graph->add_edge(er4);
 	return graph;
 }
 

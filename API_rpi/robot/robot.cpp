@@ -505,17 +505,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		if (start->id == "r2") d_w = edge->distance;
 		
 
-		if (start->id == "t4"){
-			params.tasks.add_item(5);
-			params.x.add_item(start->x);
-			params.y.add_item(start->y);
-			params.th.add_item(th_w);
-
-			string robot_info = encode_robot_params(params);
-			pub_robot_info.publish(robot_info);
-		}
-
-		if (start->id == "r3"){
+		if (start->id == "r4"){
 			// one robot waits the other to finish the race
 			cout << "wait to end ********************************************\n";
 			//auto end_wait_start = chrono::system_clock::now();
@@ -642,8 +632,18 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		}
 
 
+		if (start->id == "t4"){
+			params.tasks.add_item(5);
+			params.x.add_item(start->x);
+			params.y.add_item(start->y);
+			params.th.add_item(th_w);
 
-		if (end->id == "t5" || end->id == "r4") {
+			string robot_info = encode_robot_params(params);
+			pub_robot_info.publish(robot_info);
+			this_thread::sleep_for(chrono::milliseconds(1000));
+		}
+
+		if (end->id == "t5" || end->id == "r5") {
 			// send info to the other robots so the next one can start its mission
 			//this_thread::sleep_for(chrono::milliseconds(1000));
 
@@ -654,6 +654,14 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 			string robot_info = encode_robot_params(params);
 			pub_robot_info.publish(robot_info);
+
+			float turn = 60;
+			for (int i = 0; i < 10; ++i){
+				turn = -turn;
+				msg = "@i=" + to_string(i) + ",a=16,b=1,v=0.3,trn=" + to_string(turn) + "$";
+				while(count_drive == sensors.newCommand.get_last_item()){}
+			}
+
 		}
 
 
