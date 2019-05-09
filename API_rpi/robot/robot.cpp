@@ -275,35 +275,27 @@ void Robot::run(){
 	//string msg_task = "";
 	//send_task();
 	
-	bool run_all = false;
+	bool run_all = true;
 
 	cout << "Update init pose" << endl;
 	string hn = params.hostname.get();
 
 	vector<Graph*> maps;
 	Graph* map;
+	/* USED IN THE COMPETITION
 	if (hn == "192.168.43.38") {
 		update_pose(-0.05, 2.9, 0.0);
 		maps.push_back(map_mission_easy("easy"));
 		//maps.push_back(map_mission_ax("ax"));
 		//maps.push_back(map_mission_ro("ro"));
-		/*if (maps.front()->id == "easy") update_pose(-0.05, 2.9, 0.0);
-		else update_pose(0.0, 0.0, 0.0);*/
+		//if (maps.front()->id == "easy") update_pose(-0.05, 2.9, 0.0);
+		//else update_pose(0.0, 0.0, 0.0);
 	}
 	else if (hn == "192.168.43.138") {
-		/* Test square */
-		update_pose(0.0, 0.0, 0.0);
-		for (int i = 0; i < 3; i++){
-			maps.push_back(map_test_square("square1"));
-			maps.push_back(map_test_square("square2"));
-		}
-
-		/* Used in the competition
 		update_pose(-0.2, 2.9, 0.0);
 		maps.push_back(map_mission_easy("easy"));
 		maps.push_back(map_mission_ax("ax"));
 		maps.push_back(map_mission_tunnel("tunnel"));
-		*/
 		//maps.push_back(map_mission_ro("ro"));
 		
 	}
@@ -312,6 +304,14 @@ void Robot::run(){
 		maps.push_back(map_mission_easy("easy"));
 		maps.push_back(map_mission_ax("ax"));
 		maps.push_back(map_mission_race("race"));
+	}
+	*/
+
+	/* Test square (the same for all the robots)*/
+	update_pose(0.0, 0.0, 0.0);
+	for (int i = 0; i < 3; i++){
+		maps.push_back(map_test_square("square1"));
+		maps.push_back(map_test_square("square2"));
 	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
