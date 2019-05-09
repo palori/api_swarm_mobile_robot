@@ -1,3 +1,0 @@
-/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_map/cmake/CMakeFiles/rebuild_cache.dir
-/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_map/cmake/CMakeFiles/edit_cache.dir
-/home/pi/git_repos/api_swarm_mobile_robot/API_rpi/robot/test_map/cmake/CMakeFiles/main_map.dir
