@@ -31,6 +31,7 @@ Graph* map_mission_race(string id);
 
 // tests after the RoboCup (just for documenting)
 Graph* map_test_square(string id);
+Graph* map_test_straight(string id);
 
 
 #endif

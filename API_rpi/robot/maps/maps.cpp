@@ -542,7 +542,7 @@ Graph* map_test_square(string id){
 
 	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
 	float angle;
-	float vel = 0.8;
+	float vel = 0.3;
 	Edge* e1 = new Edge(sq1, sq2, false, NO_LINE, 0, 0, 0, vel);
 	Edge* e2 = new Edge(sq2, sq3, false, NO_LINE, 0, 0, 0, vel);
 	Edge* e3 = new Edge(sq3, sq4, false, NO_LINE, 0, 0, 0, vel);
@@ -558,6 +558,28 @@ Graph* map_test_square(string id){
 	graph->add_edge(e2);
 	graph->add_edge(e3);
 	graph->add_edge(e4);
+
+	return graph;
+}
+
+
+Graph* map_test_straight(string id){
+	//Node(string id, float x, float y, int type, bool line, int crossing);
+	Node* sq1 = new Node("sq1", 0.0, 0.0, TASK_START, false, 0); 
+	Node* sq2 = new Node("sq2", 3.0, 0.0, TRANSITION, false, 0);
+	
+	
+
+	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
+	float angle;
+	float vel = 0.8;
+	Edge* e1 = new Edge(sq1, sq2, false, NO_LINE, 0, 0, 0, vel);
+
+	Graph* graph = new Graph(id);
+	graph->add_node(sq1);
+	graph->add_node(sq2);
+
+	graph->add_edge(e1);
 
 	return graph;
 }

@@ -307,11 +307,18 @@ void Robot::run(){
 	}
 	*/
 
-	/* Test square (the same for all the robots)*/
+	/* Test square (the same for all the robots)
 	update_pose(0.0, 0.0, 0.0);
 	for (int i = 0; i < 3; i++){
 		maps.push_back(map_test_square("square1"));
 		maps.push_back(map_test_square("square2"));
+	}
+	*/
+
+	/* Test straight (the same for all the robots)*/
+	update_pose(0.0, 0.0, 0.0);
+	for (int i = 0; i < 1; i++){
+		maps.push_back(map_test_straight("straight"));
 	}
 
 	cout << "Waiting for a message from the previous robot" << endl;
@@ -360,13 +367,14 @@ void Robot::run(){
 			}
 			else if (map->id == "square1"){
 				start_id = "sq1";
-				end_id = "sq3";
-				cout << "\n\n\n\n Square 1^^^^^^^^^^^^^^^^^\n\n\n\n";
 			}
 			else if (map->id == "square2"){
 				start_id = "sq3";
 				end_id = "sq1";
-				cout << "\n\n\n\n Square 2^^^^^^^^^^^^^^^^^\n\n\n\n";
+			}
+			else if (map->id == "straight"){
+				start_id = "sq1";
+				end_id = "sq2";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
 			//pub_image_task.publish(encode_task(LINE,RIGHT));
