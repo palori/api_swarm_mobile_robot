@@ -60,7 +60,7 @@ Edge* Graph::find_edge(Node* node_start, Node* node_end){
 	Edge* edge;
 	for (int i = 0; i < edges.size(); i++){
 		edge = edges.at(i);
-		if (edge->Connects(node_start, node_end)) break;
+		if (edge->Connects(node_start, node_end)) return edge;
 	}
-	return edge;
+	return NULL;
 }

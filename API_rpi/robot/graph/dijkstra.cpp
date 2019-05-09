@@ -71,10 +71,10 @@ void Dijkstra::print_route(vector<Node*> route)
 	int i = 0;
 	cout << "\n  Node " << i << ": " << route.at(i)->id << endl;
 	Edge* edge;
-	for (i = 1; i < route.size(); ++i)
-	{
+	for (i = 1; i < route.size(); i++){
 		edge = this->graph->find_edge(route.at(i-1), route.at(i));
-		edge->print_info();
+		if (edge == NULL) cout << "\nEdge: No edge found.\n";
+		else edge->print_info();
 		cout << "\n  Node " << i << ": " << route.at(i)->id << endl;
 	}
 	cout << endl;
@@ -159,7 +159,7 @@ float Dijkstra::Distance(Node* node1, Node* node2)
 			return edge->distance;
 		}
 	}
-	return -1; // should never happen
+	return 10000000; // should never happen
 }
 
 

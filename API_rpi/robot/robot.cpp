@@ -275,7 +275,7 @@ void Robot::run(){
 	//string msg_task = "";
 	//send_task();
 	
-	bool run_all = true;
+	bool run_all = false;
 
 	cout << "Update init pose" << endl;
 	string hn = params.hostname.get();
@@ -291,11 +291,21 @@ void Robot::run(){
 		else update_pose(0.0, 0.0, 0.0);*/
 	}
 	else if (hn == "192.168.43.138") {
+		/* Test square */
+		update_pose(0.0, 0.0, 0.0);
+		for (int i = 0; i < 3; i++){
+			maps.push_back(map_test_square("square1"));
+			maps.push_back(map_test_square("square2"));
+		}
+
+		/* Used in the competition
 		update_pose(-0.2, 2.9, 0.0);
 		maps.push_back(map_mission_easy("easy"));
 		maps.push_back(map_mission_ax("ax"));
-		//maps.push_back(map_mission_ro("ro"));
 		maps.push_back(map_mission_tunnel("tunnel"));
+		*/
+		//maps.push_back(map_mission_ro("ro"));
+		
 	}
 	else if (hn == "192.168.43.174") {
 		update_pose(-0.35, 2.9, 0.0);
@@ -343,9 +353,20 @@ void Robot::run(){
 			else if (map->id == "ro"){
 				start_id = "ro1";
 				end_id = "ro4";
-			} else if (map->id == "race"){
+			}
+			else if (map->id == "race"){
 				start_id = "r1";
 				end_id = "r5";
+			}
+			else if (map->id == "square1"){
+				start_id = "sq1";
+				end_id = "sq3";
+				cout << "\n\n\n\n Square 1^^^^^^^^^^^^^^^^^\n\n\n\n";
+			}
+			else if (map->id == "square2"){
+				start_id = "sq3";
+				end_id = "sq1";
+				cout << "\n\n\n\n Square 2^^^^^^^^^^^^^^^^^\n\n\n\n";
 			}
 			navigate_0(maps.at(i), start_id, end_id);
 			//pub_image_task.publish(encode_task(LINE,RIGHT));
@@ -426,6 +447,7 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 	else if (hn == "192.168.43.174") {dijkstra.find_route("a", "a9");}
 	*/
 	dijkstra.find_route(start_id, end_id);
+	dijkstra.print_route();
 	Edge* edge;
 	Node* start;
 	Node* end;
