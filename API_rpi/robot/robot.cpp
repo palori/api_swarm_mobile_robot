@@ -317,7 +317,7 @@ void Robot::run(){
 
 	/* Test straight (the same for all the robots)*/
 	update_pose(0.0, 0.0, 0.0);
-	float distance = 5.0, velocity = 0.8;
+	float distance = 5.0, velocity = 0.3;
 	for (int i = 0; i < 1; i++){
 		maps.push_back(map_test_straight("straight", distance, velocity));
 	}
