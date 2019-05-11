@@ -597,20 +597,22 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		else if (map->id == "race") trn = 0;
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);
-		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
-		count_drive++;
-		drive_command.set(msg); 
-		
-			//this_thread::sleep_for(chrono::milliseconds(5000));
-		//cout << "count_drive: " << count_drive << ", nc: " <<  sensors.newCommand.get_last_item() << endl;			
-		while(count_drive == sensors.newCommand.get_last_item()){
-			//cout << "nc: " << sensors.newCommand.get_last_item() << endl;
-			//cout << "th: " << sensors.th.get_last_item() << endl;
-			this_thread::sleep_for(chrono::milliseconds(10));
-			cout << "turning!" << endl;
+
+		if (map->id != "straight"){
+			string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+			count_drive++;
+			drive_command.set(msg); 
+			
+				//this_thread::sleep_for(chrono::milliseconds(5000));
+			//cout << "count_drive: " << count_drive << ", nc: " <<  sensors.newCommand.get_last_item() << endl;			
+			while(count_drive == sensors.newCommand.get_last_item()){
+				//cout << "nc: " << sensors.newCommand.get_last_item() << endl;
+				//cout << "th: " << sensors.th.get_last_item() << endl;
+				this_thread::sleep_for(chrono::milliseconds(10));
+				cout << "turning!" << endl;
+			}
+			//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
 		}
-		//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
-		
 
 
 		cout << "-------------fwd\n"; 
