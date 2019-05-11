@@ -597,9 +597,9 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		else if (map->id == "race") trn = 0;
 		//string msg_task = encode_task(IDLE,NO_LINE);
 		//pub_image_task.publish(msg_task);
-
+		string msg = "";
 		if (map->id != "straight"){
-			string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
+			msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
 			count_drive++;
 			drive_command.set(msg); 
 			
