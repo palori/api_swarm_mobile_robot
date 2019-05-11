@@ -622,8 +622,9 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		} 
 		else
 		*/
-		 if (edge->line == 0){
-			 msg += to_string(FWD);
+		if (edge->line == 0){
+			if (map->id == "straight") msg += to_string(STAIRS);
+			else msg += to_string(FWD);
 		}
 		else {
 			string _msg = "";
