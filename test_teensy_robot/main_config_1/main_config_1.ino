@@ -78,7 +78,7 @@ double K_vel = 0.1;
 //odometry variables
 double wheel_radius = 0.045;    // change into actual number
 #define PI 3.1415926535897932384626433832795
-double wheels_distance = 0.156;  // change into actual number
+double wheels_distance = 0.1612;  // change into actual number
 double odoTh = 0.0;
 double odoX = 0.0;
 double odoY = 0.0;
@@ -515,8 +515,8 @@ void update_velocity(int drive_command){
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.0001;
-                vel2 = 0.0001;
+                vel1 = 0.000;
+                vel2 = 0.000;
                 //disableMotors();  
                 newCommand = true;
                 count_drive++;
@@ -551,8 +551,8 @@ void update_velocity(int drive_command){
                 //Serial.println("vel2:"+String(vel2));
                 
             } else {
-                vel1 = 0.0001;
-                vel2 = 0.0001;
+                vel1 = 0.000;
+                vel2 = 0.000;
                 //disableMotors();
                 newCommand = true;  
                 count_drive++;
@@ -583,9 +583,9 @@ void update_velocity(int drive_command){
                 dist_error = comm_tsy.get_fwd_dist() - dist_curr;
             
             } else {
-                vel1 = 0.0001;
-                vel2 = 0.0001;
-                disableMotors();  
+                vel1 = 0.000;
+                vel2 = 0.000;
+                //disableMotors();  
                 newCommand = true; 
                 count_drive++;   
                 comm_tsy.set_fwd(false); 
@@ -676,8 +676,8 @@ void update_velocity(int drive_command){
                   
             } else {
                 Serial.println("Follow line STOP!!!");
-                vel1 = 0.0001;
-                vel2 = 0.0001;
+                vel1 = 0.000;
+                vel2 = 0.000;
                 //disableMotors();  
                 newCommand = true;   
                 count_drive++;
@@ -689,7 +689,7 @@ void update_velocity(int drive_command){
 
 }
 
-double input=0.05;
+double input=0.0;
  
 void setup() 
 { 
@@ -699,7 +699,7 @@ void setup()
 
   enableMotors();
     
-  motor1.setVelocity(input);   //sets motor to small speed where they dont move
+  motor1.setVelocity(input);   
   motor2.setVelocity(input);
 
   ir_1.setCalibration();
