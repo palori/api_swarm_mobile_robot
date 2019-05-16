@@ -27,7 +27,7 @@ class COMM_TSY
 public:
 	COMM_TSY();
 	~COMM_TSY();
-	void write_serial(double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
+	void write_serial(int newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
 	void read_serial();
 
 	// getters if params is not a struct
@@ -78,6 +78,8 @@ public:
 	float get_y_0() {return y_0;}
 	float get_th_0() {return th_0;}
 
+	int get_nc() {return newCommand;}
+
 
 	// setters if params is not a struct
 	void set_action(int i) {action = i;}
@@ -127,6 +129,8 @@ public:
 	void set_y_0(float f) {y_0 = f;}
 	void set_th_0(float f) {th_0 = f;}
 
+	void set_nc(int i) {newCommand =i;}
+
 	// other methods
 	String to_string();
 	void debug_params();
@@ -151,14 +155,14 @@ public:
 	bool motors_on = false;
 	float vel = false;
 
-	float m1_kp = 1.0;
+	float m1_kp = 3.0;
 	float m1_ki = 1.0;
 
 	float m2_kp = 1.0;
 	float m2_ki = 1.0;
 
-	float th_kp = 1.0;
-	float th_ki = 1.0;
+	float th_kp = 0.0025;
+	float th_ki = 0.01;
 
 	float fwd_dist = 0.0;			// [mm]
 	float trn_deg = 0.0;			// [ª]
@@ -180,9 +184,11 @@ public:
 	float y_t = 0.0;
 	float th_t = 0.0;
 
-	float x_0 = 0.0;
-	float y_0 = 0.0;
-	float th_0 = 0.0;
+	float x_0 = -100.0;
+	float y_0 = -100.0;
+	float th_0 = -100.0;
+
+	int newCommand = 1;
 
 	constexpr static int BUF_LEN = 100;
 	char buf[BUF_LEN];
@@ -261,6 +267,7 @@ public:
 		String COMP2 = "c2";			// compass 2, sensor value
 		String COMP3 = "c3";			// compass 3, sensor value
 		String OF = "of";				// obstacle found
+		String NC = "nc";
 
 	};
 
@@ -269,7 +276,7 @@ public:
 	void msg2params(); // OLD WAY: (String msg);
 
 	// encode the target to send the message
-	String sensorData2msg(double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
+	String sensorData2msg(int newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
 
 
 };

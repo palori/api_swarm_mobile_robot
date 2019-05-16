@@ -5,6 +5,7 @@
 
 #include "opencv2/core/core.hpp"
 
+
 //#include "opencv2/core/utility.hpp"
 //#include "opencv2/imgcodecs.hpp"
 
@@ -629,9 +630,9 @@ int shape_color (){
 }
 
 void pic_cm_comm1(){
-	bool followline = false;
+	bool followline = true;
 	bool pictures = false;
-	bool shapes = true;
+	bool shapes = false;
 
 	if (followline) camera_init();
 	if (pictures) camera_init_color();
@@ -644,18 +645,19 @@ void pic_cm_comm1(){
 		    float y=0.0;
 		    string msg = "@a=19,b=1,v=0.3,fwd=1.5$";
 		    cr.serial_write(msg);
-		    usleep(10000);
-		    while (i<300){
+		   
+			usleep(10000);
+		    while (i<500){
 		    		//camera_start();
 
-					y = take_pic_get_cm(i,LEFT);
+					y = take_pic_get_cm(i,RIGHT);
 					printf("Y: %f\n",y);
 
 					if (feature != NOTHING) {
 						msg = "@tht="+to_string(y)+"$";
 						cr.serial_write(msg);
 					}
-					//usleep(10000);
+					usleep(1000);
 					i++;
 					//camera_stop();
 				
@@ -667,16 +669,17 @@ void pic_cm_comm1(){
 
 			int j=0;
 			Mat pic;
-			while(j<20){
+			while(j<10){
 				cout<<"Capturing "+to_string(j)+"..."<<endl;
 				Camera.grab();
 				Camera.retrieve (pic);
 				Mat pic_color;
 				cvtColor(pic,pic_color,COLOR_RGB2BGR);
-				string pic_name = "pics/pic_"+to_string(j)+".png";
+				//string pic_name = "pics/ball_cm_"+to_string(j)+".png";
+				string pic_name = "pics/aruco_1_"+to_string(j)+".png";
 				imwrite(pic_name,pic);
 				j++;
-				usleep(1000000);
+				usleep(5000000);
 			}
 
 		}

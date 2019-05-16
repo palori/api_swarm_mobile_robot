@@ -6,6 +6,11 @@ Graph::Graph(){
 	/*Node* a = new Node("default", -1, -1, 0, true, 0);
 	add_node(a);
 	print_nodes();*/
+	this->id = "";
+}
+
+Graph::Graph(string id){
+	this->id = id;
 }
 
 
@@ -55,7 +60,7 @@ Edge* Graph::find_edge(Node* node_start, Node* node_end){
 	Edge* edge;
 	for (int i = 0; i < edges.size(); i++){
 		edge = edges.at(i);
-		if (edge->Connects(node_start, node_end)) break;
+		if (edge->Connects(node_start, node_end)) return edge;
 	}
-	return edge;
+	return NULL;
 }

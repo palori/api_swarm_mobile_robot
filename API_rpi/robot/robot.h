@@ -5,6 +5,7 @@
 #include <thread>
 #include <mutex>
 #include <chrono>		// only for sleeping the threads while testing
+#include <math.h>
 
 #include "item.h"
 #include "robot_params.h"
@@ -17,6 +18,8 @@
 //#include "localization.h"
 //#include "task_planner.h"
 #include "utils.h"
+
+#include "maps/maps.h"
 
 using namespace std;
 
@@ -54,9 +57,10 @@ public:
 	// Task_planner task_planner;
 
 
-	Item<string> image_data;
-	//Item<string> image_data2tsy;
 	Item<string> master_data;
+	Item<string> init_pose;
+	Item<string> image_data;
+	Item<string> drive_command;
 	Item<bool> run_mission;
 
 
@@ -77,6 +81,11 @@ public:
 
 	void run();						// start the threads and while true loop
 	
+	void update_pose(float x0, float y0, float th0);
+	void compute_distance(float x, float y, float *d_w, float *th_w);
+
+	void navigate_0(Graph* map, string start_id, string end_id);
+	void navigate_test();
 };
 
 #endif

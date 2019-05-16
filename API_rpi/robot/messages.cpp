@@ -30,9 +30,9 @@ string detect_message(string msg){
 
 
 // mainly use this, it's easier
-string encode_task(int task){
+string encode_task(int task, int side){
 	Command command;
-	return "@" + command.A + "=" + to_string(task) + "$";
+	return "@" + command.A + "=" + to_string(task) +","+ command.SIDE +"="+ to_string(side)+ "$";
 }
 
 
@@ -76,6 +76,18 @@ string encode_master_commands(string msg, int i){
 }
 
 
+string encode_robot_params(Robot_params & rob){
+	Command command;
+	string msg = "@" + command.A + "=" + to_string(rob.tasks.get_last_item());
+	msg += "," + command.X_w + "=" + to_string(rob.x.get_last_item());
+	msg += "," + command.Y_w + "=" + to_string(rob.y.get_last_item());
+	msg += "," + command.TH_w + "=" + to_string(rob.th.get_last_item());
+	msg += "$";
+	return msg;
+}
+
+
+
 /*
  * params2msg
  * 
@@ -105,10 +117,11 @@ string encode_master_commands(string msg, int i){
 
 
 
-void decode_task(string msg, Items<int> & tasks){
+void decode_task(string msg, Items<int> & tasks, Item<int> & side){
 	// detect if the message is 
 	msg = detect_message(msg);
-	if (msg != ""){
+	cout << "INSIDE DECODE TASK !!! msg:" << msg <<  endl;
+	//if (msg != ""){
 		// split the message
 		vector<string> words = split_str(msg, "=,");    // utils
 		Command command;
@@ -117,13 +130,21 @@ void decode_task(string msg, Items<int> & tasks){
 		for (uint i=0; i<words.size(); i++){
 			if(words.at(i) == command.A){
 				int val = str2int(words.at(i+1));
-				if (val != BIG_INT) {
+				if (val != BIG_INT && val >= IDLE && val <= ARUCO) {
+					cout << "SETTING NEW VALUE - ADD ITEM: " << to_string(val) << endl;
 					tasks.add_item(val);
 					i++;
 				}
 			}
+			if(words.at(i) == command.SIDE){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					side.set(val);
+					i++;
+				}
+			}
 		}
-	}
+	//}
 }
 
 
@@ -443,7 +464,7 @@ void decode_sensors(string msg, Sensors & sens){
 			else if(words.at(i) == command.X_w){
 				float val = str2float(words.at(i+1));
 				if (val != BIG_FLOAT) {
-					sens.x.add_item(val);
+					sens.x.set(val);
 					i++;
 				}
 			}
@@ -559,6 +580,13 @@ void decode_sensors(string msg, Sensors & sens){
 					i++;
 				}
 			}
+			else if(words.at(i) == command.NC){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					sens.newCommand.add_item(val);
+					i++;
+				}
+			}
 		}
 	}
 
@@ -583,14 +611,19 @@ int decode_master_commands(string msg, string hostname){
 		// save it as new target pose
 		for (uint i=0; i<words.size(); i++){
 			if(words.at(i) == command.ROB){
-				if (words.at(i+1) == "all") message_to_this_robot = true;
+				string possible_hosts = words.at(i+1);
+				if (possible_hosts == "all") {
+					message_to_this_robot = true;
+					cout << "all i oli\n";
+				}
 				else{
-					vector<string> hosts = split_str(words.at(i+1), "-");
-					//cout << "Who gets the message:";
+					vector<string> hosts = split_str(possible_hosts, "-");
+					cout << "Who gets the message:";
 					for (uint h = 0; h < hosts.size(); h++){
-						//cout << "\n  host " << h << ": " << hosts.at(h);
+						cout << "\n  host " << h << ": " << hosts.at(h);
 						if (hosts.at(h) == hostname) {message_to_this_robot = true; break;}
 					}
+					cout << endl;
 				}
 				if (message_to_this_robot) i++;
 			}
@@ -622,7 +655,7 @@ int decode_master_commands(string msg, string hostname){
 
 
 		if (!message_to_this_robot){
-			return -1;
+			return -2;
 		}
 		return action;
 	}

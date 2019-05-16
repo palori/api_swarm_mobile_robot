@@ -16,6 +16,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
+//#include "opencv2/aruco.hpp"
 
 using namespace std;
 using namespace cv;
@@ -30,8 +31,8 @@ using namespace cv;
  * - find ArUco code
  */
 void idle();
-string follow_line(Mat img, Side side);
-string ball(Mat img);
+string follow_line(Mat img, int side);
+string track_ball(Mat img);
 string hole(Mat img);
 string shape(Mat img);
 //string obstacle(Mat img);		// ?? maybe not needed
@@ -40,5 +41,6 @@ string ArUco(Mat img);
 void GammaMapping(Mat& src, Mat& dst, float fGamma);
 void HistStretch(Mat& src, Mat& dst);
 bool compareContoursHeight(vector<Point> contour1, vector<Point> contour2);
+bool compareCircles(Vec3f circle1, Vec3f circle2);
 
 #endif

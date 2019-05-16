@@ -23,7 +23,7 @@ public:
 	// we can use historical data to compute stuff like
 	// good localization :)
 	Items<float> s;
-	Items<float> x;
+	Item<float> x;
 	Items<float> y;
 	Items<float> th;
 
@@ -51,6 +51,8 @@ public:
 	Items<float> th_t;
 	Items<float> obst_dist_img;
 	// may need more for the data of the ArUco codes!!!
+
+	Items<int> newCommand;
 
 
 	int get_MAX_LEN();

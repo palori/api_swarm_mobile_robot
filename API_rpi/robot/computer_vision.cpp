@@ -15,8 +15,11 @@ bool cross_candidate = false;
 void idle(){}
  
 
-string follow_line(Mat img,Side side){
+string follow_line(Mat img1, int side){
 
+	Mat img;
+	cvtColor(img1,img,CV_BGR2GRAY);
+		
 	int lowThreshold=170; //% = 40;
 	const int thres_ratio = 4;
 	const int kernel_size = 3;
@@ -115,7 +118,7 @@ string follow_line(Mat img,Side side){
 			if (new_rect.height < (img_cont.rows / 4) && new_rect.width > (3 * img_cont.cols / 4)) {
 				if (t_main_candidate == true) {
 					feature = T_MIDDLE;
-					t_main_candidate = false;
+					//t_main_candidate = false;
 				} else t_main_candidate = true;	
 			} else t_main_candidate = false;
 
@@ -156,7 +159,7 @@ string follow_line(Mat img,Side side){
 		if (left_rect.height < img_cont.rows / 2 && left_rect.width > img_cont.cols / 4 && right_rect.height > img_cont.rows / 2 && right_rect.width < img_cont.cols/4) {
 			if (t_left_candidate == true){
 				feature = T_LEFT;
-				t_left_candidate = false;
+				//t_left_candidate = false;
 			} else t_left_candidate = true;
 		} else t_left_candidate = false;
 
@@ -164,7 +167,7 @@ string follow_line(Mat img,Side side){
 		if (left_rect.height > img_cont.rows / 2 && left_rect.width < img_cont.cols / 4 && right_rect.height < img_cont.rows / 2 && right_rect.width > img_cont.cols/4) {
 			if (t_right_candidate == true){
 				feature = T_RIGHT;
-				t_right_candidate = false;
+				//t_right_candidate = false;
 			} else t_right_candidate = true;
 		} else t_right_candidate = false;
 
@@ -172,7 +175,7 @@ string follow_line(Mat img,Side side){
 		if ( right_rect.x + right_rect.width - left_rect.x > img_cont.cols / 2) {
 			if (y_split_candidate == true){
 				feature = Y;
-				y_split_candidate = false;
+				//y_split_candidate = false;
 			} else y_split_candidate = true;
 		} else y_split_candidate = false;
 
@@ -189,13 +192,13 @@ string follow_line(Mat img,Side side){
 
 	switch(side){
 
-		case LEFT:
+		case 1:
 			cm = left_cm;  
 			break;
-		case MIDDLE:
+		case 2:
 			cm = (left_cm + right_cm)/2;
 			break;
-		case RIGHT:
+		case 3:
 			cm = right_cm;
 			break;
 	}
@@ -217,7 +220,40 @@ string follow_line(Mat img,Side side){
 }
 
 
-string ball(Mat img){return "";}
+string track_ball(Mat img){
+
+	//convert to hsv
+	Mat img_hsv;
+	cvtColor(img, img_hsv, COLOR_BGR2HSV);
+	int CAM_W = 320;
+
+	//threshold for red/orange color
+	Mat mask1,mask2,gray;
+	inRange(img_hsv,Scalar(0,70,50),Scalar(10,255,255),mask1);
+	inRange(img_hsv,Scalar(170,70,50),Scalar(180,255,255),mask2);
+	gray = mask1 | mask2;
+
+	//blurring
+	GaussianBlur(gray,gray, Size(9,9),2,2);
+
+	//find circles
+	vector<Vec3f> circles;
+	HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 30, 30, 15, 10, 50 );  // ... canny edge parameter, number of points needed, min radius, max radius 
+
+	sort(circles.begin(),circles.end(),compareCircles);
+
+	if (circles.size() == 0 ) 
+		return encode_image_params(BALL, false, 0.0, 0.0, 0,1);
+	else {
+		Vec3f ball = circles[0];
+		float theta = ball[0] - CAM_W / 2;
+		cout << "theta: " << theta << endl;
+		float r = ball[2]; 
+		float distance = 0.0006 * r * r - 0.0432 * r + 0.9201; 
+		return encode_image_params(BALL, true, distance, theta, 0,1); 
+	}
+
+}
 string hole(Mat img){return "";}
 string shape(Mat img){return "";}
 string ArUco(Mat img){return "";}
@@ -268,6 +304,10 @@ bool compareContoursHeight(vector<Point> contour1, vector<Point> contour2){
 	Rect rect1 = boundingRect(contour1);
 	Rect rect2 = boundingRect(contour2);
 	return (rect1.height > rect2.height);
+}
+
+bool compareCircles(Vec3f circle1, Vec3f circle2){
+	return (circle1[1]>circle2[1]);   //the one with largest y-coordinate is the lowest in the picture and most likely to be a ball
 }
 
 

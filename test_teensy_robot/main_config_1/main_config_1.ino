@@ -8,6 +8,10 @@
 #include <ir.h>
 #include "comm_1.h"
 
+#define CPU_RESTART_ADDR (uint32_t *)0xE000ED0C
+#define CPU_RESTART_VAL 0x5FA0004
+#define CPU_RESTART (*CPU_RESTART_ADDR = CPU_RESTART_VAL);
+
 IntervalTimer myTimer;
 IntervalTimer reading;
 IntervalTimer writing;
@@ -78,9 +82,9 @@ double wheels_distance = 0.156;  // change into actual number
 double odoTh = 0.0;
 double odoX = 0.0;
 double odoY = 0.0;
-double x0 = 0.0;
-double y0_ = 0.0;
-double th0 = 0.0;
+double x0 = 100.0;
+double y0_ = 100.0;
+double th0 = 100.0;
 double left_wheel_pos_old = 0.0;
 double right_wheel_pos_old = 0.0;
 double dTravel = 0.0;
@@ -122,6 +126,14 @@ double delta_vel = 0.0;
 int count10=1;
 double int_action[10]={0,0,0,0,0,0,0,0,0,0};
 
+//counter for synchronizing with rpi
+int count_drive = 1;
+
+
+void force_restart(){
+  CPU_RESTART
+  
+}
 
 
 double sign(double in){
@@ -182,22 +194,54 @@ void updatePosition(double left_wheel_pos, double right_wheel_pos){
   double dCenter = (dLeft + dRight) / 2.0;
   dTravel += dCenter; 
   double phi = (dRight - dLeft) / wheels_distance;
-
-  if (x0 != comm_tsy.get_x_0() || y0_ != comm_tsy.get_y_0() || th0 != comm_tsy.get_th_0()){
-        odoX = comm_tsy.get_x_0();
-        odoY = comm_tsy.get_y_0();
-        odoTh = comm_tsy.get_th_0();
-        x0 = odoX;
-        y0_ = odoY;
-        th0 = odoTh;
-  }  
-
+  
   odoTh += phi;
   odoX += dCenter*cos(odoTh);
   odoY += dCenter*sin(odoTh);  
 
   left_wheel_pos_old = left_wheel_pos;
   right_wheel_pos_old = right_wheel_pos; 
+
+  /*
+  double x0_temp = (double) comm_tsy.get_x_0();
+  double y0_temp = (double) comm_tsy.get_y_0();
+  double th0_temp = (double) comm_tsy.get_th_0();
+  
+  if (x0 != x0_temp){
+       odoX = x0_temp;
+       x0 = x0_temp;
+  }
+  if (y0_ != y0_temp){
+       odoY = y0_temp;
+       y0_ = y0_temp;
+  }
+  if (th0 != th0_temp){
+       odoTh = th0_temyp;
+       th0 = th0_temp;
+  }*/
+  float x0_temp = comm_tsy.get_x_0();
+  float y0_temp = comm_tsy.get_y_0();
+  float th0_temp = comm_tsy.get_th_0();
+  float QWERT = -100.0;
+  if (x0_temp != QWERT || y0_temp != QWERT || th0_temp != QWERT){
+       //CPU_RESTART;
+       odoX = (double) x0_temp;
+       comm_tsy.set_x_0(QWERT);
+       odoY = (double) y0_temp;
+       comm_tsy.set_y_0(QWERT);
+       odoTh = (double) th0_temp;
+       comm_tsy.set_th_0(QWERT);
+  }/*
+  if (y0_temp != QWERT){
+       CPU_RESTART;
+       odoY = (double) y0_temp;
+       comm_tsy.set_y_0(QWERT);
+  }
+  if (th0_temp != QWERT){
+       CPU_RESTART;
+       odoTh = (double) th0_temp;
+       comm_tsy.set_th_0(QWERT);
+  }*/
 }
 
 void initializePID(int index, double K_P, double K_I, double time_period){
@@ -226,10 +270,22 @@ double update_PID_follow(double referent_value, double current_value, int index)
         e_i[index] += int_action[i];
     }
     e_i[index] *= T[index];
+    //adding derivative part:
+    double e_d;
+    if (count10>1) e_d = int_action[count10-1] - int_action[count10-2];
+    else e_d = int_action[0] - int_action[9];
+    e_d /= T[index];
+    double KD = 0.005;
     count10++;
     if (count10 == 10) count10 = 1;
+
+   
     double KV = (velocity1 + velocity2) / (2 * 0.3); 
-    return KV * KP[index] * e[index] + KV * KI[index] * e_i[index];
+
+    
+
+    
+    return KV * KP[index] * e[index] + KV * KI[index] * e_i[index] + KD * KV * e_d;
   
 }
 
@@ -329,8 +385,8 @@ void forward(double dist_ref){
     
     } else {
         Th_0 = odoTh;
-        initializePID(VEL1,Kp,Ki,0.01);
-        initializePID(VEL2,Kp,Ki,0.01);
+        initializePID(VEL1,2*Kp,Ki,0.01);
+        initializePID(VEL2,2*Kp,Ki,0.01);
         initializePID(THETA,Kp_Th,Ki_Th,0.01); 
     }
     
@@ -398,9 +454,9 @@ void followline (double dist) {
     
     enableMotors();
 
-    initializePID(VEL1,3*Kp,1*Ki,0.01);
-    initializePID(VEL2,3*Kp,1*Ki,0.01);
-    initializePID(FOLLOW,0.0025,0.01,0.01); //0.0025
+    initializePID(VEL1,4*Kp,1*Ki,0.01);
+    initializePID(VEL2,4*Kp,1*Ki,0.01);
+    initializePID(FOLLOW,0.005,0.00,0.01); //0.0025
 }
 
 void emergency_stop(){   //shouldnt wait until new command = true
@@ -431,11 +487,16 @@ void update_velocity(int drive_command){
             if (fabs(velocity1)<0.05 && fabs(velocity2)<0.05) {
               //disableMotors(); 
               newCommand = true;
+              count_drive++;
+              Serial.println("STOPPED !!!!!!!");
               comm_tsy.set_stop(false);     
             } else {
-              vel1=0.001;
-              vel2=0.001; 
+              Serial.println("STOPPING !!!!!!!");
+              vel1=0.0001;
+              vel2=0.0001;
+               
             }
+        break;
         case comm_tsy.TRN:
             if (fabs(angle_error)>0.01){
       
@@ -443,21 +504,22 @@ void update_velocity(int drive_command){
                 vel1 = - sign(angle_error) * comm_tsy.get_vel();
                 vel2 = sign(angle_error) * comm_tsy.get_vel();
                 
-                v_max = sqrt(fabs(angle_error) * wheels_distance / 2.0); 
+                v_max = sqrt(4*fabs(angle_error) * wheels_distance / 2.0); 
                 vel1 = Saturate(vel1 , v_max);   
                 vel2 = Saturate(vel2 , v_max);
 
-                //vel1 = Saturate(vel1 , 0.5);   
-                //vel2 = Saturate(vel2 , 0.5);
+                vel1 = Saturate(vel1 , 0.4);   
+                vel2 = Saturate(vel2 , 0.4);
                 
                 angle_error = angle_ref_abs - odoTh;
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.001;
-                vel2 = 0.001;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;
+                count_drive++;
                 comm_tsy.set_trn(false);       
             }
           
@@ -489,10 +551,11 @@ void update_velocity(int drive_command){
                 //Serial.println("vel2:"+String(vel2));
                 
             } else {
-                vel1 = 0.001;
-                vel2 = 0.001;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();
                 newCommand = true;  
+                count_drive++;
                 comm_tsy.set_trnr(false);       
             }
           
@@ -520,10 +583,11 @@ void update_velocity(int drive_command){
                 dist_error = comm_tsy.get_fwd_dist() - dist_curr;
             
             } else {
-                vel1 = 0.001;
-                vel2 = 0.001;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 disableMotors();  
-                newCommand = true;    
+                newCommand = true; 
+                count_drive++;   
                 comm_tsy.set_fwd(false); 
                 comm_tsy.set_race(false);
                 comm_tsy.set_stairs(false);
@@ -565,10 +629,11 @@ void update_velocity(int drive_command){
               
            }  else {
             
-              vel1 = 0.001;
-              vel2 = 0.001;
+              vel1 = 0.0001;
+              vel2 = 0.0001;
               disableMotors(); 
-              newCommand = true;    
+              newCommand = true;
+              count_drive++;    
               comm_tsy.set_drive(false); 
            }
 
@@ -596,7 +661,7 @@ void update_velocity(int drive_command){
                 if (vel1 < 0) vel1 = 0;
                 if (vel2 < 0) vel2 = 0;
                     
-                v_max = sqrt(1.0 * fabs(final_dist - dTravel));
+                v_max = sqrt(2.0 * fabs(final_dist - dTravel));
                 
                 vel1 = Saturate(vel1 , v_max);        //saturation should be used just in case of reaching nominal speed, the control should implement steady state wanted speed
                 vel2 = Saturate(vel2 , v_max);
@@ -614,7 +679,8 @@ void update_velocity(int drive_command){
                 vel1 = 0.0001;
                 vel2 = 0.0001;
                 //disableMotors();  
-                newCommand = true;    
+                newCommand = true;   
+                count_drive++;
                 comm_tsy.set_followline(false); 
                 
             }
@@ -670,13 +736,14 @@ void loop() // @,a=15,b=1,fwd=2,$
 
 void read_sensors(){
 
-  double _odo[3] = {odoX, odoY, WrapTo2PI(odoTh)};
+  double _odo[3] = {odoX, odoY, odoTh};
   float _ir[2] = {0.0,0.0};
   int _imu_cmps[3] = {0,0,0};
   int _imu_gyro[3] = {0,0,0};
   int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
+  
   
 
   if (comm_tsy.get_ir_on()){
@@ -685,11 +752,16 @@ void read_sensors(){
     
     if (comm_tsy.get_avoid_obst() && (_ir[0]<comm_tsy.get_obst_dist() || _ir[1]<comm_tsy.get_obst_dist())){
       // obstacle closer than a certain distance
-      //emergency_stop();                               // work on that
+      //emergency_stop(); // work on that
+
+      //Serial.println("OBSTACLE FOUND!!!!!");
       comm_tsy.set_stop(true);
       _obstacle_found = true;
-    }
+      //count_drive++;
+      comm_tsy.set_avoid_obst(false);
+    } 
   }
+  int _count_drive=count_drive;
 
   if (comm_tsy.get_imu_on()){
     int _imu_cmps[3] = {IMU_cmps('X'), IMU_cmps('Y'), IMU_cmps('Z')};
@@ -697,7 +769,7 @@ void read_sensors(){
     int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
   } 
  
-  comm_tsy.write_serial(_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
+  comm_tsy.write_serial(_count_drive,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
 }
 

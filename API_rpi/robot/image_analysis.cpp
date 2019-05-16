@@ -50,14 +50,18 @@ Image_analysis::Image_analysis(int port_image, int port_task){		// add other inp
 
 
 
-
 void Image_analysis::get_new_task(){
 	Subscriber subs(port_task.get(), "localhost");
 	string new_task="", old_task="1";
 	int tsk;
 	while(true){
 		new_task = subs.listen();	// bloking call
-		if (new_task != old_task) decode_task(new_task,this->tasks);
+		//if (new_task != old_task)
+		cout << "NEW TASK !!!!!!!!!!!!!!!!" << new_task << endl; 
+		decode_task(new_task,this->tasks,this->side);
+		cout << "Task: " << this->tasks.get_last_item() << ", side: " << this->side.get() << endl;
+		//this->tasks.add_item(LINE);
+		//this->side.set(RIGHT);
 	}
 }
 
@@ -84,7 +88,7 @@ void Image_analysis::take_picture(){
 		if (old_task != task){
 			cam.stop();
 			if (task == LINE){
-				cam.set_image_format(CV_8UC1);
+				cam.set_image_format(CV_8UC3);   //changed
 				cam.set_image_height(240);
 				cam.set_image_width(320);
 			}
@@ -94,7 +98,7 @@ void Image_analysis::take_picture(){
 				cam.set_image_width(320);
 			}
 			else if (task == HOLE){
-				cam.set_image_format(CV_8UC1);
+				cam.set_image_format(CV_8UC3);
 				cam.set_image_height(240);
 				cam.set_image_width(320);
 			}
@@ -104,7 +108,7 @@ void Image_analysis::take_picture(){
 				cam.set_image_width(320);
 			}
 			else if (task == ARUCO){
-				cam.set_image_format(CV_8UC1);
+				cam.set_image_format(CV_8UC3);
 				cam.set_image_height(960);
 				cam.set_image_width(1280);
 			}
@@ -162,9 +166,9 @@ void Image_analysis::run(){
 
 		//cout << "    Task: " << task << endl;
 		task = tasks.get_last_item();
-
-		if (task == LINE) data = follow_line(picture.get(),MIDDLE);
-		else if (task == BALL) data = ball(picture.get());
+		
+		if (task == LINE) data = follow_line(picture.get(),side.get());
+		else if (task == BALL) data = track_ball(picture.get());
 		else if (task == HOLE) data = hole(picture.get());
 		else if (task == SHAPE) data = shape(picture.get());
 		else if (task == ARUCO) data = ArUco(picture.get());

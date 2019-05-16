@@ -40,6 +40,7 @@ public:
 
 	Item<string> message;			// ?? need to be encoded, might not need to be an attr
 	Items<int> tasks;
+	Item<int> side;					// follow line side
 	Publisher pub_image;
 	//Subscriber subs;
 	Item<Mat> picture;

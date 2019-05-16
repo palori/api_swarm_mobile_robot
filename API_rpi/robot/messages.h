@@ -10,13 +10,14 @@
 
 string detect_message(string msg);
 
-string encode_task(int task);
-string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing);
+string encode_task(int task, int side);
+string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing, int i);
 string encode_master_commands(string msg, int i);
+string encode_robot_params(Robot_params & rob);
 //string encode_init(string you_are, string robot_a, string robot_b, int max_len);
 //void params2msg(string & msg);
 
-void decode_task(string msg, Items<int> & tasks);
+void decode_task(string msg, Items<int> & tasks, Item<int> & side);
 void decode_ctrl(string msg, Controllers & ctrl);	// NOT fully tested, but the important ones yes
 void decode_robot_params(string msg, Robot_params & rob);
 void decode_image(string msg, Sensors & sens);
@@ -86,6 +87,7 @@ enum crossing{
 };
 
 enum Side {  // on which side to follow the line 
+	NO_LINE,
 	LEFT, 
 	MIDDLE, 
 	RIGHT 
@@ -109,6 +111,9 @@ struct Command {
 	string X_t = "xt";				// X  coord. of target pose (in robot coord. syst.)
 	string Y_t = "yt";				// Y  coord. of target pose (in robot coord. syst.)
 	string TH_t = "tht";			// Th coord. of target pose (in robot coord. syst.)
+	string X_0 = "x0";				// updated odomotery value X
+	string Y_0 = "y0";				// updated odomotery value Y
+	string TH_0 = "th0";			// updated odomotery value TH
 	string BATT = "batt";
 	// sensor data
 	string X_w = "xw";				// X  coord. of robot pose (in world coord. syst.)
@@ -126,6 +131,8 @@ struct Command {
 	string COMP2 = "c2";			// compass 2, sensor value
 	string COMP3 = "c3";			// compass 3, sensor value
 	string OF = "of";				// obstacle found
+	string NC = "nc";				// new command
+	string SIDE = "side";			//follow line side
 
 	// image
 	string OF_i = "of_i";			// obstacle found in the image
@@ -136,6 +143,8 @@ struct Command {
 	// robot
 	string ROB = "rob";				// in case the message is sent to a specific robot (hostname)
 	string I = "i";					// counter to know if you got a new message
+
+
 };
 
 

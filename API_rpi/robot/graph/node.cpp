@@ -1,6 +1,8 @@
 
 #include "node.h"
 
+Node::Node(){}
+
 Node::Node(string id, float x, float y, int type, bool line, int crossing)
 	//: id(id), previous(NULL),
 	//distanceFromStart(INT_MAX)
