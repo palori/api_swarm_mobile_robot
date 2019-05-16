@@ -307,20 +307,20 @@ void Robot::run(){
 	}
 	*/
 
-	/* Test square (the same for all the robots)
+	/* Test square (the same for all the robots)*/
 	update_pose(0.0, 0.0, 0.0);
 	for (int i = 0; i < 3; i++){
 		maps.push_back(map_test_square("square1"));
 		maps.push_back(map_test_square("square2"));
 	}
-	*/
+	
 
-	/* Test straight (the same for all the robots)*/
+	/* Test straight (the same for all the robots)
 	update_pose(0.0, 0.0, 0.0);
 	float distance = 5.0, velocity = 0.4;
 	for (int i = 0; i < 1; i++){
 		maps.push_back(map_test_straight("straight", distance, velocity));
-	}
+	}*/
 
 	cout << "Waiting for a message from the previous robot" << endl;
 	robot_b.tasks.add_item(-1);
@@ -368,6 +368,7 @@ void Robot::run(){
 			}
 			else if (map->id == "square1"){
 				start_id = "sq1";
+				end_id = "sq3";
 			}
 			else if (map->id == "square2"){
 				start_id = "sq3";

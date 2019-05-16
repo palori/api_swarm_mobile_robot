@@ -104,6 +104,9 @@
 #define MPU9150_CMPS_ZOUT_H        0x4F   // R
 
 
+void MPU9150_setup();
+
+void setup_custom();
 
 void MPU9150_setupCompass();
 
@@ -113,8 +116,10 @@ int MPU9150_readSensor(int addr);
 
 int MPU9150_writeSensor(int addr,int data);
 
-void Wire_setup();
+void MPU9150_readGyro();
 
-
+int IMU_cmps(char coordinate);
+int IMU_gyro(char coordinate);
+int IMU_accel(char coordinate);
 
 #endif
