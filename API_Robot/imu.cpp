@@ -89,7 +89,7 @@ int MPU9150_readSensor(int addr){
 }
 
 
-void MPU9150_readGyro(){
+float * MPU9150_readGyro(){
   float X = IMU_gyro('X') / 131.0;
   float Y = IMU_gyro('Y') / 131.0;
   float Z = IMU_gyro('Z') / 131.0;
@@ -99,27 +99,33 @@ void MPU9150_readGyro(){
   if (Z > 250) Z -= 500.0;
 
   // NEED TO RETURN THE VALUES!
+  float _imu_gyro[3] = {X, Y, Z};
+  return _imu_gyro;
 }
 
-void MPU9150_readAccel(){
+float * MPU9150_readAccel(){
   float X = IMU_accel('X') / 16384.0;
   float Y = IMU_accel('Y') / 16384.0;
   float Z = IMU_accel('Z') / 16384.0;
 
-  if (X > 250) X -= 4.0;
-  if (Y > 250) Y -= 4.0;
-  if (Z > 250) Z -= 4.0;
+  if (X > 2) X -= 4.0;
+  if (Y > 2) Y -= 4.0;
+  if (Z > 2) Z -= 4.0;
 
   // NEED TO RETURN THE VALUES!
+  float _imu_accel[3] = {X, Y, Z};
+  return _imu_accel;
 }
 
-void MPU9150_readCmps(){
+float * MPU9150_readCmps(){
   float X = IMU_accel('X');
   float Y = IMU_accel('Y');
   float Z = IMU_accel('Z');
 
   // NEED SOME PROCESSING
   // NEED TO RETURN THE VALUES!
+  float _imu_cmps[3] = {X, Y, Z};
+  return _imu_cmps;
 }
 
 int IMU_cmps(char coordinate){
