@@ -305,7 +305,7 @@ double transformTh (double Xw, double Yw, double Thw, double XTw, double YTw, do
 } 
 
 
-void setUpIMU(){
+/*void setUpIMU(){
   
     // Initialize the 'Wire' class for the I2C-bus.
     Wire_setup();
@@ -315,7 +315,7 @@ void setUpIMU(){
 
     MPU9150_setupCompass();
   
-}
+}*/
 
 int IMU_cmps(char coordinate){
   int sensorValue = 0;
@@ -695,7 +695,7 @@ void setup()
 { 
   Serial.begin(9600);
   setUpPowerPins(); 
-  setUpIMU();
+  MPU9150_setup();
 
   enableMotors();
     
@@ -773,7 +773,15 @@ void read_sensors(){
   Serial.println("");
 }
 
+float imu_angle=0.0;
+
 void update10ms(){
+
+    float rotZ = IMU_gyro('Z') / 131.0;
+    if (rotZ > 250) rotZ -=500.0;
+    imu_angle += rotZ*0.01;
+
+    Serial.println("IMU angle(Z): "+String(imu_angle));
 
     //Serial.println("time:                    "+String(millis()));
     //Serial.println("angle ref abs:                                "+String(angle_ref_abs));

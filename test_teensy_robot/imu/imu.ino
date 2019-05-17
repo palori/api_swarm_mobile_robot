@@ -21,7 +21,7 @@ void setup()
   Serial.begin(9600);
 
   // Initialize the 'Wire' class for the I2C-bus.
-  Wire_setup();
+  MPU9150_setup();
 
   // Clear the 'sleep' bit to start the sensor.
   MPU9150_writeSensor(MPU9150_PWR_MGMT_1, 0);
@@ -64,6 +64,3 @@ void loop()
 //http://pansenti.wordpress.com/2013/03/26/pansentis-invensense-mpu-9150-software-for-arduino-is-now-on-github/
 //Thank you to pansenti for setup code.
 //I will documented this one later.
-
-
-
