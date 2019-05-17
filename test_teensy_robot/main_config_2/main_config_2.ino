@@ -677,12 +677,12 @@ void loop() // @,a=15,b=1,fwd=2,$
 
 
 void read_sensors(){
-
+Serial.println("read_sensors!");
   double _odo[3] = {odoX, odoY, odoTh};
   float _ir[2] = {0.0,0.0};
-  int _imu_cmps[3] = {0,0,0};
-  int _imu_gyro[3] = {0,0,0};
-  int _imu_accel[3] = {0,0,0};
+  float _imu_cmps[3] = {0,0,0};
+  float _imu_gyro[3] = {0,0,0};
+  float _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
   
@@ -705,10 +705,22 @@ void read_sensors(){
   }
   int _count_drive=count_drive;
 
+  Serial.println("\n\nIMU: "+String(comm_tsy.get_imu_on()));//Serial.println("***imu: "+String(get_imu_on()));
+    Serial.println("IMU gyro: "+String(comm_tsy.get_imu_gyro_send()));
+    Serial.println("IMU acc: "+String(comm_tsy.get_imu_acc_send()));
+    Serial.println("IMU comp: "+String(comm_tsy.get_imu_comp_send()) + "\n\n");
   if (comm_tsy.get_imu_on()){
-    int _imu_cmps[3] = {IMU_cmps('X'), IMU_cmps('Y'), IMU_cmps('Z')};
-    int _imu_gyro[3] = {IMU_gyro('X'), IMU_gyro('Y'), IMU_gyro('Z')};
-    int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
+    float _imu_cmps[3] = {(float)IMU_cmps('X'), (float)IMU_cmps('Y'), (float)IMU_cmps('Z')};
+    float _imu_gyro[3] = {(float)IMU_gyro('X'), (float)IMU_gyro('Y'), (float)IMU_gyro('Z')};
+    float _imu_accel[3] = {(float)IMU_accel('X'), (float)IMU_accel('Y'), (float)IMU_accel('Z')};
+    /* REPLACE THE PREVIOUS THREE WITH SOMETHING LIKE THE FOLLOWING
+    float * p_imu_cmps = MPU9150_readCmps();
+    float _imu_cmps[3] = *p_imu_cmps;
+    float * p_imu_gyro = MPU9150_readGyro();
+    float _imu_gyro[3] = *p_imu_gyro;
+    float * p_imu_accel = MPU9150_readAccel();
+    float _imu_accel[3] = *p_imu_accel;
+    */
   } 
  
   comm_tsy.write_serial(_count_drive,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
@@ -796,8 +808,13 @@ void update10ms(){
 
     myServo.write(servo_pos);  //update servo pos every 10ms
 }
-
+int reading_count = 0;
 void reading100ms (){
   
-   comm_tsy.read_serial();   
+   comm_tsy.read_serial(); 
+   reading_count++;
+   if (reading_count >= 1000){
+      Serial.println("***imu: "+String(comm_tsy.get_imu_on()));
+      reading_count = 0;
+   }
 }
