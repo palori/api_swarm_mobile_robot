@@ -16,11 +16,11 @@ void setup_custom(){
 
   //Accessing the register 1B - Gyroscope Configuration (Sec. 4.4)
   //Setting the gyro to full scale +/- 250deg./s
-  MPU9150_writeSensor(MPU9150_GYRO_CONFIG, 0);
+  //MPU9150_writeSensor(MPU9150_GYRO_CONFIG, 0);
 
   //Accessing the register 1C - Acccelerometer Configuration (Sec. 4.5)
   //Setting the accel to +/- 2g
-  MPU9150_writeSensor(MPU9150_ACCEL_CONFIG, 0);
+  //MPU9150_writeSensor(MPU9150_ACCEL_CONFIG, 0);
 }
 
 int MPU9150_writeSensor(int addr,int data){
@@ -59,6 +59,20 @@ void MPU9150_setupCompass(){
   MPU9150_writeSensor(0x64, 0x01); //override register
   MPU9150_writeSensor(0x6A, 0x20); //enable master i2c mode
   MPU9150_writeSensor(0x34, 0x13); //disable slv4
+}
+
+bool i2c_connection(){
+
+  Wire.beginTransmission(MPU9150_I2C_ADDRESS);
+  byte err = Wire.endTransmission();
+  if (err == 0){
+  	Serial.println("I2C CONNECTED!");
+  	return true;
+  } else {
+  	Serial.println("NO I2C CONNECTION!");
+  	return false;
+  }
+
 }
 
 int MPU9150_readSensor(int addrL, int addrH){

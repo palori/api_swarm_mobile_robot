@@ -116,6 +116,8 @@ int MPU9150_readSensor(int addr);
 
 int MPU9150_writeSensor(int addr,int data);
 
+bool i2c_connection();
+
 float * MPU9150_readGyro();
 float * MPU9150_readAccel();
 float * MPU9150_readCmps();
@@ -123,5 +125,7 @@ float * MPU9150_readCmps();
 int IMU_cmps(char coordinate);
 int IMU_gyro(char coordinate);
 int IMU_accel(char coordinate);
+
+
 
 #endif
