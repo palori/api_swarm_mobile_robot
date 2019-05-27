@@ -129,6 +129,11 @@ double int_action[10]={0,0,0,0,0,0,0,0,0,0};
 //counter for synchronizing with rpi
 int count_drive = 1;
 
+//imu variables
+float _imu_cmps[3] = {0,0,0};
+float _imu_gyro[3] = {0,0,0};
+float _imu_accel[3] = {0,0,0};
+
 
 void force_restart(){
   CPU_RESTART
@@ -673,6 +678,22 @@ void loop() // @,a=15,b=1,fwd=2,$
    reading100ms();
    //Serial.println("****************************************");
    battery_voltage = checkBattery();
+   read_IMU();
+   
+}
+
+void read_IMU(){
+  if (i2c_connection()){
+    _imu_cmps[0] = IMU_cmps('X');
+    _imu_cmps[1] = IMU_cmps('Y');
+    _imu_cmps[2] = IMU_cmps('Z');
+    _imu_gyro[0] = IMU_gyro('X');
+    _imu_gyro[1] = IMU_gyro('Y');
+    _imu_gyro[2] = IMU_gyro('Z');
+    _imu_accel[0] = IMU_accel('X');
+    _imu_accel[1] = IMU_accel('Y');
+    _imu_accel[2] = IMU_accel('Z');
+  } 
 }
 
 
@@ -680,9 +701,6 @@ void read_sensors(){
 Serial.println("read_sensors!");
   double _odo[3] = {odoX, odoY, odoTh};
   float _ir[2] = {0.0,0.0};
-  float _imu_cmps[3] = {0,0,0};
-  float _imu_gyro[3] = {0,0,0};
-  float _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
   
@@ -704,24 +722,6 @@ Serial.println("read_sensors!");
     } 
   }
   int _count_drive=count_drive;
-
-  Serial.println("\n\nIMU: "+String(comm_tsy.get_imu_on()));//Serial.println("***imu: "+String(get_imu_on()));
-    Serial.println("IMU gyro: "+String(comm_tsy.get_imu_gyro_send()));
-    Serial.println("IMU acc: "+String(comm_tsy.get_imu_acc_send()));
-    Serial.println("IMU comp: "+String(comm_tsy.get_imu_comp_send()) + "\n\n");
-  if (comm_tsy.get_imu_on()){
-    float _imu_cmps[3] = {(float)IMU_cmps('X'), (float)IMU_cmps('Y'), (float)IMU_cmps('Z')};
-    float _imu_gyro[3] = {(float)IMU_gyro('X'), (float)IMU_gyro('Y'), (float)IMU_gyro('Z')};
-    float _imu_accel[3] = {(float)IMU_accel('X'), (float)IMU_accel('Y'), (float)IMU_accel('Z')};
-    /* REPLACE THE PREVIOUS THREE WITH SOMETHING LIKE THE FOLLOWING
-    float * p_imu_cmps = MPU9150_readCmps();
-    float _imu_cmps[3] = *p_imu_cmps;
-    float * p_imu_gyro = MPU9150_readGyro();
-    float _imu_gyro[3] = *p_imu_gyro;
-    float * p_imu_accel = MPU9150_readAccel();
-    float _imu_accel[3] = *p_imu_accel;
-    */
-  } 
  
   comm_tsy.write_serial(_count_drive,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
