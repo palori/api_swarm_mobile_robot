@@ -1,0 +1,5 @@
+edge, node1, node2, bidirectional, line, th_w_1, th_w_2, distance, vel
+e1, a, b, 1, 0, 0, 0, 0, 0.3
+e2, b, c, 1, 0, 0, 0, 0, 0.3
+e3, b, d, 1, 0, 0, 0, 0, 0.3
+e4, b, e, 1, 0, 0, 0, 0, 0.3
