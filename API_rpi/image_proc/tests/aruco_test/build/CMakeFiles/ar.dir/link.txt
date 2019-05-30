@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/ar.dir/aruco.cpp.o  -o ar  -L/usr/local/lib -Wl,-rpath,/usr/local/lib -laruco 
