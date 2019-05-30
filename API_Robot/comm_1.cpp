@@ -25,7 +25,7 @@ COMM_TSY::~COMM_TSY(){
 		c_msg[i] = '0';
 	}
 }*/
-void COMM_TSY::write_serial(int newCommand, double _odo[3], float _ir[2], float battery ,int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){ //params might change, maybe add last sensors data
+void COMM_TSY::write_serial(int newCommand, double _odo[3], float _ir[2], float battery ,float _imu_cmps[3], float _imu_gyro[3], float _imu_accel[3], bool _obstacle_found){ //params might change, maybe add last sensors data
 	// modify to add this
 	String msg = sensorData2msg(newCommand, _odo, _ir, battery, _imu_cmps, _imu_gyro, _imu_accel, _obstacle_found);
 
@@ -418,7 +418,7 @@ void COMM_TSY::msg2params(){// OLD WAY: (String msg){
 
 
 // encode the mesage --> old version, need to be updated
-String COMM_TSY::sensorData2msg(int newCommand, double _odo[3], float _ir[2], float battery,int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found){
+String COMM_TSY::sensorData2msg(int newCommand, double _odo[3], float _ir[2], float battery, float _imu_cmps[3], float _imu_gyro[3], float _imu_accel[3], bool _obstacle_found){
 	Command command;
 
 	/*

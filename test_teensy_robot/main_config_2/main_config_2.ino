@@ -78,7 +78,7 @@ double K_vel = 0.1;
 //odometry variables
 double wheel_radius = 0.045;    // change into actual number
 #define PI 3.1415926535897932384626433832795
-double wheels_distance = 0.1612;  // change into actual number
+double wheels_distance = 0.156;  // change into actual number
 double odoTh = 0.0;
 double odoX = 0.0;
 double odoY = 0.0;
@@ -128,6 +128,11 @@ double int_action[10]={0,0,0,0,0,0,0,0,0,0};
 
 //counter for synchronizing with rpi
 int count_drive = 1;
+
+//imu variables
+float _imu_cmps[3] = {0,0,0};
+float _imu_gyro[3] = {0,0,0};
+float _imu_accel[3] = {0,0,0};
 
 
 void force_restart(){
@@ -305,64 +310,6 @@ double transformTh (double Xw, double Yw, double Thw, double XTw, double YTw, do
 } 
 
 
-/*void setUpIMU(){
-  
-    // Initialize the 'Wire' class for the I2C-bus.
-    Wire_setup();
-
-    // Clear the 'sleep' bit to start the sensor.
-    MPU9150_writeSensor(MPU9150_PWR_MGMT_1, 0);
-
-    MPU9150_setupCompass();
-  
-}*/
-
-int IMU_cmps(char coordinate){
-  int sensorValue = 0;
-  switch(coordinate){
-    case 'X':
-        sensorValue = MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H);
-      break;
-    case 'Y':
-        sensorValue = MPU9150_readSensor(MPU9150_CMPS_YOUT_L,MPU9150_CMPS_YOUT_H);
-      break;
-    case 'Z':
-        sensorValue = MPU9150_readSensor(MPU9150_CMPS_ZOUT_L,MPU9150_CMPS_ZOUT_H);
-      break;
-    }
-  return sensorValue;
-}
-
-int IMU_gyro(char coordinate){
-  int sensorValue = 0;
-  switch(coordinate){
-    case 'X':
-        sensorValue = MPU9150_readSensor(MPU9150_GYRO_XOUT_L,MPU9150_GYRO_XOUT_H);
-      break;
-    case 'Y':
-        sensorValue = MPU9150_readSensor(MPU9150_GYRO_YOUT_L,MPU9150_GYRO_YOUT_H);
-      break;
-    case 'Z':
-        sensorValue = MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H);
-      break;
-    }
-  return sensorValue;
-}
-int IMU_accel(char coordinate){
-  int sensorValue = 0;
-    switch(coordinate){
-      case 'X':
-          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_XOUT_L,MPU9150_ACCEL_XOUT_H);
-        break;
-      case 'Y':
-          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_YOUT_L,MPU9150_ACCEL_YOUT_H);
-        break;
-      case 'Z':
-          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_ZOUT_L,MPU9150_ACCEL_ZOUT_H);
-        break;
-      }
-    return sensorValue;
-}
 void forward(double dist_ref){
   
     x_0 = odoX;
@@ -515,8 +462,8 @@ void update_velocity(int drive_command){
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.000;
-                vel2 = 0.000;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;
                 count_drive++;
@@ -551,8 +498,8 @@ void update_velocity(int drive_command){
                 //Serial.println("vel2:"+String(vel2));
                 
             } else {
-                vel1 = 0.000;
-                vel2 = 0.000;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();
                 newCommand = true;  
                 count_drive++;
@@ -583,9 +530,9 @@ void update_velocity(int drive_command){
                 dist_error = comm_tsy.get_fwd_dist() - dist_curr;
             
             } else {
-                vel1 = 0.000;
-                vel2 = 0.000;
-                //disableMotors();  
+                vel1 = 0.0001;
+                vel2 = 0.0001;
+                disableMotors();  
                 newCommand = true; 
                 count_drive++;   
                 comm_tsy.set_fwd(false); 
@@ -676,8 +623,8 @@ void update_velocity(int drive_command){
                   
             } else {
                 Serial.println("Follow line STOP!!!");
-                vel1 = 0.000;
-                vel2 = 0.000;
+                vel1 = 0.0001;
+                vel2 = 0.0001;
                 //disableMotors();  
                 newCommand = true;   
                 count_drive++;
@@ -689,7 +636,7 @@ void update_velocity(int drive_command){
 
 }
 
-double input=0.0;
+double input=0.05;
  
 void setup() 
 { 
@@ -699,7 +646,7 @@ void setup()
 
   enableMotors();
     
-  motor1.setVelocity(input);   
+  motor1.setVelocity(input);   //sets motor to small speed where they dont move
   motor2.setVelocity(input);
 
   ir_1.setCalibration();
@@ -731,16 +678,29 @@ void loop() // @,a=15,b=1,fwd=2,$
    reading100ms();
    //Serial.println("****************************************");
    battery_voltage = checkBattery();
+   read_IMU();
+   
+}
+
+void read_IMU(){
+  if (i2c_connection()){
+    _imu_cmps[0] = IMU_cmps('X');
+    _imu_cmps[1] = IMU_cmps('Y');
+    _imu_cmps[2] = IMU_cmps('Z');
+    _imu_gyro[0] = IMU_gyro('X');
+    _imu_gyro[1] = IMU_gyro('Y');
+    _imu_gyro[2] = IMU_gyro('Z');
+    _imu_accel[0] = IMU_accel('X');
+    _imu_accel[1] = IMU_accel('Y');
+    _imu_accel[2] = IMU_accel('Z');
+  } 
 }
 
 
 void read_sensors(){
-
+Serial.println("read_sensors!");
   double _odo[3] = {odoX, odoY, odoTh};
   float _ir[2] = {0.0,0.0};
-  int _imu_cmps[3] = {0,0,0};
-  int _imu_gyro[3] = {0,0,0};
-  int _imu_accel[3] = {0,0,0};
   bool _obstacle_found = false; // closer than a certain especified distance
   float _batt = battery_voltage;
   
@@ -762,26 +722,12 @@ void read_sensors(){
     } 
   }
   int _count_drive=count_drive;
-
-  if (comm_tsy.get_imu_on()){
-    int _imu_cmps[3] = {IMU_cmps('X'), IMU_cmps('Y'), IMU_cmps('Z')};
-    int _imu_gyro[3] = {IMU_gyro('X'), IMU_gyro('Y'), IMU_gyro('Z')};
-    int _imu_accel[3] = {IMU_accel('X'), IMU_accel('Y'), IMU_accel('Z')};
-  } 
  
   comm_tsy.write_serial(_count_drive,_odo,_ir,_batt,_imu_cmps,_imu_gyro,_imu_accel, _obstacle_found);
   Serial.println("");
 }
 
-float imu_angle=0.0;
-
 void update10ms(){
-
-    float rotZ = IMU_gyro('Z') / 131.0;
-    if (rotZ > 250) rotZ -=500.0;
-    imu_angle += rotZ*0.01;
-
-    Serial.println("IMU angle(Z): "+String(imu_angle));
 
     //Serial.println("time:                    "+String(millis()));
     //Serial.println("angle ref abs:                                "+String(angle_ref_abs));
@@ -862,8 +808,13 @@ void update10ms(){
 
     myServo.write(servo_pos);  //update servo pos every 10ms
 }
-
+int reading_count = 0;
 void reading100ms (){
   
-   comm_tsy.read_serial();   
+   comm_tsy.read_serial(); 
+   reading_count++;
+   if (reading_count >= 1000){
+      Serial.println("***imu: "+String(comm_tsy.get_imu_on()));
+      reading_count = 0;
+   }
 }

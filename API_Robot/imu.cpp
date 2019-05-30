@@ -1,10 +1,26 @@
-#include "Arduino.h"
-#include <Wire.h>
+#include "imu.h"
 
 int MPU9150_I2C_ADDRESS = 0x68;
 
-void Wire_setup(){
+void MPU9150_setup(){
   Wire.begin();
+
+  // Clear the 'sleep' bit to start the sensor.
+  MPU9150_writeSensor(MPU9150_PWR_MGMT_1, 0);
+
+  setup_custom();
+}
+
+void setup_custom(){
+  MPU9150_setupCompass();
+
+  //Accessing the register 1B - Gyroscope Configuration (Sec. 4.4)
+  //Setting the gyro to full scale +/- 250deg./s
+  //MPU9150_writeSensor(MPU9150_GYRO_CONFIG, 0);
+
+  //Accessing the register 1C - Acccelerometer Configuration (Sec. 4.5)
+  //Setting the accel to +/- 2g
+  //MPU9150_writeSensor(MPU9150_ACCEL_CONFIG, 0);
 }
 
 int MPU9150_writeSensor(int addr,int data){
@@ -45,6 +61,20 @@ void MPU9150_setupCompass(){
   MPU9150_writeSensor(0x34, 0x13); //disable slv4
 }
 
+bool i2c_connection(){
+
+  Wire.beginTransmission(MPU9150_I2C_ADDRESS);
+  byte err = Wire.endTransmission();
+  if (err == 0){
+  	Serial.println("I2C CONNECTED!");
+  	return true;
+  } else {
+  	Serial.println("NO I2C CONNECTION!");
+  	return false;
+  }
+
+}
+
 int MPU9150_readSensor(int addrL, int addrH){
   Wire.beginTransmission(MPU9150_I2C_ADDRESS);
   Wire.write(addrL);
@@ -73,6 +103,88 @@ int MPU9150_readSensor(int addr){
 }
 
 
+float * MPU9150_readGyro(){
+  float X = IMU_gyro('X') / 131.0;
+  float Y = IMU_gyro('Y') / 131.0;
+  float Z = IMU_gyro('Z') / 131.0;
 
+  if (X > 250) X -= 500.0;
+  if (Y > 250) Y -= 500.0;
+  if (Z > 250) Z -= 500.0;
 
+  // NEED TO RETURN THE VALUES!
+  float _imu_gyro[3] = {X, Y, Z};
+  return _imu_gyro;
+}
 
+float * MPU9150_readAccel(){
+  float X = IMU_accel('X') / 16384.0;
+  float Y = IMU_accel('Y') / 16384.0;
+  float Z = IMU_accel('Z') / 16384.0;
+
+  if (X > 2) X -= 4.0;
+  if (Y > 2) Y -= 4.0;
+  if (Z > 2) Z -= 4.0;
+
+  // NEED TO RETURN THE VALUES!
+  float _imu_accel[3] = {X, Y, Z};
+  return _imu_accel;
+}
+
+float * MPU9150_readCmps(){
+  float X = IMU_accel('X');
+  float Y = IMU_accel('Y');
+  float Z = IMU_accel('Z');
+
+  // NEED SOME PROCESSING
+  // NEED TO RETURN THE VALUES!
+  float _imu_cmps[3] = {X, Y, Z};
+  return _imu_cmps;
+}
+
+int IMU_cmps(char coordinate){
+  int sensorValue = 0;
+  switch(coordinate){
+    case 'X':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H);
+      break;
+    case 'Y':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_YOUT_L,MPU9150_CMPS_YOUT_H);
+      break;
+    case 'Z':
+        sensorValue = MPU9150_readSensor(MPU9150_CMPS_ZOUT_L,MPU9150_CMPS_ZOUT_H);
+      break;
+    }
+  return sensorValue;
+}
+
+int IMU_gyro(char coordinate){
+  int sensorValue = 0;
+  switch(coordinate){
+    case 'X':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_XOUT_L,MPU9150_GYRO_XOUT_H);
+      break;
+    case 'Y':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_YOUT_L,MPU9150_GYRO_YOUT_H);
+      break;
+    case 'Z':
+        sensorValue = MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H);
+      break;
+    }
+  return sensorValue;
+}
+int IMU_accel(char coordinate){
+  int sensorValue = 0;
+    switch(coordinate){
+      case 'X':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_XOUT_L,MPU9150_ACCEL_XOUT_H);
+        break;
+      case 'Y':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_YOUT_L,MPU9150_ACCEL_YOUT_H);
+        break;
+      case 'Z':
+          sensorValue = MPU9150_readSensor(MPU9150_ACCEL_ZOUT_L,MPU9150_ACCEL_ZOUT_H);
+        break;
+      }
+    return sensorValue;
+}
