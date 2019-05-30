@@ -217,6 +217,9 @@ void Robot::listen_master(){
 	string msg;
 	int action = -1;
 	cout << "listenning to master '" << master << "'..." << endl;
+
+	run_mission.set(true);
+	
 	while(true){
 		msg = subs_master.listen();		// blocking call
 

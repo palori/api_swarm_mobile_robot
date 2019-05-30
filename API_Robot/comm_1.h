@@ -27,7 +27,7 @@ class COMM_TSY
 public:
 	COMM_TSY();
 	~COMM_TSY();
-	void write_serial(int newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // migth have diferent input params
+	void write_serial(int newCommand, double _odo[3], float _ir[2], float battery, float _imu_cmps[3], float _imu_gyro[3], float _imu_accel[3], bool _obstacle_found); // migth have diferent input params
 	void read_serial();
 
 	// getters if params is not a struct
@@ -276,7 +276,7 @@ public:
 	void msg2params(); // OLD WAY: (String msg);
 
 	// encode the target to send the message
-	String sensorData2msg(int newCommand, double _odo[3], float _ir[2], float battery, int _imu_cmps[3], int _imu_gyro[3], int _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
+	String sensorData2msg(int newCommand, double _odo[3], float _ir[2], float battery, float _imu_cmps[3], float _imu_gyro[3], float _imu_accel[3], bool _obstacle_found); // might need to get last data from sensors as input
 
 
 };

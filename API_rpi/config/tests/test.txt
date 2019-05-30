@@ -1,0 +1,3 @@
+name, task_type, num_robots
+take_picture, 1, 1
+up-stairs, 2, 3 

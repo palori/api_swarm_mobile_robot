@@ -1,3 +1,4 @@
+
 #include <Servo.h>
 #include <motor.h>
 #include <pins.h>
@@ -78,7 +79,7 @@ double K_vel = 0.1;
 //odometry variables
 double wheel_radius = 0.045;    // change into actual number
 #define PI 3.1415926535897932384626433832795
-double wheels_distance = 0.156;  // change into actual number
+double wheels_distance = 0.1612;  // change into actual number
 double odoTh = 0.0;
 double odoX = 0.0;
 double odoY = 0.0;
@@ -305,7 +306,7 @@ double transformTh (double Xw, double Yw, double Thw, double XTw, double YTw, do
 } 
 
 
-void setUpIMU(){
+/*void setUpIMU(){
   
     // Initialize the 'Wire' class for the I2C-bus.
     Wire_setup();
@@ -315,7 +316,7 @@ void setUpIMU(){
 
     MPU9150_setupCompass();
   
-}
+}*/
 
 int IMU_cmps(char coordinate){
   int sensorValue = 0;
@@ -515,8 +516,8 @@ void update_velocity(int drive_command){
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.0001;
-                vel2 = 0.0001;
+                vel1 = 0.000;
+                vel2 = 0.000;
                 //disableMotors();  
                 newCommand = true;
                 count_drive++;
@@ -551,8 +552,8 @@ void update_velocity(int drive_command){
                 //Serial.println("vel2:"+String(vel2));
                 
             } else {
-                vel1 = 0.0001;
-                vel2 = 0.0001;
+                vel1 = 0.000;
+                vel2 = 0.000;
                 //disableMotors();
                 newCommand = true;  
                 count_drive++;
@@ -583,9 +584,9 @@ void update_velocity(int drive_command){
                 dist_error = comm_tsy.get_fwd_dist() - dist_curr;
             
             } else {
-                vel1 = 0.0001;
-                vel2 = 0.0001;
-                disableMotors();  
+                vel1 = 0.000;
+                vel2 = 0.000;
+                //disableMotors();  
                 newCommand = true; 
                 count_drive++;   
                 comm_tsy.set_fwd(false); 
@@ -676,8 +677,8 @@ void update_velocity(int drive_command){
                   
             } else {
                 Serial.println("Follow line STOP!!!");
-                vel1 = 0.0001;
-                vel2 = 0.0001;
+                vel1 = 0.000;
+                vel2 = 0.000;
                 //disableMotors();  
                 newCommand = true;   
                 count_drive++;
@@ -689,17 +690,17 @@ void update_velocity(int drive_command){
 
 }
 
-double input=0.05;
+double input=0.0;
  
 void setup() 
 { 
   Serial.begin(9600);
   setUpPowerPins(); 
-  setUpIMU();
+  MPU9150_setup();
 
   enableMotors();
     
-  motor1.setVelocity(input);   //sets motor to small speed where they dont move
+  motor1.setVelocity(input);   
   motor2.setVelocity(input);
 
   ir_1.setCalibration();
@@ -726,28 +727,11 @@ double RPI_value = PI;
 int drive_command=-1;
 int servo_pos = comm_tsy.get_servo();
 
-float gX, gY, gZ;
-float rX, rY, rZ;
-
-
 void loop() // @,a=15,b=1,fwd=2,$
 { 
    reading100ms();
    //Serial.println("****************************************");
-   //battery_voltage = checkBattery();
-   gX = IMU_accel('X') / 16384.0;
-   gY = IMU_accel('Y') / 16384.0;
-   gZ = IMU_accel('Z') / 16384.0;
-
-   Serial.println("gX: "+String(gX) + " gY: "+String(gY) + "gZ: "+String(gZ));
-
-   rX = IMU_gyro('X') / 131.0;
-   rY = IMU_gyro('Y') / 131.0;
-   rZ = IMU_gyro('Z') / 131.0;
-
-   Serial.println("gX: "+String(rX) + " gY: "+String(rY) + "gZ: "+String(rZ));
-   delay(500);
-   
+   battery_voltage = checkBattery();
 }
 
 
@@ -790,7 +774,15 @@ void read_sensors(){
   Serial.println("");
 }
 
+float imu_angle=0.0;
+
 void update10ms(){
+
+    float rotZ = IMU_gyro('Z') / 131.0;
+    if (rotZ > 250) rotZ -=500.0;
+    imu_angle += rotZ*0.01;
+
+    Serial.println("IMU angle(Z): "+String(imu_angle));
 
     //Serial.println("time:                    "+String(millis()));
     //Serial.println("angle ref abs:                                "+String(angle_ref_abs));
@@ -876,3 +868,4 @@ void reading100ms (){
   
    comm_tsy.read_serial();   
 }
+

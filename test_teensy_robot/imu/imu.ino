@@ -21,7 +21,7 @@ void setup()
   Serial.begin(9600);
 
   // Initialize the 'Wire' class for the I2C-bus.
-  Wire_setup();
+  MPU9150_setup();
 
   // Clear the 'sleep' bit to start the sensor.
   MPU9150_writeSensor(MPU9150_PWR_MGMT_1, 0);
@@ -40,13 +40,15 @@ void loop()
   double dT = ( (double) MPU9150_readSensor(MPU9150_TEMP_OUT_L,MPU9150_TEMP_OUT_H) + 12412.0) / 340.0;
   Serial.print(dT);
   Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H));
+  int x = MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H);
+  Serial.print(String(x));
   Serial.print("  ");
   Serial.print(MPU9150_readSensor(MPU9150_CMPS_YOUT_L,MPU9150_CMPS_YOUT_H));
   Serial.print("  ");
   Serial.print(MPU9150_readSensor(MPU9150_CMPS_ZOUT_L,MPU9150_CMPS_ZOUT_H));
   Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_GYRO_XOUT_L,MPU9150_GYRO_XOUT_H));
+  float xg = (float)IMU_gyro('X');
+  Serial.print(String(xg));
   Serial.print("  ");
   Serial.print(MPU9150_readSensor(MPU9150_GYRO_YOUT_L,MPU9150_GYRO_YOUT_H));
   Serial.print("  ");
@@ -64,6 +66,3 @@ void loop()
 //http://pansenti.wordpress.com/2013/03/26/pansentis-invensense-mpu-9150-software-for-arduino-is-now-on-github/
 //Thank you to pansenti for setup code.
 //I will documented this one later.
-
-
-
