@@ -655,11 +655,11 @@ void detect_ball(){
 
 void detectAruco(int i){
 
-	double focal_length = 2491.8;
-	double dx = 160;
-	double dy = 120;
+	double focal_length = 1007.568;
+	double dx = 640;
+	double dy = 480;
 	Mat cameraMatrix = (Mat_<double>(3,3) << focal_length,0,dx,0,focal_length,dy,0,0,1);
-	Mat distCoeffs = (Mat_<double>(1,5) << 0,0,0,0,0);
+	Mat distCoeffs = (Mat_<double>(1,5) << 0.2014,-0.5307,0,0,0.437);
 	vector <Vec3d> rvecs,tvecs;
 	string name = "pics/aruco_1_"+to_string(i)+".png";
 	Mat inputImage = imread(name,CV_LOAD_IMAGE_GRAYSCALE);
