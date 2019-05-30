@@ -726,11 +726,28 @@ double RPI_value = PI;
 int drive_command=-1;
 int servo_pos = comm_tsy.get_servo();
 
+float gX, gY, gZ;
+float rX, rY, rZ;
+
+
 void loop() // @,a=15,b=1,fwd=2,$
 { 
    reading100ms();
    //Serial.println("****************************************");
-   battery_voltage = checkBattery();
+   //battery_voltage = checkBattery();
+   gX = IMU_accel('X') / 16384.0;
+   gY = IMU_accel('Y') / 16384.0;
+   gZ = IMU_accel('Z') / 16384.0;
+
+   Serial.println("gX: "+String(gX) + " gY: "+String(gY) + "gZ: "+String(gZ));
+
+   rX = IMU_gyro('X') / 131.0;
+   rY = IMU_gyro('Y') / 131.0;
+   rZ = IMU_gyro('Z') / 131.0;
+
+   Serial.println("gX: "+String(rX) + " gY: "+String(rY) + "gZ: "+String(rZ));
+   delay(500);
+   
 }
 
 

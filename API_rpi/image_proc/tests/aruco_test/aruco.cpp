@@ -16,7 +16,7 @@
 //#include "opencv2/core/utility.hpp"
 //#include "opencv2/imgcodecs.hpp"
 
-#include <raspicam/raspicam_cv.h>
+//#include <raspicam/raspicam_cv.h>
 
 
 using namespace cv;
