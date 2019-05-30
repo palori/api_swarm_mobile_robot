@@ -669,17 +669,17 @@ void pic_cm_comm1(){
 
 			int j=0;
 			Mat pic;
-			while(j<100){
+			while(j<30){
 				cout<<"Capturing "+to_string(j)+"..."<<endl;
 				Camera.grab();
 				Camera.retrieve (pic);
 				//Mat pic_color;
 				//cvtColor(pic,pic_color,COLOR_RGB2BGR);
 				//string pic_name = "pics/ball_cm_"+to_string(j)+".png";
-				string pic_name = "pics/calib_"+to_string(j)+".png";
+				string pic_name = "pics/aruco_"+to_string(j)+".png";
 				imwrite(pic_name,pic);
 				j++;
-				usleep(1000000);
+				usleep(2000000);
 			}
 
 		}
