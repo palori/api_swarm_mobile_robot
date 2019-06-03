@@ -2,6 +2,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
+#include "opencv2/aruco.hpp"
 
 #include "opencv2/core/core.hpp"
 
@@ -652,14 +653,39 @@ void detect_ball(){
 
 }
 
+void detectAruco(int i){
+
+	double focal_length = 1007.568;
+	double dx = 640;
+	double dy = 480;
+	Mat cameraMatrix = (Mat_<double>(3,3) << focal_length,0,dx,0,focal_length,dy,0,0,1);
+	Mat distCoeffs = (Mat_<double>(1,5) << 0.2014,-0.5307,0,0,0.437);
+	vector <Vec3d> rvecs,tvecs;
+	string name = "pics/aruco_1_"+to_string(i)+".png";
+	Mat inputImage = imread(name,CV_LOAD_IMAGE_GRAYSCALE);
+	vector<int> markerIds;
+	vector<vector<Point2f>> markerCorners, rejectedCandidates;
+	Ptr<aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(aruco::DICT_4X4_50);
+	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
+	cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
+	cv::aruco::estimatePoseSingleMarkers(markerCorners,0.05,cameraMatrix,distCoeffs,rvecs,tvecs);
+	cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
+	string window_name = "ARUCO_"+to_string(i);
+  	namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+  	imshow( window_name , inputImage);
+  	waitKey(0);
+
+}
+
 
 
 int main(){
 
 	//cout << "shape_color: " << endl << shape_color() << endl;
-	cout << "detect_ball: "  << endl;
-	detect_ball();
-
+	cout << "ARUCO DETECTION: "  << endl;
+	for (unsigned int i=0;i<7;i++){
+		detectAruco(i);
+	}
 
 	return 0;
 }

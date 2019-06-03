@@ -45,8 +45,8 @@ int const max_BINARY_value = 255;
 int lowThreshold=170; //% = 40;
 const int thres_ratio = 4;
 const int kernel_size = 3;
-const int CAM_W = 320;
-const int CAM_H = 240;
+const int CAM_W = 1280;
+const int CAM_H = 960;
 double old_left = 0.0;
 double old_right = 0.0;
 //closing
@@ -630,12 +630,12 @@ int shape_color (){
 }
 
 void pic_cm_comm1(){
-	bool followline = true;
-	bool pictures = false;
+	bool followline = false;
+	bool pictures = true;
 	bool shapes = false;
 
 	if (followline) camera_init();
-	if (pictures) camera_init_color();
+	if (pictures) camera_init(); //camera_init_color();
 
 	if (camera_start() >= 0){
 		
@@ -669,17 +669,17 @@ void pic_cm_comm1(){
 
 			int j=0;
 			Mat pic;
-			while(j<10){
+			while(j<30){
 				cout<<"Capturing "+to_string(j)+"..."<<endl;
 				Camera.grab();
 				Camera.retrieve (pic);
-				Mat pic_color;
-				cvtColor(pic,pic_color,COLOR_RGB2BGR);
+				//Mat pic_color;
+				//cvtColor(pic,pic_color,COLOR_RGB2BGR);
 				//string pic_name = "pics/ball_cm_"+to_string(j)+".png";
-				string pic_name = "pics/aruco_1_"+to_string(j)+".png";
+				string pic_name = "pics/aruco_"+to_string(j)+".png";
 				imwrite(pic_name,pic);
 				j++;
-				usleep(5000000);
+				usleep(2000000);
 			}
 
 		}

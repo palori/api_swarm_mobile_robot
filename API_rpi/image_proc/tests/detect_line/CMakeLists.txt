@@ -4,7 +4,7 @@ project (raspicam_test_find_line)
 set(CMAKE_MODULE_PATH /usr/local/lib/cmake)
 
 find_package(raspicam REQUIRED)
-find_package(OpenCV 3.4)
+find_package(OpenCV)
 IF  ( OpenCV_FOUND AND raspicam_CV_FOUND)
 	MESSAGE(STATUS "COMPILING OPENCV TESTS")
 	add_executable (find_line detect_line.cpp ../../../comm_rpi_1.cpp ../../../utils.cpp)  
