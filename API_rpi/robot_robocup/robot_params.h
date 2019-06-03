@@ -1,8 +1,8 @@
 #ifndef robot_params_h
 #define robot_params_h
 
-#include "../utils/utils.h"
-#include "../utils/item.h"
+#include "utils.h"
+#include "item.h"
 
 using namespace std;
 

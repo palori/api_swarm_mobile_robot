@@ -1,8 +1,8 @@
 #ifndef sensors_h
 #define sensors_h
 
-#include "../utils/utils.h"
-#include "../utils/item.h"
+#include "utils.h"
+#include "item.h"
 
 using namespace std;
 

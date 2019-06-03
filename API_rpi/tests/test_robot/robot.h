@@ -5,24 +5,20 @@
 #include <thread>
 #include <mutex>
 #include <chrono>		// only for sleeping the threads while testing
-#include <math.h>
 
-#include "../utils/utils.h"
-#include "../utils/item.h"
+#include "../item.h"
+#include "../robot_params.h"
+#include "../sensors.h"
+//#include "../controllers.h"
+#include "../messages.h"
+#include "../comm_rpi_2.h"
+#include "../../publisher.h"
+#include "../../subscriber.h"
+//#include "localization.h"
+//#include "task_planner.h"
+#include "../utils.h"
 
-//#include "../robot/controllers.h"
-#include "../robot/robot_params.h"
-#include "../robot/sensors.h"
-
-#include "../comm/messages.h"
-#include "../comm/comm_rpi_2.h"
-#include "../comm/pub_subs/publisher.h"
-#include "../comm/pub_subs/subscriber.h"
-
-//#include "localization.h" // non-existing file
-//#include "../task_allocation/task_planner.h"
-
-#include "../maps/maps.h"
+//#include "maps/maps.h"
 
 using namespace std;
 
@@ -60,10 +56,9 @@ public:
 	// Task_planner task_planner;
 
 
-	Item<string> master_data;
-	Item<string> init_pose;
 	Item<string> image_data;
-	Item<string> drive_command;
+	//Item<string> init_pose;
+	Item<string> master_data;
 	Item<bool> run_mission;
 
 
@@ -80,15 +75,8 @@ public:
 	void listen_robot_b();
 	void listen_master();
 
-	//void send_task();
-
 	void run();						// start the threads and while true loop
-	
-	void update_pose(float x0, float y0, float th0);
-	void compute_distance(float x, float y, float *d_w, float *th_w);
 
-	void navigate_0(Graph* map, string start_id, string end_id);
-	void navigate_test();
 };
 
 #endif

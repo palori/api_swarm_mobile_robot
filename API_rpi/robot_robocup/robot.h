@@ -7,22 +7,19 @@
 #include <chrono>		// only for sleeping the threads while testing
 #include <math.h>
 
-#include "../utils/utils.h"
-#include "../utils/item.h"
+#include "item.h"
+#include "robot_params.h"
+#include "sensors.h"
+//#include "controllers.h"
+#include "messages.h"
+#include "comm_rpi_2.h"
+#include "../publisher.h"
+#include "../subscriber.h"
+//#include "localization.h"
+//#include "task_planner.h"
+#include "utils.h"
 
-//#include "../robot/controllers.h"
-#include "../robot/robot_params.h"
-#include "../robot/sensors.h"
-
-#include "../comm/messages.h"
-#include "../comm/comm_rpi_2.h"
-#include "../comm/pub_subs/publisher.h"
-#include "../comm/pub_subs/subscriber.h"
-
-//#include "localization.h" // non-existing file
-//#include "../task_allocation/task_planner.h"
-
-#include "../maps/maps.h"
+#include "maps/maps.h"
 
 using namespace std;
 
