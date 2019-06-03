@@ -1,4 +1,4 @@
-cd `pwd`/API_rpi/robot/test_map/cmake
+cd `pwd`/../API_rpi/robot/test_map/cmake
 ./clean.sh
 
 cmake .
