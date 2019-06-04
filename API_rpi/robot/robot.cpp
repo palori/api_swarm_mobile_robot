@@ -254,6 +254,13 @@ void Robot::send_task(){//Publisher pub_image_task){
 */
 
 
+void check_keep_alives(){
+	// to do!
+	auto route_end = chrono::system_clock::now();
+
+	chrono::duration<double> route_elapsed = route_end - route_start;
+	cout << "Route found in " << route_elapsed.count() << "s." << endl;
+}
 
 
 

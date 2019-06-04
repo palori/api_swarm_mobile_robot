@@ -80,6 +80,8 @@ public:
 	void listen_robot_b();
 	void listen_master();
 
+	void check_keep_alives();
+
 	//void send_task();
 
 	void run();						// start the threads and while true loop

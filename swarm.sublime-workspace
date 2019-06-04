@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"comp",
+				"comp1"
+			],
+			[
 				"co",
 				"context"
 			],
@@ -510,15 +514,26 @@
 			[
 				"file",
 				"filename"
-			],
-			[
-				"img_",
-				"img_hsv"
 			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "API_rpi/robot/robot.h",
+			"settings":
+			{
+				"buffer_size": 2422,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -560,11 +575,41 @@
 	},
 	"expanded_folders":
 	[
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot"
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup"
 	],
 	"file_history":
 	[
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/clean.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/run.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot_params.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot_params.cpp",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/main_robot.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robots_config.csv",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/cmake_robot.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/run_potato_andrija.sh",
+		"/home/pau/Documents/learn/bash/read_files/read_csv.sh",
+		"/home/pau/Documents/learn/bash/read_files/myfile.csv",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/make_robot.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/CMakeLists.txt",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/clean.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_image/clean.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/cmake_image.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/clean_all.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot_robocup/test_utils/Makefile",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot_robocup/test_robot/Makefile",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot_robocup/test_master/Makefile",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot_robocup/test_map/Makefile",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot_robocup/test_map/cmake/CMakeLists.txt",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot_robocup/test_image/others/CMakeLists.txt",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot_robocup/test_image/potato/CMakeLists.txt",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/image_analysis.h",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/messages.h",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/messages.cpp",
@@ -581,7 +626,6 @@
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/item.tpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/subscriber.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/subscriber.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot_params.h",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/camera.h",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/camera.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/test_subs.cpp",
@@ -592,7 +636,6 @@
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/sensors.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/comm_.h",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/test_teensy_robot/test_fwd_imma/test_fwd_imma.ino",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot_params.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/controllers.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/controllers.h",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/sensors.h",
@@ -670,28 +713,7 @@
 		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/socket.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/s.h",
 		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/context.hpp",
-		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/socket_types.hpp",
-		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/socket_options.hpp",
-		"/home/pau/Documents/git_repos/rapidjson/example/tutorial/tutorial.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/pub.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/sub.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/thread_ex.cpp",
-		"/home/pau/Documents/learn/c++/pub-subs/readme.txt",
-		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/zmqpp.hpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/pub_class.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/calibrate.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/ir.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/ir.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/calibrate.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/motor.h",
-		"/home/pau/Desktop/msg2delete/msg2_kuba_zolci.txt",
-		"/home/pau/Desktop/utils.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/MakeFile",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/connect_2_robot_rpi.txt",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/image_proc/tests/tests.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/image_proc/tests/take_pic/take_pic.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line.cpp",
-		"/home/pau/raspi_mount/connect_2_robot_rpi.txt"
+		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/socket_types.hpp"
 	],
 	"find":
 	{
@@ -709,6 +731,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"$2",
+			"$1",
 			"subscriber_port",
 			"publisher_port",
 			"mage",
@@ -744,6 +768,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"$action",
+			"$test_folder",
 			"port_task",
 			"port_image",
 			"",
@@ -776,8 +802,67 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "API_rpi/robot/robot.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2422,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								571,
+								571
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 852.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		},
 		{

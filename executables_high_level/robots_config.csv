@@ -1,0 +1,6 @@
+agent,id,hostname,ip,port_info,port_image,port_task
+master,0,ginger,192.168.43.5,8000,0,0
+robot,1,pumpkin,192.168.43.38,8000,7000,7001
+robot,2,potato,192.168.43.138,8000,7000,7001
+robot,3,asparagus,192.168.43.174,8000,7000,7001
+# last row is never read

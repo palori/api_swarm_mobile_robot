@@ -1,6 +1,8 @@
 #ifndef robot_params_h
 #define robot_params_h
 
+#include <chrono>				// storing keep alive (KA) times
+
 #include "../utils/utils.h"
 #include "../utils/item.h"
 
@@ -30,13 +32,23 @@ public:
 	Item<int> port_info_robot_a;
 	Item<int> port_info_robot_b;
 
-	// vectors
+
+	/* Info of the specific position might not be needed
 	Items<float> x;		// maybe just the current position???
 	Items<float> y;
 	//Items<float> z;
-	Items<float> th;
-	Items<int> tasks;	// list of completed tasks by this robot (the last one is the current, working on)
+	Items<float> th;*/
 
+	Items<string> tasks_to_do;	// tasks assigned by the leader
+	Items<string> tasks_done;	// list of completed tasks by this robot (the last one is the current, working on)
+
+	Item<string> previous_node;	// or start node of the route and then having current node???
+	//Item<string> current_node;
+	Item<string> destiny_node;
+
+	Items<string> route;	// output from path planning??? (not ready for that, yet)
+
+	Items<auto> ka; 		// keep alive (KA)
 
 	int get_MAX_LEN();
 	void set_MAX_LEN(int i);
