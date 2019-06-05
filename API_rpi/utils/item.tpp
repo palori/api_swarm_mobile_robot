@@ -168,6 +168,19 @@ void Items<T>::print_items(){
 	}
 }
 
+template <class T>
+string Items<T>::to_string_cs(){ 	// cs = coma separated
+	vector<T> v = get_items();
+	string s = "";
+	if (v.size() > 0){
+		s = to_string(v.at(0));
+		for (int i = 1; i < v.size(); i++){
+			s += ", " + to_string(v.at(i));
+		}
+	}
+	return s;
+}
+
 
 template<class T>
 Items<T> & Items<T>::operator=(Items<T>& items_to_copy){

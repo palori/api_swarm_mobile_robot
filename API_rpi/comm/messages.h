@@ -16,6 +16,7 @@ string encode_master_commands(string msg, int i);
 string encode_robot_params(Robot_params & rob);
 //string encode_init(string you_are, string robot_a, string robot_b, int max_len);
 //void params2msg(string & msg);
+string encode_
 
 void decode_task(string msg, Items<int> & tasks, Item<int> & side);
 void decode_ctrl(string msg, Controllers & ctrl);	// NOT fully tested, but the important ones yes

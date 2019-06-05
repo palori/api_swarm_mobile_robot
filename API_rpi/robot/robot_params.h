@@ -5,6 +5,7 @@
 
 #include "../utils/utils.h"
 #include "../utils/item.h"
+#include "keep_alive.h"
 
 using namespace std;
 
@@ -15,11 +16,18 @@ class Robot_params
 public:
 	Robot_params();
 	~Robot_params();
-	Robot_params(string hostname, int port_info, int max_len);
-	Robot_params(string hostname, int port_image,
-				 int port_task, int port_info,
-				 int port_info_robot_a, 
-				 int port_info_robot_b, int max_len);
+	Robot_params(string hostname,
+				 int port_info,
+				 int id,
+				 int max_len);
+	Robot_params(string hostname,
+				 int port_image,
+				 int port_task,
+				 int port_info,
+				 //int port_info_robot_a, 
+				 //int port_info_robot_b,
+				 int id,
+				 int max_len);
 
 
 	// Attributes
@@ -29,16 +37,17 @@ public:
 	Item<int> port_image;
 	Item<int> port_task;
 	Item<int> port_info;
-	Item<int> port_info_robot_a;
-	Item<int> port_info_robot_b;
+	//Item<int> port_info_robot_a;	// old
+	//Item<int> port_info_robot_b;	// old
 
 
 	/* Info of the specific position might not be needed
 	Items<float> x;		// maybe just the current position???
-	Items<float> y;
+	Items<float> y;		// old
 	//Items<float> z;
 	Items<float> th;*/
 
+	//Items<int> tasks;			// old
 	Items<string> tasks_to_do;	// tasks assigned by the leader
 	Items<string> tasks_done;	// list of completed tasks by this robot (the last one is the current, working on)
 
@@ -48,7 +57,8 @@ public:
 
 	Items<string> route;	// output from path planning??? (not ready for that, yet)
 
-	Items<auto> ka; 		// keep alive (KA)
+	KeepAlive ka; 		// keep alive (KA)
+	Item<int> id;
 
 	int get_MAX_LEN();
 	void set_MAX_LEN(int i);
@@ -56,6 +66,7 @@ public:
 	void print_info();
 
 	Robot_params & operator=(Robot_params & rp);
+
 
 private:
 	void init_items();

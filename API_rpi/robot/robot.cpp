@@ -203,6 +203,7 @@ void Robot::listen_robot_a(){
 	while(true){
 		info = subs_robot_a.listen();		// blocking call
 		decode_robot_params(info, robot_a);
+		robot_b.ka.times.add_item(chrono::system_clock::now());
 	}
 
 }
@@ -215,6 +216,7 @@ void Robot::listen_robot_b(){
 	while(true){
 		info = subs_robot_b.listen();		// blocking call
 		decode_robot_params(info, robot_b);
+		robot_b.ka.times.add_item(chrono::system_clock::now());
 	}
 
 }
@@ -256,10 +258,15 @@ void Robot::send_task(){//Publisher pub_image_task){
 
 void check_keep_alives(){
 	// to do!
-	auto route_end = chrono::system_clock::now();
+	bool a_alive = robot_a.ka.is_alive();
+	bool b_alive = robot_b.ka.is_alive();
 
-	chrono::duration<double> route_elapsed = route_end - route_start;
-	cout << "Route found in " << route_elapsed.count() << "s." << endl;
+	if (!a_alive || !b_alive){
+		// trigger leader election
+		int del = 0; //delete
+	}
+	int millis_sleep = 1000;	// period for checking ka's
+	this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 }
 
 
@@ -272,6 +279,7 @@ void Robot::run(){
 	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 	thread thread_master(&Robot::listen_master, this);
+	thread thread_ka(&Robot::check_keep_alives, this);
 
 	//this_thread::sleep_for(chrono::milliseconds(100));
 	sensors.print_info();

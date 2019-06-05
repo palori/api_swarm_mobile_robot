@@ -94,6 +94,7 @@ public:
 	T get_last_item_noMutex();
 
 	void print_items();
+	string to_string_cs();				// cs = coma separated
 	
 	Items<T> & operator=(Items<T>& items_to_copy);
 	
