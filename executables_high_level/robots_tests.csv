@@ -1,0 +1,6 @@
+agent,id,hostname,ip,port_info,port_image,port_task
+master,0,ginger,localhost,7999,7998,7997
+robot,1,ginger,localhost,8000,7000,7010
+robot,2,ginger,localhost,8001,7001,7011
+robot,3,ginger,localhost,8002,7002,7012
+# last row is never read

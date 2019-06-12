@@ -13,13 +13,13 @@ class Tasks
 public:
 	Tasks();
 	~Tasks();
-	Tasks();
 
+	void init();
 
 	// Attributes
 	int MAX_LEN = 10;			// default
-	Items<auto> to_do;
-	Items<bool> done;
+	Items<string> to_do;
+	Items<string> done;
 
 	int get_MAX_LEN();
 	void set_MAX_LEN(int i);
@@ -27,10 +27,7 @@ public:
 	//void print_info();
 	//Tasks & operator=(Tasks & rp);
 
-	void mask_as_done(string task);
-
-private:
-	void init_items();
+	bool mask_as_done(string task);
 
 };
 

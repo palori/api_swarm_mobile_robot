@@ -108,6 +108,40 @@ void Items<T>::add_item(T t){
 	mtx.unlock();
 }
 
+template<class T>
+void Items<T>::add_unique_item(T t){
+	mtx.lock();
+	bool unique = true;
+	for (int i = 0; i < items.size(); i++){
+		if (items.at(i) == t) {
+			unique = false;
+			break;
+		}
+	}
+	if (unique)	add_item_noMutex(t);	// only add unique items
+	mtx.unlock();
+}
+
+
+
+
+template<class T>
+void Items<T>::copy(vector<T> new_items){
+	mtx.lock();
+	items.clear();
+	items = new_items;
+	mtx.unlock();
+}
+
+template<class T>
+void Items<T>::clear(){
+	mtx.lock();
+	items.clear();
+	mtx.unlock();
+}
+
+
+
 
 
 
@@ -146,12 +180,21 @@ T Items<T>::get_last_item_noMutex(){
 
 
 
-/*
-template <class T>
-Items<T> Items<T>::operator=(Items<T> items_to_copy){
-	int max_len = items_to_copy.get_MAX_LEN();
 
-}*/
+template <class T>
+bool Items<T>::remove_item(T t){
+	bool is_erased = false;
+	mtx.lock();
+	for (int i = 0; i < items.size(); i++){
+		if(items.at(i) == t){
+			items.erase(items.begin() + i);
+			is_erased = true;
+			break;
+		}
+	}
+	mtx.unlock();
+	return is_erased;
+}
 
 
 
@@ -169,13 +212,13 @@ void Items<T>::print_items(){
 }
 
 template <class T>
-string Items<T>::to_string_cs(){ 	// cs = coma separated
+string Items<T>::to_string_cs(string delimiter){ 	// cs = coma separated, or not, depends on the delimiter you choose
 	vector<T> v = get_items();
 	string s = "";
 	if (v.size() > 0){
-		s = to_string(v.at(0));
+		s = xtos(v.at(0));
 		for (int i = 1; i < v.size(); i++){
-			s += ", " + to_string(v.at(i));
+			s += delimiter + xtos(v.at(i));
 		}
 	}
 	return s;

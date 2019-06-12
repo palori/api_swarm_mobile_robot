@@ -94,8 +94,6 @@ void processAccelData(){
   
   velX += gForceX*G*Ts;
   velY += gForceY*G*Ts;
-
-  getAngles();
 }
 
 void recordGyroRegisters() {
@@ -118,6 +116,8 @@ void processGyroData() {
   if (rotX > 250) rotX -= 500.0;
   if (rotY > 250) rotY -= 500.0;
   if (rotZ > 250) rotZ -= 500.0;
+
+  getAngles();
 }
 
 void recordTempRegisters() {

@@ -5,6 +5,7 @@
 
 #include "../utils/utils.h"
 #include "../utils/item.h"
+#include "../task_allocation/tasks.h"
 #include "keep_alive.h"
 
 using namespace std;
@@ -17,17 +18,21 @@ public:
 	Robot_params();
 	~Robot_params();
 	Robot_params(string hostname,
-				 int port_info,
 				 int id,
-				 int max_len);
+				 int max_len,
+				 int port_info);
 	Robot_params(string hostname,
-				 int port_image,
-				 int port_task,
+				 int id,
+				 int max_len,
 				 int port_info,
+				 int port_image,
+				 int port_task
 				 //int port_info_robot_a, 
 				 //int port_info_robot_b,
-				 int id,
-				 int max_len);
+				 );
+
+
+	void init_items();
 
 
 	// Attributes
@@ -48,8 +53,9 @@ public:
 	Items<float> th;*/
 
 	//Items<int> tasks;			// old
-	Items<string> tasks_to_do;	// tasks assigned by the leader
-	Items<string> tasks_done;	// list of completed tasks by this robot (the last one is the current, working on)
+	//Items<string> to_do;	// tasks assigned by the leader
+	//Items<string> done;	// list of completed tasks by this robot (the last one is the current, working on)
+	Tasks tasks;
 
 	Item<string> previous_node;	// or start node of the route and then having current node???
 	//Item<string> current_node;
@@ -67,9 +73,6 @@ public:
 
 	Robot_params & operator=(Robot_params & rp);
 
-
-private:
-	void init_items();
 
 };
 

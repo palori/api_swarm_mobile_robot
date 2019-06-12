@@ -12,7 +12,7 @@ KeepAlive::KeepAlive(float threshold_time, int max_len){
 	this->threshold_time.set(threshold_time);	// in seconds
 }
 
-KeepAlive::~KeepAlive();
+KeepAlive::~KeepAlive(){}
 
 void KeepAlive::init_items(){
 	int MAX_LEN = 10;			// default
@@ -47,18 +47,18 @@ float KeepAlive::get_time(){
 bool KeepAlive::is_alive(){
 	bool last_is_alive = true;
 	float ka_elapsed = get_time();
-	if (ka_elapsed > threshold_time){ // migth be dead
+	if (ka_elapsed > threshold_time.get()){ // migth be dead
 		last_is_alive = false;
 	}
-	ka.add_item(last_is_alive);
+	alive.add_item(last_is_alive);
 
 	vector<bool> a = alive.get_items();
 	int len = a.size();
 	if (len >= 10) len = 10; // checking as maximum the last 10 items.
 	int count_true = 0, count_false = 0;
-	int last = a.end();
+	//int last = a.end();
 	for (int i = 0; i < len; i++){
-		if (a.at(last-i)) count_true++;
+		if (a.at(len-1-i)) count_true++;
 		else count_false++;
 	}
 

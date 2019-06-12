@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <string.h> //<cstring>
-#include <string>
+#include <sstream>
 #include <vector>
 #include <mutex>
 
@@ -20,6 +20,12 @@ float str2float(string s);
 vector<string> split_str(string msg, string delimiters);
 
 
+template<typename T>	// convert any type to string
+string xtos(T x){		// (because its a template it cannot be in the cpp)
+	stringstream s;
+	s << x;
+	return s.str();
+}
 
 
 #endif

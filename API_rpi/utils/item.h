@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <mutex>
 #include "utils.h"
 
@@ -82,19 +83,25 @@ public:
 	void set_name(string s);
 
 
-	vector<T> get_items();				// use mutex
-	void add_item(T t);					// use mutex
+	vector<T> get_items();					// use mutex
+	void add_item(T t);						// use mutex
+	void add_unique_item(T t);				// use mutex (only add unique items)
 
-	vector<T> get_items_noMutex();		// NO mutex used
-	void add_item_noMutex(T t);			// NO mutex used
+	void copy(vector<T> new_items);			// use mutex
+	void clear();							// use mutex
+
+	vector<T> get_items_noMutex();			// NO mutex used
+	void add_item_noMutex(T t);				// NO mutex used
 
 	
 
 	T get_last_item();
 	T get_last_item_noMutex();
 
+	bool remove_item(T t);					// use mutex
+
 	void print_items();
-	string to_string_cs();				// cs = coma separated
+	string to_string_cs(string delimiter);	// cs = coma separated (delimiter separeted)
 	
 	Items<T> & operator=(Items<T>& items_to_copy);
 	

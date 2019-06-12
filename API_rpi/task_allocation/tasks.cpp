@@ -3,30 +3,33 @@
 
 
 Tasks::Tasks(){
-	init_items();
+	init();
 }
 
-Tasks::~Tasks();
+Tasks::~Tasks(){}
 
-Tasks::Tasks(){
-	init_items();
-	
-}
 
-void Tasks::init_items(){
-
+void Tasks::init(){
+	this->to_do.set_name("To do");
+	this->done.set_name("Done");
 }
 
 
-// Attributes
-int MAX_LEN = 10;			// default
-Items<auto> to_do;
-Items<bool> done;
 
-int Tasks::get_MAX_LEN();
-void Tasks::set_MAX_LEN(int i);
+int Tasks::get_MAX_LEN(){return MAX_LEN;}
+
+void Tasks::set_MAX_LEN(int i){
+	MAX_LEN = i;
+	to_do.set_MAX_LEN(i);
+	done.set_MAX_LEN(i);
+}
 
 //void print_info();
 //Tasks & operator=(Tasks & rp);
 
-void Tasks::mask_as_done(string task);
+bool Tasks::mask_as_done(string task){
+	bool is_done = false;
+	is_done = to_do.remove_item(task);
+	if (is_done) done.add_item(task);
+	return is_done;
+}

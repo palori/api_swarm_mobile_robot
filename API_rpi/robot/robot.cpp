@@ -6,7 +6,7 @@ Robot::Robot(){
 
 	this->hostname_master.set("localhost");
 
-	Robot_params rp("test",1,2,3,4,5,10);
+	Robot_params rp("test",1,2,3,4,5);
 	this->params = rp;
 
 	/*Publisher pub(this->params.port_image.get());
@@ -47,18 +47,30 @@ Robot::Robot(string hostname){ // params from other 2 robots (port and hostname)
 }*/
 
 // always use this one
-Robot::Robot(string hostname_master, string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b){
+Robot::Robot(string hostname_master, 
+			 string hostname, 
+			 string hostname_a, 
+			 string hostname_b, 
+			 int id,
+			 int max_len, 
+			 int port_image, 
+			 int port_task, 
+			 int port_info, 
+			 int port_info_robot_a, 
+			 int port_info_robot_b,
+			 int id_robot_a,
+			 int id_robot_b){
 	//cout << "start robot constructor" << endl;
 	this->hostname_master.set(hostname_master);
 
-	Robot_params rp(hostname, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b,max_len);
+	Robot_params rp(hostname, id, max_len, port_info, port_image, port_task);
 	this->params = rp;
 	//cout << "this params done" << endl;
 	
-	Robot_params rp_a(hostname_a, port_info_robot_a, max_len);
+	Robot_params rp_a(hostname_a, id_robot_a, max_len, port_info_robot_a);
 	this->robot_a = rp_a;
 
-	Robot_params rp_b(hostname_b, port_info_robot_b, max_len);
+	Robot_params rp_b(hostname_b, id_robot_b, max_len, port_info_robot_b);
 	this->robot_b = rp_b;
 
 
@@ -83,6 +95,8 @@ Robot::Robot(string hostname_master, string hostname, string hostname_a, string 
 
 	pub_robot_info.set_port(this->params.port_info.get());
 	pub_robot_info.setup();
+
+	bully.init();
 
 	run_mission.set(false);
 	
@@ -203,7 +217,9 @@ void Robot::listen_robot_a(){
 	while(true){
 		info = subs_robot_a.listen();		// blocking call
 		decode_robot_params(info, robot_a);
-		robot_b.ka.times.add_item(chrono::system_clock::now());
+		robot_a.ka.times.add_item(chrono::system_clock::now());
+
+		check_le_messages(info);	// leader election message
 	}
 
 }
@@ -256,19 +272,57 @@ void Robot::send_task(){//Publisher pub_image_task){
 */
 
 
-void check_keep_alives(){
+void Robot::check_keep_alives(){
 	// to do!
-	bool a_alive = robot_a.ka.is_alive();
-	bool b_alive = robot_b.ka.is_alive();
+	bool a_alive = true;
+	bool b_alive = true;
+	
+	while(true){
+		a_alive = robot_a.ka.is_alive();
+		b_alive = robot_b.ka.is_alive();
 
-	if (!a_alive || !b_alive){
-		// trigger leader election
-		int del = 0; //delete
+		if (!a_alive || !b_alive){
+			// trigger leader election
+			if (!bully.trigger.get()){
+				bully.trigger_election();
+				bully.i_detected.set(true);
+				if (a_alive) bully.robots_ids.add_unique_item(robot_a.id.get());
+				if (b_alive) bully.robots_ids.add_unique_item(robot_b.id.get());
+			}
+		}
+		int millis_sleep = 1000;	// period for checking ka's
+		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 	}
-	int millis_sleep = 1000;	// period for checking ka's
-	this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 }
 
+void Robot::leader_election(){
+	string msg;
+	int my_id, leader, proposed_leader;
+	while(true){
+		msg = "";
+		my_id = 0;
+		leader = 0;
+		proposed_leader = 0;
+		
+		bully.election(my_id, leader, proposed_leader);
+		msg = encode_leader_election(my_id, leader, proposed_leader);
+		pub_robot_info.publish(msg);
+		this_thread::sleep_for(chrono::milliseconds(1000));
+	}
+}
+
+
+void Robot::check_le_messages(string msg){
+	// check if some robot triggers leader election
+	int id = 0;
+	int leader = 0, proposed_leader = 0;
+	decode_leader_election(msg, id, leader, proposed_leader);
+	if (id != 0 && leader != 0 && proposed_leader != 0) {
+		bully.trigger_election();
+		bully.robots_ids.add_unique_item(id);
+		bully.proposed_leader.add_unique_item(proposed_leader);
+	}
+}
 
 
 void Robot::run(){
@@ -280,131 +334,21 @@ void Robot::run(){
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 	thread thread_master(&Robot::listen_master, this);
 	thread thread_ka(&Robot::check_keep_alives, this);
+	thread thread_le(&Robot::leader_election, this);
 
-	//this_thread::sleep_for(chrono::milliseconds(100));
-	sensors.print_info();
+	// get stuck here to test KA and LE
+	cout << "\n\n*** ROBOT RUN ***\n\n";
+	while(true){this_thread::sleep_for(chrono::milliseconds(10000));}
 
-	// only for testing -> always follow line
-	//this->params.tasks.add_item(LINE);			// could be also added if master sends @a=19,b=1$
-	//int task = -1, old_task = -1;
-	//string msg_task = "";
-	//send_task();
 	
-	bool run_all = false;
-
-	cout << "Update init pose" << endl;
-	string hn = params.hostname.get();
-
-	vector<Graph*> maps;
-	Graph* map;
-	/* USED IN THE COMPETITION
-	if (hn == "192.168.43.38") {
-		update_pose(-0.05, 2.9, 0.0);
-		maps.push_back(map_mission_easy("easy"));
-		//maps.push_back(map_mission_ax("ax"));
-		//maps.push_back(map_mission_ro("ro"));
-		//if (maps.front()->id == "easy") update_pose(-0.05, 2.9, 0.0);
-		//else update_pose(0.0, 0.0, 0.0);
-	}
-	else if (hn == "192.168.43.138") {
-		update_pose(-0.2, 2.9, 0.0);
-		maps.push_back(map_mission_easy("easy"));
-		maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_tunnel("tunnel"));
-		//maps.push_back(map_mission_ro("ro"));
-		
-	}
-	else if (hn == "192.168.43.174") {
-		update_pose(-0.35, 2.9, 0.0);
-		maps.push_back(map_mission_easy("easy"));
-		maps.push_back(map_mission_ax("ax"));
-		maps.push_back(map_mission_race("race"));
-	}
-	*/
-
-	/* Test square (the same for all the robots)*/
-	update_pose(0.0, 0.0, 0.0);
-	for (int i = 0; i < 3; i++){
-		maps.push_back(map_test_square("square1"));
-		maps.push_back(map_test_square("square2"));
-	}
-	
-
-	/* Test straight (the same for all the robots)
-	update_pose(0.0, 0.0, 0.0);
-	float distance = 5.0, velocity = 0.4;
-	for (int i = 0; i < 1; i++){
-		maps.push_back(map_test_straight("straight", distance, velocity));
-	}*/
-
-	cout << "Waiting for a message from the previous robot" << endl;
-	robot_b.tasks.add_item(-1);
-	string prev_robot_task;
-
-	if (hn != "192.168.43.38" && run_all){
-		// pumpkin run straight away, the rest wait for the
-		// previous to send a message when it is at node 'b'
-		int prev_robot_task;
-		while(true){
-			prev_robot_task = robot_b.tasks.get_last_item();
-			if (prev_robot_task == 0) {break;}
-			this_thread::sleep_for(chrono::milliseconds(100));
-		}
-	}
-	string start_id, end_id;
-	for (int i = 0; i < maps.size(); ++i){
-
-		//if(run_mission.get()){
-			// localization
-			// task planner
-			// path planning -> if there is one
-			map = maps.at(i);
-			
-			cout << "Map '" << map->id << "' (" << i+1 << "/" << maps.size() << ")" << endl;
-			if (map->id == "easy"){
-				start_id = "a";
-				if (hn == "192.168.43.38") end_id = "i2";
-				else end_id = "h";
-			}
-			else if (map->id == "ax"){
-				start_id = "ax1";
-				end_id = "ax3";
-			} else if (map->id == "tunnel"){
-				start_id = "t1";
-				end_id = "t5";
-			}
-			else if (map->id == "ro"){
-				start_id = "ro1";
-				end_id = "ro4";
-			}
-			else if (map->id == "race"){
-				start_id = "r1";
-				end_id = "r5";
-			}
-			else if (map->id == "square1"){
-				start_id = "sq1";
-				end_id = "sq3";
-			}
-			else if (map->id == "square2"){
-				start_id = "sq3";
-				end_id = "sq1";
-			}
-			else if (map->id == "straight"){
-				start_id = "sq1";
-				end_id = "sq2";
-			}
-			navigate_0(maps.at(i), start_id, end_id);
-			//pub_image_task.publish(encode_task(LINE,RIGHT));
-			//while(true){}
-		//}
-
-	}
 
 	thread_serial.join();	// it will never reach this point, but good to have
 	thread_image.join();
 	thread_robot_a.join();
 	thread_robot_b.join();
 	thread_master.join();
+	thread_ka.join();
+	thread_le.join();
 }
 
 
@@ -495,105 +439,6 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);	
 		
-		if (start->id == "c") {
-			// send info to the other robots so the next one can start its mission
-			params.tasks.add_item(0);
-			params.x.add_item(start->x);
-			params.y.add_item(start->y);
-			params.th.add_item(th_w);
-
-			string robot_info = encode_robot_params(params);
-			pub_robot_info.publish(robot_info);
-		}
-
-		if (start->id == "i1"){
-			// one robot waits before the end until the other two
-			// do other tasks (ax-gate, race...) and waits until
-			// they send an end task, or by timeout (set manually)
-			cout << "wait to end ********************************************\n";
-			auto end_wait_start = chrono::system_clock::now();
-			while(true){
-				// end by finishing tasks
-				if (robot_a.tasks.get_last_item() >= 10 || robot_b.tasks.get_last_item() >= 10) {break;}
-				this_thread::sleep_for(chrono::milliseconds(100));
-
-				// end by timeout
-				auto end_wait_end = chrono::system_clock::now();
-				chrono::duration<double> end_wait_elapsed = end_wait_end - end_wait_start;
-				if (end_wait_elapsed.count() > 180) break;
-			}
-			cout << "end now ********************************************\n";
-			this_thread::sleep_for(chrono::milliseconds(2000));
-		}
-
-		if (start->id == "ax1") {
-
-			string msg_h = "@a=5,b=1$";
-			drive_command.set(msg_h);
-			this_thread::sleep_for(chrono::milliseconds(500));
-
-			msg_h = "@a=3,b=1,od=0.2$";
-			drive_command.set(msg_h);
-			this_thread::sleep_for(chrono::milliseconds(500));
-
-			sensors.print_info();
-			d_w = edge->distance;
-		}
-
-
-		if (start->id == "ax2") {
-			float ir1 = sensors.ir1.get_last_item() ;
-			while(true){
-				// waiting to cross the AX-gate
-				if(sensors.ir1.get_last_item() >= 0.5) break;
-			}
-			d_w = edge->distance + ir1;
-		}
-
-		if (start->id == "r2") d_w = edge->distance;
-		
-
-		if (start->id == "r4"){
-			// one robot waits the other to finish the race
-			cout << "wait to end ********************************************\n";
-			//auto end_wait_start = chrono::system_clock::now();
-			while(true){
-				// end by finishing tasks
-				if (robot_a.tasks.get_last_item() == 5 || robot_b.tasks.get_last_item() == 5) {break;}
-				this_thread::sleep_for(chrono::milliseconds(100));
-
-				// end by timeout
-				/*auto end_wait_end = chrono::system_clock::now();
-				chrono::duration<double> end_wait_elapsed = end_wait_end - end_wait_start;
-				if (end_wait_elapsed.count() > 120) break;*/
-			}
-			cout << "end now ********************************************\n";
-			//this_thread::sleep_for(chrono::milliseconds(2000));
-		}
-
-
-		// CONFIGURATION MAP ROBOT
-		if (map->id == "ro") {
-			edge->compute_distance();
-			d_w = edge->distance;
-			th_w = edge->th_w_node_1;
-		}
-
-		if (start->id == "ro1" ){
-			float angle = PI/2;
-			update_pose (0,0,angle);
-		} 		
-
-		if (start->id == "ro2") {
-			while(true){
-				// waiting to cross the robot
-				if(sensors.ir2.get_last_item() <= 0.5) 	break;
-			}
-			while(true){
-				if(sensors.ir2.get_last_item() >= 0.5) break;								
-			}
-		}
-
 			
 		//while(!sensors.newCommand.get_last_item()){
 		//	this_thread::sleep_for(chrono::milliseconds(100));
@@ -602,17 +447,6 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		cout << "-------------turn\n";
 		float trn = th_w - sensors.th.get_last_item();
 
-
-		if (start->id == "g" || start->id == "h" || map->id == "ax") trn = 0.0; //th_w += PI;
-		if (start->id == "g1" || start->id == "i" || start->id=="i1") trn = 0.0;
-		if (start->id == "t2") trn = 1.57;
-		else if (start->id == "t4") trn = 3.14;
-		else if (map->id == "tunnel") trn = 0.0;	
-
-		if (start->id == "r2") trn = -1.57;
-		else if (map->id == "race") trn = 0;
-		//string msg_task = encode_task(IDLE,NO_LINE);
-		//pub_image_task.publish(msg_task);
 		string msg = "";
 		if (map->id != "straight"){
 			msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
@@ -668,102 +502,9 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 		count_drive++;
 		drive_command.set(msg); 
 		
-		//this_thread::sleep_for(chrono::milliseconds(5000));
-		//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-		while(count_drive == sensors.newCommand.get_last_item()){
-			// CONFIGURATION MAP ROBOT
-			if (start->id == "ro3") {
-				if (sensors.cross.get_last_item() > 0 && sensors.x.get() < 1.85){
-					msg += "@a=" + to_string(STOP) +",b=1$";
-					drive_command.set(msg);
-				}
-			}
-			//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-			//this_thread::sleep_for(chrono::milliseconds(100));
-		}
-
-
-		if (start->id == "t4"){
-			cout << "the other robot can now finish the race******************\n";
-			params.tasks.add_item(5);
-			params.x.add_item(start->x);
-			params.y.add_item(start->y);
-			params.th.add_item(th_w);
-
-			string robot_info = encode_robot_params(params);
-			pub_robot_info.publish(robot_info);
-			this_thread::sleep_for(chrono::milliseconds(3000));
-		}
-
-		if (end->id == "t5" || end->id == "r5") {
-			// send info to the other robots so the next one can start its mission
-			//this_thread::sleep_for(chrono::milliseconds(1000));
-			cout << "finish & celebration!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-			params.tasks.add_item(10);
-			params.x.add_item(end->x);
-			params.y.add_item(end->y);
-			params.th.add_item(th_w);
-
-			string robot_info = encode_robot_params(params);
-			pub_robot_info.publish(robot_info);
-
-			float turn = 60;
-			for (int i = 0; i < 10; ++i){
-				cout << "celebration turn " << i << "++++++++++++++++++\n";
-				turn = -turn;
-				msg = "@i=" + to_string(i) + ",a=16,b=1,v=0.3,trn=" + to_string(turn) + "$";
-				drive_command.set(msg);
-				count_drive++;
-				while(count_drive == sensors.newCommand.get_last_item()){}
-			}
-
-		}
-
-
-		sensors.print_info();		
-
-		compute_distance(end->x,end->y, &d_w, &th_w);
-		string host_name = params.hostname.get();
-		//if (host_name == "192.168.43.38") {d_w = 0;}
-		d_w = 0; // NO RECOVERY!!!
 		
-		if( d_w >= threshold_xy){
 
-			cout << "-------------recovery-- dist:" + to_string(d_w) + "\n";
-
-			//msg_task = encode_task(IDLE,NO_LINE);
-			//pub_image_task.publish(msg_task);
-
-			trn = th_w - sensors.th.get_last_item();
-
-			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
-			count_drive++;
-			drive_command.set(msg); 
-			
-			//this_thread::sleep_for(chrono::milliseconds(5000));
-			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(count_drive == sensors.newCommand.get_last_item()){
-				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				//this_thread::sleep_for(chrono::milliseconds(100));
-			}
-
-			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(d_w) + "$";
-			count_drive++;
-			drive_command.set(msg); 
-			
-			//this_thread::sleep_for(chrono::milliseconds(5000));
-			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(count_drive == sensors.newCommand.get_last_item()){
-				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				//this_thread::sleep_for(chrono::milliseconds(100));
-			}
-		}
-		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
-		
-		
-				
-				
-	}
+	}	
 	
 }
 
@@ -773,236 +514,3 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 
 
 
-
-
-
-
-
-void Robot::navigate_test(){//Graph* map){
-	//sensors.print_info();
-	//update_pose(1.0, 1.0, 1.0);
-	//update_pose(-0.05, 2.9, 0.0);
-
-	string hn = params.hostname.get();
-	Graph* map;
-	if (hn == "192.168.43.38") {map = map_mission0();}
-	else if (hn == "192.168.43.138") {map = map_mission1();}
-	else if (hn == "192.168.43.174") {map = map_mission2();}
-	map->reset_nodes();
-	Dijkstra dijkstra(map);
-	if (hn == "192.168.43.38")      {dijkstra.find_route("a", "i");}
-	else if (hn == "192.168.43.138") {
-		dijkstra.find_route("a", "r");
-		}
-	else if (hn == "192.168.43.174") {dijkstra.find_route("a", "a9");}
-	Edge* edge;
-	Node* start;
-	Node* end;
-	float th_w;
-	float d_w;
-
-	bool wait;
-
-	float threshold_xy = 0.05; // to say that the robot got to the final place
-	int count_drive = sensors.newCommand.get_last_item() - 1;
-	//cout << "count_drive: " << count_drive << endl;
-	
-
-	for (int i = 1; i < dijkstra.route.size(); ++i)
-	{
-		start = dijkstra.route.at(i-1);
-		end = dijkstra.route.at(i);
-		edge = map->find_edge(start, end);
-		
-		d_w = edge->distance;
-		th_w = edge->get_th_w(start);
-
-		if (edge->line==0) compute_distance(end->x,end->y,&d_w,&th_w);	
-		
-		if (start->id == "b") {
-			// send info to the other robots so the next one can start its mission
-			params.tasks.add_item(0);
-			params.x.add_item(start->x);
-			params.y.add_item(start->y);
-			params.th.add_item(th_w);
-
-			string robot_info = encode_robot_params(params);
-			pub_robot_info.publish(robot_info);
-		}
-			
-		//while(!sensors.newCommand.get_last_item()){
-		//	this_thread::sleep_for(chrono::milliseconds(100));
-		//}
-		cout << "Node: " << start->id << endl;
-		cout << "-------------turn\n";
-		float trn = th_w - sensors.th.get_last_item();
-
-		if (edge->vel < 0) trn = 0.0;//th_w += PI;
-
-		//string msg_task = encode_task(IDLE,NO_LINE);
-		//pub_image_task.publish(msg_task);
-		string msg = "@i=21,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
-		count_drive++;
-		drive_command.set(msg); 
-		
-			//this_thread::sleep_for(chrono::milliseconds(5000));
-		//cout << "count_drive: " << count_drive << ", nc: " <<  sensors.newCommand.get_last_item() << endl;			
-		while(count_drive == sensors.newCommand.get_last_item()){
-			//cout << "nc: " << sensors.newCommand.get_last_item() << endl;
-			//cout << "th: " << sensors.th.get_last_item() << endl;
-			//this_thread::sleep_for(chrono::milliseconds(10));
-		}
-		//cout << "count_drive: " << count_drive << ", nc: " << sensors.newCommand.get_last_item() << endl;
-		cout << "-------------fwd\n"; 
-		sensors.print_info();
-		msg = "@i=22,a=";
-		/*
-		if (start->id == "d") {
-			msg += to_string(RACE);
-		} 
-		else
-		*/
-		 if (edge->line == 0){
-			 msg += to_string(FWD);
-		}
-		else {
-			string _msg = "";
-			if (start->id == "f") {
-				_msg = encode_task(BALL,edge->line);
-				pub_image_task.publish(_msg);
-				this_thread::sleep_for(chrono::milliseconds(2000));
-				d_w = sensors.obst_dist.get_last_item() ; 
-				if (d_w == 0.0) d_w = 0.45;
-				d_w -= 0.05; //we want to stop 5cm in front of the ball
-				cout << "distance to BALL: " << to_string(d_w) << endl;
-			}
-			else{
-				_msg = encode_task(LINE,edge->line);
-				pub_image_task.publish(_msg);
-			}
-			//pub_image_task.publish(_msg);
-			//cout << "image task: " << LINE << ", edge: " << edge->line << ", msg: " << msg_ << endl;
-			cout << "image task msg: " << _msg << endl;
-			msg += to_string(FOLLOW);
-		}
-		msg += ",b=1,fwd=" + to_string(d_w) + ",v=" + to_string(edge->vel) + "$";
-		count_drive++;
-		drive_command.set(msg); 
-		
-		//this_thread::sleep_for(chrono::milliseconds(5000));
-		//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-		while(count_drive == sensors.newCommand.get_last_item()){
-			//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-			//this_thread::sleep_for(chrono::milliseconds(100));
-		}
-
-		//if (end->id == "f") {update_pose(sensors.x.get(),0.0,sensors.th.get_last_item());}
-		//if (end->id == "h") {update_pose(start->x,sensors.y.get_last_item(),sensors.th.get_last_item());}
-
-		if (end->id == "l") {
-			float angle;
-			angle = -PI/2;
-			msg = "@i=25,a=16,b=1,v=0.4,trn="+to_string(angle)+"$";
-			count_drive++;
-			drive_command.set(msg); 
-			while(count_drive == sensors.newCommand.get_last_item()){}
-			
-			msg = "@i=25,a=15,b=1,v=0.4,fwd=0.6$";
-			count_drive++;
-			drive_command.set(msg); 
-			while(count_drive == sensors.newCommand.get_last_item()){}
-
-			update_pose(2.08,0.35,angle);
-			this_thread::sleep_for(chrono::milliseconds(1000));
-
-			msg = "@i=25,a=15,b=1,fwd=0.2,v=-0.4$";
-			count_drive++;
-			drive_command.set(msg); 
-			while(count_drive == sensors.newCommand.get_last_item()){}
-		}
-
-		if (end->id == "m") {
-			float angle;
-			msg = "@i=25,a=15,b=1,fwd=0.4,v=0.4$";			
-			count_drive++;
-			drive_command.set(msg); 
-			while(count_drive == sensors.newCommand.get_last_item()){}
-			
-			angle = PI/2;
-			update_pose(sensors.x.get(),4.35,angle);
-			this_thread::sleep_for(chrono::milliseconds(1000));
-			
-			msg = "@i=25,a=15,b=1,fwd=0.2,v=-0.4$";
-			count_drive++;
-			drive_command.set(msg); 
-			while(count_drive == sensors.newCommand.get_last_item()){}
-		}
-
-		sensors.print_info();
-
-		string msg_servo;
-		if (end->id == "f1") {
-			cout << "CLOSING SERVO!" << endl;
-			msg_servo = "@s=1$";
-			master_data.set(msg_servo);
-		}
-		
-
-		compute_distance(end->x,end->y, &d_w, &th_w);
-		string host_name = params.hostname.get();
-		if (host_name == "192.168.43.38") {d_w = 0;}
-		
-		
-		if( d_w >= threshold_xy){
-
-			cout << "-------------recovery-- dist:" + to_string(d_w) + "\n";
-
-			//msg_task = encode_task(IDLE,NO_LINE);
-			//pub_image_task.publish(msg_task);
-
-			trn = th_w - sensors.th.get_last_item();
-
-			msg = "@i=23,a=16,b=1,v=" + to_string(edge->vel) + ",trn=" + to_string(trn) + "$";
-			count_drive++;
-			drive_command.set(msg); 
-			
-			//this_thread::sleep_for(chrono::milliseconds(5000));
-			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(count_drive == sensors.newCommand.get_last_item()){
-				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				//this_thread::sleep_for(chrono::milliseconds(100));
-			}
-
-			msg = "@i=24,a=15,b=1,v=" + to_string(edge->vel) + ",fwd=" + to_string(d_w) + "$";
-			count_drive++;
-			drive_command.set(msg); 
-			
-			//this_thread::sleep_for(chrono::milliseconds(5000));
-			//cout << "nc" << sensors.newCommand.get_last_item() << endl;			
-			while(count_drive == sensors.newCommand.get_last_item()){
-				//cout << "waiting, nc: " << sensors.newCommand.get_last_item() << endl;
-				//this_thread::sleep_for(chrono::milliseconds(100));
-			}
-		}
-		else cout << "-------------recovery-- dist:" + to_string(d_w) + " --------NO\n";
-		
-		if (start->id == "f3") {
-			cout << "OPENING SERVO" << endl;
-			msg_servo = "@s=0$";
-			master_data.set(msg_servo);
-		}
-			
-		if (end->id == "p") {
-			msg = "@i=25,a=15,b=1,fwd=0.2,v=-0.4$";
-			count_drive++;
-			drive_command.set(msg); 
-			while(count_drive == sensors.newCommand.get_last_item()){}
-		}
-
-		if (end->id == "a1") {this_thread::sleep_for(chrono::milliseconds(5000));} // should be wait until potato communicates box finished
-
-				
-				
-	}
-	
-}

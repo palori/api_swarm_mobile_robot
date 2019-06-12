@@ -20,7 +20,7 @@ public:
 
 	// Attributes
 	int MAX_LEN = 10;			// default
-	Items<auto> times; 		// keep alive (KA)
+	Items<chrono::_V2::system_clock::time_point> times; 		// keep alive (KA)
 	Item<float> threshold_time;
 	Items<bool> alive;
 	Item<bool> is_now_alive;

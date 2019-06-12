@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <thread>
-#include <mutex>
 #include <chrono>		// only for sleeping the threads while testing
 #include <math.h>
 
@@ -22,6 +21,10 @@
 //#include "localization.h" // non-existing file
 //#include "../task_allocation/task_planner.h"
 
+#include "../leader_election/bully.h"
+
+#include "../path_planning/dijkstra.h"
+
 #include "../maps/maps.h"
 
 using namespace std;
@@ -34,7 +37,19 @@ public:
 	~Robot();
 
 	//Robot(string hostname);
-	Robot(string hostname_master, string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b);
+	Robot(string hostname_master, 
+		  string hostname, 
+		  string hostname_a, 
+		  string hostname_b, 
+		  int id,
+		  int max_len, 
+		  int port_image, 
+		  int port_task, 
+		  int port_info, 
+		  int port_info_robot_a, 
+		  int port_info_robot_b,
+		  int id_robot_a,
+		  int id_robot_b);
 
 	////////////////
 	// Attributes //
@@ -67,6 +82,10 @@ public:
 	Item<bool> run_mission;
 
 
+	// leader election
+	Bully bully;
+
+
 
 	/////////////
 	// Methods //
@@ -81,6 +100,9 @@ public:
 	void listen_master();
 
 	void check_keep_alives();
+	void leader_election();
+
+	void check_le_messages(string msg);		// le = leader election
 
 	//void send_task();
 
@@ -90,7 +112,6 @@ public:
 	void compute_distance(float x, float y, float *d_w, float *th_w);
 
 	void navigate_0(Graph* map, string start_id, string end_id);
-	void navigate_test();
 };
 
 #endif

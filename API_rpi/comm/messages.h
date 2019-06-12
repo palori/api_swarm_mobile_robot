@@ -6,6 +6,7 @@
 #include "../robot/controllers.h"
 #include "../robot/robot_params.h"
 #include "../robot/sensors.h"
+//#include "../task_allocation/tasks.h"	// also called in 'robot_params'
 
 
 string detect_message(string msg);
@@ -13,10 +14,12 @@ string detect_message(string msg);
 string encode_task(int task, int side);
 string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing, int i);
 string encode_master_commands(string msg, int i);
-string encode_robot_params(Robot_params & rob);
+string encode_robot_params(Robot_params & rob, bool send_id, bool send_prev_node, bool send_dest_node, bool send_route, bool send_to_do, bool send_done);
+string encode_leader_election(int my_id, int leader, int proposed_leader);
 //string encode_init(string you_are, string robot_a, string robot_b, int max_len);
 //void params2msg(string & msg);
-string encode_
+
+//string encode_tasks_to_do();
 
 void decode_task(string msg, Items<int> & tasks, Item<int> & side);
 void decode_ctrl(string msg, Controllers & ctrl);	// NOT fully tested, but the important ones yes
@@ -24,6 +27,8 @@ void decode_robot_params(string msg, Robot_params & rob);
 void decode_image(string msg, Sensors & sens);
 void decode_sensors(string msg, Sensors & sens);
 int decode_master_commands(string msg, string hostname);
+void decode_leader_election(string msg, int & id, int & leader, int & proposed_leader);
+
 
 
 enum Actions {
@@ -144,6 +149,18 @@ struct Command {
 	// robot
 	string ROB = "rob";				// in case the message is sent to a specific robot (hostname)
 	string I = "i";					// counter to know if you got a new message
+
+	string ID = "id";				// robot id
+	string PREV_NODE = "pn";		// previous/current node
+	string DEST_NODE = "dn";		// destiny node
+	string ROUTE = "rt";			// route ???
+	string TO_DO = "td";			// tasks to do
+	string DONE = "dn";				// tasks done
+	string ITEMS_DELIM = ";";		// delimiter for a list of items
+
+	// leader election
+	string OLD_LEADER = "ol";
+	string NEW_LEADER = "nl";
 
 
 };

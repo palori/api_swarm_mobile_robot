@@ -4,12 +4,124 @@
 		"selected_items":
 		[
 			[
-				"comp",
-				"comp1"
+				"is",
+				"is_election_time"
+			],
+			[
+				"time",
+				"time_threshold"
+			],
+			[
+				"get",
+				"get_time"
+			],
+			[
+				"robot",
+				"robots_ids"
+			],
+			[
+				"check",
+				"check_le_messages"
+			],
+			[
+				"lea",
+				"leader_election"
+			],
+			[
+				"inc",
+				"inc\t#include \"…\""
+			],
+			[
+				"pu",
+				"publish"
+			],
+			[
+				"TO",
+				"TO_DO"
+			],
+			[
+				"des",
+				"destiny_node"
+			],
+			[
+				"pre",
+				"previous_node"
+			],
+			[
+				"De",
+				"DEST_NODE"
+			],
+			[
+				"P",
+				"PREV_NODE"
+			],
+			[
+				"ios",
+				"iostream\tstandard header"
+			],
+			[
+				"ma",
+				"main\tmain()"
+			],
+			[
+				"re",
+				"result"
+			],
+			[
+				"in",
+				"inc\t#include \"…\""
+			],
+			[
+				"robo",
+				"robot_a"
+			],
+			[
+				"ro",
+				"robot_a"
 			],
 			[
 				"co",
-				"context"
+				"count_true"
+			],
+			[
+				"count",
+				"count_false"
+			],
+			[
+				"count_",
+				"count_true"
+			],
+			[
+				"ka",
+				"ka_elapsed"
+			],
+			[
+				"i",
+				"inc\t#include \"…\""
+			],
+			[
+				"tas",
+				"tasks_to_do"
+			],
+			[
+				"Robot",
+				"Robot_params"
+			],
+			[
+				"set",
+				"set_noMutex"
+			],
+			[
+				"csv_port",
+				"csv_port_image"
+			],
+			[
+				"csv_po",
+				"csv_port_task"
+			],
+			[
+				"comp",
+				"comp1"
 			],
 			[
 				"pub",
@@ -24,24 +136,12 @@
 				"port_image"
 			],
 			[
-				"get",
-				"get_topic"
-			],
-			[
 				"get_",
 				"get_debug"
 			],
 			[
-				"set",
-				"set_debug"
-			],
-			[
 				"port",
 				"port_image"
-			],
-			[
-				"tas",
-				"tasks"
 			],
 			[
 				"im",
@@ -86,10 +186,6 @@
 			[
 				"imu",
 				"imu_comp_send"
-			],
-			[
-				"i",
-				"imu_on"
 			],
 			[
 				"r",
@@ -228,10 +324,6 @@
 				"msg_out"
 			],
 			[
-				"ma",
-				"max_len"
-			],
-			[
 				"it",
 				"items_name"
 			],
@@ -242,10 +334,6 @@
 			[
 				"M",
 				"MAX_BUF"
-			],
-			[
-				"in",
-				"inc\t#include \"…\""
 			],
 			[
 				"v",
@@ -304,10 +392,6 @@
 				"subscriber_port"
 			],
 			[
-				"pu",
-				"publisher_port"
-			],
-			[
 				"subs",
 				"subscriber"
 			],
@@ -326,10 +410,6 @@
 			[
 				"task",
 				"task_planner"
-			],
-			[
-				"inc",
-				"inc\t#include \"…\""
 			],
 			[
 				"do",
@@ -424,10 +504,6 @@
 				"value_f"
 			],
 			[
-				"time",
-				"time_ax"
-			],
-			[
 				"sing",
 				"single_att"
 			],
@@ -438,99 +514,98 @@
 			[
 				"strong",
 				"strong_out"
-			],
-			[
-				"real",
-				"real_out"
-			],
-			[
-				"video",
-				"video_id"
-			],
-			[
-				"aud",
-				"audioset_data"
-			],
-			[
-				"proje",
-				"project_files"
-			],
-			[
-				"audioset",
-				"audioset_data"
-			],
-			[
-				"k",
-				"keys"
-			],
-			[
-				"if",
-				"ifconfig"
-			],
-			[
-				"user",
-				"user_id"
-			],
-			[
-				"messa",
-				"message_text"
-			],
-			[
-				"b",
-				"b"
-			],
-			[
-				"wo",
-				"words_size"
-			],
-			[
-				"std",
-				"stdio.h\tstandard header (deprecated)"
-			],
-			[
-				"nw",
-				"new_pose"
-			],
-			[
-				"pri",
-				"print_msg"
-			],
-			[
-				"prin",
-				"print_msg"
-			],
-			[
-				"remov",
-				"remove_all"
-			],
-			[
-				"save",
-				"save_path"
-			],
-			[
-				"num",
-				"num_files"
-			],
-			[
-				"file",
-				"filename"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "API_rpi/robot/robot.h",
+			"file": "API_rpi/task_allocation/tasks.h",
 			"settings":
 			{
-				"buffer_size": 2422,
+				"buffer_size": 406,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"file": "API_rpi/tests/test_map/cmake/CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 1051,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/leader_election/bully.h",
+			"settings":
+			{
+				"buffer_size": 1141,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/robot/keep_alive.h",
+			"settings":
+			{
+				"buffer_size": 639,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/comm/messages.h",
+			"settings":
+			{
+				"buffer_size": 6319,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/utils/leds.h",
 			"settings":
 			{
 				"buffer_size": 0,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/task_allocation/tasks.cpp",
+			"settings":
+			{
+				"buffer_size": 506,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/leader_election/bully.cpp",
+			"settings":
+			{
+				"buffer_size": 2141,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/robot/keep_alive.cpp",
+			"settings":
+			{
+				"buffer_size": 1749,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "API_rpi/comm/messages.cpp",
+			"settings":
+			{
+				"buffer_size": 16757,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		}
@@ -577,28 +652,48 @@
 	[
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup"
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/comm",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/leader_election",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/task_allocation",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/utils",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/test_teensy_robot",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/test_teensy_robot/test_imu_2"
 	],
 	"file_history":
 	[
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/clean.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/CMakeLists.txt",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/test_bully.cpp",
+		"/home/pau/Documents/learn/c++/algorithm/min_vector.cpp",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/utils/utils.cpp",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/utils/utils.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/CMakeLists.txt",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/pub_sub/Makefile",
+		"/home/pau/Documents/learn/c++/algorithm/Makefile",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/task_allocation/tasks.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/task_allocation/tasks.cpp",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/comm/messages.cpp",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/comm/messages.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/imu.cpp",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_Robot/imu.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/test_teensy_robot/test_imu_2/test_imu_2.ino",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robots_config.csv",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/run.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/run_image.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/run_asparagus_andrija.sh",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/comm/comm_rpi_2.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/utils/item.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/path_planning/dijkstra.h",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/path_planning/dijkstra.cpp",
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/clean.sh",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot_params.h",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot_params.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/main_robot.cpp",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot/robot.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robots_config.csv",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/cmake_robot.sh",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/run_potato_andrija.sh",
 		"/home/pau/Documents/learn/bash/read_files/read_csv.sh",
 		"/home/pau/Documents/learn/bash/read_files/myfile.csv",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/make_robot.sh",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/CMakeLists.txt",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/clean.sh",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_image/clean.sh",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/executables_high_level/robocup/cmake_image.sh",
@@ -693,31 +788,11 @@
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/image_proc/tests/CMakeLists.txt",
 		"/home/pau/Documents/learn/c++/hello_world/compile_run_cpp.txt",
 		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/image_proc/tests/detect_line/CMakeLists.txt",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/task_planner.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/robot.cpp",
-		"/home/pau/Documents/learn/c++/threads/pthread_ex.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/main_process.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/main_process.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/subscriber.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/publisher.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/subscriber.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/publisher.h",
-		"/home/pau/Documents/git_repos/vobu/web/django_into.py",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/comm_rpi.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/comm_rpi.cpp",
-		"/home/pau/Documents/git_repos/vobu/toy/test_gpio.py",
-		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/socket.hpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/p.h",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/p.cpp",
-		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/socket.cpp",
-		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/pub_sub/s.h",
-		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/context.hpp",
-		"/home/pau/Documents/git_repos/zmqpp/src/zmqpp/socket_types.hpp"
+		"/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/task_planner.h"
 	],
 	"find":
 	{
-		"height": 28.0
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -731,6 +806,19 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"bully.trigger.get()",
+			"add_item",
+			"times",
+			"tiems",
+			"ka",
+			"bully",
+			"string",
+			"std::",
+			"ka",
+			"csv_",
+			"sensors.x",
+			"sens.x",
+			"params.x",
 			"$2",
 			"$1",
 			"subscriber_port",
@@ -768,6 +856,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"",
 			"$action",
 			"$test_folder",
 			"port_task",
@@ -802,24 +891,141 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "API_rpi/robot/robot.h",
+					"file": "API_rpi/task_allocation/tasks.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2422,
+						"buffer_size": 406,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								571,
-								571
+								248,
+								248
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "API_rpi/tests/test_map/cmake/CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1051,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								402,
+								402
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "API_rpi/leader_election/bully.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1141,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								221,
+								221
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "API_rpi/robot/keep_alive.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 639,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								442,
+								442
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "API_rpi/comm/messages.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6319,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1255,
+								1255
 							]
 						],
 						"settings":
@@ -829,14 +1035,15 @@
 							"word_wrap": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 852.0,
+						"translation.y": 81.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
+					"buffer": 5,
+					"file": "API_rpi/utils/leds.h",
 					"semi_transient": false,
 					"settings":
 					{
@@ -853,21 +1060,139 @@
 						],
 						"settings":
 						{
-							"auto_name": "",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/C++/C++.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 8,
 					"type": "text"
 				}
 			]
 		},
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 6,
+					"file": "API_rpi/task_allocation/tasks.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 506,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								503,
+								503
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "API_rpi/leader_election/bully.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2141,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1025,
+								1025
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 316.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "API_rpi/robot/keep_alive.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1749,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								760,
+								760
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 159.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "API_rpi/comm/messages.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 16757,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2490,
+								2490
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1614.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				}
 			]
 		}
 	],

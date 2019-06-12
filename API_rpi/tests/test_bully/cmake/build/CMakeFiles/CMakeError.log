@@ -1,0 +1,55 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_cfa72/fast"
+/usr/bin/make -f CMakeFiles/cmTC_cfa72.dir/build.make CMakeFiles/cmTC_cfa72.dir/build
+make[1]: Entering directory '/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cfa72.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_cfa72.dir/CheckSymbolExists.c.o   -c /home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_cfa72
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cfa72.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_cfa72.dir/CheckSymbolExists.c.o  -o cmTC_cfa72 
+CMakeFiles/cmTC_cfa72.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x1b): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_cfa72.dir/build.make:97: recipe for target 'cmTC_cfa72' failed
+make[1]: *** [cmTC_cfa72] Error 1
+make[1]: Leaving directory '/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_cfa72/fast' failed
+make: *** [cmTC_cfa72/fast] Error 2
+
+File /home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_829e4/fast"
+/usr/bin/make -f CMakeFiles/cmTC_829e4.dir/build.make CMakeFiles/cmTC_829e4.dir/build
+make[1]: Entering directory '/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_829e4.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_829e4.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_829e4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_829e4.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_829e4.dir/CheckFunctionExists.c.o  -o cmTC_829e4 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_829e4.dir/build.make:97: recipe for target 'cmTC_829e4' failed
+make[1]: *** [cmTC_829e4] Error 1
+make[1]: Leaving directory '/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_bully/cmake/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_829e4/fast' failed
+make: *** [cmTC_829e4/fast] Error 2
+
+

@@ -76,13 +76,25 @@ string encode_master_commands(string msg, int i){
 }
 
 
-string encode_robot_params(Robot_params & rob){
+string encode_robot_params(Robot_params & rob, bool send_id, bool send_prev_node, bool send_dest_node, bool send_route, bool send_to_do, bool send_done){
 	Command command;
 	string msg = "@";
-	msg +=       command.A + "=" + to_string(rob.tasks.get_last_item());
-	msg += "," + command.X_w + "=" + to_string(rob.x.get_last_item());
-	msg += "," + command.Y_w + "=" + to_string(rob.y.get_last_item());
-	msg += "," + command.TH_w + "=" + to_string(rob.th.get_last_item());
+	if (send_id) msg +=       command.ID + "=" + xtos(rob.id.get());
+	if (send_prev_node) msg += "," + command.PREV_NODE + "=" + xtos(rob.previous_node.get());
+	if (send_dest_node) msg += "," + command.DEST_NODE + "=" + xtos(rob.destiny_node.get());
+	if (send_route) msg += "," + command.ROUTE + "=" + rob.route.to_string_cs(command.ITEMS_DELIM);
+	if (send_to_do) msg += "," + command.TO_DO + "=" + rob.tasks.to_do.to_string_cs(command.ITEMS_DELIM);
+	if (send_done) msg += "," + command.DONE + "=" + rob.tasks.done.to_string_cs(command.ITEMS_DELIM);
+	msg += "$";
+	return msg;
+}
+
+string encode_leader_election(int my_id, int leader, int proposed_leader){
+	Command command;
+	string msg = "@";
+	msg +=       command.ID + "=" + to_string(my_id);
+	msg += "," + command.OLD_LEADER + "=" + to_string(leader);
+	msg += "," + command.NEW_LEADER + "=" + to_string(proposed_leader);
 	msg += "$";
 	return msg;
 }
@@ -338,38 +350,39 @@ void decode_robot_params(string msg, Robot_params & rob){
 		vector<string> words = split_str(msg, "=,");    // utils
 		Command command;
 
-		// save it as new target pose
+		// save it
 		for (uint i=0; i<words.size(); i++){
-			if(words.at(i) == command.A){
+			if(words.at(i) == command.ID){
 				int val = str2int(words.at(i+1));
 				if (val != BIG_INT) {
-					rob.tasks.add_item(val);
+					rob.id.set(val);
 					i++;
 				}
 			}
-			
+			else if(words.at(i) == command.PREV_NODE){
+				rob.previous_node.set(words.at(i+1));
+				i++;
+			}
+			else if(words.at(i) == command.DEST_NODE){
+				rob.destiny_node.set(words.at(i+1));
+				i++;
+			}
+			else if(words.at(i) == command.ROUTE){
+				vector<string> its = split_str(words.at(i+1),command.ITEMS_DELIM);
+				rob.route.copy(its);		// clear and overwrite with the new values
+				i++;
+			}
+			else if(words.at(i) == command.TO_DO){
+				vector<string> its = split_str(words.at(i+1),command.ITEMS_DELIM);
+				rob.tasks.to_do.copy(its);		// clear and overwrite with the new values
+				i++;
+			}
+			else if(words.at(i) == command.DONE){
+				vector<string> its = split_str(words.at(i+1),command.ITEMS_DELIM);
+				rob.tasks.done.copy(its);			// clear and overwrite with the new values
+				i++;
+			}
 
-			else if(words.at(i) == command.X_w){
-				float val = str2float(words.at(i+1));
-				if (val != BIG_FLOAT) {
-					rob.x.add_item(val);
-					i++;
-				}
-			}
-			else if(words.at(i) == command.Y_w){
-				float val = str2float(words.at(i+1));
-				if (val != BIG_FLOAT) {
-					rob.y.add_item(val);
-					i++;
-				}
-			}
-			else if(words.at(i) == command.TH_w){
-				float val = str2float(words.at(i+1));
-				if (val != BIG_FLOAT) {
-					rob.th.add_item(val);
-					i++;
-				}
-			}
 
 		}
 	}
@@ -661,4 +674,42 @@ int decode_master_commands(string msg, string hostname){
 		return action;
 	}
 
+}
+
+
+
+void decode_leader_election(string msg, int & id, int & leader, int & proposed_leader){
+	// detect if the message is 
+	msg = detect_message(msg);
+	if (msg != ""){
+		// split the message
+		vector<string> words = split_str(msg, "=,");    // utils
+		Command command;
+
+		// save it
+		for (uint i=0; i<words.size(); i++){
+			if(words.at(i) == command.ID){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					id = val;
+					i++;
+				}
+			}
+			else if(words.at(i) == command.OLD_LEADER){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					leader = val;
+					i++;
+				}
+			}
+			else if(words.at(i) == command.NEW_LEADER){
+				int val = str2int(words.at(i+1));
+				if (val != BIG_INT) {
+					proposed_leader = val;
+					i++;
+				}
+			}
+
+		}
+	}
 }
