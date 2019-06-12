@@ -7,7 +7,7 @@ find_package(raspicam REQUIRED)
 find_package(OpenCV)
 IF  ( OpenCV_FOUND AND raspicam_CV_FOUND)
 	MESSAGE(STATUS "COMPILING OPENCV TESTS")
-	add_executable (find_line detect_line.cpp ../../../comm/comm_rpi_2.cpp ../../../utils.cpp)  
+	add_executable (find_line detect_line.cpp ../../../comm/comm_rpi_2.cpp ../../../utils/utils.cpp)  
 	target_link_libraries (find_line ${raspicam_CV_LIBS})
 	add_definitions(-Draspicam_CV_LIBS)
 
