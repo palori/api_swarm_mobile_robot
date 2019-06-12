@@ -13,6 +13,8 @@ opencv2/imgproc/imgproc.hpp
 /home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/opencv_pc/opencv2/imgproc/imgproc.hpp
 opencv2/opencv.hpp
 /home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/opencv_pc/opencv2/opencv.hpp
+opencv2/aruco.hpp
+/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/opencv_pc/opencv2/aruco.hpp
 opencv2/core/core.hpp
 /home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/opencv_pc/opencv2/core/core.hpp
 ctime
@@ -35,6 +37,18 @@ signal.h
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h
 /usr/local/include/opencv/opencv2/core/core_c.h
+
+/usr/local/include/opencv2/aruco.hpp
+opencv2/core.hpp
+-
+vector
+-
+opencv2/aruco/dictionary.hpp
+/usr/local/include/opencv2/opencv2/aruco/dictionary.hpp
+
+/usr/local/include/opencv2/aruco/dictionary.hpp
+opencv2/core.hpp
+-
 
 /usr/local/include/opencv2/calib3d.hpp
 opencv2/core.hpp
