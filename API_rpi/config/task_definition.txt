@@ -2,5 +2,5 @@ name, task_type, num_robots
 no_task, 0, 1
 take_picture, 1, 1
 up-stairs, 2, 3
-start_pose, 3, 1
-end_pose, 4, 1
+#start_pose, 3, 1
+#end_pose, 4, 1

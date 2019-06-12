@@ -3,23 +3,29 @@
 
 #include <iostream>
 #include <thread>
-#include <mutex>
 #include <chrono>		// only for sleeping the threads while testing
 #include <math.h>
 
-#include "item.h"
-#include "robot_params.h"
-#include "sensors.h"
-//#include "controllers.h"
-#include "messages.h"
-#include "comm_rpi_2.h"
-#include "../publisher.h"
-#include "../subscriber.h"
-//#include "localization.h"
-//#include "task_planner.h"
-#include "utils.h"
+#include "../utils/utils.h"
+#include "../utils/item.h"
 
-#include "maps/maps.h"
+//#include "../robot/controllers.h"
+#include "../robot/robot_params.h"
+#include "../robot/sensors.h"
+
+#include "../comm/messages.h"
+#include "../comm/comm_rpi_2.h"
+#include "../comm/pub_subs/publisher.h"
+#include "../comm/pub_subs/subscriber.h"
+
+//#include "localization.h" // non-existing file
+//#include "../task_allocation/task_planner.h"
+
+#include "../leader_election/bully.h"
+
+#include "../path_planning/dijkstra.h"
+
+#include "../maps/maps.h"
 
 using namespace std;
 
@@ -31,7 +37,19 @@ public:
 	~Robot();
 
 	//Robot(string hostname);
-	Robot(string hostname_master, string hostname, string hostname_a, string hostname_b, int max_len, int port_image, int port_task, int port_info, int port_info_robot_a, int port_info_robot_b);
+	Robot(string hostname_master, 
+		  string hostname, 
+		  string hostname_a, 
+		  string hostname_b, 
+		  int id,
+		  int max_len, 
+		  int port_image, 
+		  int port_task, 
+		  int port_info, 
+		  int port_info_robot_a, 
+		  int port_info_robot_b,
+		  int id_robot_a,
+		  int id_robot_b);
 
 	////////////////
 	// Attributes //
@@ -64,6 +82,10 @@ public:
 	Item<bool> run_mission;
 
 
+	// leader election
+	Bully bully;
+
+
 
 	/////////////
 	// Methods //
@@ -77,6 +99,11 @@ public:
 	void listen_robot_b();
 	void listen_master();
 
+	void check_keep_alives();
+	void leader_election();
+
+	void check_le_messages(string msg);		// le = leader election
+
 	//void send_task();
 
 	void run();						// start the threads and while true loop
@@ -85,7 +112,6 @@ public:
 	void compute_distance(float x, float y, float *d_w, float *th_w);
 
 	void navigate_0(Graph* map, string start_id, string end_id);
-	void navigate_test();
 };
 
 #endif

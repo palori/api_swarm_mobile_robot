@@ -1,4 +1,4 @@
-node, task_type, is_done
-c, 1, 0
-d, 1, 0
-e, 2, 0
+node, task_type, is_done, robot
+c, 1, 0, 0
+d, 1, 0, 0
+e, 2, 0, 0

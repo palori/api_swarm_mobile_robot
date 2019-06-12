@@ -1,8 +1,8 @@
 #ifndef controllers_h
 #define controllers_h
 
-#include "utils.h"
-#include "item.h"
+#include "../utils/utils.h"
+#include "../utils/item.h"
 
 using namespace std;
 
