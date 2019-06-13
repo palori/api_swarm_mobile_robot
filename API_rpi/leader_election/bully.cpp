@@ -56,35 +56,47 @@ void Bully::trigger_election(){
 void Bully::election(int & my_id_1, int & leader_1, int & proposed_leader_1){
 
 	//if (bully.trigger.get() && (bully.i_detected.get() || is_election_time()) ){
-	if (trigger.get() && is_election_time()){
-	
+	if (trigger.get() && (is_election_time() || i_detected.get())) {
+		cout << "    election\n";
 		// keep sending or do it just once???
 
 		vector<int> rids = robots_ids.get_items();
-		vector<int> pl = proposed_leader.get_items();
-
-		// check if all proposed leaders are in the list of robot ids
-		vector<int> cll; // clean_leader_list
-		
-		for (int i = 0; i < rids.size(); i++){
-			for (int j = 0; j < pl.size(); j++){
-				if (rids.at(i) == pl.at(j)){
-					cll.push_back(rids.at(i));
-					break;
-				}
-			}
-		}
 
 		auto result = min_element(begin(rids), end(rids));
 		if (end(rids)!=result){
 			proposed_leader_1 = *result;
 			cout << "I\'m robot \'" << my_id.get() << "\' and I think the leader should be robot \'" << proposed_leader_1 << "\'.\n";
+			proposed_leader.add_unique_item(proposed_leader_1);
 		}
 
 		my_id_1 = my_id.get();
 		leader_1 = leader.get();
 	
+		if (is_election_time()){
+			cout << "    election time\n";
 
+			// check if all proposed leaders are in the list of robot ids
+			vector<int> pl = proposed_leader.get_items();
+			vector<int> cll; // clean_leader_list
+			
+			cout << "rids len = " << rids.size() << ", pl len = " << pl.size() << endl;
+
+			for (int i = 0; i < rids.size(); i++){
+				for (int j = 0; j < pl.size(); j++){
+					cout << "rids [" << i << "] " << rids.at(i) << ", pl [" << j << "] " << pl.at(j) << endl;
+					if (rids.at(i) == pl.at(j)){
+						cll.push_back(rids.at(i));
+						break;
+					}
+				}
+			}
+
+			auto result = min_element(begin(cll), end(cll));
+			if (end(cll)!=result){
+				proposed_leader_1 = *result;
+				cout << "I\'m robot \'" << my_id.get() << "\' and I think the leader should be robot \'" << proposed_leader_1 << "\'.\n";
+			}
+		}
 	}
 
 }

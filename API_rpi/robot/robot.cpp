@@ -4,7 +4,7 @@
 Robot::Robot(){
 	//params.hostname.set("localhost");
 
-	this->hostname_master.set("localhost");
+	this->master.hostname.set("localhost");
 
 	Robot_params rp("test",1,2,3,4,5);
 	this->params = rp;
@@ -58,10 +58,13 @@ Robot::Robot(string hostname_master,
 			 int port_info, 
 			 int port_info_robot_a, 
 			 int port_info_robot_b,
+			 int port_info_master,
 			 int id_robot_a,
-			 int id_robot_b){
+			 int id_robot_b,
+			 int id_master){
 	//cout << "start robot constructor" << endl;
-	this->hostname_master.set(hostname_master);
+	Robot_params mast(hostname_master, id_master, max_len, port_info_master);
+	this->master = mast;
 
 	Robot_params rp(hostname, id, max_len, port_info, port_image, port_task);
 	this->params = rp;
@@ -190,8 +193,11 @@ void Robot::serial(){
 		//
 		int millis_sleep = 10;
 		//this_thread::sleep_for(chrono::milliseconds(millis_sleep));
-		cout << "X: " << sensors.x.get() << "    Y: " << sensors.y.get_last_item() << "    th: " << sensors.th.get_last_item() << endl;
-		
+
+		bool print_position = false;
+		if (print_position){	// some other times we  want to see the position, for debuging
+			cout << "X: " << sensors.x.get() << "    Y: " << sensors.y.get_last_item() << "    th: " << sensors.th.get_last_item() << endl;
+		}
 	}
 	serial_comm.serial_close();
 }
@@ -238,8 +244,9 @@ void Robot::listen_robot_b(){
 }
 
 void Robot::listen_master(){
-	string master = this->hostname_master.get();
-	Subscriber subs_master(8001, master);
+	string master = this->master.hostname.get();
+	int port = this->master.port_info.get();
+	Subscriber subs_master(port, master);
 	string msg;
 	int action = -1;
 	cout << "listenning to master '" << master << "'..." << endl;
@@ -273,6 +280,8 @@ void Robot::send_task(){//Publisher pub_image_task){
 
 
 void Robot::check_keep_alives(){
+	cout << "start 'check_keep_alives'\n";
+
 	// to do!
 	bool a_alive = true;
 	bool b_alive = true;
@@ -283,9 +292,14 @@ void Robot::check_keep_alives(){
 
 		if (!a_alive || !b_alive){
 			// trigger leader election
+			
+			//cout << "  a_alive = " << a_alive << endl;
+			//cout << "  b_alive = " << b_alive << endl;
 			if (!bully.trigger.get()){
+				cout << "    trigger election\n";
 				bully.trigger_election();
 				bully.i_detected.set(true);
+				bully.robots_ids.add_unique_item(params.id.get());
 				if (a_alive) bully.robots_ids.add_unique_item(robot_a.id.get());
 				if (b_alive) bully.robots_ids.add_unique_item(robot_b.id.get());
 			}
@@ -296,6 +310,7 @@ void Robot::check_keep_alives(){
 }
 
 void Robot::leader_election(){
+	cout << "start 'leader_election'\n";
 	string msg;
 	int my_id, leader, proposed_leader;
 	while(true){
