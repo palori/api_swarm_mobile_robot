@@ -4,6 +4,8 @@
 CMakeFiles/cv2.dir/opencv_pc.cpp.o
  /home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/opencv_pc/opencv_pc.cpp
  /usr/local/include/opencv/cxcore.h
+ /usr/local/include/opencv2/aruco.hpp
+ /usr/local/include/opencv2/aruco/dictionary.hpp
  /usr/local/include/opencv2/calib3d.hpp
  /usr/local/include/opencv2/calib3d/calib3d_c.h
  /usr/local/include/opencv2/core.hpp

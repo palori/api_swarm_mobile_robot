@@ -1,0 +1,1 @@
+g++ -ggdb `pkg-config --cflags opencv` aruco_detection.cpp  `pkg-config --libs opencv` -o aruco

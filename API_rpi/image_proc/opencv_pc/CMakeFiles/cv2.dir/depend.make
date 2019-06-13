@@ -3,6 +3,8 @@
 
 CMakeFiles/cv2.dir/opencv_pc.cpp.o: opencv_pc.cpp
 CMakeFiles/cv2.dir/opencv_pc.cpp.o: /usr/local/include/opencv/cxcore.h
+CMakeFiles/cv2.dir/opencv_pc.cpp.o: /usr/local/include/opencv2/aruco.hpp
+CMakeFiles/cv2.dir/opencv_pc.cpp.o: /usr/local/include/opencv2/aruco/dictionary.hpp
 CMakeFiles/cv2.dir/opencv_pc.cpp.o: /usr/local/include/opencv2/calib3d.hpp
 CMakeFiles/cv2.dir/opencv_pc.cpp.o: /usr/local/include/opencv2/calib3d/calib3d_c.h
 CMakeFiles/cv2.dir/opencv_pc.cpp.o: /usr/local/include/opencv2/core.hpp
