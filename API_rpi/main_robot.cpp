@@ -20,16 +20,21 @@ int main(int argc, char const *argv[])
 	string hostname = "";
 	string hostname_a = "";
 	string hostname_b = "";
+
 	int id = 0;
 	int max_len = 20;
+
 	int port_image = 7000;
 	int port_task = 7001;
+
 	int port_info = 8000;
 	int port_info_robot_a = 8000;
 	int port_info_robot_b = 8000;
+	int port_info_master = 8000;
 
 	int id_robot_a = 0;
 	int id_robot_b = 0;
+	int id_master = 0;
 
 	bool ready2run = false;
 
@@ -45,25 +50,27 @@ int main(int argc, char const *argv[])
 		cout << "Minimum need a 'hostname' argument or include also the ports." << endl;
 
 	}
-	else if (argc == 7 || argc == 14){
+	else if (argc == 7 || argc == 16){
 		hostname_master = argv[1];
 		hostname = argv[2];
 		hostname_a = argv[3];
 		hostname_b = argv[4];
 		id = str2int(argv[5]);
 		max_len = str2int(argv[6]);
-		if (argc == 14){
+		if (argc == 16){
 			port_image = str2int(argv[7]);
 			port_task = str2int(argv[8]);
 			port_info = str2int(argv[9]);
 			port_info_robot_a = str2int(argv[10]);
 			port_info_robot_b = str2int(argv[11]);
-			id_robot_a = str2int(argv[12]);
-			id_robot_b = str2int(argv[13]);
+			port_info_master = str2int(argv[12]);
+			id_robot_a = str2int(argv[13]);
+			id_robot_b = str2int(argv[14]);
+			id_master = str2int(argv[15]);
 		}
 
 		cout << "Welcome " << hostname << "!" << endl;
-		Robot robot(hostname_master, hostname, hostname_a, hostname_b, id, max_len, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b, id_robot_a, id_robot_b);
+		Robot robot(hostname_master, hostname, hostname_a, hostname_b, id, max_len, port_image, port_task, port_info, port_info_robot_a, port_info_robot_b, port_info_master, id_robot_a, id_robot_b, id_master);
 		//cout << "robot constructor done!" << endl;
 		//robot.params.hostname.set(hostname);
 		//robot.params.print_info();

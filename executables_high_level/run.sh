@@ -37,6 +37,8 @@ read_csv(){
 	echo "Line No. $n : $csv_agent	| $csv_id	| $csv_hostname 	| $csv_ip 	| $csv_port_info 	| $csv_port_image 	| $csv_port_task"
 	if [ $csv_agent == 'master' ]; then
 		master=$csv_hostname
+		master_port=$csv_port_info
+		master_id=$csv_id
 		echo 'master'
 	fi
 	#if [ $csv_id == $robot_id ] || [ $HOSTNAME == $csv_hostname ]; then
@@ -122,11 +124,13 @@ master=''
 robot_a='a'
 robot_b='b'
 
+master_port=8000
 robot_a_port=8000
 robot_b_port=8000
 
 robot_a_id=0
 robot_b_id=0
+master_id=0
 
 max_len=100
 
@@ -179,7 +183,7 @@ then
 						./main_map $master $hostname $robot_a $robot_b $id $max_len
 					else
 						echo 'test_map - robot'
-						./main_map $master $hostname $robot_a $robot_b $id $max_len $port_image $port_task $port_info $robot_a_port $robot_b_port $robot_a_id $robot_b_id
+						./main_map $master $hostname $robot_a $robot_b $id $max_len $port_image $port_task $port_info $robot_a_port $robot_b_port $master_port $robot_a_id $robot_b_id $master_id
 					fi
 				fi
 			fi

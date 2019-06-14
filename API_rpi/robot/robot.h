@@ -48,8 +48,10 @@ public:
 		  int port_info, 
 		  int port_info_robot_a, 
 		  int port_info_robot_b,
+		  int port_info_master,
 		  int id_robot_a,
-		  int id_robot_b);
+		  int id_robot_b,
+		  int id_master);
 
 	////////////////
 	// Attributes //
@@ -59,7 +61,7 @@ public:
 								// Using mutex to prevent that ;)
 	Robot_params robot_a;		// Save info from the other robots
 	Robot_params robot_b;
-	Item<string> hostname_master;
+	Robot_params master;
 
 	Sensors sensors;			// Store last sensor data read from serial
 								// and image data from the image process
