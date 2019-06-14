@@ -8,7 +8,7 @@
 
 //#include "opencv2/core/utility.hpp"
 //#include "opencv2/imgcodecs.hpp"
-
+#include <raspicam/raspicam_cv.h>
 
 #include <ctime>
 #include <iostream>
@@ -30,10 +30,37 @@
 using namespace cv;
 using namespace std;
 
+raspicam::RaspiCam_Cv Camera;
+
 vector<Vec4d> aruco_markers;
 double th_x = 25 * PI / 36;
 double th_z = PI / 2; 
 Vec3d tr = {0.0366,0,0.0713};
+
+int camera_aruco_init(){
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
+	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, 960);
+}
+
+int camera_start(){
+	//Open camera
+	cout<<"Opening Camera..."<<endl;
+	if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
+	//Camera.set(CV_CAP_PROP_EXPOSURE, 100);
+	usleep(2000000);
+	return 0;	
+}
+
+void camera_stop(){
+	cout<<"Stop camera..."<<endl;
+	Camera.release();
+}
+
+void close_all(){
+	camera_stop();
+	cr.serial_close();
+}
 
 void initializeMarkers (){
 
@@ -122,8 +149,12 @@ void detectAruco(int i){
 	Mat cameraMatrix = (Mat_<double>(3,3) << focal_length,0,dx,0,focal_length,dy,0,0,1);
 	Mat distCoeffs = (Mat_<double>(1,5) << 0.2014,-0.5307,0,0,0.437);
 	vector <Vec3d> rvecs,tvecs;
-	string name = "pics/aruco_"+to_string(i)+".png";
-	Mat inputImage = imread(name,CV_LOAD_IMAGE_GRAYSCALE);
+	//string name = "pics/aruco_"+to_string(i)+".png";
+	//Mat inputImage = imread(name,CV_LOAD_IMAGE_GRAYSCALE);
+	Mat inputImage;
+	Camera.grab();
+	Camera.retrieve(inputImage);
+
 	vector<int> markerIds;
 	vector<vector<Point2f>> markerCorners, rejectedCandidates;
 	Ptr<aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(aruco::DICT_4X4_50);
@@ -134,7 +165,7 @@ void detectAruco(int i){
 		cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
 		Vec3d pose = getPose(markerIds[0],rvecs[0],tvecs[0]);	
 	}
-	if (rvecs.size()){
+	/*if (rvecs.size()){
 		cout << "rvecs: ";
 		for(unsigned int i=0;i<3;i++){
 
@@ -149,13 +180,13 @@ void detectAruco(int i){
 				cout << tvecs[0][i] << " ";
 		}
 		cout << endl;
-	}
-	string window_name = "ARUCO_"+to_string(i);
-  	namedWindow( window_name, CV_WINDOW_AUTOSIZE );
-  	imshow( window_name , inputImage);
+	}*/
+	//string window_name = "ARUCO_"+to_string(i);
+  	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+  	//imshow( window_name , inputImage);
   	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
 	imwrite(pic_name_img,inputImage);
-  	waitKey(0);
+  	//waitKey(0);
 
 }
 
@@ -169,9 +200,13 @@ int main(){
 	initializeMarkers();
 	//cout << "shape_color: " << endl << shape_color() << endl;
 	cout << "ARUCO DETECTION: "  << endl;
-	for (unsigned int i=13;i<30;i++){
-		detectAruco(i);
+	int k=0;
+	while (k<20){
+		detectAruco(k);
+		usleep(5000000);
+		k++
 	}
+			
 
 	return 0;
 }

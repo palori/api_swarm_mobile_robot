@@ -3,6 +3,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
 #include "opencv2/aruco.hpp"
+//#include "home/pi/git/opencv_contrib-3.4/modules/aruco/include/opencv2/aruco.hpp"
 #include "opencv2/core/core.hpp"
 
 
