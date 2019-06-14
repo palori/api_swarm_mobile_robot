@@ -1,3 +1,5 @@
+
+
 ### Declaring functions
 
 check_action(){
@@ -39,7 +41,7 @@ read_csv(){
 		master=$csv_hostname
 		master_port=$csv_port_info
 		master_id=$csv_id
-		echo 'master'
+		#echo 'master'
 	fi
 	#if [ $csv_id == $robot_id ] || [ $HOSTNAME == $csv_hostname ]; then
 	if [ $csv_id == $robot_id ]; then
@@ -51,10 +53,10 @@ read_csv(){
 		port_image=$csv_port_image
 		port_task=$csv_port_task
 		robot_found=1
-		echo 'csv_id == robot_id'
+		#echo 'csv_id == robot_id'
 	#elif [ $csv_agent == 'robot' ] && [ $robot_found -eq 0 ]; then
 	elif [ $csv_agent == 'robot' ]; then
-		echo 'robot not found' 
+		#echo 'robot not found' 
 		if [ $robot_a == 'a' ]; then
 			robot_a=$csv_hostname
 			robot_a_port=$csv_port_info
@@ -92,7 +94,7 @@ action=$2
 if [ $3 ]; then
 	robot_id=$3
 else
-	robot_id=0
+	robot_id=-1
 fi
 
 # $4 see function read_csv
@@ -146,7 +148,9 @@ then
 		# action is valid
 		if [ $comp1 -eq 1 ] || [ $comp2 -eq 1 ] || [ $run -eq 1 ]
 		then
-			read_csv
+			if [ $robot_id -gt -1 ]; then
+				read_csv
+			fi
 
 			get_path
 			cd $path

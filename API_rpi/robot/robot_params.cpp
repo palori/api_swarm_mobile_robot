@@ -2,8 +2,13 @@
 
 
 Robot_params::Robot_params(){
-	init_items();
-	set_MAX_LEN(MAX_LEN);
+	string hostname = "localhost";
+	int id = -1;
+	int max_len = MAX_LEN;
+	int p_info = 7000;
+	int p_image = 7002;
+	int p_task = 7001;
+	init(hostname, id, max_len, p_info, p_image, p_task);
 }
 Robot_params::~Robot_params(){}
 
@@ -11,55 +16,43 @@ Robot_params::Robot_params(string hostname,
 						   int id,
 						   int max_len,
 						   int port_info){
-	init_items();
-	this->hostname.set_noMutex(hostname);
-	this->id.set_noMutex(id);
-	set_MAX_LEN(max_len);
-	this->port_info.set_noMutex(port_info);
+	init(hostname, id, max_len, port_info);
 }
 
 Robot_params::Robot_params(string hostname,
 						   int id,
 						   int max_len,
 						   int port_info,
-						   //int port_info_robot_a,
-						   //int port_info_robot_b,
 						   int port_image,
 						   int port_task){
-	init_items();
-	this->hostname.set_noMutex(hostname);
-	this->id.set_noMutex(id);
-	set_MAX_LEN(max_len);
-	this->port_info.set_noMutex(port_info);
-	//this->port_info_robot_a.set_noMutex(port_info_robot_a);
-	//this->port_info_robot_b.set_noMutex(port_info_robot_b);
-	this->port_image.set_noMutex(port_image);
-	this->port_task.set_noMutex(port_task);
-
+	init(hostname, id, max_len, port_info, port_image, port_task);
 }
 
 
 
-void Robot_params::init_items(){
-	this->hostname.set_noMutex("localhost");
-	this->port_image.set_noMutex(7002);
-	this->port_task.set_noMutex(7001);
-	this->port_info.set_noMutex(7000);
-	//this->port_info_robot_a.set_noMutex(7000);
-	//this->port_info_robot_b.set_noMutex(7000);
+void Robot_params::init(string hostname,
+						int id,
+						int max_len,
+						int port_info){
+	int p_image = 7002;
+	int p_task = 7001;
+	init(hostname, id, max_len, port_info, p_image, p_task);
+}
 
-	/*x.set_name("Xw");		// maybe just the current position???
-	y.set_name("Yw");
-	//z.set_name("Z world");
-	th.set_name("Tw");
-	tasks.set_name("Tasks");	// list of completed tasks by this robot (the last one is the current, working on)
-	
-	this->x.add_item_noMutex(0.0);
-	this->y.add_item_noMutex(0.0);
-	//this->z.add_item_noMutex(0.0);
-	this->th.add_item_noMutex(0.0);
-	this->tasks.add_item_noMutex(0);*/
 
+void Robot_params::init(string hostname,
+						int id,
+						int max_len,
+						int port_info,
+						int port_image,
+						int port_task){
+	this->hostname.set_noMutex(hostname);
+	this->id.set_noMutex(id);
+	set_MAX_LEN(max_len);
+	this->port_info.set_noMutex(port_info);
+	this->port_image.set_noMutex(port_image);
+	this->port_task.set_noMutex(port_task);
+	this->ka.init(5.0, max_len);
 }
 
 

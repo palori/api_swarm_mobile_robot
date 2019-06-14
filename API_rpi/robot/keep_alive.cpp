@@ -3,25 +3,29 @@
 
 
 KeepAlive::KeepAlive(){
-	init_items();
+	init();
 }
 
 KeepAlive::KeepAlive(float threshold_time, int max_len){
-	init_items();
-	set_MAX_LEN(max_len);
-	this->threshold_time.set(threshold_time);	// in seconds
+	init(threshold_time, max_len);
 }
 
 KeepAlive::~KeepAlive(){}
 
-void KeepAlive::init_items(){
+void KeepAlive::init(){
 	int MAX_LEN = 10;			// default
 	set_MAX_LEN(MAX_LEN);
 	auto now = chrono::system_clock::now();
 	this->times.add_item_noMutex(now);
-	this->threshold_time.set(5);	// in seconds
+	this->threshold_time.set(5.0);	// in seconds
 	this->alive.add_item_noMutex(true);
 	this->is_now_alive.set(true);
+}
+
+void KeepAlive::init(float threshold_time, int max_len){
+	init();
+	set_MAX_LEN(max_len);
+	this->threshold_time.set(threshold_time);	// in seconds
 }
 
 int KeepAlive::get_MAX_LEN(){return MAX_LEN;}
@@ -54,18 +58,18 @@ bool KeepAlive::is_alive(){
 
 	vector<bool> a = alive.get_items();
 	int len = a.size();
-	if (len >= 10) len = 10; // checking as maximum the last 10 items.
-	int count_true = 0, count_false = 0;
-	//int last = a.end();
-	for (int i = 0; i < len; i++){
-		if (a.at(len-1-i)) count_true++;
-		else count_false++;
-	}
+	int last = len;
+	int M = 10; // window used to determine if the robot is alive or not
 
-	// revise this conditions, this is too basic...
-	if (count_true == len) is_now_alive.set(true);
-	else if (count_false == len) is_now_alive.set(false);
-	else if (count_true >= count_false && last_is_alive) is_now_alive.set(true);
+	if (len >= M) len = M; // checking as maximum the last 10 items.
+
+	// checking the window values
+	int count_true = 0;
+	for (int i = 0; i < len; i++){
+		if (a.at(last-1-i)) count_true++;
+	}
+	// condition
+	if (count_true >= len/2) is_now_alive.set(true);
 	else is_now_alive.set(false);
 
 	return is_now_alive.get(); 

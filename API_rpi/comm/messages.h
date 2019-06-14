@@ -15,6 +15,7 @@ string encode_task(int task, int side);
 string encode_image_params(int task, bool obst_found, float obst_dist, float theta, int crossing, int i);
 string encode_master_commands(string msg, int i);
 string encode_robot_params(Robot_params & rob, bool send_id, bool send_prev_node, bool send_dest_node, bool send_route, bool send_to_do, bool send_done);
+string encode_keep_alive(int my_id);	// no need to decode it, it is just to send something so the others know that you're still alive
 string encode_leader_election(int my_id, int leader, int proposed_leader);
 //string encode_init(string you_are, string robot_a, string robot_b, int max_len);
 //void params2msg(string & msg);
