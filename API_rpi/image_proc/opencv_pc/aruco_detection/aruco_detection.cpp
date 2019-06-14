@@ -105,7 +105,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	}
 	cout << endl;
 
-	pose = transform(Rc, t, markerPose);
+	//pose = transform(Rc, t, markerPose);
 
 	//cout << "theta " << to_string(th) << endl;
 
@@ -169,7 +169,7 @@ int main(){
 	initializeMarkers();
 	//cout << "shape_color: " << endl << shape_color() << endl;
 	cout << "ARUCO DETECTION: "  << endl;
-	for (unsigned int i=15;i<22;i++){
+	for (unsigned int i=13;i<30;i++){
 		detectAruco(i);
 	}
 
