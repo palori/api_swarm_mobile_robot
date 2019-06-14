@@ -189,6 +189,9 @@ then
 						echo 'test_map - robot'
 						./main_map $master $hostname $robot_a $robot_b $id $max_len $port_image $port_task $port_info $robot_a_port $robot_b_port $master_port $robot_a_id $robot_b_id $master_id
 					fi
+				else
+					echo `pwd`
+					./$test_folder
 				fi
 			fi
 		fi
