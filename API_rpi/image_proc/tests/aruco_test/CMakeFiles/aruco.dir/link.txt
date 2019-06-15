@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/aruco.dir/aruco_test.cpp.o  -o aruco 
