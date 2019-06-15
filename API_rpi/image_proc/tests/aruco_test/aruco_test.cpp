@@ -11,6 +11,7 @@
 #include <raspicam/raspicam_cv.h>
 
 #include <ctime>
+#include <unistd.h>
 #include <iostream>
 //#include <stdlib.h>
 #include <stdio.h>
@@ -38,7 +39,7 @@ double th_z = PI / 2;
 Vec3d tr = {0.0366,0,0.0713};
 
 int camera_aruco_init(){
-	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
 	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, 960);
 }
@@ -57,10 +58,6 @@ void camera_stop(){
 	Camera.release();
 }
 
-void close_all(){
-	camera_stop();
-	cr.serial_close();
-}
 
 void initializeMarkers (){
 
@@ -190,23 +187,33 @@ void detectAruco(int i){
 
 }
 
-
+void takePic(int i){
+	
+	Mat pic;
+	Camera.grab();
+	Camera.retrieve(pic);
+	string pic_name = "pics/calib_"+to_string(i)+".png";
+	imwrite(pic_name, pic);
+	
+}
 
 
 
 int main(){
 
 	
-	initializeMarkers();
+	//initializeMarkers();
+	camera_start();
 	//cout << "shape_color: " << endl << shape_color() << endl;
-	cout << "ARUCO DETECTION: "  << endl;
+	//cout << "ARUCO DETECTION: "  << endl;
 	int k=0;
-	while (k<20){
-		detectAruco(k);
-		usleep(5000000);
-		k++
+	while (k<100){
+		cout << to_string(k) << ". try: " << endl;
+		takePic(k);
+		usleep(500000);
+		k++;
 	}
-			
+	camera_stop();		
 
 	return 0;
 }

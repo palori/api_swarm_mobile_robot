@@ -25,7 +25,7 @@
 #include <signal.h> //deprecated, see csignal
 //#include <csignal>
 
-#include "../../../comm_rpi_1.h"
+#include "../../../comm/comm_rpi_2.h"
 #define PI 3.14159265
 
 
@@ -778,9 +778,9 @@ void detectAruco(int i){
 
 void pic_cm_comm1(){
 	bool followline = false;
-	bool pictures = false;
+	bool pictures = true;
 	bool shapes = false;
-	bool aruco = true;
+	bool aruco = false;
 
 	if (followline) camera_init();
 	if (pictures) camera_init(); //camera_init_color();
