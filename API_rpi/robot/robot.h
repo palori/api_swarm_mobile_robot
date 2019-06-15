@@ -83,6 +83,8 @@ public:
 	Item<string> drive_command;
 	Item<bool> run_mission;
 
+	Item<bool> debug;
+
 
 	// leader election
 	Bully bully;

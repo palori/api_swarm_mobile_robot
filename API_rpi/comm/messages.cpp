@@ -89,6 +89,14 @@ string encode_robot_params(Robot_params & rob, bool send_id, bool send_prev_node
 	return msg;
 }
 
+string encode_keep_alive(int my_id){	// no need to decode it, it is just to send something so the others know that you're still alive
+	Command command;
+	string msg = "@";
+	msg += command.ID + "=" + to_string(my_id);
+	msg += "$";
+	return msg;
+}
+
 string encode_leader_election(int my_id, int leader, int proposed_leader){
 	Command command;
 	string msg = "@";

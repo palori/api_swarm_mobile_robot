@@ -17,6 +17,8 @@ public:
 	~KeepAlive();
 	KeepAlive(float threshold_time, int max_len);
 
+	void init();
+	void init(float threshold_time, int max_len);
 
 	// Attributes
 	int MAX_LEN = 10;			// default
@@ -33,9 +35,6 @@ public:
 
 	float get_time();
 	bool is_alive();
-
-private:
-	void init_items();
 
 };
 

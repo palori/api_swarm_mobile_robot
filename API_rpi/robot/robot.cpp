@@ -29,6 +29,8 @@ Robot::Robot(){
 	pub_robot_info.setup();
 
 	run_mission.set(false);
+
+	debug.set(false);
 }
 
 Robot::~Robot(){}
@@ -62,20 +64,34 @@ Robot::Robot(string hostname_master,
 			 int id_robot_a,
 			 int id_robot_b,
 			 int id_master){
-	//cout << "start robot constructor" << endl;
-	Robot_params mast(hostname_master, id_master, max_len, port_info_master);
-	this->master = mast;
+	/* prints for debuging
+	cout << "Robot input data:\n";
+	cout << "  - hostname_master = " << hostname_master << endl;
+	cout << "  - hostname = " << hostname << endl;
+	cout << "  - hostname_a = " << hostname_a << endl;
+	cout << "  - hostname_b = " << hostname_b << endl;
+	cout << "  - id = " << id << endl;
+	cout << "  - max_len = " << max_len << endl;
+	cout << "  - port_image = " << port_image << endl;
+	cout << "  - port_task = " << port_task << endl;
+	cout << "  - port_info = " << port_info << endl;
+	cout << "  - port_info_robot_a = " << port_info_robot_a << endl;
+	cout << "  - port_info_robot_b = " << port_info_robot_b << endl;
+	cout << "  - port_info_master = " << port_info_master << endl;
+	cout << "  - id_robot_a = " << id_robot_a << endl;
+	cout << "  - id_robot_b = " << id_robot_b << endl;
+	cout << "  - id_master = " << id_master << endl;
+	cout << endl << endl;*/
 
-	Robot_params rp(hostname, id, max_len, port_info, port_image, port_task);
-	this->params = rp;
+	//cout << "start robot constructor" << endl;
+	this->master.init(hostname_master, id_master, max_len, port_info_master);
+
+	this->params.init(hostname, id, max_len, port_info, port_image, port_task);
 	//cout << "this params done" << endl;
 	
-	Robot_params rp_a(hostname_a, id_robot_a, max_len, port_info_robot_a);
-	this->robot_a = rp_a;
+	this->robot_a.init(hostname_a, id_robot_a, max_len, port_info_robot_a);
 
-	Robot_params rp_b(hostname_b, id_robot_b, max_len, port_info_robot_b);
-	this->robot_b = rp_b;
-
+	this->robot_b.init(hostname_b, id_robot_b, max_len, port_info_robot_b);
 
 
 	/*
@@ -90,7 +106,7 @@ Robot::Robot(string hostname_master,
 	pub_robot_info.setup();
 	*/
 
-	//pub_image_task(this->params.port_image.get());
+	//pub_image_task(this->params.port_info_image.get());
 	//pub_robot_info(this->params.port_info.get());
 
 	pub_image_task.set_port(this->params.port_task.get());
@@ -99,9 +115,11 @@ Robot::Robot(string hostname_master,
 	pub_robot_info.set_port(this->params.port_info.get());
 	pub_robot_info.setup();
 
-	bully.init();
+	bully.init(id, 5.0);
 
 	run_mission.set(false);
+
+	debug.set(false);
 	
 }
 
@@ -239,6 +257,8 @@ void Robot::listen_robot_b(){
 		info = subs_robot_b.listen();		// blocking call
 		decode_robot_params(info, robot_b);
 		robot_b.ka.times.add_item(chrono::system_clock::now());
+
+		check_le_messages(info);	// leader election message
 	}
 
 }
@@ -283,15 +303,36 @@ void Robot::check_keep_alives(){
 	cout << "start 'check_keep_alives'\n";
 
 	// to do!
-	bool a_alive = true;
-	bool b_alive = true;
+	bool a_alive = false, a_alive_old = false;
+	bool b_alive = false, b_alive_old = false;
+	bool just_started = true;
+
+	string msg_ka = "";
 	
 	while(true){
+
+		// send KA
+		msg_ka = encode_keep_alive(params.id.get());
+		pub_robot_info.publish(msg_ka);
+
+
+
+		// check other robots KA
 		a_alive = robot_a.ka.is_alive();
 		b_alive = robot_b.ka.is_alive();
 
-		if (!a_alive || !b_alive){
+		//if (debug.get()){
+			cout << "*** a_alive = " << a_alive << ", old = " << a_alive_old;
+			cout << "  |  b_alive = " << b_alive << ", old = " << b_alive_old << "\n\n";
+		//}
+
+		if (a_alive != a_alive_old || b_alive != b_alive_old || just_started){
+
+			just_started = false;
+
 			// trigger leader election
+			a_alive_old = a_alive;
+			b_alive_old = b_alive;
 			
 			//cout << "  a_alive = " << a_alive << endl;
 			//cout << "  b_alive = " << b_alive << endl;
@@ -304,6 +345,8 @@ void Robot::check_keep_alives(){
 				if (b_alive) bully.robots_ids.add_unique_item(robot_b.id.get());
 			}
 		}
+
+		// sleep the thread
 		int millis_sleep = 1000;	// period for checking ka's
 		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
 	}
@@ -313,15 +356,24 @@ void Robot::leader_election(){
 	cout << "start 'leader_election'\n";
 	string msg;
 	int my_id, leader, proposed_leader;
+	bool leader_elected = false;
 	while(true){
 		msg = "";
-		my_id = 0;
-		leader = 0;
-		proposed_leader = 0;
+		leader = -1;
+		proposed_leader = -1;
 		
-		bully.election(my_id, leader, proposed_leader);
-		msg = encode_leader_election(my_id, leader, proposed_leader);
-		pub_robot_info.publish(msg);
+		bully.robots_ids.add_unique_item(params.id.get()); 	// repeting here just in case
+		leader_elected = bully.election(leader, proposed_leader);
+
+		if (debug.get()){
+			cout << "\n### leader = " << leader;
+			cout << "\n    proposed_leader = " << proposed_leader << "\n\n";
+		}
+
+		if (leader > -1 && proposed_leader > -1 && !leader_elected){
+			msg = encode_leader_election(params.id.get(), leader, proposed_leader);
+			pub_robot_info.publish(msg);
+		}
 		this_thread::sleep_for(chrono::milliseconds(1000));
 	}
 }
@@ -329,10 +381,14 @@ void Robot::leader_election(){
 
 void Robot::check_le_messages(string msg){
 	// check if some robot triggers leader election
-	int id = 0;
-	int leader = 0, proposed_leader = 0;
+	int id = -1;
+	int leader = -1, proposed_leader = -1;
 	decode_leader_election(msg, id, leader, proposed_leader);
-	if (id != 0 && leader != 0 && proposed_leader != 0) {
+
+	// prints for debugging
+	cout << "\n\n  check_le_messages, msg = " << msg << "\n\n";
+
+	if (id > -1 && leader > -1 && proposed_leader > -1) {
 		bully.trigger_election();
 		bully.robots_ids.add_unique_item(id);
 		bully.proposed_leader.add_unique_item(proposed_leader);
@@ -341,6 +397,14 @@ void Robot::check_le_messages(string msg){
 
 
 void Robot::run(){
+
+	// prints for debugging
+	params.print_info();
+	robot_a.print_info();
+	robot_b.print_info();
+	master.print_info();
+
+
 	//thread task_planning(task_planner_run);	// may be in the same thread for now
 	
 	thread thread_serial(&Robot::serial, this);

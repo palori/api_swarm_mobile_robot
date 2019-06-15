@@ -34,7 +34,8 @@ public:
 	Item<chrono::_V2::system_clock::time_point> time_detected;
 	Item<float> time_threshold;
 	Item<bool> i_detected;
-	Item<bool> leader_elected;
+
+	Item<bool> debug;
 
 	// in the case of having Items as attributes
 	/*int get_MAX_LEN();
@@ -44,7 +45,7 @@ public:
 	//KeepAlive & operator=(KeepAlive & rp);
 
 	void trigger_election();
-	void election(int & my_id, int & leader, int & proposed_leader);
+	bool election(int & leader, int & proposed_leader);
 
 	bool is_election_time();
 	float get_time();
