@@ -417,7 +417,16 @@ void Robot::run(){
 
 	// get stuck here to test KA and LE
 	cout << "\n\n*** ROBOT RUN ***\n\n";
-	while(true){this_thread::sleep_for(chrono::milliseconds(10000));}
+	while(true){
+		this_thread::sleep_for(chrono::milliseconds(10000));
+
+		Graph* map;
+		map = map_test_square("square1"); // just an example
+
+		// example of usage
+		navigate_0(map, start_id, end_id);
+		// call 'navigate_0' or whatever funtion for navigating from one node to an other
+	}
 
 	
 

@@ -18,8 +18,8 @@ public:
 
 	// Attributes
 	int MAX_LEN = 10;			// default
-	Items<string> to_do;
-	Items<string> done;
+	Items<string> to_do;		// refer to the nodes
+	Items<string> done;			// refer to the nodes
 
 	int get_MAX_LEN();
 	void set_MAX_LEN(int i);
