@@ -82,7 +82,7 @@ Vec3d getMarkerPose(int id){
 	return markerPose;
 }
 
-Vec3d transform(double R[3][3], Vec3d t,Vec3d pose){   // from smaller to bigger coordinate system
+Vec3d transform(double R[3][3], Vec3d t, Vec3d pose){   // from smaller to bigger coordinate system
 
 		Vec3d newPose = {0,0,0};
 
@@ -91,6 +91,17 @@ Vec3d transform(double R[3][3], Vec3d t,Vec3d pose){   // from smaller to bigger
 		}
 
 	return newPose;
+}
+
+void printPose(Vec3d pose){
+
+	cout << "New pose: ";
+
+	for(unsigned int i=0;i<3;i++){
+			cout << pose[i] << " ";
+	}
+	cout << endl;
+
 }
 
 Vec3d getPose(int id, Vec3d r, Vec3d t){
@@ -119,15 +130,10 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	double Rr[3][3] = {{cos(th_z),sin(th_z) * cos(th_x),sin(th_x) * sin(th_z)},{sin(th_z), cos(th_z) * cos(th_x), -sin(th_x) * cos(th_z)},{0, sin(th_x), cos(th_x)}};
 
 	Vec3d pose = transform(Rc, t, markerPose);
+	printPose(pose);
 	pose = transform(Rr, tr, pose);
-
-	cout << " new pose: ";
-
-	for(unsigned int i=0;i<3;i++){
-
-			cout << pose[i] << " ";
-	}
-	cout << endl;
+	printPose(pose);
+	
 
 	//pose = transform(Rc, t, markerPose);
 
