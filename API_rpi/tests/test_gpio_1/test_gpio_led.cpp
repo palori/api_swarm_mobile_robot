@@ -11,7 +11,7 @@ int main (void)
 {
     cout << "Start GPIO test 1..." << endl;
     wiringPiSetup () ;
-    int pin_test = 4;
+    int pin_test = 7;
     pinMode (pin_test, OUTPUT) ;
     for (;;)
     {

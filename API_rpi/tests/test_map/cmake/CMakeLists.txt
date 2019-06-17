@@ -4,7 +4,7 @@ project (main_map_project)
 
 find_package(Threads)
 
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-lpthread -lzmqpp -lzmq -lsodium -Wl,--no-as-needed")
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-lpthread -lzmqpp -lzmq -lsodium -lwiringPi -Wl,--no-as-needed")
 
 IF  (Threads_FOUND)
 	MESSAGE(STATUS "COMPILING robot + map with cmake")
