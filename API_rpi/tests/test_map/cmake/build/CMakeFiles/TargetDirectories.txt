@@ -1,3 +1,0 @@
-/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/build/CMakeFiles/rebuild_cache.dir
-/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/build/CMakeFiles/main_map.dir
-/home/pau/Documents/dtu/synth_elektro/api_swarm_mobile_robot/API_rpi/tests/test_map/cmake/build/CMakeFiles/edit_cache.dir

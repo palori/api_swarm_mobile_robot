@@ -27,12 +27,20 @@ public:
 				 int port_info,
 				 int port_image,
 				 int port_task
-				 //int port_info_robot_a, 
-				 //int port_info_robot_b,
 				 );
 
-
-	void init_items();
+	void init(string hostname,
+			  int id,
+			  int max_len,
+			  int port_info
+			  );
+	void init(string hostname,
+			  int id,
+			  int max_len,
+			  int port_info,
+			  int port_image,
+			  int port_task
+			  );
 
 
 	// Attributes

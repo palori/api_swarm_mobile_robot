@@ -11,6 +11,7 @@
 #include <raspicam/raspicam_cv.h>
 
 #include <ctime>
+#include <unistd.h>
 #include <iostream>
 //#include <stdlib.h>
 #include <stdio.h>
@@ -38,7 +39,7 @@ double th_z = PI / 2;
 Vec3d tr = {0.0366,0,0.0713};
 
 int camera_aruco_init(){
-	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
 	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, 960);
 }
@@ -57,10 +58,6 @@ void camera_stop(){
 	Camera.release();
 }
 
-void close_all(){
-	camera_stop();
-	cr.serial_close();
-}
 
 void initializeMarkers (){
 
@@ -143,11 +140,11 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 void detectAruco(int i){
 
-	double focal_length = 1007.568;
+	double focal_length = 1011.454; //for camera on brown shell robot
 	double dx = 640;
 	double dy = 480;
 	Mat cameraMatrix = (Mat_<double>(3,3) << focal_length,0,dx,0,focal_length,dy,0,0,1);
-	Mat distCoeffs = (Mat_<double>(1,5) << 0.2014,-0.5307,0,0,0.437);
+	Mat distCoeffs = (Mat_<double>(1,5) << 0.2214,-0.5639,0,0,0.448);
 	vector <Vec3d> rvecs,tvecs;
 	//string name = "pics/aruco_"+to_string(i)+".png";
 	//Mat inputImage = imread(name,CV_LOAD_IMAGE_GRAYSCALE);
@@ -190,23 +187,33 @@ void detectAruco(int i){
 
 }
 
-
+void takePic(int i){
+	
+	Mat pic;
+	Camera.grab();
+	Camera.retrieve(pic);
+	string pic_name = "pics/calib_"+to_string(i)+".png";
+	imwrite(pic_name, pic);
+	
+}
 
 
 
 int main(){
 
 	
-	initializeMarkers();
+	//initializeMarkers();
+	camera_start();
 	//cout << "shape_color: " << endl << shape_color() << endl;
-	cout << "ARUCO DETECTION: "  << endl;
+	//cout << "ARUCO DETECTION: "  << endl;
 	int k=0;
-	while (k<20){
-		detectAruco(k);
-		usleep(5000000);
-		k++
+	while (k<100){
+		cout << to_string(k) << ". try: " << endl;
+		takePic(k);
+		usleep(500000);
+		k++;
 	}
-			
+	camera_stop();		
 
 	return 0;
 }
