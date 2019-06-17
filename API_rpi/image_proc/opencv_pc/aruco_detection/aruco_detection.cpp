@@ -33,6 +33,7 @@ using namespace std;
 vector<Vec4d> aruco_markers;
 double th_x = 25 * PI / 36;
 double th_z = PI / 2; 
+double th_y = -PI / 2;
 Vec3d tr = {0.0366,0,0.0713};
 
 void initializeMarkers (){
@@ -78,7 +79,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	double z_m = markerPose[2];
 
 
-	double th = sqrt(pow(r[0],2) + pow(r[1],2) + pow(r[2],2));
+	/*double th = sqrt(pow(r[0],2) + pow(r[1],2) + pow(r[2],2));
 	for (unsigned int i=0;i<3; i++){
 		r[i] /= th;		
 	}
@@ -90,10 +91,27 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	double y = r[1];
 	double z = r[2];
 
-	double Rc[3][3] = {{c+pow(x,2)*c1, x*y*c1 - z*s, y*s + x*z*c1},{z*s + x*y*c1, c + pow(y,2)*c1, -x*s + y*z*c1},{-y*s + x*z*c1, x*s + y*z*c1,c + pow(z,2)*c1}};
+
+
+	double Rc[3][3] = {{c+pow(x,2)*c1, x*y*c1 - z*s, y*s + x*z*c1},{z*s + x*y*c1, c + pow(y,2)*c1, -x*s + y*z*c1},{-y*s + x*z*c1, x*s + y*z*c1,c + pow(z,2)*c1}};*/
+	double Rc[3][3];
+	Mat Rcam;
+	Rodrigues(r,Rcam);
+
+	cout << "Rcam: " << Rcam << endl;
+
+	cout << "Rc: " << endl;
+	for (int i=0;i<3;i++){
+		for (int j=0;j<3;j++){
+			
+			Rc[i][j] = Rcam.at<double>(i,j);
+			cout << Rc[i][j] << " ";
+		}
+		cout << endl;
+	}
 
 	double Rr[3][3] = {{cos(th_z),sin(th_z) * cos(th_x),sin(th_x) * sin(th_z)},{sin(th_z), cos(th_z) * cos(th_x), -sin(th_x) * cos(th_z)},{0, sin(th_x), cos(th_x)}};
-
+	//double Rr[3][3] = {{cos(th_y),0,sin(th_y)},{0,1,0},{-sin(th_y),0,cos(th_y)}};
 	Vec3d pose = transform(Rc, t, markerPose);
 	pose = transform(Rr, tr, pose);
 
@@ -104,23 +122,19 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 			cout << pose[i] << " ";
 	}
 	cout << endl;
-
 	//pose = transform(Rc, t, markerPose);
-
 	//cout << "theta " << to_string(th) << endl;
-
-	
 	return pose;
 }
 
 
 void detectAruco(int i){
 
-	double focal_length = 1007.568;
+	double focal_length = 1011.454;
 	double dx = 640;
 	double dy = 480;
 	Mat cameraMatrix = (Mat_<double>(3,3) << focal_length,0,dx,0,focal_length,dy,0,0,1);
-	Mat distCoeffs = (Mat_<double>(1,5) << 0.2014,-0.5307,0,0,0.437);
+	Mat distCoeffs = (Mat_<double>(1,5) << 0.221492,-0.563905,0,0,0.44809);
 	vector <Vec3d> rvecs,tvecs;
 	string name = "pics/aruco_"+to_string(i)+".png";
 	Mat inputImage = imread(name,CV_LOAD_IMAGE_GRAYSCALE);
@@ -169,7 +183,7 @@ int main(){
 	initializeMarkers();
 	//cout << "shape_color: " << endl << shape_color() << endl;
 	cout << "ARUCO DETECTION: "  << endl;
-	for (unsigned int i=13;i<30;i++){
+	for (unsigned int i=1;i<11;i++){
 		detectAruco(i);
 	}
 

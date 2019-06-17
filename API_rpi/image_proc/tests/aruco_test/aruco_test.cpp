@@ -140,11 +140,11 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 void detectAruco(int i){
 
-	double focal_length = 1007.568;
+	double focal_length = 1011.454; //for camera on brown shell robot
 	double dx = 640;
 	double dy = 480;
 	Mat cameraMatrix = (Mat_<double>(3,3) << focal_length,0,dx,0,focal_length,dy,0,0,1);
-	Mat distCoeffs = (Mat_<double>(1,5) << 0.2014,-0.5307,0,0,0.437);
+	Mat distCoeffs = (Mat_<double>(1,5) << 0.2214,-0.5639,0,0,0.448);
 	vector <Vec3d> rvecs,tvecs;
 	//string name = "pics/aruco_"+to_string(i)+".png";
 	//Mat inputImage = imread(name,CV_LOAD_IMAGE_GRAYSCALE);

@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/aruco_test.cpp
+opencv2/highgui/highgui.hpp
+/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/opencv2/highgui/highgui.hpp
+opencv2/imgproc/imgproc.hpp
+/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/opencv2/imgproc/imgproc.hpp
+opencv2/opencv.hpp
+/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/opencv2/opencv.hpp
+opencv2/aruco.hpp
+/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/opencv2/aruco.hpp
+opencv2/core/core.hpp
+/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/opencv2/core/core.hpp
+raspicam/raspicam_cv.h
+-
+ctime
+-
+iostream
+-
+stdio.h
+-
+cmath
+-
+string.h
+-
+string
+-
+vector
+-
+signal.h
+-
+
