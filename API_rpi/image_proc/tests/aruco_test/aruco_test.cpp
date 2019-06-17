@@ -39,7 +39,7 @@ double th_z = PI / 2;
 Vec3d tr = {0.0366,0,0.0713};
 
 int camera_aruco_init(){
-	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
 	Camera.set(CV_CAP_PROP_FRAME_HEIGHT, 960);
 }
@@ -187,8 +187,8 @@ void detectAruco(int i){
 	//string window_name = "ARUCO_"+to_string(i);
   	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
   	//imshow( window_name , inputImage);
-  	//string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
-	//imwrite(pic_name_img,inputImage);
+  	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
+	imwrite(pic_name_img,inputImage);
   	//waitKey(0);
 
 }
@@ -198,7 +198,7 @@ void takePic(int i){
 	Mat pic;
 	Camera.grab();
 	Camera.retrieve(pic);
-	string pic_name = "pics/calib_"+to_string(i)+".png";
+	string pic_name = "pics/aruco_"+to_string(i)+".png";
 	imwrite(pic_name, pic);
 	
 }
@@ -213,10 +213,10 @@ int main(){
 	//cout << "shape_color: " << endl << shape_color() << endl;
 	//cout << "ARUCO DETECTION: "  << endl;
 	int k=0;
-	while (k<100){
+	while (k<10){
 		cout << to_string(k) << ". try: " << endl;
-		detectAruco(k);
-		usleep(10000000);
+		takePic(k);
+		usleep(1000000);
 		k++;
 	}
 	camera_stop();		
