@@ -668,7 +668,7 @@ void detectAruco(int i){
 	Ptr<aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(aruco::DICT_4X4_50);
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
 	cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
-	cv::aruco::estimatePoseSingleMarkers(markerCorners,0.05,cameraMatrix,distCoeffs,rvecs,tvecs);
+	cv::aruco::estimatePoseSingleMarkers(markerCorners,0.1,cameraMatrix,distCoeffs,rvecs,tvecs);
 	cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
 	string window_name = "ARUCO_"+to_string(i);
   	namedWindow( window_name, CV_WINDOW_AUTOSIZE );
