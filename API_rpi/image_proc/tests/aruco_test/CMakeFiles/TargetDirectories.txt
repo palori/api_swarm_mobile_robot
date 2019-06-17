@@ -1,3 +1,0 @@
-/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/CMakeFiles/rebuild_cache.dir
-/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/CMakeFiles/aruco.dir
-/home/andrija1911/Desktop/Thesis/api_swarm_mobile_robot/API_rpi/image_proc/tests/aruco_test/CMakeFiles/edit_cache.dir

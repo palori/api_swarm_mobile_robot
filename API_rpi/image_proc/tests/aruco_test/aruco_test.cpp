@@ -158,7 +158,7 @@ void detectAruco(int i){
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
 	if (markerIds.size()>0){
 		cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
-		cv::aruco::estimatePoseSingleMarkers(markerCorners,0.05,cameraMatrix,distCoeffs,rvecs,tvecs);
+		cv::aruco::estimatePoseSingleMarkers(markerCorners,0.1,cameraMatrix,distCoeffs,rvecs,tvecs);
 		cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
 		Vec3d pose = getPose(markerIds[0],rvecs[0],tvecs[0]);	
 	}
@@ -181,8 +181,8 @@ void detectAruco(int i){
 	//string window_name = "ARUCO_"+to_string(i);
   	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
   	//imshow( window_name , inputImage);
-  	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
-	imwrite(pic_name_img,inputImage);
+  	//string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
+	//imwrite(pic_name_img,inputImage);
   	//waitKey(0);
 
 }
@@ -209,8 +209,8 @@ int main(){
 	int k=0;
 	while (k<100){
 		cout << to_string(k) << ". try: " << endl;
-		takePic(k);
-		usleep(500000);
+		detectAruco(k);
+		usleep(10000000);
 		k++;
 	}
 	camera_stop();		
