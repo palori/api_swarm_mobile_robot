@@ -1,11 +1,11 @@
 #ifndef leds_h
 #define leds_h
 
-#include <unistd.h>				// usleep()
+//#include <unistd.h>				// usleep()
 
 #include "../utils/utils.h"
 #include "pins.h"
-#include "gpio/gpio.h"
+#include <wiringPi.h>
 
 
 using namespace std;
@@ -17,15 +17,17 @@ public:
 	Leds();
 	~Leds();
 
-	//void init();
+	void set_state(int pin_led, int state);
 
 	// use the leds to show how are the different states of the robots
 
 	// pins
-	GPIOClass* leader;			// yellow
-	GPIOClass* ka;				// green
-	GPIOClass* task;			// red
-	GPIOClass* plan_nav;		// blue
+	int ka;				// green
+	int leader;			// yellow
+	int plan_nav;		// blue
+	int task;			// red
+
+	int T_blink;		// blinking period
 
 	// leader election (LE)
 	void is_leader();

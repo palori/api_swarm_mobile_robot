@@ -5,60 +5,105 @@
 
 Leds::Leds(){
 	leader = new GPIOClass(xtos(LED_LEADER));
-	ka = new GPIOClass(xtos(LED_TEST));				// change to LED_KA
-	task = new GPIOClass(xtos(LED_TASK));
-	plan_nav = new GPIOClass(xtos(LED_PLAN_NAV));
-	cout << " GPIO pins created" << endl;
+	
+	cout << "\nSetup Leds\n" << endl;
+    wiringPiSetup();
+    pinMode(LED_KA, OUTPUT);
+    pinMode(LED_LEADER, OUTPUT);
+    pinMode(LED_PLAN_NAV, OUTPUT);
+    pinMode(LED_TEST, OUTPUT);
 
-	leader->export_gpio();
-	ka->export_gpio();
-	task->export_gpio();
-	plan_nav->export_gpio();
-	cout << " GPIO pins exported" << endl;
-
-    leader->setdir_gpio("out");
-    ka->setdir_gpio("out");
-    task->setdir_gpio("out");
-    plan_nav->setdir_gpio("out");
-    cout << " Set GPIO pin directions" << endl;
-}
-
-Leds::~Leds(){
-	cout << "unexporting pins" << endl;
-	leader->unexport_gpio();
-	ka->unexport_gpio();
-	task->unexport_gpio();
-	plan_nav->unexport_gpio();
-
-	cout << "deallocating GPIO Objects" << endl;
-    delete leader;
-    leader = 0;
-    delete ka;
+    // setting initial state to 0 (turn all off)
     ka = 0;
-    delete task;
-    task = 0;
-    delete plan_nav;
+    leader = 0;
     plan_nav = 0;
+    task = 0;
+
+    set_state(LED_KA, 0);
+    set_state(LED_LEADER, 0);
+    set_state(LED_PLAN_NAV, 0);
+    set_state(LED_TEST, 0);
+
 }
 
-//void Leds::init();
+Leds::~Leds(){}
+
+int Leds::set_state(int pin_led, int state){
+	int new_state = -1;
+	if (state == 0){			// turn off
+		new_state = LOW;
+		// here is not important what is the state of the variables (ka, le, plan_nav, task)
+	}
+	else if (state == 1){		// turn on
+		new_state = HIGH;
+		// here is not important what is the state of the variables (ka, le, plan_nav, task)
+	}
+	else if (state == 2){		// blink
+		
+		if (pin_led == LED_KA){
+			if (ka == 0){
+				ka = 1;
+				new_state = HIGH;
+			}
+			else{
+				ka = 0;
+				new_state = LOW;
+			}
+		}
+		else if (pin_led == LED_LEADER){
+			if (leader == 0){
+				leader = 1;
+				new_state = HIGH;
+			}
+			else{
+				leader= 0;
+				new_state = LOW;
+			}
+		}
+		else if (pin_led == LED_PLAN_NAV){
+			if (plan_nav == 0){
+				plan_nav = 1;
+				new_state = HIGH;
+			}
+			else{
+				plan_nav = 0;
+				new_state = LOW;
+			}
+		}
+		else if (pin_led == LED_TASK){
+			if (task == 0){
+				task = 1;
+				new_state = HIGH;
+			}
+			else{
+				task = 0;
+				new_state = LOW;
+			}
+		}
+
+	}
+	return new_state;
+}
 
 
 // leader election (LE)
-void Leds::is_leader(){
-
+void Leds::is_leader(int state){
+	int new_state = set_state(LED_LEADER, state);
+	digitalWrite (LED_LEADER, new_state);
+	delay(T_blink/2);
 }
 
 void Leds::election(){
-
+	set_state(LED_LEADER, 2);	// blink
+	digitalWrite (LED_LEADER, new_state);
+	delay(T_blink/2);
 }
 
 // keep alive (KA) - to know that the robot is still on
-void Leds::keep_alive(){
-	ka->setval_gpio("1");
-	usleep(1000000);
-	ka->setval_gpio("0");
-	usleep(1000000);
+void Leds::keep_alive(int state){
+	set_state(LED_KA, state);
+	digitalWrite (LED_LEADER, new_state);
+	delay(T_blink/2);
 }
 
 // task related
