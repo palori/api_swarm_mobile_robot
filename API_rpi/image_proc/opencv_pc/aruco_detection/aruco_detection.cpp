@@ -70,6 +70,17 @@ Vec3d transform(double R[3][3], Vec3d t,Vec3d pose){   // from smaller to bigger
 	return newPose;
 }
 
+void printPose(Vec3d pose){
+
+	cout << "New pose: ";
+
+	for(unsigned int i=0;i<3;i++){
+			cout << pose[i] << " ";
+	}
+	cout << endl;
+
+}
+
 Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 	Vec3d markerPose = getMarkerPose(id);
@@ -113,15 +124,10 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	double Rr[3][3] = {{cos(th_z),sin(th_z) * cos(th_x),sin(th_x) * sin(th_z)},{sin(th_z), cos(th_z) * cos(th_x), -sin(th_x) * cos(th_z)},{0, sin(th_x), cos(th_x)}};
 	//double Rr[3][3] = {{cos(th_y),0,sin(th_y)},{0,1,0},{-sin(th_y),0,cos(th_y)}};
 	Vec3d pose = transform(Rc, t, markerPose);
+	printPose(pose);
 	pose = transform(Rr, tr, pose);
-
-	cout << " new pose: ";
-
-	for(unsigned int i=0;i<3;i++){
-
-			cout << pose[i] << " ";
-	}
-	cout << endl;
+	printPose(pose);
+	
 	//pose = transform(Rc, t, markerPose);
 	//cout << "theta " << to_string(th) << endl;
 	return pose;
@@ -144,7 +150,7 @@ void detectAruco(int i){
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
 	if (markerIds.size()>0){
 		cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
-		cv::aruco::estimatePoseSingleMarkers(markerCorners,0.05,cameraMatrix,distCoeffs,rvecs,tvecs);
+		cv::aruco::estimatePoseSingleMarkers(markerCorners,0.1,cameraMatrix,distCoeffs,rvecs,tvecs);
 		cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
 		Vec3d pose = getPose(markerIds[0],rvecs[0],tvecs[0]);	
 	}
