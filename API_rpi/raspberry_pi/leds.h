@@ -31,8 +31,17 @@ public:
 
 	int T_blink;		// blinking period
 
+
+	/*
+	
+	DELETE DELAYS!!!
+	
+	try to use elapsed time instead of delays!!!
+
+	*/
+
 	// leader election (LE)
-	void is_leader();
+	void is_leader(int state);
 	void election();
 
 	// keep alive (KA) - to know that the robot is still on

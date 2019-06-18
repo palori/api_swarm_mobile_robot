@@ -299,6 +299,7 @@ void Robot::send_task(){//Publisher pub_image_task){
 */
 
 void Robot::send_keep_alive(){
+	string msg_ka = "";
 	while(true){
 		// send KA
 		msg_ka = encode_keep_alive(params.id.get());
@@ -315,8 +316,6 @@ void Robot::check_keep_alives(){
 	bool a_alive = false, a_alive_old = false;
 	bool b_alive = false, b_alive_old = false;
 	bool just_started = true;
-
-	string msg_ka = "";
 	
 	while(true){
 
@@ -437,7 +436,7 @@ void Robot::run(){
 
 		// just for testing the leds
 		leds.task_doing(1);
-		leds.navigationg(1);
+		leds.navigating(1);
 	}
 
 	
