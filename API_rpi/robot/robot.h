@@ -27,6 +27,8 @@
 
 #include "../maps/maps.h"
 
+#include "../raspberry_pi/leds.h"
+
 using namespace std;
 
 
@@ -89,6 +91,8 @@ public:
 	// leader election
 	Bully bully;
 
+	// visualisation of the robot states (KA, leader, tasks, planning&navitation)
+	Leds leds;
 
 
 	/////////////
@@ -103,6 +107,7 @@ public:
 	void listen_robot_b();
 	void listen_master();
 
+	void send_keep_alive();
 	void check_keep_alives();
 	void leader_election();
 

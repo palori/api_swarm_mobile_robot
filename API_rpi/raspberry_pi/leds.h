@@ -17,6 +17,8 @@ public:
 	Leds();
 	~Leds();
 
+	void turn_off_all();
+
 	void set_state(int pin_led, int state);
 
 	// use the leds to show how are the different states of the robots
@@ -37,12 +39,12 @@ public:
 	void keep_alive();
 
 	// task related
-	void task_doing();
+	void task_doing(int state);
 	void task_allocation();		// the leader computes it
 
 	// planning and navigation
 	void planning_route();
-	void navigating();
+	void navigating(int state);
 
 	
 };
