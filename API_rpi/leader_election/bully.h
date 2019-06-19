@@ -50,6 +50,8 @@ public:
 	bool is_election_time();
 	float get_time();
 
+	bool am_i_leader();
+
 	// leds in RPi to notify leader election process and
 	// when its done to know who is the leader.
 

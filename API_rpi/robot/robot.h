@@ -6,6 +6,11 @@
 #include <chrono>		// only for sleeping the threads while testing
 #include <math.h>
 
+#include <errno.h>		//some of them needed for handling Ctrl^C
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+
 #include "../utils/utils.h"
 #include "../utils/item.h"
 
@@ -30,6 +35,13 @@
 #include "../raspberry_pi/leds.h"
 
 using namespace std;
+
+
+// handle Ctrl^C
+extern bool ctrl_c_pressed;
+void sig_handler(int sig);
+
+
 
 
 class Robot
@@ -112,6 +124,8 @@ public:
 	void leader_election();
 
 	void check_le_messages(string msg);		// le = leader election
+
+	void keyboard_input();
 
 	//void send_task();
 

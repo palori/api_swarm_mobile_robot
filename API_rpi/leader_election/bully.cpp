@@ -138,3 +138,9 @@ float Bully::get_time(){
 	return (float) le_elapsed.count(); // in seconds
 }
 
+
+bool Bully::am_i_leader(){
+	if (my_id.get() == leader.get()) return true;
+	return false;
+}
+

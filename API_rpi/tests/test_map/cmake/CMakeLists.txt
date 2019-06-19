@@ -37,7 +37,11 @@ IF  (Threads_FOUND)
 
 		../../../leader_election/bully.cpp
 
-		../../../task_allocation/tasks.cpp 
+		../../../task_allocation/tasks.cpp
+
+		../../../raspberry_pi/pins.h
+		../../../raspberry_pi/leds.cpp
+ 
 	)  
 
 	target_link_libraries (main_map ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS})
