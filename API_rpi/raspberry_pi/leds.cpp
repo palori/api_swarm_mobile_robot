@@ -108,14 +108,24 @@ void Leds::is_leader(int state){
 void Leds::election(){
 	int new_state = set_state(LED_LEADER, 2);	// blink
 	digitalWrite (LED_LEADER, new_state);
+	/*digitalWrite (LED_KA, new_state);
+	digitalWrite (LED_TASK, new_state);
+	digitalWrite (LED_PLAN_NAV, new_state);*/
 	//delay(T_blink/2);
 }
 
 // keep alive (KA) - to know that the robot is still on
 void Leds::keep_alive(){
+	// blinking
+	/*
 	int new_state = set_state(LED_KA, 2);
 	digitalWrite (LED_KA, new_state);
 	delay(T_blink/2);
+	*/
+
+	// fixed
+	int new_state = set_state(LED_KA, 1);
+	digitalWrite (LED_KA, new_state);
 }
 
 // task related

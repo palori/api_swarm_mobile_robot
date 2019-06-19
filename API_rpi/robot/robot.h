@@ -125,6 +125,8 @@ public:
 
 	void check_le_messages(string msg);		// le = leader election
 
+	void keyboard_input();
+
 	//void send_task();
 
 	void run();						// start the threads and while true loop

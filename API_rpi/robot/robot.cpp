@@ -153,7 +153,7 @@ void Robot::serial(){
 
 	serial_comm.serial_open();
 	int count = 0, millis = 50;
-	while(true){
+	while(!ctrl_c_pressed){
 
 		//if(run_mission.get()){
 
@@ -232,7 +232,7 @@ void Robot::serial(){
 void Robot::listen_image_process(){
 	Subscriber subs_image_data(params.port_image.get(), "localhost");//params.hostname.get());
 	string data = "", new_target;
-	while(true){
+	while(!ctrl_c_pressed){
 		//cout << "listenning to image processing..." << endl;
 		data = subs_image_data.listen();	// blocking call
 		image_data.set(data);
@@ -246,7 +246,7 @@ void Robot::listen_robot_a(){
 	Subscriber subs_robot_a(robot_a.port_info.get(), robot_a.hostname.get());
 	string info;
 	cout << "listenning to robot " << robot_a.hostname.get() << "..." << endl;
-	while(true){
+	while(!ctrl_c_pressed){
 		info = subs_robot_a.listen();		// blocking call
 		decode_robot_params(info, robot_a);
 		robot_a.ka.times.add_item(chrono::system_clock::now());
@@ -261,7 +261,7 @@ void Robot::listen_robot_b(){
 	Subscriber subs_robot_b(robot_b.port_info.get(), robot_b.hostname.get());
 	string info;
 	cout << "listenning to robot " << robot_b.hostname.get() << "..." << endl;
-	while(true){
+	while(!ctrl_c_pressed){
 		info = subs_robot_b.listen();		// blocking call
 		decode_robot_params(info, robot_b);
 		robot_b.ka.times.add_item(chrono::system_clock::now());
@@ -278,7 +278,7 @@ void Robot::listen_master(){
 	string msg;
 	int action = -1;
 	cout << "listenning to master '" << master << "'..." << endl;
-	while(true){
+	while(!ctrl_c_pressed){
 		msg = subs_master.listen();		// blocking call
 		cout << "Master says: " << msg << endl;
 		// decode info message
@@ -308,11 +308,12 @@ void Robot::send_task(){//Publisher pub_image_task){
 
 void Robot::send_keep_alive(){
 	string msg_ka = "";
-	while(true){
+	while(!ctrl_c_pressed){
 		// send KA
 		msg_ka = encode_keep_alive(params.id.get());
 		pub_robot_info.publish(msg_ka);
 		leds.keep_alive();	//blink led
+		this_thread::sleep_for(chrono::milliseconds(1000));
 	}
 }
 
@@ -325,7 +326,7 @@ void Robot::check_keep_alives(){
 	bool b_alive = false, b_alive_old = false;
 	bool just_started = true;
 	
-	while(true){
+	while(!ctrl_c_pressed){
 
 		// check other robots KA
 		a_alive = robot_a.ka.is_alive();
@@ -356,9 +357,7 @@ void Robot::check_keep_alives(){
 			}
 		}
 
-		// sleep the thread
-		int millis_sleep = 1000;	// period for checking ka's
-		this_thread::sleep_for(chrono::milliseconds(millis_sleep));
+		this_thread::sleep_for(chrono::milliseconds(500));
 	}
 }
 
@@ -367,7 +366,7 @@ void Robot::leader_election(){
 	string msg;
 	int my_id, leader, proposed_leader;
 	bool leader_elected = false;
-	while(true){
+	while(!ctrl_c_pressed){
 		msg = "";
 		leader = -1;
 		proposed_leader = -1;
@@ -387,7 +386,7 @@ void Robot::leader_election(){
 		if(bully.trigger.get()) leds.election();
 		else if(!bully.trigger.get() && bully.am_i_leader()) leds.is_leader(1);
 		else leds.is_leader(0);
-		this_thread::sleep_for(chrono::milliseconds(1000));
+		this_thread::sleep_for(chrono::milliseconds(500));
 	}
 }
 
@@ -405,6 +404,18 @@ void Robot::check_le_messages(string msg){
 		bully.trigger_election();
 		bully.robots_ids.add_unique_item(id);
 		bully.proposed_leader.add_unique_item(proposed_leader);
+	}
+}
+
+
+void Robot::keyboard_input(){
+	while(!ctrl_c_pressed){
+		string input = "";
+		cin >> input;
+		if (input == "q") {			// quit code
+			ctrl_c_pressed = true;
+			leds.turn_off_all();
+		}
 	}
 }
 
@@ -428,10 +439,11 @@ void Robot::run(){
 	thread thread_ka_send(&Robot::send_keep_alive, this);
 	thread thread_ka_check(&Robot::check_keep_alives, this);
 	thread thread_le(&Robot::leader_election, this);
+	thread thread_keyboard_input(&Robot::keyboard_input, this);
 
 	// get stuck here to test KA and LE
 	cout << "\n\n*** ROBOT RUN ***\n\n";
-	while(true){
+	while(!ctrl_c_pressed){
 		this_thread::sleep_for(chrono::milliseconds(10000));
 
 		//Graph* map;
@@ -449,16 +461,17 @@ void Robot::run(){
 		//leds.navigating(1);
 	}
 
-	leds.turn_off_all();
+	leds.turn_off_all();	// just in case
 
 	thread_serial.join();	// it will never reach this point, but good to have
-	thread_image.join();
-	thread_robot_a.join();
-	thread_robot_b.join();
-	thread_master.join();
+	//thread_image.join();		// blocking call
+	//thread_robot_a.join();	// blocking call
+	//thread_robot_b.join();	// blocking call
+	//thread_master.join();		// blocking call
 	thread_ka_send.join();
 	thread_ka_check.join();
 	thread_le.join();
+	thread_keyboard_input.join();
 }
 
 
@@ -466,7 +479,7 @@ void Robot::update_pose(float x0, float y0, float th0){
 	string msg = "@x0=" + to_string(x0) + ",y0=" + to_string(y0) + ",th0=" + to_string(th0) + "$";
 	auto route_start = chrono::system_clock::now();
 	float tol = 0.02;
-	while (true){
+	while (!ctrl_c_pressed){
 		init_pose.set(msg);
 		this_thread::sleep_for(chrono::milliseconds(100));
 
