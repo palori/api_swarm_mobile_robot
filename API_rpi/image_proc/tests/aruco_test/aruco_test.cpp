@@ -34,8 +34,8 @@ using namespace std;
 raspicam::RaspiCam_Cv Camera;
 
 vector<Vec4d> aruco_markers;
-double th_x = 25 * PI / 36;
-double th_z = PI / 2; 
+double th_x = - 25 * PI / 36;
+double th_z = - PI / 2; 
 Vec3d tr = {0.0366,0,0.0713};
 
 int camera_aruco_init(){
@@ -112,36 +112,40 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	double y_m = markerPose[1];
 	double z_m = markerPose[2];
 
+	double Rc[3][3];
+	Mat Rcam;
+	Rodrigues(r,Rcam);
 
-	double th = sqrt(pow(r[0],2) + pow(r[1],2) + pow(r[2],2));
-	for (unsigned int i=0;i<3; i++){
-		r[i] /= th;		
+	cout << "Rcam: " << Rcam << endl;
+
+	cout << "Rc: " << endl;
+	for (int i=0;i<3;i++){
+		for (int j=0;j<3;j++){
+			
+			Rc[i][j] = Rcam.at<double>(i,j);
+			cout << Rc[i][j] << " ";
+		}
+		cout << endl;
 	}
 
-	double c = cos(th);
-	double s = sin(th);
-	double c1 = (1-c);
-	double x = r[0];
-	double y = r[1];
-	double z = r[2];
-
-	double Rc[3][3] = {{c+pow(x,2)*c1, x*y*c1 - z*s, y*s + x*z*c1},{z*s + x*y*c1, c + pow(y,2)*c1, -x*s + y*z*c1},{-y*s + x*z*c1, x*s + y*z*c1,c + pow(z,2)*c1}};
-
-	double Rr[3][3] = {{cos(th_z),sin(th_z) * cos(th_x),sin(th_x) * sin(th_z)},{sin(th_z), cos(th_z) * cos(th_x), -sin(th_x) * cos(th_z)},{0, sin(th_x), cos(th_x)}};
-
 	Vec3d pose = transform(Rc, t, markerPose);
+	cout << "pose in camera coordinate system: " << endl;
 	printPose(pose);
-	pose = transform(Rr, tr, pose);
+
+	double Rx[3][3] = {{1,0,0},{0,cos(th_x),-sin(th_x)},{0,sin(th_x),cos(th_x)}};
+	pose = transform(Rx, {0,0,0}, pose);
+	cout << "pose after x rotation: " << endl;
 	printPose(pose);
-	
 
-	//pose = transform(Rc, t, markerPose);
 
-	//cout << "theta " << to_string(th) << endl;
+	double Rz[3][3] = {{cos(th_z),-sin(th_z),0},{sin(th_z),cos(th_z),0},{0,0,1}};
+	pose = transform(Rz, tr , pose);
+	cout << "pose after z rotation: " << endl;
+	printPose(pose);
 
-	
 	return pose;
 }
+
 
 
 void detectAruco(int i){
@@ -187,8 +191,8 @@ void detectAruco(int i){
 	//string window_name = "ARUCO_"+to_string(i);
   	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
   	//imshow( window_name , inputImage);
-  	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
-	imwrite(pic_name_img,inputImage);
+  	//string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
+	//imwrite(pic_name_img,inputImage);
   	//waitKey(0);
 
 }
@@ -212,11 +216,11 @@ int main(){
 	camera_start();
 	//cout << "shape_color: " << endl << shape_color() << endl;
 	//cout << "ARUCO DETECTION: "  << endl;
-	int k=10;
+	int k=0;
 	while (k<20){
 		cout << to_string(k) << ". try: " << endl;
-		takePic(k);
-		usleep(1000000);
+		detectAruco(k);
+		usleep(5000000);
 		k++;
 	}
 	camera_stop();		

@@ -31,10 +31,12 @@ using namespace cv;
 using namespace std;
 
 vector<Vec4d> aruco_markers;
-double th_x = 25 * PI / 36;
-double th_z = PI / 2; 
+double th_x = - 2.18;
+double th_z = - PI / 2; 
 double th_y = -PI / 2;
 Vec3d tr = {0.0366,0,0.0713};
+
+
 
 void initializeMarkers (){
 
@@ -72,7 +74,7 @@ Vec3d transform(double R[3][3], Vec3d t,Vec3d pose){   // from smaller to bigger
 
 void printPose(Vec3d pose){
 
-	cout << "New pose: ";
+	//cout << "New pose: ";
 
 	for(unsigned int i=0;i<3;i++){
 			cout << pose[i] << " ";
@@ -89,22 +91,6 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	double y_m = markerPose[1];
 	double z_m = markerPose[2];
 
-
-	/*double th = sqrt(pow(r[0],2) + pow(r[1],2) + pow(r[2],2));
-	for (unsigned int i=0;i<3; i++){
-		r[i] /= th;		
-	}
-
-	double c = cos(th);
-	double s = sin(th);
-	double c1 = (1-c);
-	double x = r[0];
-	double y = r[1];
-	double z = r[2];
-
-
-
-	double Rc[3][3] = {{c+pow(x,2)*c1, x*y*c1 - z*s, y*s + x*z*c1},{z*s + x*y*c1, c + pow(y,2)*c1, -x*s + y*z*c1},{-y*s + x*z*c1, x*s + y*z*c1,c + pow(z,2)*c1}};*/
 	double Rc[3][3];
 	Mat Rcam;
 	Rodrigues(r,Rcam);
@@ -121,15 +107,21 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 		cout << endl;
 	}
 
-	double Rr[3][3] = {{cos(th_z),sin(th_z) * cos(th_x),sin(th_x) * sin(th_z)},{sin(th_z), cos(th_z) * cos(th_x), -sin(th_x) * cos(th_z)},{0, sin(th_x), cos(th_x)}};
-	//double Rr[3][3] = {{cos(th_y),0,sin(th_y)},{0,1,0},{-sin(th_y),0,cos(th_y)}};
 	Vec3d pose = transform(Rc, t, markerPose);
+	cout << "pose in camera coordinate system: " << endl;
 	printPose(pose);
-	pose = transform(Rr, tr, pose);
+
+	double Rx[3][3] = {{1,0,0},{0,cos(th_x),-sin(th_x)},{0,sin(th_x),cos(th_x)}};
+	pose = transform(Rx, {0,0,0}, pose);
+	cout << "pose after x rotation: " << endl;
 	printPose(pose);
-	
-	//pose = transform(Rc, t, markerPose);
-	//cout << "theta " << to_string(th) << endl;
+
+
+	double Rz[3][3] = {{cos(th_z),-sin(th_z),0},{sin(th_z),cos(th_z),0},{0,0,1}};
+	pose = transform(Rz, tr , pose);
+	cout << "pose after z rotation: " << endl;
+	printPose(pose);
+
 	return pose;
 }
 
@@ -189,7 +181,7 @@ int main(){
 	initializeMarkers();
 	//cout << "shape_color: " << endl << shape_color() << endl;
 	cout << "ARUCO DETECTION: "  << endl;
-	for (unsigned int i=1;i<11;i++){
+	for (unsigned int i=10;i<11;i++){
 		detectAruco(i);
 	}
 
