@@ -8,7 +8,7 @@ using namespace std;
 
 
 void first_test(){
-    out << "Start GPIO test 1..." << endl;
+    cout << "Start GPIO test 1..." << endl;
     wiringPiSetup () ;
     int pin_test = 7;
     pinMode (pin_test, OUTPUT) ;
