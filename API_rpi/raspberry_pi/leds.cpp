@@ -4,29 +4,36 @@
 
 
 Leds::Leds(){
-	leader = new GPIOClass(xtos(LED_LEADER));
 	
 	cout << "\nSetup Leds\n" << endl;
     wiringPiSetup();
     pinMode(LED_KA, OUTPUT);
     pinMode(LED_LEADER, OUTPUT);
     pinMode(LED_PLAN_NAV, OUTPUT);
-    pinMode(LED_TEST, OUTPUT);
+    pinMode(LED_TASK, OUTPUT);
 
     // setting initial state to 0 (turn all off)
-    ka = 0;
+    turn_off_all();
+
+    T_blink = 1000;
+
+}
+
+Leds::~Leds(){
+	turn_off_all();
+}
+
+void Leds::turn_off_all(){
+	ka = 0;
     leader = 0;
     plan_nav = 0;
     task = 0;
 
-    set_state(LED_KA, 0);
+	set_state(LED_KA, 0);
     set_state(LED_LEADER, 0);
     set_state(LED_PLAN_NAV, 0);
-    set_state(LED_TEST, 0);
-
+    set_state(LED_TASK, 0);
 }
-
-Leds::~Leds(){}
 
 int Leds::set_state(int pin_led, int state){
 	int new_state = -1;
@@ -94,23 +101,40 @@ void Leds::is_leader(int state){
 }
 
 void Leds::election(){
-	set_state(LED_LEADER, 2);	// blink
+	int new_state = set_state(LED_LEADER, 2);	// blink
 	digitalWrite (LED_LEADER, new_state);
 	delay(T_blink/2);
 }
 
 // keep alive (KA) - to know that the robot is still on
-void Leds::keep_alive(int state){
-	set_state(LED_KA, state);
-	digitalWrite (LED_LEADER, new_state);
+void Leds::keep_alive(){
+	int new_state = set_state(LED_KA, 2);
+	digitalWrite (LED_KA, new_state);
 	delay(T_blink/2);
 }
 
 // task related
-void Leds::task_doing(){}
-void Leds::task_allocation(){}		// the leader computes it
+void Leds::task_doing(int state){
+	int new_state = set_state(LED_TASK, state);
+	digitalWrite (LED_TASK, new_state);
+	delay(T_blink/2);
+}
+void Leds::task_allocation(){	// the leader computes it
+	int new_state = set_state(LED_TASK, 2);
+	digitalWrite (LED_TASK, new_state);
+	delay(T_blink/2);
+}
 
 // planning and navigation
-void Leds::planning_route(){}
-void Leds::navigating(){}
+void Leds::planning_route(){
+	int new_state = set_state(LED_PLAN_NAV, 2);
+	digitalWrite (LED_PLAN_NAV, new_state);
+	delay(T_blink/2);
+}
+
+void Leds::navigating(int state){
+	int new_state = set_state(LED_PLAN_NAV, state);
+	digitalWrite (LED_PLAN_NAV, new_state);
+	delay(T_blink/2);
+}
 

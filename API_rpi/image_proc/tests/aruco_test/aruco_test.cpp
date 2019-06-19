@@ -212,8 +212,8 @@ int main(){
 	camera_start();
 	//cout << "shape_color: " << endl << shape_color() << endl;
 	//cout << "ARUCO DETECTION: "  << endl;
-	int k=0;
-	while (k<10){
+	int k=10;
+	while (k<20){
 		cout << to_string(k) << ". try: " << endl;
 		takePic(k);
 		usleep(1000000);

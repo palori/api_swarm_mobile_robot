@@ -1,14 +1,13 @@
 #include <iostream>
-#include <wiringPi.h>
+//#include <wiringPi.h>
 
-//#include "../../raspberry_pi/leds.h"
+#include "../../raspberry_pi/leds.h"
 
 
 using namespace std;
 
 
-int main (void)
-{
+void first_test(){
     cout << "Start GPIO test 1..." << endl;
     wiringPiSetup () ;
     int pin_test = 7;
@@ -21,5 +20,37 @@ int main (void)
     }
 
     cout << "Stopping GPIO test 1..." << endl;
-    return 0 ;
+}
+
+void test_leds_library(){
+    Leds leds;
+    while(true){
+        
+        cout << "\n  ka";
+        leds.keep_alive();
+
+        cout << "\n  leader";
+        //leds.is_leader(1);
+        leds.election();
+       
+        cout << "\n  task";
+        //leds.task_doing(1);
+        leds.task_allocation();
+        
+        cout << "\n  plan";
+        //leds.navigating(1);
+        leds.planning_route();
+
+        cout << "\n\n************";
+        
+    }
+
+}
+
+int main (void){
+    
+    //first_test();         //working
+    test_leds_library();
+
+    return 0;
 }

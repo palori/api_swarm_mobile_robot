@@ -298,6 +298,16 @@ void Robot::send_task(){//Publisher pub_image_task){
 }
 */
 
+void Robot::send_keep_alive(){
+	string msg_ka = "";
+	while(true){
+		// send KA
+		msg_ka = encode_keep_alive(params.id.get());
+		pub_robot_info.publish(msg_ka);
+		leds.keep_alive();	//blink led
+	}
+}
+
 
 void Robot::check_keep_alives(){
 	cout << "start 'check_keep_alives'\n";
@@ -306,16 +316,8 @@ void Robot::check_keep_alives(){
 	bool a_alive = false, a_alive_old = false;
 	bool b_alive = false, b_alive_old = false;
 	bool just_started = true;
-
-	string msg_ka = "";
 	
 	while(true){
-
-		// send KA
-		msg_ka = encode_keep_alive(params.id.get());
-		pub_robot_info.publish(msg_ka);
-
-
 
 		// check other robots KA
 		a_alive = robot_a.ka.is_alive();
@@ -374,6 +376,7 @@ void Robot::leader_election(){
 			msg = encode_leader_election(params.id.get(), leader, proposed_leader);
 			pub_robot_info.publish(msg);
 		}
+		if(bully.trigger.get()) leds.election();
 		this_thread::sleep_for(chrono::milliseconds(1000));
 	}
 }
@@ -412,7 +415,8 @@ void Robot::run(){
 	thread thread_robot_a(&Robot::listen_robot_a, this); // maybe loop for listenning to other robots??
 	thread thread_robot_b(&Robot::listen_robot_b, this);
 	thread thread_master(&Robot::listen_master, this);
-	thread thread_ka(&Robot::check_keep_alives, this);
+	thread thread_ka_send(&Robot::send_keep_alive, this);
+	thread thread_ka_check(&Robot::check_keep_alives, this);
 	thread thread_le(&Robot::leader_election, this);
 
 	// get stuck here to test KA and LE
@@ -420,12 +424,19 @@ void Robot::run(){
 	while(true){
 		this_thread::sleep_for(chrono::milliseconds(10000));
 
-		Graph* map;
-		map = map_test_square("square1"); // just an example
+		//Graph* map;
+		//map = map_test_square("square1"); // just an example
 
 		// example of usage
-		navigate_0(map, start_id, end_id);
-		// call 'navigate_0' or whatever funtion for navigating from one node to an other
+		//navigate_0(map, start_id, end_id);
+		// - call 'navigate_0' or whatever funtion for navigating from one node to an other
+		// - 'start_id' current node where you are now
+		// - 'end_id' destiny node
+
+
+		// just for testing the leds
+		leds.task_doing(1);
+		leds.navigating(1);
 	}
 
 	
@@ -435,7 +446,8 @@ void Robot::run(){
 	thread_robot_a.join();
 	thread_robot_b.join();
 	thread_master.join();
-	thread_ka.join();
+	thread_ka_send.join();
+	thread_ka_check.join();
 	thread_le.join();
 }
 

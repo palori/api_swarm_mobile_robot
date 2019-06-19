@@ -17,7 +17,9 @@ public:
 	Leds();
 	~Leds();
 
-	void set_state(int pin_led, int state);
+	void turn_off_all();
+
+	int set_state(int pin_led, int state);
 
 	// use the leds to show how are the different states of the robots
 
@@ -29,20 +31,29 @@ public:
 
 	int T_blink;		// blinking period
 
+
+	/*
+	
+	DELETE DELAYS!!!
+	
+	try to use elapsed time instead of delays!!!
+
+	*/
+
 	// leader election (LE)
-	void is_leader();
+	void is_leader(int state);
 	void election();
 
 	// keep alive (KA) - to know that the robot is still on
 	void keep_alive();
 
 	// task related
-	void task_doing();
+	void task_doing(int state);
 	void task_allocation();		// the leader computes it
 
 	// planning and navigation
 	void planning_route();
-	void navigating();
+	void navigating(int state);
 
 	
 };
