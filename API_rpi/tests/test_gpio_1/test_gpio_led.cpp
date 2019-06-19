@@ -25,19 +25,22 @@ void first_test(){
 void test_leds_library(){
     Leds leds;
     while(true){
+        
         cout << "\n  ka";
         leds.keep_alive();
 
         cout << "\n  leader";
-        leds.is_leader(1);
-
+        leds.is_leader(1);          //does nothing with this leds
+       
         cout << "\n  task";
         leds.task_doing(1);
-
+        
         cout << "\n  plan";
         leds.navigating(1);
+        
 
         cout << "\n\n************";
+        
     }
 
 }

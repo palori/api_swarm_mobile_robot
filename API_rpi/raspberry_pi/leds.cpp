@@ -4,17 +4,18 @@
 
 
 Leds::Leds(){
-	leader = new GPIOClass(xtos(LED_LEADER));
 	
 	cout << "\nSetup Leds\n" << endl;
     wiringPiSetup();
     pinMode(LED_KA, OUTPUT);
     pinMode(LED_LEADER, OUTPUT);
     pinMode(LED_PLAN_NAV, OUTPUT);
-    pinMode(LED_TEST, OUTPUT);
+    pinMode(LED_TASK, OUTPUT);
 
     // setting initial state to 0 (turn all off)
     turn_off_all();
+
+    T_blink = 1000;
 
 }
 
@@ -31,7 +32,7 @@ void Leds::turn_off_all(){
 	set_state(LED_KA, 0);
     set_state(LED_LEADER, 0);
     set_state(LED_PLAN_NAV, 0);
-    set_state(LED_TEST, 0);
+    set_state(LED_TASK, 0);
 }
 
 int Leds::set_state(int pin_led, int state){
@@ -100,14 +101,14 @@ void Leds::is_leader(int state){
 }
 
 void Leds::election(){
-	set_state(LED_LEADER, 2);	// blink
+	int new_state = set_state(LED_LEADER, 2);	// blink
 	digitalWrite (LED_LEADER, new_state);
 	delay(T_blink/2);
 }
 
 // keep alive (KA) - to know that the robot is still on
 void Leds::keep_alive(){
-	set_state(LED_KA, 2);
+	int new_state = set_state(LED_KA, 2);
 	digitalWrite (LED_LEADER, new_state);
 	delay(T_blink/2);
 }

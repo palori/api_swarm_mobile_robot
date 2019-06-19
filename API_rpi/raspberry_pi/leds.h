@@ -19,7 +19,7 @@ public:
 
 	void turn_off_all();
 
-	void set_state(int pin_led, int state);
+	int set_state(int pin_led, int state);
 
 	// use the leds to show how are the different states of the robots
 
