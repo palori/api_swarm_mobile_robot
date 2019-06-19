@@ -38,12 +38,8 @@ using namespace std;
 
 
 // handle Ctrl^C
-bool ctrl_c_pressed = false;
-void sig_handler(int sig){
-    write(0,"\nCtrl^C pressed in sig handlern",32);
-    ctrl_c_pressed = true;
-}
-
+extern bool ctrl_c_pressed;
+void sig_handler(int sig);
 
 
 
