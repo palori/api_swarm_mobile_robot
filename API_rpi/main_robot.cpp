@@ -1,13 +1,25 @@
 
 
 #include <iostream>
+
+#include <errno.h>		//some of them needed for handling Ctrl^C
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+
 #include "robot/robot.h"
 #include "utils/utils.h"
 
 using namespace std;
 
 
+extern bool ctrl_c_pressed = false;
 
+void sig_handler(int sig)
+{
+    write(0,"\nCtrl^C pressed in sig handlern",32);
+    ctrl_c_pressed = true;
+}
 
 
 int main(int argc, char const *argv[])

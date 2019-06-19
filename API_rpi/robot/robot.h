@@ -32,6 +32,9 @@
 using namespace std;
 
 
+extern bool ctrl_c_pressed;
+
+
 class Robot
 {
 public:

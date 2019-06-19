@@ -40,6 +40,6 @@ int main (void)
 
 void sig_handler(int sig)
 {
-    write(0,"nCtrl^C pressed in sig handlern",32);
+    write(0,"\nCtrl^C pressed in sig handlern",32);
     ctrl_c_pressed = true;
 }
