@@ -377,6 +377,8 @@ void Robot::leader_election(){
 			pub_robot_info.publish(msg);
 		}
 		if(bully.trigger.get()) leds.election();
+		else if(!bully.trigger.get() && bully.am_i_leader()) leds.is_leader(1);
+		else leds.is_leader(0);
 		this_thread::sleep_for(chrono::milliseconds(1000));
 	}
 }
@@ -435,8 +437,8 @@ void Robot::run(){
 
 
 		// just for testing the leds
-		leds.task_doing(1);
-		leds.navigating(1);
+		//leds.task_doing(1);
+		//leds.navigating(1);
 	}
 
 	

@@ -33,6 +33,11 @@ void Leds::turn_off_all(){
     set_state(LED_LEADER, 0);
     set_state(LED_PLAN_NAV, 0);
     set_state(LED_TASK, 0);
+
+    digitalWrite (LED_KA, 0);
+    digitalWrite (LED_LEADER, 0);
+    digitalWrite (LED_PLAN_NAV, 0);
+    digitalWrite (LED_TASK, 0);
 }
 
 int Leds::set_state(int pin_led, int state){
@@ -97,13 +102,13 @@ int Leds::set_state(int pin_led, int state){
 void Leds::is_leader(int state){
 	int new_state = set_state(LED_LEADER, state);
 	digitalWrite (LED_LEADER, new_state);
-	delay(T_blink/2);
+	//delay(T_blink/2);
 }
 
 void Leds::election(){
 	int new_state = set_state(LED_LEADER, 2);	// blink
 	digitalWrite (LED_LEADER, new_state);
-	delay(T_blink/2);
+	//delay(T_blink/2);
 }
 
 // keep alive (KA) - to know that the robot is still on
@@ -117,24 +122,24 @@ void Leds::keep_alive(){
 void Leds::task_doing(int state){
 	int new_state = set_state(LED_TASK, state);
 	digitalWrite (LED_TASK, new_state);
-	delay(T_blink/2);
+	//delay(T_blink/2);
 }
 void Leds::task_allocation(){	// the leader computes it
 	int new_state = set_state(LED_TASK, 2);
 	digitalWrite (LED_TASK, new_state);
-	delay(T_blink/2);
+	//delay(T_blink/2);
 }
 
 // planning and navigation
 void Leds::planning_route(){
 	int new_state = set_state(LED_PLAN_NAV, 2);
 	digitalWrite (LED_PLAN_NAV, new_state);
-	delay(T_blink/2);
+	//delay(T_blink/2);
 }
 
 void Leds::navigating(int state){
 	int new_state = set_state(LED_PLAN_NAV, state);
 	digitalWrite (LED_PLAN_NAV, new_state);
-	delay(T_blink/2);
+	//delay(T_blink/2);
 }
 
