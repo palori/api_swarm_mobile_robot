@@ -30,14 +30,16 @@ void test_leds_library(){
         leds.keep_alive();
 
         cout << "\n  leader";
-        leds.is_leader(1);          //does nothing with this leds
+        //leds.is_leader(1);
+        leds.election();
        
         cout << "\n  task";
-        leds.task_doing(1);
+        //leds.task_doing(1);
+        leds.task_allocation();
         
         cout << "\n  plan";
-        leds.navigating(1);
-        
+        //leds.navigating(1);
+        leds.planning_route();
 
         cout << "\n\n************";
         

@@ -109,7 +109,7 @@ void Leds::election(){
 // keep alive (KA) - to know that the robot is still on
 void Leds::keep_alive(){
 	int new_state = set_state(LED_KA, 2);
-	digitalWrite (LED_LEADER, new_state);
+	digitalWrite (LED_KA, new_state);
 	delay(T_blink/2);
 }
 
