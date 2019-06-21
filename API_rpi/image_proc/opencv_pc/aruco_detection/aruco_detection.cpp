@@ -95,8 +95,8 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	Mat Rcam;
 	Rodrigues(r,Rcam);
 
-	cout << "Rcam: " << Rcam << endl;
-
+	//cout << "Rcam: " << Rcam << endl;
+	/*
 	cout << "Rc: " << endl;
 	for (int i=0;i<3;i++){
 		for (int j=0;j<3;j++){
@@ -105,7 +105,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 			cout << Rc[i][j] << " ";
 		}
 		cout << endl;
-	}
+	}*/
 
 	Vec3d pose = transform(Rc, t, markerPose);
 	cout << "pose in camera coordinate system: " << endl;
@@ -127,6 +127,9 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 
 void detectAruco(int i){
+
+	//start timer
+	double function_time = (double)getTickCount();
 
 	double focal_length = 1011.454;
 	double dx = 640;
@@ -167,6 +170,8 @@ void detectAruco(int i){
   	imshow( window_name , inputImage);
   	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
 	imwrite(pic_name_img,inputImage);
+	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+	cout << "Function time: " << function_time << endl;
   	waitKey(0);
 
 }

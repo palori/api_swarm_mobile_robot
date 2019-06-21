@@ -9,7 +9,7 @@ find_package(OpenCV 3.4 REQUIRED)
 IF  ( OpenCV_FOUND AND raspicam_CV_FOUND)
 
 	MESSAGE(STATUS "COMPILING OPENCV TESTS")
-	add_executable (aruco aruco_test.cpp)  
+	add_executable (aruco aruco_test.cpp ../../../comm/comm_rpi_2.cpp ../../../utils/utils.cpp)  
 	target_link_libraries (aruco ${raspicam_CV_LIBS})
 	add_definitions(-Draspicam_CV_LIBS)
 

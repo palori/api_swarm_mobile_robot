@@ -23,6 +23,7 @@
 
 #include <signal.h> //deprecated, see csignal
 //#include <csignal>
+#include "../../../comm/comm_rpi_2.h"
 
 #define PI 3.14159265
 
@@ -32,6 +33,7 @@ using namespace cv;
 using namespace std;
 
 raspicam::RaspiCam_Cv Camera;
+COMM_RPR cr;
 
 vector<Vec4d> aruco_markers;
 double th_x = - 25 * PI / 36;
@@ -39,7 +41,8 @@ double th_z = - PI / 2;
 
 Vec3d tr = {0.0366 , 0.0 , 0.1163};
 
-float markerSize = 0.03;
+float markerSize = 0.02;
+
 int camera_aruco_init(){
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
@@ -150,7 +153,10 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 
 
-void detectAruco(int i){
+int detectAruco(int i){
+
+	//start time measurement
+	double function_time = (double)getTickCount();
 
 	double focal_length = 1011.454; //for camera on brown shell robot
 	double dx = 640;
@@ -168,11 +174,11 @@ void detectAruco(int i){
 	vector<vector<Point2f>> markerCorners, rejectedCandidates;
 	Ptr<aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(aruco::DICT_4X4_50);
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
-	if (markerIds.size()>0){
+	for (int i = 0; i < markerIds.size(); i++){
 		cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
 		cv::aruco::estimatePoseSingleMarkers(markerCorners,markerSize,cameraMatrix,distCoeffs,rvecs,tvecs);
 		cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
-		Vec3d pose = getPose(markerIds[0],rvecs[0],tvecs[0]);	
+		Vec3d pose = getPose(markerIds[i],rvecs[i],tvecs[i]);	
 	}
 	/*if (rvecs.size()){
 		cout << "rvecs: ";
@@ -196,8 +202,13 @@ void detectAruco(int i){
   	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
 	imwrite(pic_name_img,inputImage);
   	//waitKey(0);
+  	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+	cout << "Function time: " << function_time << endl;
 
+	return markerIds.size();
 }
+
+
 
 void takePic(int i){
 	
@@ -213,18 +224,19 @@ void takePic(int i){
 
 int main(){
 
-	
-	//initializeMarkers();
+
 	camera_start();
-	//cout << "shape_color: " << endl << shape_color() << endl;
-	//cout << "ARUCO DETECTION: "  << endl;
+	cr.serial_open();
+
 	int k=0;
-	while (k<20){
-		cout << to_string(k) << ". try: " << endl;
-		detectAruco(k);
-		usleep(2000000);
+	while (!detectAruco(k)){
 		k++;
+		string msg = "@a=16,b=1,v=0.3,trn=0.3$";
+		cr.serial_write(msg);
+		usleep(2000000);
 	}
+
+	cr.serial_close();
 	camera_stop();		
 
 	return 0;
