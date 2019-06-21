@@ -35,9 +35,11 @@ raspicam::RaspiCam_Cv Camera;
 
 vector<Vec4d> aruco_markers;
 double th_x = - 25 * PI / 36;
-double th_z = - PI / 2; 
-Vec3d tr = {0.0366,0,0.1163};
+double th_z = - PI / 2;
 
+Vec3d tr = {0.0366 , 0.0 , 0.1163};
+
+float markerSize = 0.03;
 int camera_aruco_init(){
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
 	Camera.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
@@ -62,8 +64,8 @@ void camera_stop(){
 void initializeMarkers (){
 
 	aruco_markers.push_back(Vec4d(3,0,0,0));
-
-
+	aruco_markers.push_back(Vec4d(4,0,0,0));
+	aruco_markers.push_back(Vec4d(5,0,0,0));
 }
 
 Vec3d getMarkerPose(int id){
@@ -116,31 +118,31 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	Mat Rcam;
 	Rodrigues(r,Rcam);
 
-	cout << "Rcam: " << Rcam << endl;
+	//cout << "Rcam: " << Rcam << endl;
 
-	cout << "Rc: " << endl;
+	//cout << "Rc: " << endl;
 	for (int i=0;i<3;i++){
 		for (int j=0;j<3;j++){
 			
 			Rc[i][j] = Rcam.at<double>(i,j);
-			cout << Rc[i][j] << " ";
+			//cout << Rc[i][j] << " ";
 		}
 		cout << endl;
 	}
 
 	Vec3d pose = transform(Rc, t, markerPose);
-	cout << "pose in camera coordinate system: " << endl;
-	printPose(pose);
+	//cout << "pose in camera coordinate system: " << endl;
+	//printPose(pose);
 
 	double Rx[3][3] = {{1,0,0},{0,cos(th_x),-sin(th_x)},{0,sin(th_x),cos(th_x)}};
 	pose = transform(Rx, {0,0,0}, pose);
-	cout << "pose after x rotation: " << endl;
-	printPose(pose);
+	//cout << "pose after x rotation: " << endl;
+	//printPose(pose);
 
 
 	double Rz[3][3] = {{cos(th_z),-sin(th_z),0},{sin(th_z),cos(th_z),0},{0,0,1}};
 	pose = transform(Rz, tr , pose);
-	cout << "pose after z rotation: " << endl;
+	cout << "pose in robot coordinates: " << endl;
 	printPose(pose);
 
 	return pose;
@@ -168,7 +170,7 @@ void detectAruco(int i){
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
 	if (markerIds.size()>0){
 		cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
-		cv::aruco::estimatePoseSingleMarkers(markerCorners,0.1,cameraMatrix,distCoeffs,rvecs,tvecs);
+		cv::aruco::estimatePoseSingleMarkers(markerCorners,markerSize,cameraMatrix,distCoeffs,rvecs,tvecs);
 		cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
 		Vec3d pose = getPose(markerIds[0],rvecs[0],tvecs[0]);	
 	}
@@ -191,8 +193,8 @@ void detectAruco(int i){
 	//string window_name = "ARUCO_"+to_string(i);
   	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
   	//imshow( window_name , inputImage);
-  	//string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
-	//imwrite(pic_name_img,inputImage);
+  	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
+	imwrite(pic_name_img,inputImage);
   	//waitKey(0);
 
 }
@@ -220,7 +222,7 @@ int main(){
 	while (k<20){
 		cout << to_string(k) << ". try: " << endl;
 		detectAruco(k);
-		usleep(5000000);
+		usleep(2000000);
 		k++;
 	}
 	camera_stop();		
