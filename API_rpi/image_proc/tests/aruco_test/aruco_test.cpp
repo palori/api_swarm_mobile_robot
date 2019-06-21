@@ -36,7 +36,7 @@ raspicam::RaspiCam_Cv Camera;
 vector<Vec4d> aruco_markers;
 double th_x = - 25 * PI / 36;
 double th_z = - PI / 2; 
-Vec3d tr = {0.0366 , 0.0 , 0.1263};
+Vec3d tr = {0.0366 , 0.0 , 0.1163};
 
 float markerSize = 0.03;
 int camera_aruco_init(){
@@ -63,8 +63,8 @@ void camera_stop(){
 void initializeMarkers (){
 
 	aruco_markers.push_back(Vec4d(3,0,0,0));
-
-
+	aruco_markers.push_back(Vec4d(4,0,0,0));
+	aruco_markers.push_back(Vec4d(5,0,0,0));
 }
 
 Vec3d getMarkerPose(int id){
@@ -141,7 +141,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 	double Rz[3][3] = {{cos(th_z),-sin(th_z),0},{sin(th_z),cos(th_z),0},{0,0,1}};
 	pose = transform(Rz, tr , pose);
-	cout << "pose after z rotation: " << endl;
+	cout << "pose in robot coordinates: " << endl;
 	printPose(pose);
 
 	return pose;
@@ -192,8 +192,8 @@ void detectAruco(int i){
 	//string window_name = "ARUCO_"+to_string(i);
   	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
   	//imshow( window_name , inputImage);
-  	//string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
-	//imwrite(pic_name_img,inputImage);
+  	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
+	imwrite(pic_name_img,inputImage);
   	//waitKey(0);
 
 }
@@ -221,7 +221,7 @@ int main(){
 	while (k<20){
 		cout << to_string(k) << ". try: " << endl;
 		detectAruco(k);
-		usleep(5000000);
+		usleep(2000000);
 		k++;
 	}
 	camera_stop();		
