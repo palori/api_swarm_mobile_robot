@@ -36,7 +36,7 @@ raspicam::RaspiCam_Cv Camera;
 vector<Vec4d> aruco_markers;
 double th_x = - 25 * PI / 36;
 double th_z = - PI / 2; 
-Vec3d tr = {0.0366,0,0.0713};
+Vec3d tr = {0.0366,0,0.1163};
 
 int camera_aruco_init(){
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );

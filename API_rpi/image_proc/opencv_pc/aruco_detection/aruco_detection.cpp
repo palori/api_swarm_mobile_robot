@@ -34,7 +34,7 @@ vector<Vec4d> aruco_markers;
 double th_x = - 2.18;
 double th_z = - PI / 2; 
 double th_y = -PI / 2;
-Vec3d tr = {0.0366,0,0.0713};
+Vec3d tr = {0.0366,0,0.1163};
 
 
 
