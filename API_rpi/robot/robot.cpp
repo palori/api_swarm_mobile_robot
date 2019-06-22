@@ -36,6 +36,8 @@ Robot::Robot(){
 	pub_robot_info.set_port(this->params.port_image.get());
 	pub_robot_info.setup();
 
+	bully.init(1, 2.0);
+
 	run_mission.set(false);
 
 	debug.set(false);
@@ -123,7 +125,7 @@ Robot::Robot(string hostname_master,
 	pub_robot_info.set_port(this->params.port_info.get());
 	pub_robot_info.setup();
 
-	bully.init(id, 5.0);
+	bully.init(id, 2.0);
 
 	run_mission.set(false);
 
@@ -313,7 +315,13 @@ void Robot::send_keep_alive(){
 		msg_ka = encode_keep_alive(params.id.get());
 		pub_robot_info.publish(msg_ka);
 		leds.keep_alive();	//blink led
-		this_thread::sleep_for(chrono::milliseconds(1000));
+
+		if (true){ 	// for debuging
+			bully.print_info();
+			cout << "\n  - a_alive:\t\t" << robot_a.ka.is_now_alive.get();
+			cout << "\n  - b_alive:\t\t" << robot_b.ka.is_now_alive.get();
+		}
+		this_thread::sleep_for(chrono::milliseconds(250));
 	}
 }
 
@@ -332,10 +340,10 @@ void Robot::check_keep_alives(){
 		a_alive = robot_a.ka.is_alive();
 		b_alive = robot_b.ka.is_alive();
 
-		//if (debug.get()){
+		if (debug.get()){
 			cout << "*** a_alive = " << a_alive << ", old = " << a_alive_old;
 			cout << "  |  b_alive = " << b_alive << ", old = " << b_alive_old << "\n\n";
-		//}
+		}
 
 		if (a_alive != a_alive_old || b_alive != b_alive_old || just_started){
 
@@ -348,7 +356,7 @@ void Robot::check_keep_alives(){
 			//cout << "  a_alive = " << a_alive << endl;
 			//cout << "  b_alive = " << b_alive << endl;
 			if (!bully.trigger.get()){
-				cout << "    trigger election\n";
+				//cout << "    trigger election\n";
 				bully.trigger_election();
 				bully.i_detected.set(true);
 				bully.robots_ids.add_unique_item(params.id.get());
@@ -366,12 +374,14 @@ void Robot::leader_election(){
 	string msg;
 	int my_id, leader, proposed_leader;
 	bool leader_elected = false;
+	bully.robots_ids.add_unique_item(params.id.get());	// for the first election
+
 	while(!ctrl_c_pressed){
 		msg = "";
 		leader = -1;
 		proposed_leader = -1;
 		
-		bully.robots_ids.add_unique_item(params.id.get()); 	// repeting here just in case
+		if(bully.trigger.get()) bully.robots_ids.add_unique_item(params.id.get()); 	// just in case it has not detected it (but told by another robot)
 		leader_elected = bully.election(leader, proposed_leader);
 
 		if (debug.get()){
@@ -398,7 +408,7 @@ void Robot::check_le_messages(string msg){
 	decode_leader_election(msg, id, leader, proposed_leader);
 
 	// prints for debugging
-	cout << "\n\n  check_le_messages, msg = " << msg << "\n\n";
+	if (debug.get()) cout << "\n\n  check_le_messages, msg = " << msg << "\n\n";
 
 	if (id > -1 && leader > -1 && proposed_leader > -1) {
 		bully.trigger_election();

@@ -5,7 +5,11 @@
 
 #include "../utils/utils.h"
 #include "pins.h"
-#include <wiringPi.h>
+
+#define TEST_NO_RPI
+#ifndef TEST_NO_RPI
+	#include <wiringPi.h>
+#endif
 
 
 using namespace std;
