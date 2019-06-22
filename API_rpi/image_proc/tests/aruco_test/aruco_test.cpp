@@ -23,6 +23,7 @@
 
 #include <signal.h> //deprecated, see csignal
 //#include <csignal>
+#include "../../../comm/comm_rpi_2.h"
 
 #define PI 3.14159265
 
@@ -32,11 +33,15 @@ using namespace cv;
 using namespace std;
 
 raspicam::RaspiCam_Cv Camera;
+COMM_RPR cr;
 
 vector<Vec4d> aruco_markers;
-double th_x = 25 * PI / 36;
-double th_z = PI / 2; 
-Vec3d tr = {0.0366,0,0.0713};
+double th_x = - 25 * PI / 36;
+double th_z = - PI / 2;
+
+Vec3d tr = {0.0366 , 0.0 , 0.1163};
+
+float markerSize = 0.02;
 
 int camera_aruco_init(){
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
@@ -62,8 +67,8 @@ void camera_stop(){
 void initializeMarkers (){
 
 	aruco_markers.push_back(Vec4d(3,0,0,0));
-
-
+	aruco_markers.push_back(Vec4d(4,0,0,0));
+	aruco_markers.push_back(Vec4d(5,0,0,0));
 }
 
 Vec3d getMarkerPose(int id){
@@ -112,39 +117,46 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	double y_m = markerPose[1];
 	double z_m = markerPose[2];
 
+	double Rc[3][3];
+	Mat Rcam;
+	Rodrigues(r,Rcam);
 
-	double th = sqrt(pow(r[0],2) + pow(r[1],2) + pow(r[2],2));
-	for (unsigned int i=0;i<3; i++){
-		r[i] /= th;		
+	//cout << "Rcam: " << Rcam << endl;
+
+	//cout << "Rc: " << endl;
+	for (int i=0;i<3;i++){
+		for (int j=0;j<3;j++){
+			
+			Rc[i][j] = Rcam.at<double>(i,j);
+			//cout << Rc[i][j] << " ";
+		}
+		cout << endl;
 	}
 
-	double c = cos(th);
-	double s = sin(th);
-	double c1 = (1-c);
-	double x = r[0];
-	double y = r[1];
-	double z = r[2];
-
-	double Rc[3][3] = {{c+pow(x,2)*c1, x*y*c1 - z*s, y*s + x*z*c1},{z*s + x*y*c1, c + pow(y,2)*c1, -x*s + y*z*c1},{-y*s + x*z*c1, x*s + y*z*c1,c + pow(z,2)*c1}};
-
-	double Rr[3][3] = {{cos(th_z),sin(th_z) * cos(th_x),sin(th_x) * sin(th_z)},{sin(th_z), cos(th_z) * cos(th_x), -sin(th_x) * cos(th_z)},{0, sin(th_x), cos(th_x)}};
-
 	Vec3d pose = transform(Rc, t, markerPose);
+	//cout << "pose in camera coordinate system: " << endl;
+	//printPose(pose);
+
+	double Rx[3][3] = {{1,0,0},{0,cos(th_x),-sin(th_x)},{0,sin(th_x),cos(th_x)}};
+	pose = transform(Rx, {0,0,0}, pose);
+	//cout << "pose after x rotation: " << endl;
+	//printPose(pose);
+
+
+	double Rz[3][3] = {{cos(th_z),-sin(th_z),0},{sin(th_z),cos(th_z),0},{0,0,1}};
+	pose = transform(Rz, tr , pose);
+	cout << "pose in robot coordinates: " << endl;
 	printPose(pose);
-	pose = transform(Rr, tr, pose);
-	printPose(pose);
-	
 
-	//pose = transform(Rc, t, markerPose);
-
-	//cout << "theta " << to_string(th) << endl;
-
-	
 	return pose;
 }
 
 
-void detectAruco(int i){
+
+int detectAruco(int i){
+
+	//start time measurement
+	double function_time = (double)getTickCount();
 
 	double focal_length = 1011.454; //for camera on brown shell robot
 	double dx = 640;
@@ -162,11 +174,11 @@ void detectAruco(int i){
 	vector<vector<Point2f>> markerCorners, rejectedCandidates;
 	Ptr<aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(aruco::DICT_4X4_50);
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
-	if (markerIds.size()>0){
+	for (int i = 0; i < markerIds.size(); i++){
 		cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
-		cv::aruco::estimatePoseSingleMarkers(markerCorners,0.1,cameraMatrix,distCoeffs,rvecs,tvecs);
+		cv::aruco::estimatePoseSingleMarkers(markerCorners,markerSize,cameraMatrix,distCoeffs,rvecs,tvecs);
 		cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
-		Vec3d pose = getPose(markerIds[0],rvecs[0],tvecs[0]);	
+		Vec3d pose = getPose(markerIds[i],rvecs[i],tvecs[i]);	
 	}
 	/*if (rvecs.size()){
 		cout << "rvecs: ";
@@ -190,8 +202,13 @@ void detectAruco(int i){
   	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
 	imwrite(pic_name_img,inputImage);
   	//waitKey(0);
+  	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
+	cout << "Function time: " << function_time << endl;
 
+	return markerIds.size();
 }
+
+
 
 void takePic(int i){
 	
@@ -207,18 +224,19 @@ void takePic(int i){
 
 int main(){
 
-	
-	//initializeMarkers();
+
 	camera_start();
-	//cout << "shape_color: " << endl << shape_color() << endl;
-	//cout << "ARUCO DETECTION: "  << endl;
-	int k=10;
-	while (k<20){
-		cout << to_string(k) << ". try: " << endl;
-		takePic(k);
-		usleep(1000000);
+	cr.serial_open();
+
+	int k=0;
+	while (!detectAruco(k)){
 		k++;
+		string msg = "@a=16,b=1,v=0.3,trn=0.3$";
+		cr.serial_write(msg);
+		usleep(2000000);
 	}
+
+	cr.serial_close();
 	camera_stop();		
 
 	return 0;

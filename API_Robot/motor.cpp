@@ -33,6 +33,7 @@ void Motor::setVelocity(double velocity){
 
 	if ((_velocity<0 && _motor==RIGHT_MOTOR) || (_velocity>=0 && _motor==LEFT_MOTOR)){
 		digitalWrite(_dir_pin,LOW);
+    _pwm = 4095 - _pwm;
 	}else if ((_velocity >= 0 && _motor==RIGHT_MOTOR) || (_velocity<0 && _motor==LEFT_MOTOR)){
 		digitalWrite(_dir_pin,HIGH);
 	}

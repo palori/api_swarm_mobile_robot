@@ -20,7 +20,7 @@
 #define PIN_START_BUTTON        26
 #define PIN_LINE_LED_HIGH       12
 #define PIN_LINE_LED_LOW        25
-#define PIN_DISABLE2            27
+#define PIN_DISABLE2            7//27
 #define PIN_POWER_IR            24
 #define PIN_POWER_ROBOT         28
 
@@ -31,8 +31,8 @@
 #define PIN_IR_RAW_1            A1
 #define PIN_IR_RAW_2            A0
 #define PIN_BATTERY_VOLTAGE     A14
-#define PIN_LEFT_MOTOR_CURRENT  A2
-#define PIN_RIGHT_MOTOR_CURRENT A3
+#define PIN_LEFT_MOTOR_CURRENT  31//A2
+#define PIN_RIGHT_MOTOR_CURRENT 32//A3
 //
 #define PIN_LINE_SENSOR_0       A12
 #define PIN_LINE_SENSOR_1       A13
@@ -44,10 +44,10 @@
 #define PIN_LINE_SENSOR_7       A20
 
 // Motor Controller pins
-#define PIN_LEFT_DIR            6
-#define PIN_LEFT_PWM            3
-#define PIN_RIGHT_PWM           4
-#define PIN_RIGHT_DIR           2
+#define PIN_LEFT_DIR            37//6
+#define PIN_LEFT_PWM            35//3
+#define PIN_RIGHT_PWM           36//4
+#define PIN_RIGHT_DIR           38//2
 
 #define PIN_LEFT_ENCODER_A      23
 #define PIN_LEFT_ENCODER_B      22

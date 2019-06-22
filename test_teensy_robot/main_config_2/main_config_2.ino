@@ -678,7 +678,7 @@ void loop() // @,a=15,b=1,fwd=2,$
    reading100ms();
    //Serial.println("****************************************");
    battery_voltage = checkBattery();
-   read_IMU();
+   //read_IMU();
    
 }
 
@@ -809,12 +809,13 @@ void update10ms(){
     myServo.write(servo_pos);  //update servo pos every 10ms
 }
 int reading_count = 0;
+
 void reading100ms (){
   
    comm_tsy.read_serial(); 
    reading_count++;
    if (reading_count >= 1000){
-      Serial.println("***imu: "+String(comm_tsy.get_imu_on()));
+      //Serial.println("***imu: "+String(comm_tsy.get_imu_on()));
       reading_count = 0;
    }
 }
