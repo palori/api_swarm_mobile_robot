@@ -32,6 +32,8 @@ public:
 	Item<string> extension;
 	Item<string> full_filename;
 
+	bool first_row;
+
 	// start time to add to the file name
 
 	void init(string file_name, string ext);

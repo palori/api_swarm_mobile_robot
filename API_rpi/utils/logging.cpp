@@ -13,17 +13,28 @@ Logging::Logging(string filename, string extension){
 void Logging::init(string file_name, string ext){
 	this->filename.set(file_name);
 	this->extension.set(ext);
-	string full = file_name + "_" + get_start_time() + "." + ext;
+	//string full = file_name + "_" + get_start_time() + "." + ext;
+	string full = file_name + "." + ext;
 	this->full_filename.set(full);
+	first_row = false;//true;
 }
 
 void Logging::log(string line){
 
-	string new_line = get_time_now() + "," + line + "\n";
+	string new_line = "";
+	if (first_row){
+		first_row = false;
+		new_line += "timestamp";
+	}
+	else{
+		new_line += get_time_now();
+	}
+
+	new_line += "," + line + "\n";
 	std::ofstream log(full_filename.get(), std::ios_base::app | std::ios_base::out);
 	log << new_line;
 
-	cout << "add line: " << new_line;
+	//cout << "add line: " << new_line;
 }
 
 

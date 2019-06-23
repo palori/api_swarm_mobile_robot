@@ -47,6 +47,8 @@ IF  (Threads_FOUND)
 
 		../../../raspberry_pi/pins.h
 		../../../raspberry_pi/leds.cpp
+
+		../../../utils/logging.cpp
  
 	)  
 

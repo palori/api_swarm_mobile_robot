@@ -34,6 +34,8 @@
 
 #include "../raspberry_pi/leds.h"
 
+#include "../utils/logging.h"
+
 
 using namespace std;
 
@@ -106,6 +108,8 @@ public:
 
 	// visualisation of the robot states (KA, leader, tasks, planning&navitation)
 	Leds leds;
+
+	Logging logg;
 
 
 	/////////////

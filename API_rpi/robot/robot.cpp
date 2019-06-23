@@ -130,6 +130,13 @@ Robot::Robot(string hostname_master,
 	run_mission.set(false);
 
 	debug.set(false);
+
+	//leds.T_blink_ms.set(1000.0);	// configure blinking period of leds
+	string path_logs = "../../../../../executables_high_level/logs/";
+	string file_name = "le/test";
+	string extra_test = "_r" + xtos(id);
+	string name = path_logs + file_name + extra_test;
+	logg.init(name,"csv");
 	
 }
 
@@ -310,11 +317,27 @@ void Robot::send_task(){//Publisher pub_image_task){
 
 void Robot::send_keep_alive(){
 	string msg_ka = "";
+	leds.ka.set(ON);
+	//logg.log("robot_id,robot_a_id,robot_b_id,robot_a_alive,robot_b_alive,leader,trigger,i_detected,is_election,robots_ids,proposed_leader");
 	while(!ctrl_c_pressed){
 		// send KA
 		msg_ka = encode_keep_alive(params.id.get());
 		pub_robot_info.publish(msg_ka);
-		leds.keep_alive();	//blink led
+		leds.refresh();	// update all leds
+
+		string log_line = xtos(params.id.get());
+		log_line += "," + xtos(robot_a.id.get());
+		log_line += "," + xtos(robot_b.id.get());
+		log_line += "," + xtos(robot_a.ka.is_now_alive.get());
+		log_line += "," + xtos(robot_b.ka.is_now_alive.get());
+		log_line += "," + xtos(bully.leader.get());
+		log_line += "," + xtos(bully.trigger.get());
+		log_line += "," + xtos(bully.i_detected.get());
+		log_line += "," + xtos(bully.is_election.get());
+		log_line += "," + bully.robots_ids.to_string_cs(";");
+		log_line += "," + bully.proposed_leader.to_string_cs(";");
+		//log_line += "," + xtos();
+		logg.log(log_line);
 
 		if (true){ 	// for debuging
 			bully.print_info();
@@ -393,9 +416,9 @@ void Robot::leader_election(){
 			msg = encode_leader_election(params.id.get(), leader, proposed_leader);
 			pub_robot_info.publish(msg);
 		}
-		if(bully.trigger.get()) leds.election();
-		else if(!bully.trigger.get() && bully.am_i_leader()) leds.is_leader(1);
-		else leds.is_leader(0);
+		if(bully.trigger.get()) leds.leader.set(BLINK);
+		else if(!bully.trigger.get() && bully.am_i_leader()) leds.leader.set(ON);
+		else leds.leader.set(OFF);
 		this_thread::sleep_for(chrono::milliseconds(500));
 	}
 }
@@ -467,8 +490,8 @@ void Robot::run(){
 
 
 		// just for testing the leds
-		//leds.task_doing(1);
-		//leds.navigating(1);
+		//leds.task.set(ON);
+		//leds.plan_nav.set(ON);
 	}
 
 	leds.turn_off_all();	// just in case
