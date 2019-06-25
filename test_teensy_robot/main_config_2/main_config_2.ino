@@ -439,8 +439,8 @@ void update_velocity(int drive_command){
               comm_tsy.set_stop(false);     
             } else {
               Serial.println("STOPPING !!!!!!!");
-              vel1=0.0001;
-              vel2=0.0001;
+              vel1=0.000;
+              vel2=0.000;
                
             }
         break;
@@ -462,8 +462,8 @@ void update_velocity(int drive_command){
                 //Serial.println("angle error:                                "+String(angle_error));
                 
             } else {
-                vel1 = 0.0001;
-                vel2 = 0.0001;
+                vel1 = 0.000;
+                vel2 = 0.000;
                 //disableMotors();  
                 newCommand = true;
                 count_drive++;
