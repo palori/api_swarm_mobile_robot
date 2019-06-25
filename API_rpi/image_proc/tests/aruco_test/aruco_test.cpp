@@ -33,7 +33,7 @@ using namespace cv;
 using namespace std;
 
 raspicam::RaspiCam_Cv Camera;
-COMM_RPR cr;
+COMM_RPI cr;
 
 vector<Vec4d> aruco_markers;
 double th_x = - 25 * PI / 36;
