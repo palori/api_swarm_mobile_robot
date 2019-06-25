@@ -26,8 +26,8 @@
 #include "../../../comm/comm_rpi_2.h"
 
 #define PI 3.14159265
-
-
+#define LOCALIZE 0
+#define COUPLE 1
 
 using namespace cv;
 using namespace std;
@@ -40,6 +40,7 @@ double th_x = - 25 * PI / 36;
 double th_z = - PI / 2;
 
 Vec3d tr = {0.0366 , 0.0 , 0.1163};
+
 
 float markerSize = 0.02;
 
@@ -153,7 +154,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 
 
-int detectAruco(int i){
+int detectAruco(int mode){
 
 	//start time measurement
 	double function_time = (double)getTickCount();
@@ -174,12 +175,16 @@ int detectAruco(int i){
 	vector<vector<Point2f>> markerCorners, rejectedCandidates;
 	Ptr<aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(aruco::DICT_4X4_50);
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
+	
 	for (int i = 0; i < markerIds.size(); i++){
 		cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
 		cv::aruco::estimatePoseSingleMarkers(markerCorners,markerSize,cameraMatrix,distCoeffs,rvecs,tvecs);
 		cv::aruco::drawAxis(inputImage,cameraMatrix,distCoeffs,rvecs,tvecs,0.1);
 		Vec3d pose = getPose(markerIds[i],rvecs[i],tvecs[i]);	
 	}
+
+
+	
 	/*if (rvecs.size()){
 		cout << "rvecs: ";
 		for(unsigned int i=0;i<3;i++){
@@ -196,12 +201,14 @@ int detectAruco(int i){
 		}
 		cout << endl;
 	}*/
+	
 	//string window_name = "ARUCO_"+to_string(i);
   	//namedWindow( window_name, CV_WINDOW_AUTOSIZE );
   	//imshow( window_name , inputImage);
-  	string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
-	imwrite(pic_name_img,inputImage);
+  	//string pic_name_img = "pics/aruco_detected_"+to_string(i)+".png";
+	//imwrite(pic_name_img,inputImage);
   	//waitKey(0);
+
   	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
 
@@ -229,12 +236,21 @@ int main(){
 	cr.serial_open();
 
 	int k=0;
-	while (!detectAruco(k)){
-		k++;
+
+	while (!detectAruco(COUPLE)){
 		string msg = "@a=16,b=1,v=0.3,trn=0.3$";
 		cr.serial_write(msg);
 		usleep(2000000);
 	}
+
+
+
+
+
+
+
+
+
 
 	cr.serial_close();
 	camera_stop();		
