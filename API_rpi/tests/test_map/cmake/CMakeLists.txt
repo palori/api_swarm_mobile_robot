@@ -4,7 +4,13 @@ project (main_map_project)
 
 find_package(Threads)
 
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-lpthread -lzmqpp -lzmq -lsodium -lwiringPi -Wl,--no-as-needed")
+SET(TEST_PC false CACHE BOOL "Some user-specified option")
+
+IF (TEST_PC)
+	set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-lpthread -lzmqpp -lzmq -lsodium -Wl,--no-as-needed")
+ELSE()
+	set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-lpthread -lzmqpp -lzmq -lsodium -lwiringPi -Wl,--no-as-needed")
+ENDIF()
 
 IF  (Threads_FOUND)
 	MESSAGE(STATUS "COMPILING robot + map with cmake")
@@ -41,6 +47,8 @@ IF  (Threads_FOUND)
 
 		../../../raspberry_pi/pins.h
 		../../../raspberry_pi/leds.cpp
+
+		../../../utils/logging.cpp
  
 	)  
 

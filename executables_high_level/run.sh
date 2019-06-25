@@ -162,7 +162,11 @@ then
 				rm -rf build
 				mkdir build
 				cd build
-				cmake ..
+				if [ $tests -eq 1 ]; then
+					cmake -DTEST_PC:bool=true ..
+				else
+					cmake ..
+				fi
 			fi
 
 			# make

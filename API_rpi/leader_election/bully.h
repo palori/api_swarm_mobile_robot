@@ -32,8 +32,10 @@ public:
 	Items<int> proposed_leader;		// who all robots propose as a leader
 
 	Item<chrono::_V2::system_clock::time_point> time_detected;
+	Item<chrono::_V2::system_clock::time_point> time_last_elected;
 	Item<float> time_threshold;
 	Item<bool> i_detected;
+	Item<bool> is_election;
 
 	Item<bool> debug;
 
@@ -41,7 +43,7 @@ public:
 	/*int get_MAX_LEN();
 	void set_MAX_LEN(int i);*/
 
-	//void print_info();
+	void print_info();
 	//KeepAlive & operator=(KeepAlive & rp);
 
 	void trigger_election();
@@ -51,6 +53,8 @@ public:
 	float get_time();
 
 	bool am_i_leader();
+
+	bool can_elect_again();
 
 	// leds in RPi to notify leader election process and
 	// when its done to know who is the leader.
