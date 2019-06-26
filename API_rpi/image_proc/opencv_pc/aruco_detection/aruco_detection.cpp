@@ -83,6 +83,70 @@ void printPose(Vec3d pose){
 
 }
 
+double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
+
+	double Rtemp[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+	double R[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+
+	cout << "Rx: " << endl;
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			//Rtemp[i][j] = Rz[i][0] * Rx[0][j] + Rz[i][1] * Rx[1][j] + Rz[i][2] * Rx[2][j]; 
+			//if (Rtemp[i][j] < 0.000001) Rtemp[i][j] = 0;
+			cout << Rx[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	cout << "Rz: " << endl;
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			//Rtemp[i][j] = Rz[i][0] * Rx[0][j] + Rz[i][1] * Rx[1][j] + Rz[i][2] * Rx[2][j]; 
+			//if (Rtemp[i][j] < 0.000001) Rtemp[i][j] = 0;
+			cout << Rz[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	cout << "Rc: " << endl;
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			//Rtemp[i][j] = Rz[i][0] * Rx[0][j] + Rz[i][1] * Rx[1][j] + Rz[i][2] * Rx[2][j]; 
+			//if (Rtemp[i][j] < 0.000001) Rtemp[i][j] = 0;
+			cout << Rc[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	cout << "Rtemp: " << endl;
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			Rtemp[i][j] = Rz[i][0] * Rx[0][j] + Rz[i][1] * Rx[1][j] + Rz[i][2] * Rx[2][j]; 
+			if (fabs(Rtemp[i][j]) < 0.001) Rtemp[i][j] = 0;
+			cout << Rtemp[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	cout << "R: " << endl;
+
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			R[i][j] = Rtemp[i][0] * Rc[0][j] + Rtemp[i][1] * Rc[1][j] + Rtemp[i][2] * Rc[2][j]; 
+			//if (fabs(R[i][j]) < 0.001) R[i][j] = 0;
+			cout << R[i][j] << " " ;
+		}
+		cout << endl;
+	}
+
+	return 0.0;
+}
+
 Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 	Vec3d markerPose = getMarkerPose(id);
@@ -96,7 +160,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	Rodrigues(r,Rcam);
 
 	cout << "Rcam: " << Rcam << endl;
-	/*
+	
 	cout << "Rc: " << endl;
 	for (int i=0;i<3;i++){
 		for (int j=0;j<3;j++){
@@ -105,7 +169,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 			cout << Rc[i][j] << " ";
 		}
 		cout << endl;
-	}*/
+	}
 
 	Vec3d pose = transform(Rc, t, markerPose);
 	cout << "pose in camera coordinate system: " << endl;
@@ -121,6 +185,8 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	pose = transform(Rz, tr , pose);
 	cout << "pose after z rotation: " << endl;
 	printPose(pose);
+
+	double th = getTheta(Rc,Rx,Rz);
 
 	return pose;
 }

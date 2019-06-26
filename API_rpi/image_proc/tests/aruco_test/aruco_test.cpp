@@ -110,6 +110,35 @@ void printPose(Vec3d pose){
 
 }
 
+double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
+
+	double Rtemp[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+	double R[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			Rtemp[i][j] = Rz[i][0] * Rx[0][j] + Rz[i][1] * Rx[1][j] + Rz[i][2] * Rx[2][j]; 
+			if (fabs(Rtemp[i][j]) < 0.001) Rtemp[i][j] = 0;
+		}
+
+	}
+
+
+
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			R[i][j] = Rtemp[i][0] * Rc[0][j] + Rtemp[i][1] * Rc[1][j] + Rtemp[i][2] * Rc[2][j]; 
+			if (fabs(R[i][j]) < 0.001) R[i][j] = 0;
+			cout << R[i][j] << " " ;
+		}
+		cout << endl;ž
+	}
+
+	return 0.0;
+}
+
 Vec3d getPose(int id, Vec3d r, Vec3d t){
 
 	Vec3d markerPose = getMarkerPose(id);
@@ -149,8 +178,12 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	cout << "pose in robot coordinates: " << endl;
 	printPose(pose);
 
+	pose[2] = getTheta(Rc,Rx,Rz);
+
 	return pose;
 }
+
+
 
 Vec3d getDrivingParameters(int id, Vec3d pose){
 
