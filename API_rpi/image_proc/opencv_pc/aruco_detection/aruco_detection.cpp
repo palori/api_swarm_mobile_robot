@@ -95,7 +95,7 @@ Vec3d getPose(int id, Vec3d r, Vec3d t){
 	Mat Rcam;
 	Rodrigues(r,Rcam);
 
-	//cout << "Rcam: " << Rcam << endl;
+	cout << "Rcam: " << Rcam << endl;
 	/*
 	cout << "Rc: " << endl;
 	for (int i=0;i<3;i++){
