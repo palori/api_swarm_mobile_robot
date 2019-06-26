@@ -124,8 +124,6 @@ double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
 
 	}
 
-
-
 	for (int i=0; i<3; i++){
 		for (int j=0; j<3; j++){
 
@@ -133,7 +131,20 @@ double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
 			if (fabs(R[i][j]) < 0.001) R[i][j] = 0;
 			cout << R[i][j] << " " ;
 		}
-		cout << endl;ž
+		cout << endl;
+	}
+
+	double th_y = 0.55;
+	double Ry[3][3] = {{cos(th_y),0,sin(th_y)},{0,1,0},{-sin(th_y),0,cos(th_y)}};
+
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+
+			Rf[i][j] = Ry[i][0] * R[0][j] + Ry[i][1] * R[1][j] + Ry[i][2] * R[2][j]; 
+			if (fabs(Rf[i][j]) < 0.001) Rf[i][j] = 0;
+			cout << Rf[i][j] << " " ;
+		}
+		cout << endl;
 	}
 
 	return 0.0;
