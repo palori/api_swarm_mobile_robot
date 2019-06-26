@@ -133,7 +133,7 @@ double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
 			if (fabs(R[i][j]) < 0.001) R[i][j] = 0;
 			cout << R[i][j] << " " ;
 		}
-		cout << endl;ž
+		cout << endl;
 	}
 
 	return 0.0;
