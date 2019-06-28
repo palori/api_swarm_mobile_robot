@@ -81,7 +81,7 @@ Vec3d getMarkerPose(int id){
 			markerPose[1]=aruco_markers[i][2];
 			markerPose[2]=aruco_markers[i][3];
 
-			cout << "MATCH!" << endl;
+			cout << "MATCH: " << id <<  endl;
 		}
 	}
 
@@ -114,7 +114,7 @@ double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
 
 	double Rtemp[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
 	double R[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-
+	double Rf[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
 	for (int i=0; i<3; i++){
 		for (int j=0; j<3; j++){
 
@@ -123,7 +123,7 @@ double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
 		}
 
 	}
-
+	cout << "R: " << endl;
 	for (int i=0; i<3; i++){
 		for (int j=0; j<3; j++){
 
@@ -136,19 +136,20 @@ double getTheta(double Rc[3][3], double Rx[3][3], double Rz[3][3]){
 
 	double th_y = 0.55;
 	double Ry[3][3] = {{cos(th_y),0,sin(th_y)},{0,1,0},{-sin(th_y),0,cos(th_y)}};
-
+	cout << "Rf: " << endl;
 	for (int i=0; i<3; i++){
 		for (int j=0; j<3; j++){
 
-			Rf[i][j] = Ry[i][0] * R[0][j] + Ry[i][1] * R[1][j] + Ry[i][2] * R[2][j]; 
-			if (fabs(Rf[i][j]) < 0.001) Rf[i][j] = 0;
+			Rf[i][j] = R[i][0] * Ry[0][j] + R[i][1] * Ry[1][j] + R[i][2] * Ry[2][j]; 
+			if (fabs(Rf[i][j]) < 0.05) Rf[i][j] = 0;
 			cout << Rf[i][j] << " " ;
 		}
 		cout << endl;
 
 	}
-
-	return 0.0;
+	double theta = atan2(Rf[1][0],Rf[0][0]);
+	cout << "theta: " << theta << endl;
+	return theta;
 }
 
 Vec3d getPose(int id, Vec3d r, Vec3d t){
@@ -203,20 +204,22 @@ Vec3d getDrivingParameters(int id, Vec3d pose){
 	double y1 = 0;
 	switch (id) {
 		case 3:
-			x1 = 0.2;
-			y1 = 0.1; 
+			x1 = 0.15;
+			y1 = 0.085; 
 			break;
 		case 4: 
-			x1 = 0.15;
+			x1 = 0.13;
 			y1 = 0.0;
 			break;
 		case 5:
-			x1 = 0.2;
-			y1 = -0.1;
+			x1 = 0.15;
+			y1 = -0.085;
 			break;
-	} 	
-	double th = atan2(pose[1],pose[0]);
-	double th1 = atan2(y1,x1);
+	}
+
+	cout << "ID: " << id << endl; 	
+	double th = pose[2];
+	double th1 = 0; //atan2(y1,x1);
 	double th0 = th - th1;
 	double x0 = pose[0] - cos(th0) * x1 + sin(th0) * y1;
 	double y0 = pose[1] - sin(th0) * x1 - cos(th0) * y1;
@@ -231,7 +234,7 @@ Vec3d getDrivingParameters(int id, Vec3d pose){
 
 	parameters[0] = atan2(y0,x0);
 	parameters[1] = sqrt(pow(x0,2) + pow(y0,2));
-	parameters[2] = -parameters[0];
+	parameters[2] = -parameters[0] + pose[2];
 	
 	printPose(parameters);
 
@@ -259,7 +262,7 @@ int detectAruco(int mode){
 	Camera.grab();
 	Camera.retrieve(inputImage);
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
-	string msg = "@a=16,b=1,v=0.3,trn=0.3$";
+	string msg = "@a=16,b=1,v=0.3,trn=0.4$";
 	cout << "detection: " << endl;
 	while (!markerIds.size()){
 
@@ -279,7 +282,7 @@ int detectAruco(int mode){
 				cout << "estimate pose: " << endl;
 				cv::aruco::estimatePoseSingleMarkers(markerCorners,markerSize,cameraMatrix,distCoeffs,rvecs,tvecs);
 				cout << "draw axis: " << endl;
-				cv::aruco::drawAxis(inputImage, cameraMatrix, distCoeffs, rvecs, tvecs, 0.1); //giving exceptions
+				//cv::aruco::drawAxis(inputImage, cameraMatrix, distCoeffs, rvecs, tvecs, 0.1); //giving exceptions
 				cout << "get pose: " << endl;
 				Vec3d pose = getPose(markerIds[i],rvecs[i],tvecs[i]);
 				for(int j=0; j<3; j++){
@@ -292,16 +295,19 @@ int detectAruco(int mode){
 		}
 		
 		
-
+		cout << "1. turn: " << drivingParameters[0] << endl;
 		msg = "@a=16,b=1,v=0.3,trn=" + to_string(drivingParameters[0])+"$";
-		//cr.serial_write(msg);
-		//usleep(5000000);
+		//msg = "a=16,b=1,v=0.5,trn=-0.5$";
+		cr.serial_write(msg);
+		usleep(5000000);
+		cout << "fwd: " << drivingParameters[1] << endl;
 		msg = "@a=15,b=1,v=0.3,fwd=" + to_string(drivingParameters[1])+"$";
-		//cr.serial_write(msg);
-		//usleep(5000000);
+		cr.serial_write(msg);
+		usleep(5000000);
+		cout << "2. turn: " << drivingParameters[2] << endl;
 		msg = "@a=16,b=1,v=0.3,trn=" + to_string(drivingParameters[2])+"$";
-		//cr.serial_write(msg);
-		//usleep(5000000);
+		cr.serial_write(msg);
+		usleep(5000000);
 
 	}
 
