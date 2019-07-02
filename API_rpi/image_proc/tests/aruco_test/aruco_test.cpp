@@ -204,15 +204,15 @@ Vec3d getDrivingParameters(int id, Vec3d pose){
 	double y1 = 0;
 	switch (id) {
 		case 3:
-			x1 = 0.15;
+			x1 = 0.20;
 			y1 = 0.085; 
 			break;
 		case 4: 
-			x1 = 0.13;
+			x1 = 0.18;
 			y1 = 0.0;
 			break;
 		case 5:
-			x1 = 0.15;
+			x1 = 0.20;
 			y1 = -0.085;
 			break;
 	}
@@ -262,7 +262,7 @@ int detectAruco(int mode){
 	Camera.grab();
 	Camera.retrieve(inputImage);
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
-	string msg = "@a=16,b=1,v=0.3,trn=0.4$";
+	string msg = "@a=16,b=1,v=0.5,trn=0.4$";
 	cout << "detection: " << endl;
 	while (!markerIds.size()){
 
@@ -296,16 +296,22 @@ int detectAruco(int mode){
 		
 		
 		cout << "1. turn: " << drivingParameters[0] << endl;
-		msg = "@a=16,b=1,v=0.3,trn=" + to_string(drivingParameters[0])+"$";
+		msg = "@a=16,b=1,v=0.5,trn=" + to_string(drivingParameters[0])+"$";
 		//msg = "a=16,b=1,v=0.5,trn=-0.5$";
 		cr.serial_write(msg);
 		usleep(5000000);
 		cout << "fwd: " << drivingParameters[1] << endl;
-		msg = "@a=15,b=1,v=0.3,fwd=" + to_string(drivingParameters[1])+"$";
+		msg = "@a=15,b=1,v=0.5,fwd=" + to_string(drivingParameters[1])+"$";
 		cr.serial_write(msg);
 		usleep(5000000);
 		cout << "2. turn: " << drivingParameters[2] << endl;
-		msg = "@a=16,b=1,v=0.3,trn=" + to_string(drivingParameters[2])+"$";
+		msg = "@a=16,b=1,v=0.5,trn=" + to_string(drivingParameters[2])+"$";
+		cr.serial_write(msg);
+		usleep(5000000);
+		
+		//go straight ahead to couple
+
+		msg = "@a=15,b=1,v=0.5,fwd=0.15$";
 		cr.serial_write(msg);
 		usleep(5000000);
 
