@@ -242,7 +242,7 @@ Vec3d getDrivingParameters(int id, Vec3d pose){
 }
 
 
-int detectAruco(int mode){
+float detectAruco(int mode){
 
 	//start time measurement
 	double function_time = (double)getTickCount();
@@ -262,12 +262,12 @@ int detectAruco(int mode){
 	Camera.grab();
 	Camera.retrieve(inputImage);
 	cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
-	string msg = "@a=16,b=1,v=0.5,trn=0.4$";
+	string msg = "@a=16,b=1,v=0.5,trn=0.5$";
 	cout << "detection: " << endl;
 	while (!markerIds.size()){
 
 		cr.serial_write(msg);
-		usleep(2000000);
+		usleep(3000000);
 		Camera.grab();
 		Camera.retrieve(inputImage);
 		cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
@@ -308,12 +308,38 @@ int detectAruco(int mode){
 		msg = "@a=16,b=1,v=0.5,trn=" + to_string(drivingParameters[2])+"$";
 		cr.serial_write(msg);
 		usleep(5000000);
-		
-		//go straight ahead to couple
 
-		msg = "@a=15,b=1,v=0.5,fwd=0.15$";
-		cr.serial_write(msg);
-		usleep(5000000);
+		float distance = 10.0;
+
+		Camera.grab();
+		Camera.retrieve(inputImage);
+		cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
+
+		for (int i = 0; i < markerIds.size(); i++){
+			if (markerIds[i] == 4) {
+				//cout << "draw markers: " << endl;
+				cv::aruco::drawDetectedMarkers(inputImage, markerCorners, markerIds);
+				//cout << "estimate pose: " << endl;
+				cv::aruco::estimatePoseSingleMarkers(markerCorners,markerSize,cameraMatrix,distCoeffs,rvecs,tvecs);
+				//cout << "draw axis: " << endl;
+				//cv::aruco::drawAxis(inputImage, cameraMatrix, distCoeffs, rvecs, tvecs, 0.1); //giving exceptions
+				//cout << "get pose: " << endl;
+				Vec3d pose = getPose(markerIds[i],rvecs[i],tvecs[i]);
+				for(int j=0; j<3; j++){
+					cout << rvecs[i][j] << " " ;
+				}
+				cout << endl;
+				drivingParameters = getDrivingParameters(markerIds[i],pose);
+
+				if (fabs(pose[3])<0.05) {
+					distance=pose[1]-0.05;
+					cout << "distance: " << distance << endl;
+				} else distance = 10.0 
+				break;
+			}
+		}
+		
+		
 
 	}
 
@@ -326,6 +352,11 @@ int detectAruco(int mode){
 		Vec3d pose = getPose(markerIds[i],rvecs[i],tvecs[i]);	
 	}*/
 
+	
+
+
+
+
 
 
   	string pic_name_img = "pics/aruco_detected.png";
@@ -334,7 +365,7 @@ int detectAruco(int mode){
   	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
 
-	return markerIds.size();
+	return distance;
 }
 
 
@@ -349,6 +380,16 @@ void takePic(int i){
 	
 }
 
+void goForward(float distance){
+
+	//go straight ahead to couple
+
+		msg = "@a=15,b=1,v=0.5,fwd=" + to_string(distance) + "$";
+		cr.serial_write(msg);
+		usleep(5000000);
+
+}
+
 
 
 int main(){
@@ -357,7 +398,18 @@ int main(){
 	camera_start();
 	cr.serial_open();
 
-	detectAruco(COUPLE);
+	
+
+	float distance = 10.0;
+	distance = detectAruco(COUPLE);
+
+	while (distance > 5.0){
+		goForward(-0.2);	
+		distance = detectAruco(COUPLE);
+	}
+	
+	goForward(distance);
+
 	
 
 	cr.serial_close();
