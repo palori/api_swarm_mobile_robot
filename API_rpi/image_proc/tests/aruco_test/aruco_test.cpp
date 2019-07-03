@@ -242,8 +242,9 @@ Vec3d getDrivingParameters(int id, Vec3d pose){
 }
 
 
-float detectAruco(int mode){
+double detectAruco(int mode){
 
+	double dist = 10.0;
 	//start time measurement
 	double function_time = (double)getTickCount();
 
@@ -309,8 +310,6 @@ float detectAruco(int mode){
 		cr.serial_write(msg);
 		usleep(5000000);
 
-		float distance = 10.0;
-
 		Camera.grab();
 		Camera.retrieve(inputImage);
 		cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds);
@@ -332,9 +331,9 @@ float detectAruco(int mode){
 				drivingParameters = getDrivingParameters(markerIds[i],pose);
 
 				if (fabs(pose[3])<0.05) {
-					distance=pose[1]-0.05;
-					cout << "distance: " << distance << endl;
-				} else distance = 10.0 
+					dist=pose[1]-0.05;
+					cout << "distance: " << dist << endl;
+				} else dist = 10.0; 
 				break;
 			}
 		}
@@ -365,7 +364,7 @@ float detectAruco(int mode){
   	function_time = ((double)getTickCount()-function_time)/getTickFrequency();
 	cout << "Function time: " << function_time << endl;
 
-	return distance;
+	return dist;
 }
 
 
@@ -384,7 +383,7 @@ void goForward(float distance){
 
 	//go straight ahead to couple
 
-		msg = "@a=15,b=1,v=0.5,fwd=" + to_string(distance) + "$";
+		string msg = "@a=15,b=1,v=0.5,fwd=" + to_string(distance) + "$";
 		cr.serial_write(msg);
 		usleep(5000000);
 
