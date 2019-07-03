@@ -330,8 +330,9 @@ double detectAruco(int mode){
 				cout << endl;
 				drivingParameters = getDrivingParameters(markerIds[i],pose);
 
-				if (fabs(pose[3])<0.05) {
-					dist=pose[1]-0.05;
+				cout << "THETA: " << pose[2] << endl;
+				if (fabs(pose[2])<0.05) {
+					dist=pose[0]-0.05;
 					cout << "distance: " << dist << endl;
 				} else dist = 10.0; 
 				break;
@@ -382,10 +383,15 @@ void takePic(int i){
 void goForward(float distance){
 
 	//go straight ahead to couple
-
-		string msg = "@a=15,b=1,v=0.5,fwd=" + to_string(distance) + "$";
-		cr.serial_write(msg);
-		usleep(5000000);
+	string msg;
+	if (distance > 0) msg = "@a=15,b=1,v=0.5,fwd=" + to_string(distance) + "$";
+	else {
+		distance = -distance;
+		msg = "@a=15,b=1,v=-0.5,fwd=" + to_string(distance) + "$";
+	} 
+		
+	cr.serial_write(msg);
+	usleep(5000000);
 
 }
 
