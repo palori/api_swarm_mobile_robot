@@ -1,0 +1,4 @@
+To fix
+------
+sensors.x (item -> items)
+attr & methods -> public and private

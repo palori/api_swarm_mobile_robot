@@ -1,0 +1,149 @@
+@startuml
+'left to right direction'
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+skinparam nodesep 10
+skinparam ranksep 5
+
+
+'*********************************************'
+'***** High-level board **********************'
+'ACTORS'
+actor :Tasks list: as tasks
+actor :Offline map: as map
+actor :Camera:
+actor :Other robots: as robots
+
+
+tasks -[hidden]-> map
+map -[hidden]-> Camera
+
+rectangle "high-level board" as HL
+tasks -[hidden]> HL
+HL -[hidden]> robots
+
+
+
+rectangle "high-level board" as HL {
+	'.............................................'
+	'tasks'
+	(get new tasks) as get_TA
+	(Compute\ntask\nallocation) as TA
+	(Send tasks) as set_TA
+	(store tasks to do) as store_TA
+	'.............................................'
+	TA <.. get_TA: <<exclude>>
+	TA <.. set_TA: <<exclude>>
+	get_TA -[hidden]> set_TA
+	store_TA <. get_TA: <<include>>
+	'.............................................'
+	'.............................................'
+
+
+	'.............................................'
+	'leader election'
+	(elect new leader) as LE
+	'note "If leader" as lead'
+	note "If new robot\nis detected or\n a robot is dead" as LE_trigger
+	'.............................................'
+	'TA - lead'
+	TA .> LE: <<extend>>
+	LE - LE_trigger
+	'.............................................'
+	'.............................................'
+
+
+	'.............................................'
+	'keep alive'
+	(send keep-alive) as send_KA
+	(receive keep-alive) as get_KA
+	'.............................................'
+	TA -[hidden]> get_KA
+	get_KA -[hidden]-> send_KA
+	set_TA -[hidden]-> get_KA
+	LE ..> get_KA : <<extend>>
+	'.............................................'
+	'.............................................'
+	
+
+	'.............................................'
+	'..... good until here! ......................'
+	'.............................................'
+
+
+	'.............................................'
+	'planning route'
+	(plan route\nto next task) as get_route
+	note "Repeat until\nempty" as repeat_plan
+	usecase mark_T_done as "remove to\ndo task
+	--
+	store new\ntask done"
+	(send done tasks) as send_T_done
+	(do task) as do_T
+	note "When current\ntask is completed" as T_done
+	'.............................................'
+	store_TA ..> get_route: <<include>>
+	repeat_plan - get_route
+	get_route <. mark_T_done: <<include>>
+	mark_T_done .> send_T_done: <<include>>
+	mark_T_done -- do_T
+	do_T - T_done
+	'.............................................'
+	'.............................................'
+
+
+
+	'.............................................'
+	'navigate'
+	(Navigate) as nav
+	(Localize) as local
+	(compute new\ncommand) as new_command
+	(set image task) as set_T_img
+	'.............................................'
+	get_route ..> nav: <<include>>
+	set_T_img <- nav
+	nav --> new_command
+	nav <-- local
+	nav .> do_T: <<exclude>>
+	'.............................................'
+	'.............................................'
+	
+	
+}
+
+
+tasks -> TA
+send_KA -> robots
+get_KA <- robots
+get_TA <- robots
+set_TA -> robots
+send_T_done -> robots
+
+map -> get_route
+
+
+
+'*********************************************'
+'***** Low-level board ***********************'
+'ACTORS'
+actor :Motors:
+actor :Servo-motor: as Servo
+actor :Encoders:
+actor :IMU:
+actor :IR:
+
+Encoders -[hidden]-> IMU
+IMU -[hidden]-> IR
+Motors -[hidden]-> Servo
+
+rectangle "low-level board" as LL
+Encoders -[hidden]> LL
+LL -[hidden]> Motors
+
+HL -[hidden]> LL
+
+rectangle "low-level board" as LL {
+
+}
+@enduml
