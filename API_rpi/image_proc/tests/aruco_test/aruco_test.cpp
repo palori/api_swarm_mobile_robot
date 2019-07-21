@@ -331,8 +331,8 @@ double detectAruco(int mode){
 				drivingParameters = getDrivingParameters(markerIds[i],pose);
 
 				cout << "THETA: " << pose[2] << endl;
-				if (fabs(pose[2])<0.05) {
-					dist=pose[0]-0.05;
+				if (fabs(pose[2])<0.1) {
+					dist=pose[0];
 					cout << "distance: " << dist << endl;
 				} else dist = 10.0; 
 				break;
