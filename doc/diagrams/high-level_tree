@@ -1,0 +1,81 @@
+@startuml
+@startsalt
+{
+{T 
+	**//Raspberry Pi// library**
+	+ **comm**
+	++**pub_subs**
+	+++publisher.h
+	+++publisher.cpp
+	+++subscriber.h
+	+++subscriber.cpp
+	++comm_rpi_2.h
+	++comm_rpi_2.cpp
+	++messages.h
+	++messages.cpp
+
+	+ **graph**
+	++edge.h
+	++edge.cpp
+	++graph.h
+	++graph.cpp
+	++node.h
+	++node.cpp
+
+	+ **image**
+	++camera.h
+	++camera.cpp
+	++computer_vision.h
+	++computer_vision.cpp
+	++image_analysis.h
+	++image_analysis.cpp
+
+	+ **leader_election**
+	++bully.h
+	++bully.cpp
+
+	+ **maps**
+	++maps.h
+	++maps.cpp
+
+	+ **path_planning**
+	++dijkdtra.h
+	++dijkdtra.cpp
+	
+	+ **raspberry_pi**
+	++leds.h
+	++leds.cpp
+	++pins.h
+	++pins.cpp
+
+	+ **robot**
+	++controllers.h
+	++controllers.cpp
+	++keep_alive.h
+	++keep_alive.cpp
+	++robot.h
+	++robot.cpp
+	++robot_params.h
+	++robot_params.cpp
+	++sensors.h
+	++sensors.cpp
+
+	+ **task_allocation**
+	++//(under_development)//
+
+	+ **utils**
+	++item.h
+	++item.cpp
+	++logging.h
+	++logging.cpp
+	++utils.h
+	++utils.cpp
+
+	+main_robot.cpp
+	+main_image.cpp
+
+
+}}
+@endsalt
+@enduml
+

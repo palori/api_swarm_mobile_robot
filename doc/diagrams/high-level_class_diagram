@@ -1,0 +1,697 @@
+@startuml
+
+class Publisher
+class Subscriber
+class COMM_RPI
+class Messages
+
+class Edge
+class Graph
+class Node
+
+class Camera
+class Computer_vision
+class Image_analysis
+
+class Bully
+
+class Maps
+
+class Dijkstra
+
+class Leds
+class Pins
+
+class Controllers
+class KeepAlive
+class Robot
+class Robot_params
+class Sensors
+
+class Item
+class Items
+class Logging
+class Utils
+
+
+'relationships'
+Image_analysis "5" *-- Item
+Image_analysis "1" *-- Items
+Camera -* "1" Image_analysis
+Publisher *-- "1" Image_analysis
+Subscriber *-- "1" Image_analysis: "to check"
+
+Computer_vision --> Image_analysis
+
+Messages <-- Robot
+Messages <- Image_analysis
+note left of Robot: assign task to image\nand communicate with other\nrobots(pub-subs)
+note right of Image_analysis: send features to\nrobot (pub-subs)
+
+note right of Utils: Used in all\nclasses and\nlibraries
+
+Maps "0..*" *- Graph
+Graph "1..*" *-- Edge
+Graph "2..*" *-- Node
+Node -* "2" Edge
+Dijkstra "1" *-- Graph
+Dijkstra <-- Maps: "plan routes from\navailable maps"
+
+Dijkstra -> Robot: "path planning\n(for navigation)"
+Robot <- Maps: "available maps\n(for navigation)"
+
+Robot "1..*" *-- Robot_params
+Sensors -* "1" Robot
+Robot "1" *-- Controllers
+COMM_RPI -* "1" Robot
+Publisher --* "2" Robot: "to check"
+Subscriber --* "5..*" Robot: "to check"
+Robot "1" *-- Bully
+Robot "1" *-- Leds
+Robot "0..*" *-- Logging
+Robot "5..*" *-- Item
+
+Robot_params "1" *- KeepAlive
+/'Robot_params "7" *-- Item
+Robot_params "1" *-- Items'/
+Item --* "7" Robot_params
+Items --* "1" Robot_params
+
+/'KeepAlive "2" *-- Item
+KeepAlive "2" *-- Items'/
+Item --* "2" KeepAlive
+Items --* "2" KeepAlive
+
+Sensors "23" *- Items
+
+Controllers "26" *- Items
+
+'COMM_RPI (nothing)'
+
+'Publisher (nothing)'
+
+'Subscriber (nothing)'
+
+Item --* "9" Bully
+Items --* "2" Bully
+
+Leds <- Pins
+Item -* "12" Leds
+
+Item --* "3" Logging
+
+Sensors -[hidden]> Camera
+Controllers -[hidden]> Items
+Items -[hidden]> Item
+Item -[hidden]> Leds
+Bully -[hidden]> Logging
+
+
+class Publisher {
+	+int port 
+	+string topic 
+	+string publish_endpoint 
+	+bool is_connected
+	..publisher socket..
+	+zmqpp::context context
+	+zmqpp::socket_type type 
+	+zmqpp::socket *sok 
+	..
+	+bool debug
+	--
+	+Publisher()
+	+Publisher(int port)
+	+~Publisher()
+	..
+	+void setup()
+	+void set_publish_endpoint()
+	+void connect()
+	+void disconnect()
+	..
+	+void publish(string msg)
+	..Getters..
+	+bool get_debug()
+	+int get_port()
+	+string get_topic()
+	+bool get_is_connected()
+	..Setters..
+	+void set_debug(bool b)
+	+void set_port(int i)
+	+void set_topic(string s)
+	+void set_is_connected(bool b)
+	..
+	+Publisher & operator=(Publisher & pub)
+}
+class Subscriber {
+	+int port 
+	+string topic
+	+string publish_endpoint 
+	+bool is_connected 
+	+string publisher_ip 
+	..subscriber socket..
+	+zmqpp::context context
+	+zmqpp::socket_type type 
+	+zmqpp::socket *sok 
+	..
+	+bool debug
+	--
+	+Subscriber() 
+	+Subscriber(int port, string publisher_ip)
+	+~Subscriber()
+	..
+	+void setup()
+	+void set_publish_endpoint()
+	+void connect()
+	+void disconnect()
+	..
+	+string listen()
+	..Getters..
+	+bool get_debug()
+	+int get_port()
+	+string get_topic()
+	+bool get_is_connected()
+	+string get_publisher_ip()
+	..Setters..
+	+void set_debug(bool b)
+	+void set_port(int i)
+	+void set_topic(string s)
+	+void set_is_connected(bool b)
+	+void set_publisher_ip(string s)
+	..
+	+Subscriber & operator=(Subscriber & subs)
+}
+class COMM_RPI {
+	..Serial port state..
+	-int fd 
+	-bool port_open
+	..
+	-bool debug
+	--
+	+COMM_RPI()
+	+~COMM_RPI()
+	..Serial..
+	+void serial_open()
+	+void serial_close()
+	+void serial_write(string msg)
+	+string serial_read()
+	..getters..
+	+int get_fd() 
+	+bool get_port_open()
+	+bool get_debug() 
+	..setters..
+	+void set_fd(int i)
+	+void set_port_open(bool b)
+	+void set_debug(bool b)
+	..
+	+void debug_params()
+}
+class Messages << (L,orchid) >>{
+	+string detect_message(string msg)
+	..Encoding..
+	+string encode_task(int task, int side)
+	+string encode_image_params(int task, bool obst_found,\nfloat obst_dist, float theta, int crossing, int i)
+	+string encode_master_commands(string msg, int i)
+	+string encode_robot_params(Robot_params & rob, bool send_id,\nbool send_prev_node, bool send_dest_node, bool send_route,\nbool send_to_do, bool send_done)
+	+string encode_keep_alive(int my_id)	
+	+string encode_leader_election(int my_id, int leader, int proposed_leader)
+	..Decoding..
+	+void decode_task(string msg, Items<int> & tasks, Item<int> & side)
+	+void decode_ctrl(string msg, Controllers & ctrl)
+	+void decode_robot_params(string msg, Robot_params & rob)
+	+void decode_image(string msg, Sensors & sens)
+	+void decode_sensors(string msg, Sensors & sens)
+	+int decode_master_commands(string msg, string hostname)
+	+void decode_leader_election(string msg, int & id, int & leader,\nint & proposed_leader)
+	..
+	+enum Actions
+	+enum crossing
+	+enum side
+	+enum Command
+	+enum obstacle
+}
+class Edge{
+	+Node* node1
+	+Node* node2
+	+bool bidirectional
+	+int line
+	+float th_w_node_1
+	+float th_w_node_2
+	+float distance
+	+float vel
+	--
+	+Edge()
+	+Edge(Node* node1, Node* node2, bool bidirectional,\nint line, float th_w_node_1, float th_w_node_2,\nfloat distance, float vel)
+	..
+	+bool Connects(Node* node1, Node* node2)
+	+float get_th_w(Node* node)
+	+void print_info()
+	+void compute_distance()
+}
+class Graph{
+	+vector<Node*> nodes
+	+vector<Edge*> edges
+	+string id
+	--
+	+Graph()
+	+Graph(string id)
+	..
+	+void add_node(Node* node)
+	+void add_edge(Edge* edge)
+	..
+	+void reset_nodes()
+	..
+	+void print_nodes()
+	+void print_edges()
+	..
+	+Node* find_node(string node_id)
+	+Edge* find_edge(Node* node_start, Node* node_end)
+}
+class Node{
+	+string id
+	+Node* previous
+	+int distanceFromStart
+	+float x
+	+float y
+	+int type
+	+bool line
+	+int crossing
+	--
+	+Node()
+	+Node(string id, float x, float y, int type, bool line, int crossing)
+	..
+	+void print_info()
+	+void reset()
+}
+class Camera{
+	-raspicam::RaspiCam_Cv camera
+	-double image_format 
+	-int image_height 
+	-int image_width 
+	-int focal_length
+	--
+	+Camera()
+	+Camera(int image_height, int image_width)
+	+~Camera()
+	..Getters..
+	+double get_image_format()
+	+int get_image_height()
+	+int get_image_width()
+	+int get_focal_length()
+	..Setters..
+	+void set_image_format(double d)
+	+void set_image_height(int i)
+	+void set_image_width(int i)
+	+void set_focal_length(int i)
+	..
+	+int init()
+	+int start()
+	+void stop()
+	+cv::Mat take_picture()
+	..Check //detect_line.cpp//..
+}
+class Computer_vision << (L,orchid) >>{
+	+void idle()
+	+string follow_line(Mat img, int side)
+	+string track_ball(Mat img)
+	+string hole(Mat img)
+	+string shape(Mat img)
+	+string ArUco(Mat img)
+	..
+	+void GammaMapping(Mat& src, Mat& dst, float fGamma)
+	+void HistStretch(Mat& src, Mat& dst)
+	+bool compareContoursHeight(vector<Point> contour1, vector<Point> contour2)
+	+bool compareCircles(Vec3f circle1, Vec3f circle2)
+}
+class Image_analysis{
+	+Item<int> port_image
+	+Item<int> port_task
+	+Publisher pub_image
+	..
+	+Item<string> message
+	+Items<int> tasks
+	+Item<int> side	
+	+Item<Mat> picture
+	--
+	+Image_analysis()
+	+~Image_analysis()
+	+Image_analysis(int port_image, int port_task)
+	..threads..
+	+void get_new_task()
+	+void take_picture()
+	+void run()	
+}
+class Bully{
+	+int MAX_LEN = 10
+	+Item<int> leader
+	+Item<int> my_id
+	+Item<bool> trigger
+	+Items<int> robots_ids
+	+Items<int> proposed_leader
+	..
+	+Item<chrono::_V2::system_clock::time_point> time_detected
+	+Item<chrono::_V2::system_clock::time_point> time_last_elected
+	+Item<float> time_threshold
+	+Item<bool> i_detected
+	+Item<bool> is_election
+	..
+	+Item<bool> debug
+	--
+	+Bully()
+	+Bully(int my_id, float time_threshold)
+	+~Bully()
+	..
+	+void init()
+	+void init(int my_id, float time_threshold)
+	..
+	+void trigger_election()
+	+bool election(int & leader, int & proposed_leader)
+	+bool is_election_time()
+	+float get_time()
+	+bool am_i_leader()
+	+bool can_elect_again()
+	..
+	+void print_info()
+}
+class Maps << (L,orchid) >>{
+	enum Node_type
+	..Testing..
+	+Graph* map_mission0()
+	+Graph* map_mission007()
+	+Graph* map_mission1()
+	+Graph* map_mission2()
+	..Robocup..
+	+Graph* map_mission_easy(string id)
+	+Graph* map_mission_ax(string id)
+	+Graph* map_mission_ro(string id)
+	+Graph* map_mission_tunnel(string id)
+	+Graph* map_mission_race(string id)
+	..More testing..
+	+Graph* map_test_square(string id)
+	+Graph* map_test_straight(string id, float distance, float velocity)
+}
+class Dijkstra{
+	+Graph* graph
+	+vector<Node*> route
+	--
+	+Dijkstra(Graph* graph)
+	+void find_route(string node_start, string node_end)
+	+vector<Node*> store_route(Node* destination)
+	..
+	+void print_route()
+	+void print_route(vector<Node*> route)
+	..
+	-Node* ExtractSmallest(vector<Node*>& nodes)
+	-bool Contains(vector<Node*>& nodes, Node* node)
+	-float Distance(Node* node1, Node* node2)
+	-vector<Node*>* AdjacentRemainingNodes(Node* node)
+	-void Dijkstras()
+}
+class Leds{
+	-Item<int> ka_state
+	-Item<int> leader_state
+	-Item<int> plan_nav_state
+	-Item<int> task_state
+	..
+	-Item<chrono::_V2::system_clock::time_point> now2
+	-Item<chrono::_V2::system_clock::time_point> blink2
+	-Item<bool> allow_blink
+	..
+	+Item<int> ka
+	+Item<int> leader
+	+Item<int> plan_nav
+	+Item<int> task
+	+Item<float> T_blink_ms
+	--
+	+Leds()
+	+~Leds()
+	..
+	+void turn_off_all()
+	+void refresh()
+	..
+	-void get_time()
+	-void is_blinking_time()
+	-int set_state(int pin_led, int state)
+}
+class Pins{
+	"Raspberry pins
+	definition"
+	..
+}
+class Controllers{
+	+int MAX_LEN = 10
+	+Items<int> tasks
+	..
+	+Items<bool> reset_enc
+	+Items<bool> stop
+	+Items<bool> avoid_obst
+	+Items<float> obst_dist
+	..
+	+Items<bool> ir_on
+	+Items<bool> ir_send
+	..
+	+Items<bool> imu_on
+	+Items<bool> imu_gyro_send
+	+Items<bool> imu_acc_send
+	+Items<bool> imu_comp_send		
+	..
+	+Items<bool> motors_on
+	+Items<float> vel
+	..
+	+Items<float> m1_kp
+	+Items<float> m1_ki
+	+Items<float> m2_kp
+	+Items<float> m2_ki
+	+Items<float> th_kp
+	+Items<float> th_ki
+	..
+	+Items<float> fwd_dist
+	+Items<float> trn_deg
+	+Items<float> trn_r
+	+Items<float> s	
+	..
+	+Items<float> x_t
+	+Items<float> y_t
+	+Items<float> th_t
+	--
+	+Controllers()
+	+~Controllers()
+	-void init_items()
+	..
+	+int get_MAX_LEN()
+	+void set_MAX_LEN(int i)
+	..
+	+void print_info()
+	+Controllers & operator=(Controllers & ctrl)
+}
+class KeepAlive{
+	+int MAX_LEN = 10	
+	+Items<chrono::_V2::system_clock::time_point> times
+	+Item<float> threshold_time
+	+Items<bool> alive
+	+Item<bool> is_now_alive
+	--
+	+KeepAlive()
+	+~KeepAlive()
+	+KeepAlive(float threshold_time, int max_len)
+	..
+	+void init()
+	+void init(float threshold_time, int max_len)
+	..
+	+int get_MAX_LEN()
+	+void set_MAX_LEN(int i)
+	..
+	+float get_time()
+	+bool is_alive()
+}
+class Robot{
+	+Robot_params params
+	+Robot_params robot_a
+	+Robot_params robot_b
+	+Robot_params master
+	..
+	+Sensors sensors
+	..
+	+COMM_RPI serial_comm
+	+Publisher pub_image_task
+	+Publisher pub_robot_info
+	..
+	+Item<string> master_data
+	+Item<string> init_pose
+	+Item<string> image_data
+	+Item<string> drive_command
+	+Item<bool> run_mission
+	..Leader election..
+	+Bully bully
+	+Leds leds
+	..
+	+Logging logg
+	+Item<bool> debug
+	--
+	..threads..
+	+void serial()
+	+void listen_image_process()
+	+void listen_robot_a()
+	+void listen_robot_b()
+	+void listen_master()
+	+void send_keep_alive()
+	+void check_keep_alives()
+	+void leader_election()
+	+void check_le_messages(string msg)	
+	+void keyboard_input()
+	+void run()
+	..
+	+void update_pose(float x0, float y0, float th0)
+	+void compute_distance(float x, float y, float *d_w, float *th_w)
+	..navigation (example)..
+	+void navigate_0(Graph* map, string start_id, string end_id)
+}
+class Robot_params{
+	+int MAX_LEN = 10
+	+Item<int> id
+	+Item<string> hostname
+	+Item<int> port_image
+	+Item<int> port_task
+	+Item<int> port_info
+	..
+	+Item<string> previous_node	
+	+Item<string> destiny_node
+	+Items<string> route
+	..
+	+KeepAlive ka 	
+	..WIP Tasks tasks..
+	--
+	+Robot_params()
+	+Robot_params(string hostname, int id, int max_len, int port_info)
+	+Robot_params(string hostname, int id, int max_len, int port_info, int port_image, int port_task)
+	+~Robot_params()
+	+void init(string hostname, int id, int max_len, int port_info)
+	+void init(string hostname, int id, int max_len, int port_info, int port_image, int port_task)
+	..
+	+int get_MAX_LEN()
+	+void set_MAX_LEN(int i)
+	..
+	+void print_info()
+	+Robot_params & operator=(Robot_params & rp)
+}
+class Sensors{
+	+int MAX_LEN = 10
+	+Items<float> s
+	+Items<float> x
+	+Items<float> y
+	+Items<float> th
+	..
+	+Items<float> battery
+	..
+	+Items<float> ir1
+	+Items<float> ir2
+	+Items<float> obst_dist
+	+Items<bool> obst_found
+	..
+	+Items<float> gyro_x
+	+Items<float> gyro_y
+	+Items<float> gyro_z
+	..
+	+Items<float> acc_x
+	+Items<float> acc_y
+	+Items<float> acc_z
+	..
+	+Items<float> comp_x
+	+Items<float> comp_y
+	+Items<float> comp_z
+	..
+	+Items<bool> obst_found_img
+	+Items<int> cross
+	+Items<float> th_t
+	+Items<float> obst_dist_img
+	..
+	+Items<int> newCommand
+	--
+	+Sensors()
+	+Sensors(int max_len)
+	+~Sensors()
+	-void init_items()
+	..
+	+int get_MAX_LEN()
+	+void set_MAX_LEN(int i)
+	..
+	+void print_info()
+	+Sensors & operator=(Sensors & sens)
+}
+class Item{
+	"Template class"
+	..
+	-T item
+	+mutex mtx
+	--
+	+Item()
+	+Item(T item)
+	+~Item()
+	..Use mutex..
+	+T get()
+	+void set(T t)
+	..No mutex..
+	+T get_noMutex()
+	+void set_noMutex(T t)
+	..
+	+Item<T> & operator=(Item<T>& item_to_copy)
+}
+class Items{
+	"Template class"
+	..
+	-vector<T> items
+	-mutex mtx
+	-int MAX_LEN = 10
+	-string name
+	--
+	+Items()
+	+Items(string name)
+	+Items(int max_len)
+	+Items(string name, int max_len)
+	+~Items()
+	..
+	+int get_MAX_LEN()
+	+void set_MAX_LEN(int i)
+	+string get_name()
+	+void set_name(string s)
+	..Use mutex..
+	+vector<T> get_items()
+	+void add_item(T t)	
+	+void add_unique_item(T t)
+	+void copy(vector<T> new_items)	
+	+void clear()
+	+bool remove_item(T t)
+	+T get_last_item()
+	..No mutex..
+	+vector<T> get_items_noMutex()
+	+void add_item_noMutex(T t)	
+	+T get_last_item_noMutex()
+	..
+	+void print_items()
+	+string to_string_cs(string delimiter)
+	+Items<T> & operator=(Items<T>& items_to_copy)
+}
+class Logging{
+	+Item<string> filename
+	+Item<string> extension
+	+Item<string> full_filename
+	+bool first_row
+	--
+	+Logging()
+	+Logging(string filename, string extension)
+	+~Logging()
+	..
+	+void init(string file_name, string ext)
+	+void log(string line) // add time step every log
+	..
+	+string get_time_now()
+	+string get_start_time()
+}
+class Utils{
+	..strings..
+	+int str2int(string s)
+	+float str2float(string s)
+	+vector<string> split_str(string msg, string delimiters)
+	..strings template..
+	+string xtos(T x)
+}
+@enduml

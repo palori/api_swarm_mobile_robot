@@ -1,0 +1,271 @@
+@startuml
+
+class COMM_TSY
+class IMU
+class IR
+class Motor
+class Pins
+class Utils
+
+
+
+Pins -- IMU
+Pins -- IR
+Pins -- Motor
+Pins -- Utils
+
+Utils -[hidden]> IR
+IR -[hidden]> IMU
+IMU -[hidden]> Motor
+Motor -[hidden]> COMM_TSY
+
+
+class IMU << (L,orchid) >>{
+	+void MPU9150_setup();
+	+void setup_custom();
+	+void MPU9150_setupCompass();
+	..
+	+bool i2c_connection();
+	..
+	+int MPU9150_readSensor(int addrL, int addrH);
+	+int MPU9150_readSensor(int addr);
+	+int MPU9150_writeSensor(int addr,int data);
+	..
+	+float * MPU9150_readGyro();
+	+float * MPU9150_readAccel();
+	+float * MPU9150_readCmps();
+	..
+	+int IMU_cmps(char coordinate);
+	+int IMU_gyro(char coordinate);
+	+int IMU_accel(char coordinate);
+}
+class IR {
+	-int _dist_pin;
+	'//uint16_t irCal10cm;'
+	-uint16_t irCal20cm;
+	'//uint16_t irCal40cm;'
+	-uint16_t irCal80cm;
+	-uint16_t _irRaw;
+	..
+	-float irA_left;
+	-float irB_left;
+	-float irA_right;
+	-float irB_right;
+	-float _dist;
+	--
+	+IR(int pin);
+	+uint16_t getData();
+	+float getDistance();
+	+void setCalibration();
+	+String getCalibration();
+}
+class Motor {
+	-int _motor;
+	-int _dir_pin;
+	-int _pwm_pin;
+	-double _velocity;
+	-int _pwm;
+	--
+	+Motor();
+	+Motor(int motor);
+	+void setVelocity(double velocity);
+	'//setVoltage();'
+	'//void enableMotors();'
+}
+class Pins << (L,orchid) >>{
+	"Teensy pins definition"
+	..
+}
+class Utils << (L,orchid) >>{
+	"General functions"
+	..Power..
+	+void setUpPowerPins();
+	+float checkBattery();
+	..Motors..
+	+void enableMotors();
+	+void disableMotors();
+	+int vel2pwm(double velocity);
+	'in reality, it is in the motor file outside the class'
+	..IR..
+	+void enableIR();
+	+void disableIR();
+}
+
+class COMM_TSY {
+	-int action
+	-bool connect
+	-bool reset_enc
+	-bool stop 
+	-bool avoid_obst 
+	-float obst_dist 
+	..
+	-bool ir_on 
+	-bool ir_send
+	..
+	-bool imu_on 
+	-bool imu_gyro_send
+	-bool imu_acc_send 
+	-bool imu_comp_send 
+	..
+	-bool motors_on 
+	-float vel 
+	-float m1_kp 
+	-float m1_ki 
+	-float m2_kp 
+	-float m2_ki 
+	-float th_kp 
+	-float th_ki 
+	..
+	-float fwd_dist 
+	-float trn_deg
+	-float trn_r 
+	-int servo  
+	..
+	-bool fwd 
+	-bool trn 
+	-bool trnr
+	-bool drive
+	-bool followline 
+	-bool race 
+	-bool stairs 
+	..
+	-float x_t
+	-float y_t 
+	-float th_t 
+	-float x_0 
+	-float y_0 
+	-float th_0 
+	..
+	-int newCommand
+	-bool debug
+	/'constexpr static int BUF_LEN
+	char buf[BUF_LEN]
+	int buf_length 
+	int buf_count 
+	bool new_msg 
+
+	const float BIG_FLOAT
+	const int BIG_INT
+
+	enum Actions
+
+	struct Command'/
+	--
+	+COMM_TSY();
+	+~COMM_TSY();
+	'void write_serial(int newCommand, double _odo[3],float _ir[2], float battery, float _imu_cmps[3], float _imu_gyro[3], float _imu_accel[3], bool _obstacle_found)'
+	+void write_serial()
+	+void read_serial()
+	/'
+	int get_action() 
+	bool get_connect()
+	bool get_reset_enc()
+	bool get_stop() 
+	bool get_avoid_obst() 
+	float get_obst_dist() 
+
+	bool get_ir_on() 
+	bool get_ir_send() 
+	bool get_imu_on() 
+	bool get_imu_gyro_send() 
+	bool get_imu_acc_send() 
+	bool get_imu_comp_send()
+
+	bool get_motors_on() 
+	float get_vel() 
+
+	float get_m1_kp()
+	float get_m1_ki()
+	float get_m2_kp()
+	float get_m2_ki()
+	float get_th_kp()
+	float get_th_ki()
+
+	float get_fwd_dist()
+	float get_trn_deg()
+	float get_trn_r()
+	int get_servo()
+
+	bool get_debug()
+
+	bool get_fwd()
+	bool get_trn()
+	bool get_trnr()
+	bool get_drive()
+	bool get_followline()
+	bool get_race() 
+	bool get_stairs()
+
+	float get_x_t()
+	float get_y_t()
+	float get_th_t()
+
+	float get_x_0()
+	float get_y_0()
+	float get_th_0()
+
+	int get_nc()
+
+	void set_action(int i)
+	void set_connect(bool b)
+	void set_reset_enc(bool b)
+	void set_stop(bool b)
+	void set_avoid_obst(bool b) 
+	void set_obst_dist(float f)
+
+	void set_ir_on(bool b) 
+	void set_ir_send(bool b) 
+	void set_imu_on(bool b)
+	void set_imu_gyro_send(bool b)
+	void set_imu_acc_send(bool b) 
+	void set_imu_comp_send(bool b)
+
+	void set_motors_on(bool b)
+	void set_vel(float f)
+
+	void set_m1_kp(float f) 
+	void set_m1_ki(float f) 
+	void set_m2_kp(float f) 
+	void set_m2_ki(float f) 
+	void set_th_kp(float f) 
+	void set_th_ki(float f) 
+
+	void set_fwd_dist(float f) 
+	void set_trn_deg(float f) 
+	void set_trn_r(float f) 
+	void set_servo(int i) 
+
+	void set_debug(bool b)
+
+	void set_fwd(bool b) 
+	void set_trn(bool b) 
+	void set_trnr(bool b)
+	void set_drive(bool b)
+	void set_followline(bool b)
+	void set_race(bool b) 
+	void set_stairs(bool b)
+
+	void set_x_t(float f)
+	void set_y_t(float f) 
+	void set_th_t(float f) 
+
+	void set_x_0(float f) 
+	void set_y_0(float f) 
+	void set_th_0(float f) 
+
+	void set_nc(int i) 
+	'/
+	..For all attributes..
+	+getters()
+	+setters()
+	..
+	+String to_string();
+	+void debug_params();
+	+void msg2params()
+	'String sensorData2msg(int newCommand, double _odo[3], float _ir[2], float battery, float _imu_cmps[3], float _imu_gyro[3], float _imu_accel[3], bool _obstacle_found)'	
+	+String sensorData2msg()
+}
+
+
+
+@enduml

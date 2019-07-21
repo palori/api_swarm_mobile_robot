@@ -1,0 +1,21 @@
+@startuml
+@startsalt
+{
+{T 
+	**//Arduino// library**
+	+ pins.h
+	+ utils.h
+	+ utils.cpp
+	+ ir.h
+	+ ir.cpp
+	+ imu.h
+	+ imu.cpp
+	+ motor.h
+	+ motor.cpp
+	+ comm_1.h
+	+ comm_1.cpp
+	
+}}
+@endsalt
+@enduml
+
