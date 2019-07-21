@@ -677,33 +677,35 @@ void Robot::test_planning(){
 	
 
 	// loading the test map
-	cout << "\n\nLoading map...\n\n";
 	Graph* map;
-	map = map_test_report("test_map", 0.4); // (id, vel)
-
-
 	string start_id = "", end_id = "";
+	vector<string> start_ids{"a", "g", "a", "e"};
+	vector<string>   end_ids{"d", "f", "c", "f"};
+	vector<string>      maps{"1", "1", "2", "2"};
 
-	// find route
-	cout << "\n\nLoading map 1...\n\n";
-	map->reset_nodes();
-	Dijkstra dijkstra(map);
-	start_id = "a";
-	end_id = "d";
-	dijkstra.find_route(start_id, end_id);
-	dijkstra.print_route();
+	for (int i = 0; i < start_ids.size(); i++){
 
 
-	map = map_test_report("test_map", 0.4); // (id, vel)
+		// load map
+		if (maps.at(i) == "1") map = map_test_report1("test_map1", 0.4); // (id, vel)
+		else if (maps.at(i) == "2") map = map_test_report2("test_map2", 0.4); // (id, vel)
 
-	// find route
-	cout << "\n\nLoading map 2...\n\n";
-	map->reset_nodes();
-	Dijkstra dijkstra1(map);
-	start_id = "g";
-	end_id = "f";
-	dijkstra1.find_route(start_id, end_id);
-	dijkstra1.print_route();
+		start_id = start_ids.at(i);
+		end_id = end_ids.at(i);
+
+		// find route
+		cout << "\n\nLoading map " << i << "...\n\n";
+		map->reset_nodes();
+		Dijkstra dijkstra(map);
+		dijkstra.find_route(start_id, end_id);
+		dijkstra.print_route();
+
+	}
+
+
+	
+	
+
 
 }
 
