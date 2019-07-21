@@ -589,9 +589,9 @@ Graph* map_test_report(string id, float velocity){
 	Node* b = new Node("b", 1.5, 0.0, TRANSITION, true, 0);
 	Node* c = new Node("c", 1.5, 1.0, TRANSITION, false, 0);
 	Node* d = new Node("d", 0.5, 1.0, TRANSITION, false, 0);
-	Node* e = new Node("e", 0.5, 0.0, TRANSITION, false, 0);
-	Node* f = new Node("f", 0.0, 1.0, TRANSITION, true, 0);
-	Node* g = new Node("g", 0.5, 0.0, TRANSITION, true, 0);
+	Node* e = new Node("e", 0.0, 0.5, TRANSITION, false, 0);
+	Node* f = new Node("f", 1.0, 0.0, TRANSITION, true, 0);
+	Node* g = new Node("g", 1.5, 1.5, TRANSITION, true, 0);
 	
 	
 
@@ -609,7 +609,7 @@ Graph* map_test_report(string id, float velocity){
 
 	th_n1 = 45*PI/180;
 	th_n2 = 135*PI/180;
-	dist = 1.6;
+	dist = 2.0;
 	Edge* e5 = new Edge(b, g, true, MIDDLE, th_n1, th_n2, dist, velocity);
 
 	Edge* e6 = new Edge(c, d, true, NO_LINE, 0, 0, 0, velocity);

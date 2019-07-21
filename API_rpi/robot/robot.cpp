@@ -694,6 +694,8 @@ void Robot::test_planning(){
 	dijkstra.print_route();
 
 
+	map = map_test_report("test_map", 0.4); // (id, vel)
+
 	// find route
 	cout << "\n\nLoading map 2...\n\n";
 	map->reset_nodes();
