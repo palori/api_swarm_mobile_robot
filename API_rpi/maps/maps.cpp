@@ -581,3 +581,73 @@ Graph* map_test_straight(string id, float distance, float velocity){
 
 	return graph;
 }
+
+
+Graph* map_test_report(string id, float velocity){
+	//Node(string id, float x, float y, int type, bool line, int crossing);
+	Node* a = new Node("a", 0.0, 2.0, TASK_START, false, 0); 
+	Node* b = new Node("b", 1.5, 0.0, TRANSITION, true, 0);
+	Node* c = new Node("c", 1.5, 1.0, TRANSITION, false, 0);
+	Node* d = new Node("d", 0.5, 1.0, TRANSITION, false, 0);
+	Node* e = new Node("e", 0.5, 0.0, TRANSITION, false, 0);
+	Node* f = new Node("f", 0.0, 1.0, TRANSITION, true, 0);
+	Node* g = new Node("g", 0.5, 0.0, TRANSITION, true, 0);
+	
+	
+
+	//Edge(Node* node1, Node* node2, bool bidirectional, int line, float th_w_node_1, float th_w_node_2, float distance, float vel);
+	float th_n1 = 0.0, th_n2 = 0.0, dist = 0.0;
+	Edge* e1 = new Edge(a, b, true, NO_LINE, 0, 0, 0, velocity);
+
+	Edge* e2 = new Edge(b, c, true, NO_LINE, 0, 0, 0, velocity);
+	Edge* e3 = new Edge(b, e, true, NO_LINE, 0, 0, 0, velocity);
+
+	th_n1 = -135*PI/180;
+	th_n2 = -170*PI/180;
+	dist = 10.0;
+	Edge* e4 = new Edge(b, f, true, MIDDLE, th_n1, th_n2, dist, velocity);
+
+	th_n1 = 45*PI/180;
+	th_n2 = 135*PI/180;
+	dist = 1.6;
+	Edge* e5 = new Edge(b, g, true, MIDDLE, th_n1, th_n2, dist, velocity);
+
+	Edge* e6 = new Edge(c, d, true, NO_LINE, 0, 0, 0, velocity);
+	Edge* e7 = new Edge(c, g, true, NO_LINE, 0, 0, 0, velocity);
+
+	Edge* e8 = new Edge(d, e, true, NO_LINE, 0, 0, 0, velocity);
+	Edge* e9 = new Edge(d, f, true, NO_LINE, 0, 0, 0, velocity);
+
+	th_n1 = 0.0*PI/180;
+	th_n2 = -75*PI/180;
+	dist = 1.8;
+	Edge* e10 = new Edge(f, g, true, MIDDLE, th_n1, th_n2, dist, velocity);
+
+
+	// creating the graph
+	Graph* graph = new Graph(id);
+
+	// adding nodes
+	graph->add_node(a);
+	graph->add_node(b);
+	graph->add_node(c);
+	graph->add_node(d);
+	graph->add_node(e);
+	graph->add_node(f);
+	graph->add_node(g);
+
+
+	// adding edges
+	graph->add_edge(e1);
+	graph->add_edge(e2);
+	graph->add_edge(e3);
+	graph->add_edge(e4);
+	graph->add_edge(e5);
+	graph->add_edge(e6);
+	graph->add_edge(e7);
+	graph->add_edge(e8);
+	graph->add_edge(e9);
+	graph->add_edge(e10);
+
+	return graph;
+}

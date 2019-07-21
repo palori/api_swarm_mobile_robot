@@ -477,6 +477,7 @@ void Robot::run(){
 	// get stuck here to test KA and LE
 	cout << "\n\n*** ROBOT RUN ***\n\n";
 	while(!ctrl_c_pressed){
+		test_planning();
 		this_thread::sleep_for(chrono::milliseconds(10000));
 
 		//Graph* map;
@@ -664,6 +665,45 @@ void Robot::navigate_0(Graph* map, string start_id, string end_id){
 	
 }
 
+
+
+
+// tests
+void Robot::test_planning(){
+
+	cout << "\n\nWaiting for 5s...\n\n";
+	this_thread::sleep_for(chrono::milliseconds(5000));
+
+	
+
+	// loading the test map
+	cout << "\n\nLoading map...\n\n";
+	Graph* map;
+	map = map_test_report("test_map", 0.4); // (id, vel)
+
+
+	string start_id = "", end_id = "";
+
+	// find route
+	cout << "\n\nLoading map 1...\n\n";
+	map->reset_nodes();
+	Dijkstra dijkstra(map);
+	start_id = "a";
+	end_id = "d";
+	dijkstra.find_route(start_id, end_id);
+	dijkstra.print_route();
+
+
+	// find route
+	cout << "\n\nLoading map 2...\n\n";
+	map->reset_nodes();
+	Dijkstra dijkstra1(map);
+	start_id = "g";
+	end_id = "f";
+	dijkstra1.find_route(start_id, end_id);
+	dijkstra1.print_route();
+
+}
 
 
 

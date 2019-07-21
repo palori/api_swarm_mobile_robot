@@ -33,6 +33,8 @@ Graph* map_mission_race(string id);
 Graph* map_test_square(string id);
 Graph* map_test_straight(string id, float distance, float velocity);
 
+// other tests
+Graph* map_test_report(string id, float velocity);
 
 #endif
 

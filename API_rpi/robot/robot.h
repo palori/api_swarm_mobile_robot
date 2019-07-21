@@ -140,6 +140,9 @@ public:
 	void compute_distance(float x, float y, float *d_w, float *th_w);
 
 	void navigate_0(Graph* map, string start_id, string end_id);
+
+	// tests
+	void test_planning();
 };
 
 #endif
