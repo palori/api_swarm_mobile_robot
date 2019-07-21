@@ -55,19 +55,19 @@ I4=uint8(I4);
 figure
 subplot(2,3,1)
 imshow(I);
-title('Initial image','FontSize',16);
+title('Initial image',);
 subplot(2,3,4)
 imhist(I);
 %title('Initial histogram');
 subplot(2,3,2)
 imshow(I3);
-title('Cropping and histogram stretching','FontSize',16);
+title('Cropping and histogram stretching');
 subplot(2,3,5)
 imhist(I3);
 %title('Stretched histogram');
 subplot(2,3,3)
 imshow(I4);
-title('Gamma mapping','FontSize',16);
+title('Gamma mapping');
 subplot(2,3,6)
 imhist(I4);
 %title('Histogram after gamma mapping');
@@ -110,12 +110,10 @@ numB2(i)=max(max(I7));
 figure
 subplot(2,1,1)
 imshow(I5);
-title('Canny edge detection','FontSize',16);
 %subplot(1,2,2)
 %imagesc(I6);
 subplot(2,1,2)
 imagesc(I7);
-title('Contour detection','FontSize',16);
 hold on 
 for s=1:numB2(i)
 rectangle('Position', stats8(s).BoundingBox,'EdgeColor','k');
